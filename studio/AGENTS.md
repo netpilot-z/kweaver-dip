@@ -1,10 +1,10 @@
 开发数字员工运营平台 DIP Studio 的后端服务
 
 ## 技术要求
-- 使用 Python 3.14 作为开发语言
-- 严格遵循 PEP 8 规范编写代码
-- 使用 FastAPI 作为 HTTP 框架
-- 使用 uv 进行包管理
+- 使用 TypeScript 作为开发语言
+- 使用 Express 作为 HTTP 服务框架
+- 每个函数及参数都必须有文档注释
+- 单元测试行覆盖率必须达到 90% 以上
 
 ## 文档结构
 AGENTS.md（本文档）           项目的基本要求         
@@ -15,3 +15,4 @@ docs/                       项目相关的文档
 │   ├── implementation/     实现设计
 ├── references/             参考文档
 │   ├── openapi/            项目中使用到的外部开放 API
+├── src/                    源代码
