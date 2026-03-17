@@ -1,4 +1,6 @@
 .claude/
+.env
+.env.local
 
 node_modules/
 dist/
@@ -10,3 +12,5 @@ __pycache__/
 
 .DS_Store
 .vscode/
+
+assets/*.pem

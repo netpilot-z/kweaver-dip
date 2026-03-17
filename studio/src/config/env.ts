@@ -1,3 +1,27 @@
+import { config as loadDotEnvConfig } from "dotenv";
+
+let hasLoadedDotEnv = false;
+
+/**
+ * Describes the options used to load an environment file.
+ */
+export interface LoadEnvFileOptions {
+  /**
+   * Explicit path to the environment file.
+   */
+  path?: string;
+
+  /**
+   * Replaces existing `process.env` values when true.
+   */
+  override?: boolean;
+
+  /**
+   * Forces the loader to run again even if it already executed once.
+   */
+  forceReload?: boolean;
+}
+
 /**
  * Resolves the HTTP port from an environment variable.
  *
@@ -24,8 +48,155 @@ export function resolvePort(value: string | undefined): number {
  *
  * @returns The normalized runtime configuration.
  */
-export function getEnv(): { port: number } {
+export function getEnv(): {
+  port: number;
+  openClawGatewayUrl: string;
+  openClawGatewayToken?: string;
+  openClawGatewayTimeoutMs: number;
+} {
+  loadEnvFile();
+
+  const gatewayProtocol = resolveGatewayProtocol(
+    process.env.OPENCLAW_GATEWAY_PROTOCOL
+  );
+  const gatewayHost = resolveGatewayHost(process.env.OPENCLAW_GATEWAY_HOST);
+  const gatewayPort = resolveGatewayPort(process.env.OPENCLAW_GATEWAY_PORT);
+
   return {
-    port: resolvePort(process.env.PORT)
+    port: resolvePort(process.env.PORT),
+    openClawGatewayUrl:
+      readOptionalString(process.env.OPENCLAW_GATEWAY_URL) ??
+      buildGatewayUrl(gatewayProtocol, gatewayHost, gatewayPort),
+    openClawGatewayToken: readOptionalString(process.env.OPENCLAW_GATEWAY_TOKEN),
+    openClawGatewayTimeoutMs: resolveTimeoutMs(process.env.OPENCLAW_GATEWAY_TIMEOUT_MS)
   };
+}
+
+/**
+ * Loads variables from a local environment file once.
+ *
+ * @param options Optional loading behavior for tests and alternate env files.
+ */
+export function loadEnvFile(options: LoadEnvFileOptions = {}): void {
+  if (hasLoadedDotEnv && options.forceReload !== true) {
+    return;
+  }
+
+  loadDotEnvConfig({
+    path: options.path,
+    override: options.override,
+    quiet: true
+  });
+  hasLoadedDotEnv = true;
+}
+
+/**
+ * Resolves the OpenClaw gateway protocol.
+ *
+ * @param value The raw environment variable value.
+ * @returns A validated gateway protocol.
+ * @throws {Error} Thrown when the protocol is unsupported.
+ */
+export function resolveGatewayProtocol(value: string | undefined): "ws" | "wss" {
+  const protocol = readOptionalString(value) ?? "ws";
+
+  if (protocol !== "ws" && protocol !== "wss") {
+    throw new Error(`Invalid OPENCLAW_GATEWAY_PROTOCOL value: ${value ?? ""}`);
+  }
+
+  return protocol;
+}
+
+/**
+ * Resolves the OpenClaw gateway host.
+ *
+ * @param value The raw environment variable value.
+ * @returns A validated gateway host.
+ */
+export function resolveGatewayHost(value: string | undefined): string {
+  return readOptionalString(value) ?? "127.0.0.1";
+}
+
+/**
+ * Resolves the OpenClaw gateway port.
+ *
+ * @param value The raw environment variable value.
+ * @returns A validated gateway port.
+ * @throws {Error} Thrown when the port is not a positive integer.
+ */
+export function resolveGatewayPort(value: string | undefined): number {
+  if (value === undefined || value.trim() === "") {
+    return 19_001;
+  }
+
+  const port = Number.parseInt(value, 10);
+
+  if (!Number.isInteger(port) || port <= 0) {
+    throw new Error(`Invalid OPENCLAW_GATEWAY_PORT value: ${value}`);
+  }
+
+  return port;
+}
+
+/**
+ * Builds a normalized gateway URL from protocol, host and port.
+ *
+ * @param protocol The gateway protocol.
+ * @param host The gateway host name or IP.
+ * @param port The gateway port.
+ * @returns A normalized WebSocket URL.
+ */
+export function buildGatewayUrl(
+  protocol: "ws" | "wss",
+  host: string,
+  port: number
+): string {
+  return new URL(`${protocol}://${host}:${port}`).toString();
+}
+
+/**
+ * Resolves the OpenClaw gateway timeout in milliseconds.
+ *
+ * @param value The raw environment variable value.
+ * @returns A validated timeout value.
+ * @throws {Error} Thrown when the timeout is not a positive integer.
+ */
+export function resolveTimeoutMs(value: string | undefined): number {
+  if (value === undefined || value.trim() === "") {
+    return 5_000;
+  }
+
+  const timeoutMs = Number.parseInt(value, 10);
+
+  if (!Number.isInteger(timeoutMs) || timeoutMs <= 0) {
+    throw new Error(`Invalid OPENCLAW_GATEWAY_TIMEOUT_MS value: ${value}`);
+  }
+
+  return timeoutMs;
+}
+
+/**
+ * Trims an optional environment string.
+ *
+ * @param value The raw environment variable value.
+ * @returns The trimmed string, or `undefined` when empty.
+ */
+export function readOptionalString(value: string | undefined): string | undefined {
+  if (value === undefined) {
+    return undefined;
+  }
+
+  const trimmed = value.trim();
+
+  return trimmed === "" ? undefined : trimmed;
+}
+
+/**
+ * Extracts a safe error message from an unknown thrown value.
+ *
+ * @param error The unknown thrown value.
+ * @returns A human-readable error message.
+ */
+export function asMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
 }

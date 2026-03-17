@@ -1,12 +1,52 @@
+import { EventEmitter } from "node:events";
+
 import type { NextFunction, Request, Response } from "express";
 import { describe, expect, it, vi } from "vitest";
 
 import { createApp, raiseDiagnosticError } from "./app";
-import { getEnv, resolvePort } from "./config/env";
+import {
+  asMessage,
+  buildGatewayUrl,
+  getEnv,
+  loadEnvFile,
+  readOptionalString,
+  resolveGatewayHost,
+  resolveGatewayPort,
+  resolveGatewayProtocol,
+  resolvePort,
+  resolveTimeoutMs
+} from "./config/env";
 import { HttpError } from "./errors/http-error";
 import { errorHandler } from "./middleware/error-handler";
 import { notFoundHandler } from "./middleware/not-found";
 import { getHealth } from "./routes/health";
+import { createOpenClawHandlers } from "./routes/openclaw";
+import {
+  asError,
+  createAgentsListRequest,
+  createConnectRequest,
+  createDeviceSignaturePayload,
+  createDefaultWebSocket,
+  createGatewayError,
+  deriveDeviceIdFromPublicKey,
+  extractRawEd25519PublicKey,
+  isConnectChallenge,
+  isGatewayResponse,
+  loadDeviceIdentity,
+  loadDeviceIdentityFromAssets,
+  OpenClawGatewayClient,
+  parseGatewayFrame,
+  readChallengeNonce,
+  signDeviceSignature,
+  toBase64Url,
+  type OpenClawAgentsReader,
+  type OpenClawWebSocket
+} from "./services/openclaw-gateway-client";
+import type {
+  OpenClawAgentsListResult,
+  OpenClawEventFrame,
+  OpenClawResponseFrame
+} from "./types/openclaw";
 
 /**
  * Creates a minimal mock response object for handler tests.
@@ -24,15 +64,96 @@ function createResponseDouble(): Response {
   return response;
 }
 
+/**
+ * Creates a fake OpenClaw agents payload for tests.
+ *
+ * @returns A valid `AgentsListResult` fixture.
+ */
+function createAgentsFixture(): OpenClawAgentsListResult {
+  return {
+    defaultId: "main",
+    mainKey: "sender",
+    scope: "per-sender",
+    agents: [
+      {
+        id: "main",
+        name: "Main Agent",
+        identity: {
+          name: "Main Agent",
+          emoji: "🦀",
+          theme: "default"
+        }
+      }
+    ]
+  };
+}
+
+/**
+ * Creates a deterministic OpenClaw device identity fixture.
+ *
+ * @returns The device identity loaded from project assets.
+ */
+function createDeviceIdentityFixture() {
+  return loadDeviceIdentityFromAssets();
+}
+
+/**
+ * Minimal fake WebSocket used for protocol tests.
+ */
+class FakeWebSocket extends EventEmitter implements OpenClawWebSocket {
+  /**
+   * Captures outbound messages for assertions.
+   */
+  public readonly sentMessages: string[] = [];
+
+  /**
+   * Indicates whether the socket has been closed.
+   */
+  public closed = false;
+
+  /**
+   * Sends a serialized frame.
+   *
+   * @param data The serialized payload.
+   */
+  public send(data: string): void {
+    this.sentMessages.push(data);
+  }
+
+  /**
+   * Closes the fake socket.
+   */
+  public close(): void {
+    this.closed = true;
+  }
+}
+
 describe("createApp", () => {
-  it("disables the x-powered-by header", () => {
+  it("creates the app with the default OpenClaw client", () => {
     const app = createApp();
+
+    expect(typeof app.get).toBe("function");
+  });
+
+  it("disables the x-powered-by header", () => {
+    const app = createApp({
+      openClawAgentsReader: {
+        listAgents: vi.fn()
+      }
+    });
 
     expect(app.get("x-powered-by")).toBe(false);
   });
 
   it("creates the app when diagnostics are enabled", () => {
-    expect(createApp({ enableDiagnostics: true })).toBeDefined();
+    expect(
+      createApp({
+        enableDiagnostics: true,
+        openClawAgentsReader: {
+          listAgents: vi.fn()
+        }
+      })
+    ).toBeDefined();
   });
 });
 
@@ -46,6 +167,48 @@ describe("getHealth", () => {
     expect(response.json).toHaveBeenCalledWith({
       status: "ok",
       service: "dip-studio-backend"
+    });
+  });
+});
+
+describe("createOpenClawHandlers", () => {
+  it("returns the OpenClaw agent list over HTTP", async () => {
+    const response = createResponseDouble();
+    const handlers = createOpenClawHandlers({
+      listAgents: vi.fn().mockResolvedValue(createAgentsFixture())
+    });
+
+    await handlers.getAgents({} as Request, response, vi.fn());
+
+    expect(response.status).toHaveBeenCalledWith(200);
+    expect(response.json).toHaveBeenCalledWith(createAgentsFixture());
+  });
+
+  it("forwards normalized failures to Express", async () => {
+    const next = vi.fn<NextFunction>();
+    const handlers = createOpenClawHandlers({
+      listAgents: vi.fn().mockRejectedValue(new Error("boom"))
+    });
+
+    await handlers.getAgents({} as Request, createResponseDouble(), next);
+
+    const [error] = vi.mocked(next).mock.calls[0] ?? [];
+    expect(error).toBeInstanceOf(HttpError);
+    expect((error as HttpError).statusCode).toBe(502);
+  });
+
+  it("forwards HttpError instances unchanged", async () => {
+    const next = vi.fn<NextFunction>();
+    const handlers = createOpenClawHandlers({
+      listAgents: vi.fn().mockRejectedValue(new HttpError(504, "gateway timeout"))
+    });
+
+    await handlers.getAgents({} as Request, createResponseDouble(), next);
+
+    const [error] = vi.mocked(next).mock.calls[0] ?? [];
+    expect(error).toMatchObject({
+      statusCode: 504,
+      message: "gateway timeout"
     });
   });
 });
@@ -102,19 +265,441 @@ describe("errorHandler", () => {
   });
 });
 
-describe("createApp diagnostics", () => {
-  it("builds an app instance without throwing", () => {
-    const app = createApp();
-
-    expect(typeof app.use).toBe("function");
-  });
-});
-
 describe("raiseDiagnosticError", () => {
   it("throws the expected diagnostic HttpError", () => {
     expect(() => {
       raiseDiagnosticError({} as Request, {} as Response);
     }).toThrowError(new HttpError(418, "Diagnostic failure"));
+  });
+});
+
+describe("OpenClawGatewayClient", () => {
+  it("performs the challenge, connect and agents.list exchange", async () => {
+    const socket = new FakeWebSocket();
+    const client = new OpenClawGatewayClient(
+      {
+        url: "ws://127.0.0.1:18789",
+        token: "secret-token",
+        timeoutMs: 1_000,
+        deviceIdentity: createDeviceIdentityFixture(),
+        now: () => 1_737_264_000_000
+      },
+      () => socket
+    );
+    const pending = client.listAgents();
+
+    socket.emit("message", JSON.stringify({
+      type: "event",
+      event: "connect.challenge",
+      payload: {
+        nonce: "abc123",
+        ts: 1
+      }
+    }));
+
+    const connectFrame = JSON.parse(socket.sentMessages[0] ?? "{}") as {
+      id: string;
+    };
+
+    socket.emit("message", JSON.stringify({
+      type: "res",
+      id: connectFrame.id,
+      ok: true,
+      payload: {
+        type: "hello-ok",
+        protocol: 3
+      }
+    }));
+
+    const agentsFrame = JSON.parse(socket.sentMessages[1] ?? "{}") as {
+      id: string;
+    };
+
+    socket.emit("message", JSON.stringify({
+      type: "res",
+      id: agentsFrame.id,
+      ok: true,
+      payload: createAgentsFixture()
+    }));
+
+    await expect(pending).resolves.toEqual(createAgentsFixture());
+    expect(socket.closed).toBe(true);
+  });
+
+  it("converts gateway errors to HttpError", async () => {
+    const socket = new FakeWebSocket();
+    const client = new OpenClawGatewayClient(
+      {
+        url: "ws://127.0.0.1:18789",
+        timeoutMs: 1_000,
+        deviceIdentity: createDeviceIdentityFixture()
+      },
+      () => socket
+    );
+    const pending = client.listAgents();
+
+    socket.emit("message", JSON.stringify({
+      type: "event",
+      event: "connect.challenge",
+      payload: {
+        nonce: "abc123",
+        ts: 1
+      }
+    }));
+
+    const connectFrame = JSON.parse(socket.sentMessages[0] ?? "{}") as {
+      id: string;
+    };
+
+    socket.emit("message", JSON.stringify({
+      type: "res",
+      id: connectFrame.id,
+      ok: false,
+      error: {
+        code: "AUTH",
+        message: "token mismatch"
+      }
+    }));
+
+    await expect(pending).rejects.toMatchObject({
+      statusCode: 502,
+      message: "token mismatch"
+    });
+  });
+
+  it("converts socket errors to HttpError", async () => {
+    const socket = new FakeWebSocket();
+    const client = new OpenClawGatewayClient(
+      {
+        url: "ws://127.0.0.1:18789",
+        timeoutMs: 1_000,
+        deviceIdentity: createDeviceIdentityFixture()
+      },
+      () => socket
+    );
+
+    const pending = client.listAgents();
+
+    socket.emit("error", new Error("offline"));
+
+    await expect(pending).rejects.toMatchObject({
+      statusCode: 502,
+      message: "Failed to communicate with OpenClaw gateway: offline"
+    });
+  });
+
+  it("reports unexpected gateway closure", async () => {
+    const socket = new FakeWebSocket();
+    const client = new OpenClawGatewayClient(
+      {
+        url: "ws://127.0.0.1:18789",
+        timeoutMs: 1_000,
+        deviceIdentity: createDeviceIdentityFixture()
+      },
+      () => socket
+    );
+
+    const pending = client.listAgents();
+
+    socket.emit("close");
+
+    await expect(pending).rejects.toMatchObject({
+      statusCode: 502,
+      message: "OpenClaw gateway closed the connection unexpectedly"
+    });
+  });
+});
+
+describe("gateway helpers", () => {
+  it("wraps the global WebSocket implementation", () => {
+    const listeners = new Map<string, (value?: unknown) => void>();
+    const originalWebSocket = globalThis.WebSocket;
+
+    class FakeGlobalWebSocket {
+      /**
+       * Captures the URL used by the wrapper.
+       */
+      public readonly url: string;
+
+      /**
+       * Captures outbound frames.
+       */
+      public readonly sent: string[] = [];
+
+      /**
+       * Indicates whether the socket was closed.
+       */
+      public closed = false;
+
+      /**
+       * Creates the fake global WebSocket.
+       *
+       * @param url The target WebSocket URL.
+       */
+      public constructor(url: string) {
+        this.url = url;
+      }
+
+      /**
+       * Registers a DOM-style event listener.
+       *
+       * @param eventName The event name.
+       * @param listener The callback to invoke.
+       */
+      public addEventListener(
+        eventName: string,
+        listener: (value?: unknown) => void
+      ): void {
+        listeners.set(eventName, listener);
+      }
+
+      /**
+       * Sends a string payload.
+       *
+       * @param data The payload to capture.
+       */
+      public send(data: string): void {
+        this.sent.push(data);
+      }
+
+      /**
+       * Closes the fake socket.
+       */
+      public close(): void {
+        this.closed = true;
+      }
+    }
+
+    globalThis.WebSocket =
+      FakeGlobalWebSocket as unknown as typeof globalThis.WebSocket;
+
+    try {
+      const socket = createDefaultWebSocket("ws://localhost:18789");
+      const messageListener = vi.fn();
+      const errorListener = vi.fn();
+      const closeListener = vi.fn();
+      const openListener = vi.fn();
+
+      socket.on("message", messageListener);
+      socket.on("error", errorListener);
+      socket.on("close", closeListener);
+      socket.on("open", openListener);
+      socket.send("hello");
+      socket.close();
+
+      listeners.get("message")?.({
+        data: '{"type":"event","event":"tick"}'
+      });
+      listeners.get("error")?.(new Error("boom"));
+      listeners.get("close")?.();
+      listeners.get("open")?.();
+
+      expect(messageListener).toHaveBeenCalledWith('{"type":"event","event":"tick"}');
+      expect(errorListener).toHaveBeenCalled();
+      expect(closeListener).toHaveBeenCalled();
+      expect(openListener).toHaveBeenCalled();
+    } finally {
+      globalThis.WebSocket = originalWebSocket;
+    }
+  });
+
+  it("fails when the runtime has no global WebSocket", () => {
+    const originalWebSocket = globalThis.WebSocket;
+
+    globalThis.WebSocket = undefined as unknown as typeof globalThis.WebSocket;
+
+    try {
+      expect(() => createDefaultWebSocket("ws://localhost:18789")).toThrow(
+        "Global WebSocket client is not available in this Node.js runtime"
+      );
+    } finally {
+      globalThis.WebSocket = originalWebSocket;
+    }
+  });
+
+  it("parses string and buffer frames", () => {
+    expect(parseGatewayFrame('{"type":"event","event":"tick"}')).toEqual({
+      type: "event",
+      event: "tick"
+    });
+    expect(
+      parseGatewayFrame(Buffer.from('{"type":"res","id":"1","ok":true}'))
+    ).toEqual({
+      type: "res",
+      id: "1",
+      ok: true
+    });
+  });
+
+  it("rejects unsupported raw frames", () => {
+    expect(() => parseGatewayFrame(42)).toThrow(
+      "Received an unsupported frame from OpenClaw gateway"
+    );
+  });
+
+  it("creates the connect request with operator.read scope", () => {
+    const deviceIdentity = createDeviceIdentityFixture();
+    const frame = createConnectRequest(
+      "req-1",
+      {
+        type: "event",
+        event: "connect.challenge",
+        payload: {
+          nonce: "nonce-1"
+        }
+      },
+      "secret",
+      deviceIdentity,
+      () => 1_737_264_000_000
+    );
+
+    expect(frame.method).toBe("connect");
+    expect(frame.params).toMatchObject({
+      minProtocol: 3,
+      maxProtocol: 3,
+      role: "operator",
+      scopes: ["operator.read"],
+      client: {
+        id: "gateway-client",
+        platform: "linux",
+        mode: "backend"
+      },
+      auth: {
+        token: "secret"
+      },
+      device: {
+        id: deviceIdentity.id,
+        publicKey: deviceIdentity.publicKey,
+        signedAt: 1_737_264_000_000,
+        nonce: "nonce-1"
+      }
+    });
+  });
+
+  it("creates the agents.list request", () => {
+    expect(createAgentsListRequest("req-2")).toEqual({
+      type: "req",
+      id: "req-2",
+      method: "agents.list",
+      params: {}
+    });
+  });
+
+  it("recognizes challenge and response frames", () => {
+    const eventFrame: OpenClawEventFrame = {
+      type: "event",
+      event: "connect.challenge",
+      payload: {
+        nonce: "nonce-1"
+      }
+    };
+    const responseFrame: OpenClawResponseFrame = {
+      type: "res",
+      id: "req-1",
+      ok: true
+    };
+
+    expect(isConnectChallenge(eventFrame)).toBe(true);
+    expect(isGatewayResponse(responseFrame, "req-1")).toBe(true);
+  });
+
+  it("reads the challenge nonce and validates failures", () => {
+    expect(
+      readChallengeNonce({
+        type: "event",
+        event: "connect.challenge",
+        payload: {
+          nonce: "nonce-1"
+        }
+      })
+    ).toBe("nonce-1");
+
+    expect(() =>
+      readChallengeNonce({
+        type: "event",
+        event: "connect.challenge",
+        payload: {}
+      })
+    ).toThrow("OpenClaw connect.challenge payload is missing nonce");
+
+    expect(() =>
+      readChallengeNonce({
+        type: "event",
+        event: "connect.challenge"
+      })
+    ).toThrow("OpenClaw connect.challenge payload is missing nonce");
+  });
+
+  it("creates gateway errors and normalizes thrown values", () => {
+    expect(
+      createGatewayError(
+        {
+          type: "res",
+          id: "req-1",
+          ok: false,
+          error: {
+            code: "AUTH",
+            message: "denied"
+          }
+        },
+        "fallback"
+      )
+    ).toMatchObject({
+      statusCode: 502,
+      message: "denied"
+    });
+
+    expect(asError("boom").message).toBe("boom");
+  });
+
+  it("loads device identity from assets and derives a stable device id", () => {
+    const deviceIdentity = loadDeviceIdentity({
+      publicKeyPath: "assets/public.pem",
+      privateKeyPath: "assets/private.pem"
+    });
+    const rawPublicKey = extractRawEd25519PublicKey(
+      "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAKg2A9d8XQUDgPh2kheatQQDEGUKSy5UocLZNBM/tx8M=\n-----END PUBLIC KEY-----\n"
+    );
+
+    expect(deviceIdentity).toMatchObject({
+      id: deriveDeviceIdFromPublicKey(rawPublicKey),
+      publicKey: toBase64Url(rawPublicKey)
+    });
+  });
+
+  it("builds and signs the device payload", () => {
+    const deviceIdentity = createDeviceIdentityFixture();
+    const payload = createDeviceSignaturePayload({
+      deviceId: deviceIdentity.id,
+      clientId: "gateway-client",
+      clientMode: "backend",
+      role: "operator",
+      scopes: ["operator.read"],
+      signedAtMs: 1_737_264_000_000,
+      token: "secret",
+      nonce: "nonce-1",
+      platform: "linux",
+      deviceFamily: ""
+    });
+
+    expect(payload).toBe(
+      [
+        "v3",
+        deviceIdentity.id,
+        "gateway-client",
+        "backend",
+        "operator",
+        "operator.read",
+        "1737264000000",
+        "secret",
+        "nonce-1",
+        "linux",
+        ""
+      ].join("|")
+    );
+    expect(signDeviceSignature(payload, deviceIdentity.privateKeyPem)).toMatch(
+      /^[A-Za-z0-9_-]+$/u
+    );
   });
 });
 
@@ -134,11 +719,67 @@ describe("resolvePort", () => {
   });
 });
 
-describe("getEnv", () => {
-  it("reads PORT from process.env", () => {
-    process.env.PORT = "4321";
+describe("gateway env helpers", () => {
+  it("normalizes gateway protocol, host and port", () => {
+    expect(resolveGatewayProtocol(undefined)).toBe("ws");
+    expect(resolveGatewayProtocol("wss")).toBe("wss");
+    expect(resolveGatewayHost(undefined)).toBe("127.0.0.1");
+    expect(resolveGatewayHost("gateway.internal")).toBe("gateway.internal");
+    expect(resolveGatewayPort(undefined)).toBe(19001);
+    expect(resolveGatewayPort("20000")).toBe(20000);
+    expect(buildGatewayUrl("ws", "localhost", 19001)).toBe(
+      "ws://localhost:19001/"
+    );
+  });
 
-    expect(getEnv()).toEqual({ port: 4321 });
+  it("parses timeout and optional strings", () => {
+    expect(resolveTimeoutMs(undefined)).toBe(5000);
+    expect(resolveTimeoutMs("7000")).toBe(7000);
+    expect(readOptionalString(" token ")).toBe("token");
+    expect(readOptionalString("   ")).toBeUndefined();
+  });
+
+  it("extracts error messages and validates bad inputs", () => {
+    expect(asMessage(new Error("boom"))).toBe("boom");
+    expect(resolveGatewayHost("   ")).toBe("127.0.0.1");
+    expect(() => resolveGatewayProtocol("ftp")).toThrow(
+      "Invalid OPENCLAW_GATEWAY_PROTOCOL value: ftp"
+    );
+    expect(() => resolveGatewayPort("0")).toThrow(
+      "Invalid OPENCLAW_GATEWAY_PORT value: 0"
+    );
+    expect(() => resolveTimeoutMs("0")).toThrow(
+      "Invalid OPENCLAW_GATEWAY_TIMEOUT_MS value: 0"
+    );
+  });
+});
+
+describe("getEnv", () => {
+  it("reads HTTP and OpenClaw environment variables", () => {
+    delete process.env.OPENCLAW_GATEWAY_URL;
+    loadEnvFile({
+      path: ".env.test",
+      override: true,
+      forceReload: true
+    });
+
+    expect(getEnv()).toEqual({
+      port: 4321,
+      openClawGatewayUrl: "ws://127.0.0.1:19001/",
+      openClawGatewayToken: undefined,
+      openClawGatewayTimeoutMs: 6000
+    });
+  });
+
+  it("prefers OPENCLAW_GATEWAY_URL when explicitly provided", () => {
+    loadEnvFile({
+      path: ".env.test",
+      override: true,
+      forceReload: true
+    });
+    process.env.OPENCLAW_GATEWAY_URL = "wss://gateway.example.com/ws";
+
+    expect(getEnv().openClawGatewayUrl).toBe("wss://gateway.example.com/ws");
   });
 });
 
