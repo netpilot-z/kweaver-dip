@@ -5,7 +5,7 @@ import { HttpError } from "./errors/http-error";
 import { errorHandler } from "./middleware/error-handler";
 import { notFoundHandler } from "./middleware/not-found";
 import { createHealthRouter } from "./routes/health";
-import { createOpenClawHandlers } from "./routes/openclaw";
+import { createOpenClawRouter } from "./routes/openclaw";
 import {
   OpenClawGatewayClient,
   type OpenClawAgentsReader
@@ -56,12 +56,11 @@ export function createApp(options: AppOptions = {}): Express {
       token: env.openClawGatewayToken,
       timeoutMs: env.openClawGatewayTimeoutMs
     });
-  const openClawHandlers = createOpenClawHandlers(openClawAgentsReader);
 
   app.disable("x-powered-by");
   app.use(express.json());
   app.use(createHealthRouter());
-  app.get("/api/openclaw/agents", openClawHandlers.getAgents);
+  app.use(createOpenClawRouter(openClawAgentsReader));
 
   if (options.enableDiagnostics === true) {
     app.get("/__diagnostics/error", raiseDiagnosticError);

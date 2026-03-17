@@ -20,7 +20,7 @@ import { HttpError } from "./errors/http-error";
 import { errorHandler } from "./middleware/error-handler";
 import { notFoundHandler } from "./middleware/not-found";
 import { getHealth } from "./routes/health";
-import { createOpenClawHandlers } from "./routes/openclaw";
+import { getOpenClawAgents } from "./routes/openclaw";
 import {
   asError,
   createAgentsListRequest,
@@ -171,14 +171,14 @@ describe("getHealth", () => {
   });
 });
 
-describe("createOpenClawHandlers", () => {
+describe("getOpenClawAgents", () => {
   it("returns the OpenClaw agent list over HTTP", async () => {
     const response = createResponseDouble();
-    const handlers = createOpenClawHandlers({
+    const client = {
       listAgents: vi.fn().mockResolvedValue(createAgentsFixture())
-    });
+    };
 
-    await handlers.getAgents({} as Request, response, vi.fn());
+    await getOpenClawAgents(client, {} as Request, response, vi.fn());
 
     expect(response.status).toHaveBeenCalledWith(200);
     expect(response.json).toHaveBeenCalledWith(createAgentsFixture());
@@ -186,11 +186,11 @@ describe("createOpenClawHandlers", () => {
 
   it("forwards normalized failures to Express", async () => {
     const next = vi.fn<NextFunction>();
-    const handlers = createOpenClawHandlers({
+    const client = {
       listAgents: vi.fn().mockRejectedValue(new Error("boom"))
-    });
+    };
 
-    await handlers.getAgents({} as Request, createResponseDouble(), next);
+    await getOpenClawAgents(client, {} as Request, createResponseDouble(), next);
 
     const [error] = vi.mocked(next).mock.calls[0] ?? [];
     expect(error).toBeInstanceOf(HttpError);
@@ -199,11 +199,11 @@ describe("createOpenClawHandlers", () => {
 
   it("forwards HttpError instances unchanged", async () => {
     const next = vi.fn<NextFunction>();
-    const handlers = createOpenClawHandlers({
+    const client = {
       listAgents: vi.fn().mockRejectedValue(new HttpError(504, "gateway timeout"))
-    });
+    };
 
-    await handlers.getAgents({} as Request, createResponseDouble(), next);
+    await getOpenClawAgents(client, {} as Request, createResponseDouble(), next);
 
     const [error] = vi.mocked(next).mock.calls[0] ?? [];
     expect(error).toMatchObject({
