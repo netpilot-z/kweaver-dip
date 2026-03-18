@@ -1,4 +1,16 @@
-import { defineConfig } from "tsup";
-import { createLibraryConfig } from "@kweaver-web/tsup-config";
+import { defineConfig } from 'tsup'
 
-export default defineConfig(createLibraryConfig());
+export default defineConfig({
+  entry: ['src/index.ts'],
+  format: ['esm', 'cjs'],
+  dts: true,
+  sourcemap: true,
+  clean: true,
+  external: ['react', 'react/jsx-runtime'],
+  outDir: 'dist',
+  outExtension({ format }) {
+    return {
+      js: format === 'cjs' ? '.cjs' : '.js',
+    }
+  },
+})
