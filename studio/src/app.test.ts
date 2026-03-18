@@ -19,8 +19,8 @@ import {
 import { HttpError } from "./errors/http-error";
 import { errorHandler, resolveErrorCode } from "./middleware/error-handler";
 import { notFoundHandler } from "./middleware/not-found";
+import { getDigitalHumans } from "./routes/digital-human";
 import { getHealth } from "./routes/health";
-import { getDigitalHumans } from "./routes/openclaw";
 import {
   asError,
   asTransportError,

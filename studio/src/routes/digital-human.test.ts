@@ -1,11 +1,14 @@
 import type { NextFunction, Request, Response } from "express";
 import { describe, expect, it } from "vitest";
 
-import { createOpenClawRouter, mapAgentsToDigitalHumans } from "./openclaw";
+import {
+  createDigitalHumanRouter,
+  mapAgentsToDigitalHumans
+} from "./digital-human";
 
-describe("createOpenClawRouter", () => {
+describe("createDigitalHumanRouter", () => {
   it("registers GET /api/dip-studio/v1/digital-human", () => {
-    const router = createOpenClawRouter() as {
+    const router = createDigitalHumanRouter() as {
       stack: Array<{
         route?: {
           path: string;

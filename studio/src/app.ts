@@ -3,8 +3,8 @@ import express, { type Express, type Request, type Response } from "express";
 import { HttpError } from "./errors/http-error";
 import { errorHandler } from "./middleware/error-handler";
 import { notFoundHandler } from "./middleware/not-found";
+import { createDigitalHumanRouter } from "./routes/digital-human";
 import { createHealthRouter } from "./routes/health";
-import { createOpenClawRouter } from "./routes/openclaw";
 
 /**
  * Options for creating the Express application.
@@ -42,7 +42,7 @@ export function createApp(options: AppOptions = {}): Express {
   app.disable("x-powered-by");
   app.use(express.json());
   app.use(createHealthRouter());
-  app.use(createOpenClawRouter());
+  app.use(createDigitalHumanRouter());
 
   if (options.enableDiagnostics === true) {
     app.get("/__diagnostics/error", raiseDiagnosticError);

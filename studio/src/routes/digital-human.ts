@@ -20,9 +20,9 @@ const openClawAgentsAdapter = new OpenClawAgentsGatewayAdapter(
 );
 
 /**
- * Returns the OpenClaw agent list over HTTP.
+ * Returns the digital human list over HTTP.
  *
- * @param client The OpenClaw gateway reader used by the route.
+ * @param adapter The OpenClaw agents adapter used by the route.
  * @param _request The incoming HTTP request.
  * @param response The outgoing HTTP response.
  * @param next The next middleware callback.
@@ -48,11 +48,11 @@ export async function getDigitalHumans(
 }
 
 /**
- * Builds the OpenClaw router.
+ * Builds the digital human router.
  *
- * @returns The router exposing OpenClaw endpoints.
+ * @returns The router exposing digital human endpoints.
  */
-export function createOpenClawRouter(): Router {
+export function createDigitalHumanRouter(): Router {
   const router = Router();
 
   router.get("/api/dip-studio/v1/digital-human", (request, response, next) => {
