@@ -61,4 +61,37 @@ describe("mapAgentsToDigitalHumans", () => {
       }
     ]);
   });
+
+  it("falls back to identity name, agent id and avatar variants when fields are missing", () => {
+    expect(
+      mapAgentsToDigitalHumans({
+        defaultId: "main",
+        mainKey: "sender",
+        scope: "per-sender",
+        agents: [
+          {
+            id: "identity-name",
+            identity: {
+              name: "Identity Name",
+              avatar: "https://example.com/identity-avatar.png"
+            }
+          },
+          {
+            id: "id-fallback"
+          }
+        ]
+      })
+    ).toEqual([
+      {
+        id: "identity-name",
+        name: "Identity Name",
+        avatar: "https://example.com/identity-avatar.png"
+      },
+      {
+        id: "id-fallback",
+        name: "id-fallback",
+        avatar: undefined
+      }
+    ]);
+  });
 });
