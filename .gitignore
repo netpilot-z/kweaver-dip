@@ -12,3 +12,4 @@ apps/*/dist
 apps/*/.rsbuild
 packages/*/node_modules
 packages/*/dist
+.idea
