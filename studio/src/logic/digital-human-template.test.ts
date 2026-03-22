@@ -6,7 +6,8 @@ import {
   mergeTemplatePatch,
   parseIdentityMarkdown,
   renderIdentityMarkdown,
-  renderSoulMarkdown
+  renderSoulMarkdown,
+  resolveSoulTemplatePath
 } from "./digital-human-template";
 
 describe("buildTemplate", () => {
@@ -106,14 +107,74 @@ describe("renderIdentityMarkdown / renderSoulMarkdown", () => {
     expect(md).toContain("- Creature: Y");
   });
 
-  it("renders soul and BKN table", () => {
+  it("renders soul and BKN table from de_agent_soul template", () => {
     const md = renderSoulMarkdown({
       identity: { name: "X" },
       soul: "body",
       bkn: [{ name: "a", url: "b" }]
     });
-    expect(md).toContain("body");
+    expect(md).toContain("# 👤 角色定义");
+    expect(md).toContain("> body");
     expect(md).toContain("## 业务知识网络");
-    expect(md).toContain("| a | b |");
+    expect(md).toContain("> | a | b |");
+    expect(md).toContain("[UNIFIED_ARCHIVE_AND_SCHEDULE_PROTOCOL]");
+    expect(md).not.toContain("{{de_setting}}");
+    expect(md).not.toContain("{{bkn_content}}");
+  });
+
+  it("extracts soul only from blockquotes (allows > without space after >)", () => {
+    const md = renderSoulMarkdown({
+      identity: { name: "n" },
+      soul: "紧凑引用",
+      bkn: []
+    });
+    const fixed = md.replace("> 紧凑引用", ">紧凑引用");
+    const back = mergeFilesToTemplate("- Name: n\n", fixed);
+    expect(back.soul).toBe("紧凑引用");
+  });
+
+  it("strips HTML comments in persona block when parsing old SOUL files", () => {
+    const raw = `# 👤 角色定义 (Custom Persona)
+<!-- 角色设定：写入 {{de_setting}} 槽（Markdown，渲染为引用块） -->
+> 纯角色一句
+> **行为准则**：规则
+
+## 业务知识网络
+
+---
+`;
+    const t = mergeFilesToTemplate("- Name: x\n", raw);
+    expect(t.soul).toBe("纯角色一句");
+  });
+
+  it("dedupes identical BKN rows", () => {
+    const md = renderSoulMarkdown({
+      identity: { name: "n" },
+      soul: "s",
+      bkn: [
+        { name: "企业知识库", url: "https://kb.example.com" },
+        { name: "企业知识库", url: "https://kb.example.com" }
+      ]
+    });
+    const back = mergeFilesToTemplate("- Name: n\n", md);
+    expect(back.bkn).toEqual([
+      { name: "企业知识库", url: "https://kb.example.com" }
+    ]);
+  });
+
+  it("round-trips soul and bkn through SOUL template", () => {
+    const md = renderSoulMarkdown({
+      identity: { name: "n" },
+      soul: "line1\nline2",
+      bkn: [{ name: "Doc", url: "https://x" }]
+    });
+    const back = mergeFilesToTemplate("- Name: n\n", md);
+    expect(back.soul).toContain("line1");
+    expect(back.soul).toContain("line2");
+    expect(back.bkn).toEqual([{ name: "Doc", url: "https://x" }]);
+  });
+
+  it("resolveSoulTemplatePath points at de_agent_soul.pug", () => {
+    expect(resolveSoulTemplatePath()).toMatch(/de_agent_soul\.pug$/);
   });
 });
