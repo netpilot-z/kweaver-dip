@@ -1,10 +1,12 @@
 import type { OpenClawCronAdapter } from "../adapters/openclaw-cron-adapter";
 import type {
   OpenClawCronListParams,
+  OpenClawCronJob,
   OpenClawCronListResult,
   OpenClawCronRunsParams,
   OpenClawCronRunsResult
 } from "../types/plan";
+import { parseSession } from "../utils/session";
 
 /**
  * Application logic used to fetch cron jobs and run history.
@@ -47,7 +49,16 @@ export class DefaultCronLogic implements CronLogic {
   public async listCronJobs(
     params: OpenClawCronListParams
   ): Promise<OpenClawCronListResult> {
-    return this.openClawCronAdapter.listCronJobs(params);
+    const { userId, ...adapterParams } = params;
+    const result = await this.openClawCronAdapter.listCronJobs(adapterParams);
+
+    if (userId === undefined) {
+      return result;
+    }
+
+    const jobs = result.jobs.filter((job) => hasMatchingSessionUserId(job, userId));
+
+    return buildFilteredCronListResult(jobs);
   }
 
   /**
@@ -61,4 +72,36 @@ export class DefaultCronLogic implements CronLogic {
   ): Promise<OpenClawCronRunsResult> {
     return this.openClawCronAdapter.listCronRuns(params);
   }
+}
+
+/**
+ * Returns whether the job session belongs to the requested user.
+ *
+ * @param job The cron job to inspect.
+ * @param userId The authenticated user identifier.
+ * @returns True when the session user id matches.
+ */
+function hasMatchingSessionUserId(job: OpenClawCronJob, userId: string): boolean {
+  try {
+    return parseSession(job.sessionKey).userId === userId;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Rebuilds a cron list response after Studio-side filtering.
+ *
+ * @param jobs The filtered jobs.
+ * @returns A normalized list result containing only the filtered jobs.
+ */
+function buildFilteredCronListResult(jobs: OpenClawCronJob[]): OpenClawCronListResult {
+  return {
+    jobs,
+    total: jobs.length,
+    offset: 0,
+    limit: jobs.length,
+    hasMore: false,
+    nextOffset: null
+  };
 }

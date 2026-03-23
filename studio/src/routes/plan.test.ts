@@ -214,9 +214,26 @@ describe("createCronRouter", () => {
     const response = createResponseDouble();
     const next = vi.fn<NextFunction>();
 
-    await handler?.({ query: {} } as Request, response, next);
+    await handler?.(
+      {
+        query: {},
+        headers: {
+          "x-user-id": "user-1"
+        }
+      } as unknown as Request,
+      response,
+      next
+    );
 
-    expect(listCronJobs).toHaveBeenCalledOnce();
+    expect(listCronJobs).toHaveBeenCalledWith({
+      includeDisabled: true,
+      limit: 50,
+      offset: 0,
+      enabled: "all",
+      sortBy: "nextRunAtMs",
+      sortDir: "asc",
+      userId: "user-1"
+    });
     expect(response.status).toHaveBeenCalledWith(200);
     expect(next).not.toHaveBeenCalled();
   });
@@ -248,7 +265,7 @@ describe("createCronRouter", () => {
     const response1 = createResponseDouble();
     const next1 = vi.fn<NextFunction>();
 
-    await handler1?.({ query: {} } as Request, response1, next1);
+    await handler1?.({ query: {}, headers: {} } as unknown as Request, response1, next1);
 
     expect(next1).toHaveBeenCalledWith(badRequest);
 
@@ -276,7 +293,7 @@ describe("createCronRouter", () => {
     const response2 = createResponseDouble();
     const next2 = vi.fn<NextFunction>();
 
-    await handler2?.({ query: {} } as Request, response2, next2);
+    await handler2?.({ query: {}, headers: {} } as unknown as Request, response2, next2);
 
     expect(next2).toHaveBeenCalledOnce();
     expect(vi.mocked(next2).mock.calls[0]?.[0]).toMatchObject({
@@ -291,7 +308,7 @@ describe("createCronRouter", () => {
         {
           id: "p-1",
           agentId: "dh-1",
-          sessionKey: "s-1",
+          sessionKey: "agent:dh-1:user:user-1:direct:chat-1",
           name: "Plan 1",
           enabled: true,
           createdAtMs: 1,
@@ -304,7 +321,7 @@ describe("createCronRouter", () => {
         {
           id: "p-2",
           agentId: "dh-2",
-          sessionKey: "s-2",
+          sessionKey: "agent:dh-2:user:user-2:direct:chat-2",
           name: "Plan 2",
           enabled: true,
           createdAtMs: 1,
@@ -350,20 +367,31 @@ describe("createCronRouter", () => {
         params: {
           id: "dh-1"
         },
-        query: {}
+        query: {},
+        headers: {
+          "x-user-id": "user-1"
+        }
       } as unknown as Request,
       response,
       next
     );
 
-    expect(listCronJobs).toHaveBeenCalledOnce();
+    expect(listCronJobs).toHaveBeenCalledWith({
+      includeDisabled: true,
+      limit: 50,
+      offset: 0,
+      enabled: "all",
+      sortBy: "nextRunAtMs",
+      sortDir: "asc",
+      userId: "user-1"
+    });
     expect(response.status).toHaveBeenCalledWith(200);
     expect(response.json).toHaveBeenCalledWith({
       jobs: [
         {
           id: "p-1",
           agentId: "dh-1",
-          sessionKey: "s-1",
+          sessionKey: "agent:dh-1:user:user-1:direct:chat-1",
           name: "Plan 1",
           enabled: true,
           createdAtMs: 1,

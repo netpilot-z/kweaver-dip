@@ -1,4 +1,5 @@
 import { Router, type NextFunction, type Request, type Response } from "express";
+import type { IncomingHttpHeaders } from "node:http";
 
 import { OpenClawCronGatewayAdapter } from "../adapters/openclaw-cron-adapter";
 import { getEnv } from "../utils/env";
@@ -161,7 +162,10 @@ export function createCronRouter(logic: CronLogic = cronLogic): Router {
       next: NextFunction
     ): Promise<void> => {
       try {
-        const query = readCronJobListQuery(request.query);
+        const query = {
+          ...readCronJobListQuery(request.query),
+          userId: readOptionalUserIdHeader(request.headers)
+        };
         const result = await logic.listCronJobs(query);
 
         response.status(200).json(result);
@@ -183,7 +187,10 @@ export function createCronRouter(logic: CronLogic = cronLogic): Router {
       next: NextFunction
     ): Promise<void> => {
       try {
-        const query = readCronJobListQuery(request.query);
+        const query = {
+          ...readCronJobListQuery(request.query),
+          userId: readOptionalUserIdHeader(request.headers)
+        };
         const result = await logic.listCronJobs(query);
         const plans = result.jobs.filter((job) => job.agentId === request.params.id);
 
@@ -250,6 +257,25 @@ export function readCronJobListQuery(query: CronJobListQuery): OpenClawCronListP
     sortBy: parseCronJobSortBy(query.sortBy),
     sortDir: parseCronJobSortDir(query.sortDir)
   };
+}
+
+/**
+ * Reads the authenticated user id from request headers when available.
+ *
+ * @param headers The incoming HTTP headers.
+ * @returns The trimmed user id header value, or undefined when absent.
+ */
+function readOptionalUserIdHeader(headers: IncomingHttpHeaders): string | undefined {
+  const userIdHeader = headers["x-user-id"];
+  const userId = Array.isArray(userIdHeader) ? userIdHeader[0] : userIdHeader;
+
+  if (typeof userId !== "string") {
+    return undefined;
+  }
+
+  const trimmedUserId = userId.trim();
+
+  return trimmedUserId === "" ? undefined : trimmedUserId;
 }
 
 /**

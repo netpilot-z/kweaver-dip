@@ -50,6 +50,11 @@ export interface OpenClawCronListParams {
    * Sort direction.
    */
   sortDir: CronListSortDir;
+
+  /**
+   * Authenticated user identifier used by Studio-side filtering.
+   */
+  userId?: string;
 }
 
 /**
