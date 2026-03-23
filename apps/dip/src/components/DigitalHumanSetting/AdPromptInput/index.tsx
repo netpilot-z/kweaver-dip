@@ -23,6 +23,7 @@ const AdPromptInput = forwardRef<AdPromptInputRef, AdPromptInputProps>((props, r
     placeholder,
     bordered = true,
     disabled = false,
+    transparent = false,
     getPopupContainer,
     footer,
   } = props
@@ -320,6 +321,7 @@ const AdPromptInput = forwardRef<AdPromptInputRef, AdPromptInputProps>((props, r
         [`${prefixCls}-border`]: bordered,
         [`${prefixCls}-focus`]: inputFocus && bordered,
         [`${prefixCls}-disabled`]: disabled,
+        [`${prefixCls}-transparent`]: transparent,
       })}
     >
       <div

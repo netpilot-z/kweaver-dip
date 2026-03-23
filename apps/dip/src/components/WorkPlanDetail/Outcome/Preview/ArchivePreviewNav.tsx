@@ -1,0 +1,42 @@
+import classNames from 'classnames'
+import IconFont from '@/components/IconFont'
+
+export type ArchivePreviewNavProps = {
+  title: string
+  onClose?: () => void
+  /** 是否展示关闭按钮，默认展示 */
+  closable?: boolean
+  className?: string
+}
+
+const ArchivePreviewNav = ({
+  title,
+  onClose,
+  closable = true,
+  className,
+}: ArchivePreviewNavProps) => {
+  return (
+    <div
+      className={classNames(
+        'flex h-[61px] shrink-0 items-center justify-between gap-2 border-b border-[--dip-border-color] px-4',
+        className,
+      )}
+    >
+      <span className="min-w-0 flex-1 truncate text-base" title={title}>
+        {title}
+      </span>
+      {closable ? (
+        <button
+          type="button"
+          aria-label="关闭预览"
+          className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-md text-[var(--dip-text-color-45)] transition-colors hover:bg-[--dip-hover-bg-color] hover:text-[--dip-text-color]"
+          onClick={() => onClose?.()}
+        >
+          <IconFont type="icon-dip-close" />
+        </button>
+      ) : null}
+    </div>
+  )
+}
+
+export default ArchivePreviewNav

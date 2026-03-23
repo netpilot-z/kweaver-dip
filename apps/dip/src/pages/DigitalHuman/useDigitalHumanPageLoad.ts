@@ -60,35 +60,35 @@ export function useDigitalHumanPageLoad(
       setUiMode(resolveMode())
       if (!cancelled) setLoading(true)
       try {
-        // const [detail, agentSkills] = await Promise.all([
-        //   getDigitalHumanDetail(digitalHumanId),
-        //   getDigitalHumanSkills(digitalHumanId),
-        // ])
-        const result: any = {
-          id: digitalHumanId,
-          name: '测试数字员工',
-          creature: '测试岗位',
-          soul: '测试灵魂',
-          skills: [
-            { name: '技能1', description: '技能1描述' },
-            { name: '技能2', description: '技能2描述' },
-            { name: '技能3', description: '技能3描述' },
-          ],
-          bkn: [
-            { name: '知识源1', url: '知识源1' },
-            { name: '知识源2', url: '知识源2' },
-            { name: '知识源3', url: '知识源3' },
-          ],
-          channel: { type: 'feishu', appId: '1234567890', appSecret: '1234567890' },
-          updated_at: new Date().toISOString(),
-          updated_by: '张三',
-        }
+        const [detail, agentSkills] = await Promise.all([
+          getDigitalHumanDetail(digitalHumanId),
+          getDigitalHumanSkills(digitalHumanId),
+        ])
+        // const result: any = {
+        //   id: digitalHumanId,
+        //   name: '测试数字员工',
+        //   creature: '测试岗位',
+        //   soul: '测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂测试灵魂\n测试灵魂测试灵魂测试灵魂',
+        //   skills: [
+        //     { name: '技能1', description: '技能1描述' },
+        //     { name: '技能2', description: '技能2描述' },
+        //     { name: '技能3', description: '技能3描述' },
+        //   ],
+        //   bkn: [
+        //     { name: '知识源1', url: '知识源1' },
+        //     { name: '知识源2', url: '知识源2' },
+        //     { name: '知识源3', url: '知识源3' },
+        //   ],
+        //   channel: { type: 'feishu', appId: '1234567890', appSecret: '1234567890' },
+        //   updated_at: new Date().toISOString(),
+        //   updated_by: '张三',
+        // }
+        // bindDigitalHuman(result)
         if (cancelled) return
-        // bindDigitalHuman({
-        //   ...detail,
-        //   skills: agentSkills,
-        // })
-        bindDigitalHuman(result)
+        bindDigitalHuman({
+          ...detail,
+          skills: agentSkills,
+        })
       } catch (err: unknown) {
         if (cancelled) return
         const desc =

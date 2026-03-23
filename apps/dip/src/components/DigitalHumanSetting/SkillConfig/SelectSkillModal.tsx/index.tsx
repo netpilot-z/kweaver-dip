@@ -31,7 +31,7 @@ const SelectSkillModal = ({
   const [selectedSkills, setSelectedSkills] = useState<DigitalHumanSkill[]>([])
 
   const {
-    items,
+    items: allSkills,
     loading,
     error,
     fetchList: fetchAllSkills,
@@ -41,18 +41,18 @@ const SelectSkillModal = ({
     autoLoad: false,
   })
 
-  const allSkills = [
-    { name: '技能1', description: '技能1描述' },
-    { name: '技能2', description: '技能2描述' },
-    { name: '技能3', description: '技能3描述' },
-    { name: '技能4', description: '技能4描述' },
-    { name: '技能5', description: '技能5描述' },
-    { name: '技能6', description: '技能6描述' },
-    { name: '技能7', description: '技能7描述' },
-    { name: '技能8', description: '技能8描述' },
-    { name: '技能9', description: '技能9描述' },
-    { name: '技能10', description: '技能10描述' },
-  ]
+  // const allSkills = [
+  //   { name: '技能1', description: '技能1描述' },
+  //   { name: '技能2', description: '技能2描述' },
+  //   { name: '技能3', description: '技能3描述' },
+  //   { name: '技能4', description: '技能4描述' },
+  //   { name: '技能5', description: '技能5描述' },
+  //   { name: '技能6', description: '技能6描述' },
+  //   { name: '技能7', description: '技能7描述' },
+  //   { name: '技能8', description: '技能8描述' },
+  //   { name: '技能9', description: '技能9描述' },
+  //   { name: '技能10', description: '技能10描述' },
+  // ]
 
   // const fetchMineSkills = useCallback(async (id: string) => {
   //   if (!id) return []
@@ -117,9 +117,9 @@ const SelectSkillModal = ({
       return <Spin />
     }
 
-    // if (error) {
-    //   return <Empty type="failed" title="加载失败" />
-    // }
+    if (error) {
+      return <Empty type="failed" title="加载失败" />
+    }
 
     if (allSkills.length === 0) {
       // if (searchValue) {
@@ -141,7 +141,7 @@ const SelectSkillModal = ({
               key={item.name}
               type="button"
               className={clsx(
-                'relative flex min-h-[118px] flex-col rounded-lg border-0 bg-[#f7f8fa] px-5 py-4 text-left outline-none transition-colors hover:bg-[#f0f2f5]',
+                'relative min-h-[94px] flex flex-col rounded-lg border-0 bg-[#f7f8fa] px-5 py-4 text-left outline-none transition-colors hover:bg-[#f0f2f5]',
                 checked &&
                   'bg-[rgb(18,110,227,0.08)] shadow-[inset_0_0_0_1px_rgba(18,110,227,0.35)] hover:bg-[rgb(18,110,227,0.1)]',
               )}
@@ -224,7 +224,7 @@ const SelectSkillModal = ({
           autoSize={{ minRows: 2, maxRows: 2 }}
         />
 
-        <ScrollBarContainer className="grid max-h-[400px] overflow-y-auto relative min-h-[240px] mx-[-24px] px-6">
+        <ScrollBarContainer className="grid max-h-[400px] overflow-y-auto relative min-h-[180px] mx-[-24px] px-6">
           {renderContent()}
         </ScrollBarContainer>
       </div>

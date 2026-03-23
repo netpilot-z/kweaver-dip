@@ -1,174 +1,137 @@
-// import { message, Spin } from 'antd'
-// import { throttle } from 'lodash'
-// import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-// import { List } from 'react-window'
-// import type { CronRunEntry } from '@/apis/dip-studio/plan'
-// import { getDigitalHumanPlanRuns } from '@/apis/dip-studio/plan'
-// import Empty from '@/components/Empty'
-// import ScrollBarContainer from '@/components/ScrollBarContainer'
-// import { mockFetchPlanRunsPage, PLAN_LIST_USE_MOCK } from './mockPlanList'
-// import PlanListItem from './PlanListItem'
-// import {
-//   DEFAULT_PAGE_SIZE,
-//   PLAN_LIST_ROW_HEIGHT,
-//   type TasksProps,
-//   SCROLL_THRESHOLD_PX,
-// } from './types'
+import { CheckCircleFilled } from '@ant-design/icons'
+import { Spin } from 'antd'
+import { memo, useCallback, useMemo, useState } from 'react'
+import Empty from '@/components/Empty'
+import IconFont from '@/components/IconFont'
+import ScrollBarContainer from '@/components/ScrollBarContainer'
+import { ArchivePreviewPanel } from '@/components/WorkPlanDetail/Outcome/Preview'
+import TaskRunRow from './components/TaskRunRow'
+import { getPlanPreviewState } from './planMarkdownMock'
+import type { TasksPanelProps } from './types'
+import { useTaskRuns } from './useTaskRuns'
 
-// function TasksInner({
-//   planId,
-//   pageSize = DEFAULT_PAGE_SIZE,
-//   className,
-//   onRunClick,
-// }: TasksProps) {
-//   const offsetRef = useRef(0)
-//   const hasMoreRef = useRef(true)
-//   const isLoadingMoreRef = useRef(false)
-//   const requestIdRef = useRef(0)
+const BANNER_DISMISS_KEY = 'dip-work-plan-tasks-plan-banner-dismissed'
 
-//   const [runs, setRuns] = useState<CronRunEntry[]>([])
-//   const [initialLoading, setInitialLoading] = useState(true)
-//   const [loadingMore, setLoadingMore] = useState(false)
+function TasksPanelInner({ planId, dhId, sessionId: _sessionId }: TasksPanelProps) {
+  const planPreview = useMemo(() => getPlanPreviewState(), [])
+  const { scrollMountRef, entries, total, initialLoading, loadingMore, loadError } =
+    useTaskRuns(planId)
+  const [expandedKey, setExpandedKey] = useState<string | null>(null)
 
-//   const fetchPage = useCallback(
-//     async (isLoadMore: boolean) => {
-//       const id = planId?.trim()
-//       if (!id) {
-//         setRuns([])
-//         setInitialLoading(false)
-//         return
-//       }
+  const [bannerDismissed, setBannerDismissed] = useState(() => {
+    try {
+      return sessionStorage.getItem(BANNER_DISMISS_KEY) === '1'
+    } catch {
+      return false
+    }
+  })
 
-//       if (isLoadMore) {
-//         if (!hasMoreRef.current || isLoadingMoreRef.current) return
-//         isLoadingMoreRef.current = true
-//         setLoadingMore(true)
-//       } else {
-//         hasMoreRef.current = true
-//         offsetRef.current = 0
-//         isLoadingMoreRef.current = false
-//         setInitialLoading(true)
-//       }
+  const dismissBanner = useCallback(() => {
+    try {
+      sessionStorage.setItem(BANNER_DISMISS_KEY, '1')
+    } catch {
+      /* ignore */
+    }
+    setBannerDismissed(true)
+  }, [])
 
-//       const currentOffset = isLoadMore ? offsetRef.current : 0
-//       const reqId = ++requestIdRef.current
+  if (!planId?.trim()) {
+    return (
+      <div className="flex min-h-0 flex-1 items-center justify-center px-6">
+        <Empty title="暂无计划" desc="缺少计划 ID，无法加载任务" />
+      </div>
+    )
+  }
 
-//       try {
-//         const params = { offset: currentOffset, limit: pageSize }
-//         const res = PLAN_LIST_USE_MOCK
-//           ? await mockFetchPlanRunsPage(currentOffset, pageSize)
-//           : await getDigitalHumanPlanRuns(id, params)
+  return (
+    <div className="flex min-h-0 flex-1 flex-row overflow-hidden">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col border-r border-[--dip-border-color] bg-[--dip-white]">
+        <ScrollBarContainer className="flex min-h-0 flex-1 flex-col">
+          <div className="flex shrink-0 flex-col gap-4 px-6">
+            {!bannerDismissed ? (
+              <div className="flex items-start gap-2 rounded-lg border border-[#d9f7be] bg-gradient-to-b from-[--dip-white] to-[#f6ffed] px-3 py-[9px]">
+                <CheckCircleFilled
+                  className="mt-0.5 shrink-0 text-base text-[#52c41a]"
+                  aria-hidden
+                />
+                <p className="m-0 min-w-0 flex-1 text-sm leading-[1.57] text-[--dip-text-color]">
+                  这里是我们一起对齐的计划文档，我已经根据我们最近的对话完成了最新校准，您可到【会话】页面随时调整。
+                </p>
+                <button
+                  type="button"
+                  className="flex h-[22px] w-[22px] shrink-0 cursor-pointer items-center justify-center rounded border-0 bg-transparent p-0 text-[--dip-text-color-45] transition-colors hover:bg-[--dip-hover-bg-color] hover:text-[--dip-text-color]"
+                  aria-label="关闭提示"
+                  onClick={dismissBanner}
+                >
+                  <IconFont type="icon-dip-close" />
+                </button>
+              </div>
+            ) : null}
+          </div>
+          <div className="flex min-h-0 min-w-0 flex-1 flex-col pl-1">
+            <div className="flex min-h-0 min-w-0 flex-1 flex-col border-l-0 bg-[--dip-white]">
+              <ArchivePreviewPanel preview={planPreview} />
+            </div>
+          </div>
+        </ScrollBarContainer>
+      </div>
 
-//         if (reqId !== requestIdRef.current) return
+      <div
+        ref={scrollMountRef}
+        className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[--dip-white]"
+      >
+        <ScrollBarContainer className="flex min-h-0 flex-1 flex-col px-6 py-4">
+          <div className="mx-auto flex w-full max-w-[720px] flex-col gap-5">
+            {initialLoading ? (
+              <div className="flex flex-1 items-center justify-center py-20">
+                <Spin />
+              </div>
+            ) : loadError && entries.length === 0 ? (
+              <div className="flex flex-1 items-center justify-center py-12">
+                <Empty type="failed" title="加载失败" />
+              </div>
+            ) : (
+              <>
+                <h2 className="m-0 text-base font-bold leading-normal text-[--dip-text-color]">
+                  执行记录 · {total}
+                </h2>
 
-//         hasMoreRef.current = res.hasMore
-//         offsetRef.current = res.nextOffset ?? currentOffset + res.entries.length
+                {entries.length === 0 ? (
+                  <div className="flex justify-center py-12">
+                    <Empty title="暂无数据" />
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-2">
+                    {entries.map((entry, i) => {
+                      const rowKey = `${entry.jobId}-${entry.ts}-${i}`
+                      return (
+                        <TaskRunRow
+                          key={rowKey}
+                          entry={entry}
+                          digitalHumanId={dhId}
+                          expanded={expandedKey === rowKey}
+                          onToggle={() =>
+                            setExpandedKey((prev) => (prev === rowKey ? null : rowKey))
+                          }
+                        />
+                      )
+                    })}
+                  </div>
+                )}
 
-//         if (isLoadMore) {
-//           setRuns((prev) => [...prev, ...res.entries])
-//         } else {
-//           setRuns(res.entries)
-//         }
-//       } catch (err: unknown) {
-//         if (reqId !== requestIdRef.current) return
-//         const desc = (err as { description?: string })?.description
-//         if (desc) message.error(desc)
-//         else message.error('加载运行记录失败')
-//         if (!isLoadMore) setRuns([])
-//       } finally {
-//         if (reqId === requestIdRef.current) {
-//           isLoadingMoreRef.current = false
-//           setLoadingMore(false)
-//           setInitialLoading(false)
-//         }
-//       }
-//     },
-//     [pageSize, planId],
-//   )
+                {loadingMore ? (
+                  <div className="flex justify-center py-2">
+                    <Spin size="small" />
+                  </div>
+                ) : null}
+              </>
+            )}
+          </div>
+        </ScrollBarContainer>
+      </div>
+    </div>
+  )
+}
 
-//   useEffect(() => {
-//     void fetchPage(false)
-//   }, [fetchPage])
-
-//   const handleScroll = useMemo(
-//     () =>
-//       throttle((params: { target?: HTMLElement }) => {
-//         const target = params?.target
-//         if (!target || isLoadingMoreRef.current || !hasMoreRef.current) return
-//         const { scrollTop, clientHeight, scrollHeight } = target
-//         if (scrollHeight - scrollTop - clientHeight > SCROLL_THRESHOLD_PX) return
-//         void fetchPage(true)
-//       }, 150),
-//     [fetchPage],
-//   )
-
-//   useEffect(() => () => handleScroll.cancel(), [handleScroll])
-
-//   const getRow = useCallback(
-//     ({ index, style, data }: any) => {
-//       const run = data[index] as CronRunEntry | undefined
-//       if (!run) return null
-//       return (
-//         <div style={style} className="box-border px-6 pb-3">
-//           <PlanListItem run={run} onClick={onRunClick} />
-//         </div>
-//       )
-//     },
-//     [onRunClick],
-//   )
-
-//   if (!planId?.trim()) {
-//     return (
-//       <div className={`flex flex-1 min-h-0 items-center justify-center px-6 ${className ?? ''}`}>
-//         <Empty title="暂无数据" />
-//       </div>
-//     )
-//   }
-
-//   if (initialLoading) {
-//     return (
-//       <div className={`flex flex-1 min-h-0 items-center justify-center ${className ?? ''}`}>
-//         <Spin />
-//       </div>
-//     )
-//   }
-
-//   if (runs.length === 0) {
-//     return (
-//       <div className={`flex flex-1 min-h-0 items-center justify-center px-6 ${className ?? ''}`}>
-//         <Empty title="暂无数据" />
-//       </div>
-//     )
-//   }
-
-//   return (
-//     <div className={`flex flex-1 min-h-0 flex-col overflow-hidden ${className ?? ''}`}>
-//       <div className="flex min-h-0 flex-1 flex-col">
-//         <div className="min-h-0 flex-1">
-//           <List
-//             tagName={ScrollBarContainer as any}
-//             className="h-full w-full"
-//             rowComponent={getRow}
-//             rowCount={runs.length}
-//             rowHeight={PLAN_LIST_ROW_HEIGHT}
-//             rowProps={{
-//               data: runs,
-//             }}
-//             style={{ height: '100%', width: '100%' }}
-//             onScroll={(e) => {
-//               handleScroll({ target: e.currentTarget })
-//             }}
-//           />
-//         </div>
-//         {loadingMore ? (
-//           <div className="flex shrink-0 justify-center px-6 py-2">
-//             <Spin size="small" />
-//           </div>
-//         ) : null}
-//       </div>
-//     </div>
-//   )
-// }
-
-// const Tasks = memo(TasksInner)
-// export default Tasks
+const TasksPanel = memo(TasksPanelInner)
+export default TasksPanel

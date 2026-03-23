@@ -28,6 +28,7 @@ export type AdPromptInputProps = {
   onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void
   footer?: React.ReactNode
   trigger: Array<{ character: string; options: VarOptions[] }>
+  transparent?: boolean // 是否透明
 }
 
 export type AdPromptInputRef = {

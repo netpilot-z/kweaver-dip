@@ -45,8 +45,7 @@ const SkillConfig = ({ readonly }: SkillConfigProps) => {
         title: '技能名称',
         dataIndex: 'name',
         key: 'name',
-        // 只读模式，名称和描述各占一半:50% * (100% - 100px)；编辑模式，名称占剩余的60%: 60% * (100% - 80px)
-        width: readonly ? 'calc(50% - 50px)' : 'calc(60% - 48px)',
+        width: '40%',
         render: (text: string) => {
           return (
             <div className="flex items-center gap-2 truncate">
@@ -134,7 +133,7 @@ const SkillConfig = ({ readonly }: SkillConfigProps) => {
                   type="primary"
                   onClick={handleAddSkill}
                 >
-                  选择技能
+                  技能
                 </Button>
               )}
             </Empty>

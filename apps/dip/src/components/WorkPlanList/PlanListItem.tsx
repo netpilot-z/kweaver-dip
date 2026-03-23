@@ -6,7 +6,7 @@ import { formatPlanRelativeDayTime, planExecutionConditionText, planJobDescripti
 function PlanMetaColumn({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
   return (
     <div className="flex min-w-0 max-w-[140px] flex-col gap-1">
-      <div className="flex items-center gap-1 text-xs leading-[18px] text-[--dip-text-color-45]">
+      <div className="flex items-center justify-center gap-1 text-xs leading-[18px] text-[--dip-text-color-45]">
         <span className="inline-flex shrink-0 text-[10px]">{icon}</span>
         <span className="truncate">{label}</span>
       </div>
@@ -31,9 +31,9 @@ function PlanListItemInner({ job, onClick }: PlanListItemProps) {
     <button
       type="button"
       onClick={() => onClick?.(job)}
-      className="flex w-full items-center gap-4 rounded-xl border border-[var(--dip-line-color-10)] bg-[--dip-white] px-4 py-3 text-left shadow-[0_1px_2px_0_rgb(0_0_0_/_4%)] transition-[border-color,box-shadow] hover:border-[var(--dip-border-color-base)] hover:shadow-[0_2px_8px_0_rgb(0_0_0_/_6%)]"
+      className="max-w-[880px] mx-auto flex w-full items-center gap-4 rounded-lg border border-[var(--dip-line-color-10)] bg-[--dip-white] px-4 py-3 text-left transition-[border-color,background-color] hover:border-[#BEDBFF] hover:bg-[#EFF6FF]"
     >
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#126ee3]">
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#60AEFF]">
         <SnippetsOutlined className="text-lg text-white" />
       </div>
 

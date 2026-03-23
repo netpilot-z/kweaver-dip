@@ -1,6 +1,5 @@
 import { Avatar, Card, Dropdown, type MenuProps } from 'antd'
 import clsx from 'clsx'
-// import type { EChartsOption } from 'echarts'
 import { LineChart as ELineChart } from 'echarts/charts'
 import { GridComponent, TooltipComponent } from 'echarts/components'
 import * as echarts from 'echarts/core'
@@ -29,92 +28,6 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
   onCardClick,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false)
-  // const chartRef = useRef<HTMLDivElement | null>(null)
-
-  // const successRateData = digitalHuman.task_success_rate ?? []
-  // const lastPoint = successRateData[successRateData.length - 1] as
-  //   | { day?: string; value?: number }
-  //   | undefined
-  // const successRate = typeof lastPoint?.value === 'number' ? lastPoint.value : 0
-  // const successRateColor = successRate >= 90 ? '#52c41a' : successRate >= 70 ? '#faad14' : '#ff4d4f'
-
-  // useEffect(() => {
-  //   if (!chartRef.current || successRateData.length === 0) return
-
-  //   const chart = echarts.init(chartRef.current)
-
-  //   const option: EChartsOption = {
-  //     tooltip: {
-  //       trigger: 'axis',
-  //       axisPointer: {
-  //         type: 'line',
-  //       },
-  //       formatter: (params: any) => {
-  //         const point = Array.isArray(params) ? params[0] : params
-  //         const day = point?.axisValue ?? ''
-  //         const value = typeof point?.data === 'number' ? point.data : 0
-  //         const num = typeof value === 'number' ? value : Number(value) || 0
-  //         return `${day}<br />成功率：${num.toFixed(1)}%`
-  //       },
-  //       confine: true,
-  //       backgroundColor: 'rgba(0, 0, 0, 0.75)',
-  //       borderWidth: 0,
-  //       textStyle: {
-  //         color: '#fff',
-  //         fontSize: 12,
-  //       },
-  //       padding: [6, 8],
-  //     },
-  //     grid: {
-  //       top: 2,
-  //       bottom: 2,
-  //       left: 0,
-  //       right: 0,
-  //     },
-  //     xAxis: {
-  //       type: 'category',
-  //       data: successRateData.map((item: { day?: string }) => item.day ?? ''),
-  //       boundaryGap: false,
-  //       axisLine: { show: false },
-  //       axisTick: { show: false },
-  //       axisLabel: { show: false },
-  //     },
-  //     yAxis: {
-  //       type: 'value',
-  //       min: 0,
-  //       max: 100,
-  //       axisLine: { show: false },
-  //       axisTick: { show: false },
-  //       axisLabel: { show: false },
-  //       splitLine: { show: false },
-  //     },
-  //     series: [
-  //       {
-  //         type: 'line',
-  //         data: successRateData.map((item: { value?: number }) => item.value ?? 0),
-  //         smooth: true,
-  //         symbol: 'none',
-  //         lineStyle: {
-  //           width: 2,
-  //           color: successRateColor,
-  //         },
-  //       },
-  //     ],
-  //     animation: false,
-  //   }
-
-  //   chart.setOption(option)
-  //   const resize = () => {
-  //     chart.resize()
-  //   }
-  //   window.addEventListener('resize', resize)
-
-  //   return () => {
-  //     window.removeEventListener('resize', resize)
-  //     chart.dispose()
-  //   }
-  // }, [successRateColor, successRateData])
-
   const updateTime = digitalHuman.updated_at
     ? formatTimeSlash(new Date(digitalHuman.updated_at).getTime())
     : ''
@@ -141,12 +54,14 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
     >
       <div className="flex gap-4 flex-shrink-0">
         {/* 图标 */}
-        <AppIcon
-          name={digitalHuman.name}
-          size={48}
-          className="w-12 h-12 rounded-xl overflow-hidden"
-          shape="square"
-        />
+        <div className="w-12 h-12 flex-shrink-0 flex overflow-hidden mt-0.5">
+          <AppIcon
+            name={digitalHuman.name}
+            size={48}
+            className="w-12 h-12 rounded-xl overflow-hidden"
+            shape="square"
+          />
+        </div>
         {/* 名称 + 描述 */}
         <div className="flex-1 min-w-0">
           <div className="flex flex-col gap-2">
@@ -194,10 +109,10 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
         </div>
       </div>
 
-      <div className="flex flex-col justify-end flex-1 h-0 mt-2">
+      {/* 更新信息 */}
+      {/* <div className="flex flex-col justify-end flex-1 h-0 mt-2">
         <div className="mb-2 h-px bg-[var(--dip-line-color)]" />
         <div className="flex items-center justify-between text-xs text-[var(--dip-text-color-45)]">
-          {/* 更新信息 */}
           <div className="flex items-center">
             <Avatar size="small" className="flex-shrink-0 mr-2">
               {digitalHuman.updated_by?.charAt(0)}
@@ -212,45 +127,8 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
           </div>
           <span>更新：{updateTime}</span>
         </div>
-        {/* <div className="mb-3 mt-2 w-full h-px bg-[var(--dip-line-color)]" /> */}
-
-        {/* 使用者 + 计划 + 成功率 */}
-        {/* <div className="flex gap-5">
-          <div className="flex items-center gap-1">
-            <Avatar.Group max={{ count: 4 }}>
-              {users.slice(0, 3).map((user: any) => (
-                <Avatar key={user?.id} size="small">
-                  <span title={user?.vision_name}>{user?.vision_name?.charAt(0)}</span>
-                </Avatar>
-              ))}
-              {users.length > 3 && (
-                <Avatar
-                  size="small"
-                  style={{ backgroundColor: '#F5F5F5', color: 'black', fontSize: 10 }}
-                >
-                  <span title={users.map((user: any) => user?.vision_name).join(',')}>
-                    +{users.length - 3}
-                  </span>
-                </Avatar>
-              )}
-            </Avatar.Group>
-          </div>
-
-          <div>
-            <div className="text-xs text-[#92929D] mb-1.5">计划</div>
-            <div className="text-lg font-medium">{digitalHuman.plan_count}</div>
-          </div>
-
-          <div className="flex-1">
-            <div className="text-xs text-[#92929D] mb-1.5">7日成功率</div>
-            <div className="flex items-center gap-2">
-              <div className="w-full h-8">
-                <div ref={chartRef} className="w-full h-full" />
-              </div>
-            </div>
-          </div>
-        </div> */}
-      </div>
+      </div> */}
+      {/* <div className="mb-3 mt-2 w-full h-px bg-[var(--dip-line-color)]" /> */}
     </Card>
   )
 }

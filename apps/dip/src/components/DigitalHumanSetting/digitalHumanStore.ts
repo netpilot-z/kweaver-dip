@@ -20,7 +20,7 @@ export interface DigitalHumanState {
   /** 当前正在配置的数字员工 ID（与 API 一致为 string） */
   digitalHumanId?: string
 
-  /** 详情（与 API 一致为 DigitalHumanDetail） */
+  /** 原始详情，不做任何修改（与 API 一致为 DigitalHumanDetail） */
   detail: DigitalHumanDetail | null
 
   /** 基本信息 */
@@ -43,6 +43,9 @@ export interface DigitalHumanState {
 
   /** 重置 dirty 状态（不改变数据内容） */
   resetDirtyState: () => void
+
+  /** 重置所有数据到原始详情 */
+  resetAllToDetail: () => void
 
   /** 设置当前页面编辑状态 */
   setUiMode: (mode: DigitalHumanUiMode) => void
@@ -163,6 +166,19 @@ export const useDigitalHumanStore = create<DigitalHumanState>()((set) => ({
       channel: undefined,
       dirty: true,
     }),
+
+  resetAllToDetail: () =>
+    set((state) => ({
+      basic: {
+        name: state.detail?.name ?? '',
+        creature: state.detail?.creature ?? '',
+        soul: state.detail?.soul ?? '',
+      },
+      bkn: state.detail?.bkn ?? defaultBkn,
+      skills: state.detail?.skills ?? defaultSkills,
+      channel: state.detail?.channel ?? undefined,
+      dirty: false,
+    })),
 
   reset: () =>
     set(() => ({

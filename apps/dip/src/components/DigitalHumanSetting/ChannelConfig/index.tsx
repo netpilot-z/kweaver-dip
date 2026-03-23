@@ -12,7 +12,7 @@ const CHANNEL_TYPE_LABEL: Record<NonNullable<DhChannelConfig['type']>, string> =
   dingtalk: '钉钉',
 }
 
-const ChannelConfig = () => {
+const ChannelConfig = ({ readonly }: { readonly?: boolean }) => {
   const { channel, updateChannel, deleteChannel } = useDigitalHumanStore()
   const [addChannelModalOpen, setAddChannelModalOpen] = useState(false)
 
@@ -54,16 +54,18 @@ const ChannelConfig = () => {
     if (!channel) {
       return (
         <Empty title="暂无通道">
-          <Button
-            className="mt-2"
-            type="primary"
-            icon={<IconFont type="icon-dip-add" />}
-            onClick={() => {
-              handleAddChannel()
-            }}
-          >
-            添加通道
-          </Button>
+          {readonly ? undefined : (
+            <Button
+              className="mt-2"
+              type="primary"
+              icon={<IconFont type="icon-dip-add" />}
+              onClick={() => {
+                handleAddChannel()
+              }}
+            >
+              添加通道
+            </Button>
+          )}
         </Empty>
       )
     }

@@ -1,48 +1,58 @@
-import type { CronJob } from '@/apis/dip-studio/plan'
+import type { CronRunEntry } from '@/apis/dip-studio/plan'
 
-/** 列表默认分页大小 */
-export const DEFAULT_PAGE_SIZE = 20
+/** 滚动触底提前量（px） */
+export const TASKS_SCROLL_THRESHOLD_PX = 80
 
-/** 滚动触底提前量（px），用于触发加载更多 */
-export const SCROLL_THRESHOLD_PX = 80
+/** 分页大小 */
+export const TASKS_PAGE_SIZE = 20
 
-/** react-window List 单行固定高度（含卡片与行间距，与 PlanListItem 对齐） */
-export const PLAN_LIST_ROW_HEIGHT = 58 + 16
-
-/** 列表项右侧灰色/状态胶囊共用基础 class */
-export const planListPillBase =
-  'inline-flex max-w-full items-center gap-1 rounded-md px-2.5 py-2 text-xs whitespace-nowrap'
-
-/** 列表数据来源：全局计划 API 或指定数字员工的计划 API */
-export type PlanListSource = { mode: 'global' } | { mode: 'digitalHuman'; digitalHumanId: string }
-
-export interface PlanListProps {
-  source: PlanListSource
-  /** 每页条数 */
-  pageSize?: number
-  className?: string
-  /** 点击计划行 */
-  onPlanClick?: (job: CronJob) => void
+export type TasksPanelProps = {
+  planId?: string
+  dhId: string
+  sessionId: string
 }
 
-export interface PlanListItemProps {
-  job: CronJob
-  onClick?: (job: CronJob) => void
+/** 列表展示用：运行记录 + 可选成果数量（mock 或接口扩展） */
+export type TaskRunDisplayEntry = CronRunEntry & {
+  outcomeCount?: number
 }
 
-/** 计划列表项右侧状态胶囊（文案 + Tailwind class） */
-export type PlanStatusPill = { text: string; className: string }
+export type TaskRunUiStatus = 'running' | 'success' | 'failed' | 'skipped' | 'pending'
 
-/** 计划列表行展示用状态（左侧图标 + 右侧胶囊统一由此派生） */
-export type PlanJobDisplayStatus = 'disabled' | 'running' | 'ok' | 'error' | 'pending' | 'skipped'
-
-export interface PlanJobLeftIconStyle {
-  boxClassName: string
-  iconClassName: string
+/**
+ * 状态胶囊颜色，与 {@link TaskRunUiStatus} 一一对应。
+ * `color`：颜色；`bgColor`：背景颜色；`bdColor`：边框颜色。
+ */
+export type TaskRunUiStatusColors = {
+  color: string
+  bgColor: string
+  bdColor: string
 }
 
-export interface PlanJobDisplayStyle {
-  status: PlanJobDisplayStatus
-  pill: PlanStatusPill
-  leftIcon: PlanJobLeftIconStyle
+export const TASK_RUN_UI_STATUS_COLORS: Record<TaskRunUiStatus, TaskRunUiStatusColors> = {
+  running: {
+    color: '#1677ff',
+    bgColor: '#e6f4ff',
+    bdColor: '#bae0ff',
+  },
+  success: {
+    color: '#52c41a',
+    bgColor: '#f6ffed',
+    bdColor: '#d9f7be',
+  },
+  failed: {
+    color: '#ff4d4f',
+    bgColor: '#fff1f0',
+    bdColor: '#ffccc7',
+  },
+  skipped: {
+    color: 'rgba(0,0,0,0.65)',
+    bgColor: 'rgba(0,0,0,0.04)',
+    bdColor: 'rgba(0,0,0,0.15)',
+  },
+  pending: {
+    color: '#d48806',
+    bgColor: '#fffbe6',
+    bdColor: '#ffe58f',
+  },
 }

@@ -172,7 +172,6 @@ const HomeSider = ({ collapsed, onCollapse }: HomeSiderProps) => {
 
       items[1]?.push(item)
     }
-    console.log(items)
     return items
   }, [roleIds, selectedKey, navigate])
 

@@ -1,13 +1,13 @@
 import { Tabs } from 'antd'
-import { useCallback, useMemo, useState } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import AgentIcon from '@/assets/icons/agent3.svg?react'
 import IconFont from '@/components/IconFont'
 import Outcome from '@/components/WorkPlanDetail/Outcome'
 import Tasks from '@/components/WorkPlanDetail/Tasks'
+import { useGlobalLayoutStore } from '@/stores'
 import Conversation from './Conversation'
 import styles from './index.module.less'
-
 export type WorkPlanDetailTab = 'results' | 'tasks' | 'conversation'
 
 /** 计划名称 mock，接入详情 API 后由服务端数据替换 */
@@ -18,9 +18,18 @@ const WorkPlanDetail = () => {
   const { workPlanId } = useParams<{ workPlanId: string }>()
   const location = useLocation()
   const navigate = useNavigate()
-  const from = (location.state as { from?: string } | null)?.from
+  const [searchParams] = useSearchParams()
+  const locationState = location.state as { from?: string } | null
+  const from = locationState?.from
+  const digitalHumanId = searchParams.get('dhId')?.trim() ?? ''
+  const sessionId = searchParams.get('sessionId')?.trim() ?? ''
+  const { setCollapsed } = useGlobalLayoutStore()
 
   const [activeTab, setActiveTab] = useState<WorkPlanDetailTab>('results')
+
+  useEffect(() => {
+    setCollapsed(true)
+  }, [setCollapsed])
 
   const handleBack = useCallback(() => {
     if (from) {
@@ -32,9 +41,21 @@ const WorkPlanDetail = () => {
 
   const tabItems = useMemo(
     () => [
-      { key: 'results' satisfies WorkPlanDetailTab, label: '成果' },
-      { key: 'tasks' satisfies WorkPlanDetailTab, label: '任务' },
-      { key: 'conversation' satisfies WorkPlanDetailTab, label: '对话' },
+      {
+        key: 'results' satisfies WorkPlanDetailTab,
+        label: '成果',
+        icon: <IconFont type="icon-dip-wendang" />,
+      },
+      {
+        key: 'tasks' satisfies WorkPlanDetailTab,
+        label: '任务',
+        icon: <IconFont type="icon-dip-task-list" />,
+      },
+      {
+        key: 'conversation' satisfies WorkPlanDetailTab,
+        label: '会话',
+        icon: <IconFont type="icon-dip-chat" />,
+      },
     ],
     [],
   )
@@ -63,6 +84,7 @@ const WorkPlanDetail = () => {
         </div>
         <div className="flex min-w-0 justify-center self-end">
           <Tabs
+            indicator={{ size: 0 }}
             activeKey={activeTab}
             items={tabItems}
             size="small"
@@ -77,11 +99,21 @@ const WorkPlanDetail = () => {
         <div className="flex min-w-0 items-center justify-end gap-2" />
       </div>
 
-      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-        {activeTab === 'results' ? <Outcome planId={workPlanId} /> : null}
-        {/* {activeTab === 'tasks' ? <Tasks planId={workPlanId} /> : null} */}
-        {activeTab === 'conversation' ? <Conversation planId={workPlanId} /> : null}
-      </div>
+      {activeTab === 'results' && (
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+          <Outcome planId={workPlanId} dhId={digitalHumanId} sessionId={sessionId} />
+        </div>
+      )}
+      {activeTab === 'tasks' && (
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+          <Tasks planId={workPlanId} dhId={digitalHumanId} sessionId={sessionId} />
+        </div>
+      )}
+      {activeTab === 'conversation' && (
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+          <Conversation planId={workPlanId} dhId={digitalHumanId} sessionId={sessionId} />
+        </div>
+      )}
     </div>
   )
 }

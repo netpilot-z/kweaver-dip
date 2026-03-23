@@ -54,6 +54,6 @@ export const getDigitalHumanPlanRuns = (
   planId: string,
   params?: GetDigitalHumanPlanRunsParams,
 ): Promise<CronRunListResponse> =>
-  get(`${BASE}/digital-human/plans/${planId}/runs`, {
+  get(`${BASE}/plans/${planId}/runs`, {
     params: cleanParams(params as Record<string, unknown> | undefined),
   }) as Promise<CronRunListResponse>

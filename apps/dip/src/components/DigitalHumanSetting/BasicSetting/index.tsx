@@ -26,14 +26,17 @@ const BasicSetting = ({ readonly }: { readonly?: boolean }) => {
   }, [basic.name, basic.creature, basic.soul, form])
 
   const ROLE_INSTRUCTION_PLACEHOLDER: Record<string, string> = {
-    'zh-CN': `设定AI应答规范请参照以下格式指南：
-  
-# 角色任务
-描述Decision Agent的角色人设，期望完成的主要任务或目标。
-# 使用技能
-描述Decision Agent可用的组件，并说明如何使用这些技能。
-# 要求与限制
-指定回答的输入格式、结果内容、风格要求或字数限制等。`,
+    'zh-CN': `# 角色
+角色名称
+# 角色描述
+角色概述和主要职责的一句话描述
+## 目标
+角色的工作目标，如果有多目标可以分点列出
+## 技能
+为了实现目标，角色需要具备的技能1（可使用@调用技能）
+为了实现目标，角色需要具备的技能2（可使用@调用技能）
+为了实现目标，角色需要具备的技能3（可使用@调用技能）
+`,
 
     'zh-TW': `設定 AI 應答規範請參照以下格式指南：
   
@@ -73,10 +76,12 @@ const BasicSetting = ({ readonly }: { readonly?: boolean }) => {
           <div className="flex flex-col gap-2">
             <span className="text-base font-medium">角色设定</span>
             <AdPromptInput
+              bordered={false}
+              transparent
               disabled
-              value={basic.soul}
-              style={{ minHeight: '200px', maxHeight: '400px' }}
-              placeholder={ROLE_INSTRUCTION_PLACEHOLDER[language]}
+              value={basic.soul || '--'}
+              style={{ minHeight: '200px' }}
+              placeholder={''}
               trigger={[
                 {
                   character: '@',
@@ -112,7 +117,7 @@ const BasicSetting = ({ readonly }: { readonly?: boolean }) => {
 
         <Form.Item label="角色设定" name="soul" style={{ marginBottom: 0 }}>
           <AdPromptInput
-            style={{ minHeight: '200px', maxHeight: '400px' }}
+            style={{ minHeight: '200px', maxHeight: 'calc(100vh - 476px)' }}
             placeholder={ROLE_INSTRUCTION_PLACEHOLDER[language]}
             trigger={[
               {

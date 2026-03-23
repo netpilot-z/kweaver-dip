@@ -29,7 +29,7 @@ const DigitalHumanSetting = ({ readonly }: { readonly?: boolean }) => {
       return <KnowledgeConfig readonly={readonly} />
     }
     if (selectedMenu === DESettingMenuKey.CHANNEL) {
-      return <ChannelConfig />
+      return <ChannelConfig readonly={readonly} />
     }
     return null
   }

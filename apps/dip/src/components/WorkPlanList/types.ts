@@ -7,7 +7,7 @@ export const DEFAULT_PAGE_SIZE = 20
 export const SCROLL_THRESHOLD_PX = 80
 
 /** react-window List 单行固定高度（含卡片与行间距，与 PlanListItem 对齐） */
-export const PLAN_LIST_ROW_HEIGHT = 96
+export const PLAN_LIST_ROW_HEIGHT = 86
 
 /** 列表项右侧灰色/状态胶囊共用基础 class */
 export const planListPillBase =

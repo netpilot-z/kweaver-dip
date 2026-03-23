@@ -1,13 +1,14 @@
-import { Button, Tooltip } from 'antd'
+import { Button, Flex, Table, Tooltip } from 'antd'
 import { memo, useMemo, useState } from 'react'
 import type { KnowledgeNetworkInfo } from '@/apis'
 import type { BknEntry } from '@/apis/dip-studio/digital-human'
 import Empty from '@/components/Empty'
 import IconFont from '@/components/IconFont'
 import ScrollBarContainer from '@/components/ScrollBarContainer'
-import SearchInput from '@/components/SearchInput'
 import { useDigitalHumanStore } from '../digitalHumanStore'
+import styles from './index.module.less'
 import SelectKnowledgeModal from './SelectKnowledgeModal'
+import AppIcon from '@/components/AppIcon'
 
 interface KnowledgeConfigProps {
   readonly?: boolean
@@ -15,22 +16,7 @@ interface KnowledgeConfigProps {
 
 const KnowledgeConfig = ({ readonly }: KnowledgeConfigProps) => {
   const { bkn, updateBkn, deleteBkn } = useDigitalHumanStore()
-  const [searchValue, setSearchValue] = useState('')
   const [selectKnowledgeModalOpen, setSelectKnowledgeModalOpen] = useState(false)
-
-  /** 过滤后的知识网络列表 */
-  const filteredKnowledgeList = useMemo(() => {
-    if (!searchValue.trim()) {
-      return bkn
-    }
-    const keyword = searchValue.trim().toLowerCase()
-    return bkn.filter((item) => item.name?.toLowerCase().includes(keyword))
-  }, [bkn, searchValue])
-
-  /** 搜索知识网络 */
-  const handleSearch = (value: string) => {
-    setSearchValue(value)
-  }
 
   /** 选择知识网络 */
   const handleSelectKnowledge = () => {
@@ -46,75 +32,60 @@ const KnowledgeConfig = ({ readonly }: KnowledgeConfigProps) => {
     updateBkn(next)
   }
 
-  /** 渲染知识网络列表 */
-  const renderKnowledgeList = () => {
-    return (
-      <ScrollBarContainer className="mt-4 w-full flex flex-col gap-y-1 px-6">
-        {filteredKnowledgeList.map((item) => (
-          <div
-            key={item.url}
-            className="w-full flex items-center gap-x-2 border border-[--dip-border-color] rounded p-2 pl-3"
-          >
-            <IconFont type="icon-dip-KG1" />
-            <span className="truncate flex-1" title={item.name}>
-              {item.name}
+  const knowledgeColumns = useMemo(() => {
+    const columns = [
+      {
+        title: '名称',
+        dataIndex: 'name',
+        key: 'name',
+        width: '40%',
+        render: (text: string) => (
+          <div className="flex items-center gap-2 truncate">
+            <AppIcon
+              name={text}
+              size={24}
+              className="w-6 h-6 rounded flex-shrink-0"
+              shape="square"
+            />
+            <span title={text} className="truncate">
+              {text || '--'}
             </span>
-            {!readonly && (
-              <Tooltip title="删除">
-                <IconFont
-                  type="icon-dip-trash"
-                  className="w-8 h-8 flex-shrink-0 flex items-center justify-center hover:bg-[--dip-hover-bg-color-4] rounded"
-                  onClick={() => deleteBkn(item.url)}
-                />
-              </Tooltip>
-            )}
           </div>
-        ))}
-      </ScrollBarContainer>
-    )
-  }
-
-  /** 渲染状态内容 */
-  const renderStateContent = () => {
-    if (bkn.length === 0) {
-      return (
-        <Empty title="暂无知识网络">
-          {readonly ? undefined : (
-            <Button
-              className="mt-2"
-              type="primary"
-              icon={<IconFont type="icon-dip-add" />}
-              onClick={() => {
-                handleSelectKnowledge()
-              }}
-            >
-              选择知识网络
-            </Button>
-          )}
-        </Empty>
-      )
-    }
-
-    if (filteredKnowledgeList.length === 0) {
-      return <Empty type="search" desc="抱歉，没有找到相关内容" />
-    }
-
-    return null
-  }
-
-  const renderContent = () => {
-    const stateContent = renderStateContent()
-
-    if (stateContent) {
-      return <div className="absolute inset-0 flex items-center justify-center">{stateContent}</div>
-    }
-
-    return renderKnowledgeList()
-  }
+        ),
+      },
+      {
+        title: '功能描述',
+        dataIndex: 'comment',
+        key: 'comment',
+        ellipsis: true,
+        render: (text: string) => text || '--',
+      },
+      {
+        title: '操作',
+        key: 'action',
+        width: 80,
+        render: (_: unknown, record: BknEntry) => (
+          <Flex align="center">
+            <Tooltip title="删除">
+              <Button
+                type="text"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  deleteBkn(record.url)
+                }}
+                icon={<IconFont type="icon-dip-trash" />}
+              />
+            </Tooltip>
+          </Flex>
+        ),
+      },
+    ]
+    return readonly ? columns.slice(0, 2) : columns
+  }, [deleteBkn, readonly])
 
   return (
-    <ScrollBarContainer className="h-full flex flex-col py-6 relative flex-1">
-      <div className="flex justify-between px-6">
+    <ScrollBarContainer className="h-full flex flex-col p-6">
+      <div className="flex justify-between mb-4">
         <div className="flex flex-col gap-y-1">
           <div className="font-medium text-[--dip-text-color]">知识配置</div>
           <div className="text-[--dip-text-color-45]">
@@ -123,23 +94,41 @@ const KnowledgeConfig = ({ readonly }: KnowledgeConfigProps) => {
         </div>
         {bkn.length > 0 && !readonly && (
           <div className="flex items-end gap-x-3">
-            <SearchInput
-              onSearch={handleSearch}
-              placeholder="搜索知识网络"
-              variant="outlined"
-              className="!rounded"
-            />
             <Button
               type="primary"
               icon={<IconFont type="icon-dip-add" />}
               onClick={handleSelectKnowledge}
             >
-              选择知识网络
+              选择知识
             </Button>
           </div>
         )}
       </div>
-      {renderContent()}
+      <Table<BknEntry>
+        dataSource={bkn}
+        columns={knowledgeColumns}
+        pagination={false}
+        className={styles['knowledge-table']}
+        rowKey={(record) => record.url}
+        bordered={false}
+        size="small"
+        scroll={{ y: 'max(246px, calc(100vh - 326px))' }}
+        locale={{
+          emptyText: (
+            <Empty type="empty" title="暂无知识">
+              {readonly ? undefined : (
+                <Button
+                  icon={<IconFont type="icon-dip-add" />}
+                  type="primary"
+                  onClick={handleSelectKnowledge}
+                >
+                  选择知识
+                </Button>
+              )}
+            </Empty>
+          ),
+        }}
+      />
 
       {/* 选择知识网络弹窗 */}
       <SelectKnowledgeModal

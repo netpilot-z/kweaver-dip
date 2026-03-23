@@ -69,11 +69,9 @@ function PlanListInner({
         } else {
           setJobs(res.jobs)
         }
-      } catch (err: unknown) {
+      } catch {
         if (reqId !== requestIdRef.current) return
-        const desc = (err as { description?: string })?.description
-        if (desc) message.error(desc)
-        else message.error('加载计划列表失败')
+        // message.error(err?.description)
         if (!isLoadMore) setJobs([])
       } finally {
         if (reqId === requestIdRef.current) {
@@ -109,7 +107,7 @@ function PlanListInner({
       const job = data[index] as CronJob | undefined
       if (!job) return null
       return (
-        <div style={style} className="box-border px-6 pb-3">
+        <div style={style} className="box-border px-6 pb-3 mx-auto">
           <PlanListItem job={job} onClick={onPlanClick} />
         </div>
       )
@@ -170,5 +168,5 @@ function PlanListInner({
   )
 }
 
-const PlanList = memo(PlanListInner)
-export default PlanList
+const WorkPlanList = memo(PlanListInner)
+export default WorkPlanList

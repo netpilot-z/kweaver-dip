@@ -127,23 +127,23 @@ export const routeConfigs: RouteConfig[] = [
       },
     },
   },
-  {
-    path: 'digital-human/history',
-    key: 'history',
-    label: '历史记录',
-    iconUrl: dipStudioUrl,
-    element: <History />,
-    showInSidebar: true,
-    showInHeader: true,
-    handle: {
-      layout: {
-        hasSider: true,
-        hasHeader: false,
-        siderType: 'digital-human',
-        headerType: 'home',
-      },
-    },
-  },
+  // {
+  //   path: 'digital-human/history',
+  //   key: 'history',
+  //   label: '历史记录',
+  //   iconUrl: dipStudioUrl,
+  //   element: <History />,
+  //   showInSidebar: true,
+  //   showInHeader: true,
+  //   handle: {
+  //     layout: {
+  //       hasSider: true,
+  //       hasHeader: false,
+  //       siderType: 'digital-human',
+  //       headerType: 'home',
+  //     },
+  //   },
+  // },
   {
     path: 'digital-human/history/:historyId',
     key: 'history-item',
@@ -174,51 +174,52 @@ export const routeConfigs: RouteConfig[] = [
       },
     },
   },
-  {
-    path: 'digital-human/management/:digitalHumanId/plan',
-    key: 'digital-human-detail-plan',
-    label: '数字员工详情',
-    element: <DigitalHumanDetail />,
-    showInSidebar: false,
-    handle: {
-      layout: {
-        hasSider: true,
-        hasHeader: false,
-        siderType: 'digital-human',
-        headerType: 'home',
-      },
-    },
-  },
-  {
-    path: 'digital-human/management/:digitalHumanId/session',
-    key: 'digital-human-detail-session',
-    label: '数字员工详情',
-    element: <DigitalHumanDetail />,
-    showInSidebar: false,
-    handle: {
-      layout: {
-        hasSider: true,
-        hasHeader: false,
-        siderType: 'digital-human',
-        headerType: 'home',
-      },
-    },
-  },
-  {
-    path: 'digital-human/management/:digitalHumanId/config',
-    key: 'digital-human-detail-config',
-    label: '数字员工详情',
-    element: <DigitalHumanDetail />,
-    showInSidebar: false,
-    handle: {
-      layout: {
-        hasSider: true,
-        hasHeader: false,
-        siderType: 'digital-human',
-        headerType: 'home',
-      },
-    },
-  },
+  // 详情 Tab 暂用页面 state，子路径路由先关闭
+  // {
+  //   path: 'digital-human/management/:digitalHumanId/plan',
+  //   key: 'digital-human-detail-plan',
+  //   label: '数字员工详情',
+  //   element: <DigitalHumanDetail />,
+  //   showInSidebar: false,
+  //   handle: {
+  //     layout: {
+  //       hasSider: true,
+  //       hasHeader: false,
+  //       siderType: 'digital-human',
+  //       headerType: 'home',
+  //     },
+  //   },
+  // },
+  // {
+  //   path: 'digital-human/management/:digitalHumanId/session',
+  //   key: 'digital-human-detail-session',
+  //   label: '数字员工详情',
+  //   element: <DigitalHumanDetail />,
+  //   showInSidebar: false,
+  //   handle: {
+  //     layout: {
+  //       hasSider: true,
+  //       hasHeader: false,
+  //       siderType: 'digital-human',
+  //       headerType: 'home',
+  //     },
+  //   },
+  // },
+  // {
+  //   path: 'digital-human/management/:digitalHumanId/config',
+  //   key: 'digital-human-detail-config',
+  //   label: '数字员工详情',
+  //   element: <DigitalHumanDetail />,
+  //   showInSidebar: false,
+  //   handle: {
+  //     layout: {
+  //       hasSider: true,
+  //       hasHeader: false,
+  //       siderType: 'digital-human',
+  //       headerType: 'home',
+  //     },
+  //   },
+  // },
   {
     path: 'digital-human/management/:digitalHumanId/setting',
     key: 'digital-human-setting-item',

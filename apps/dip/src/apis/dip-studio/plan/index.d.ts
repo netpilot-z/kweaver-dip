@@ -104,11 +104,13 @@ export interface CronRunEntry {
   jobId: string
   /** 动作类型（由服务端约定） */
   action: string
-  /** 运行状态（如 ok / error / skipped 等） */
-  status: string
+  /** 运行结果，仅 ok / error / skipped */
+  status: 'ok' | 'error' | 'skipped'
   error?: string
   summary?: string
   runAtMs?: number
+  /** 当前是否正在运行（毫秒时间戳，有值表示进行中；语义同 {@link CronJobState.runningAtMs}） */
+  runningAtMs?: number
   durationMs?: number
   nextRunAtMs?: number
   model?: string

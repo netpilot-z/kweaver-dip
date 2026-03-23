@@ -38,6 +38,7 @@ const DHSetting = () => {
     channel,
     bindDigitalHuman,
     resetDirtyState,
+    resetAllToDetail,
   } = useDigitalHumanStore()
   const [, messageContextHolder] = message.useMessage()
   const [publishing, setPublishing] = useState(false)
@@ -153,13 +154,14 @@ const DHSetting = () => {
                   className="w-8 h-8 rounded-md overflow-hidden"
                   shape="square"
                 />
-                <div className="flex items-center gap-1">
+                <div className="flex flex-col gap-0.5">
                   <span className="font-medium text-[--dip-text-color]">{basic.name}</span>
-                  <span className="text-[--dip-text-color-65]">
-                    {detail?.updated_at
-                      ? formatTimeSlash(new Date(detail?.updated_at).getTime())
-                      : '--'}
-                  </span>
+                  {detail?.updated_at && (
+                    <span className="text-[--dip-text-color-65] text-xs">
+                      更新：
+                      {formatTimeSlash(new Date(detail.updated_at).getTime())}
+                    </span>
+                  )}
                 </div>
               </>
             ) : null}
@@ -167,16 +169,26 @@ const DHSetting = () => {
         </div>
         <div className="flex items-center gap-2">
           {uiMode === 'view' ? (
+            <Button type="primary" onClick={() => setUiMode('edit')}>
+              编辑
+            </Button>
+          ) : (
             <>
-              <Button onClick={() => setDeleteModalOpen(true)}>todo</Button>
-              <Button type="primary" onClick={() => setUiMode('edit')}>
-                编辑
+              {uiMode === 'edit' && (
+                <Button
+                  onClick={() => {
+                    // setUiMode('view')
+                    // resetAllToDetail()
+                    handleBack()
+                  }}
+                >
+                  取消
+                </Button>
+              )}
+              <Button type="primary" loading={publishing} onClick={() => void handlePublish()}>
+                发布
               </Button>
             </>
-          ) : (
-            <Button type="primary" loading={publishing} onClick={() => void handlePublish()}>
-              发布
-            </Button>
           )}
         </div>
       </div>

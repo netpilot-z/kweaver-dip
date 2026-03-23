@@ -1,5 +1,5 @@
 import { createSearchParams, useLocation, useNavigate } from 'react-router-dom'
-import PlanList from '@/components/PlanList'
+import PlanList from '@/components/WorkPlanList'
 
 /** 工作计划 */
 const WorkPlan = () => {

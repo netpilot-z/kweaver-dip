@@ -1,12 +1,12 @@
 import { message, Spin, Tabs } from 'antd'
-import { useCallback, useEffect, useLayoutEffect, useMemo } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import intl from 'react-intl-universal'
 import { createSearchParams, useLocation, useNavigate, useParams } from 'react-router-dom'
 import AppIcon from '@/components/AppIcon'
 import DigitalHumanSetting from '@/components/DigitalHumanSetting'
 import { useDigitalHumanStore } from '@/components/DigitalHumanSetting/digitalHumanStore'
 import IconFont from '@/components/IconFont'
-import PlanList from '@/components/PlanList'
+import WorkPlanList from '@/components/WorkPlanList'
 import { useUserInfoStore } from '@/stores/userInfoStore'
 import { formatTimeSlash } from '@/utils/handle-function/FormatTime'
 import { useDigitalHumanPageLoad } from '../useDigitalHumanPageLoad'
@@ -19,12 +19,13 @@ type DetailsParams = {
 
 export type DigitalHumanDetailTab = 'plan' | 'session' | 'config'
 
-function tabFromPathname(pathname: string): DigitalHumanDetailTab | null {
-  const normalized = pathname.replace(/\/$/, '')
-  const last = normalized.split('/').pop()
-  if (last === 'plan' || last === 'session' || last === 'config') return last
-  return null
-}
+// Tab 暂由页面 state 管理，恢复 URL 分段时可启用
+// function tabFromPathname(pathname: string): DigitalHumanDetailTab | null {
+//   const normalized = pathname.replace(/\/$/, '')
+//   const last = normalized.split('/').pop()
+//   if (last === 'plan' || last === 'session' || last === 'config') return last
+//   return null
+// }
 
 /** 非管理员：员工详情（多 Tab），配置 Tab 仅只读，无新建/编辑 */
 const Details = () => {
@@ -36,7 +37,7 @@ const Details = () => {
   const [, messageContextHolder] = message.useMessage()
 
   const digitalHumanId = params.digitalHumanId
-  const activeTab = useMemo(() => tabFromPathname(location.pathname), [location.pathname])
+  const [activeTab, setActiveTab] = useState<DigitalHumanDetailTab>('plan')
 
   /** 管理员走全页配置 */
   useLayoutEffect(() => {
@@ -50,13 +51,13 @@ const Details = () => {
     })
   }, [isAdmin, digitalHumanId, navigate, location.search])
 
-  /** 无 plan|session|config 段时补默认 Tab */
-  useEffect(() => {
-    if (!digitalHumanId || isAdmin) return
-    if (!activeTab) {
-      navigate(`/digital-human/management/${digitalHumanId}/plan`, { replace: true })
-    }
-  }, [digitalHumanId, activeTab, isAdmin, navigate])
+  /** 无 plan|session|config 段时补默认 Tab（路由 Tab 恢复时启用） */
+  // useEffect(() => {
+  //   if (!digitalHumanId || isAdmin) return
+  //   if (!activeTab) {
+  //     navigate(`/digital-human/management/${digitalHumanId}/plan`, { replace: true })
+  //   }
+  // }, [digitalHumanId, activeTab, isAdmin, navigate])
 
   /** 非法 id */
   useEffect(() => {
@@ -67,32 +68,29 @@ const Details = () => {
 
   const loading = useDigitalHumanPageLoad(digitalHumanId, 'detail', null, !isAdmin)
 
-  const onTabChange = useCallback(
-    (key: string) => {
-      if (!digitalHumanId) return
-      const k = key as DigitalHumanDetailTab
-      navigate(`/digital-human/management/${digitalHumanId}/${k}`, { replace: true })
-    },
-    [digitalHumanId, navigate],
-  )
+  const onTabChange = useCallback((key: string) => {
+    setActiveTab(key as DigitalHumanDetailTab)
+    // if (!digitalHumanId) return
+    // const k = key as DigitalHumanDetailTab
+    // navigate(`/digital-human/management/${digitalHumanId}/${k}`, { replace: true })
+  }, [])
 
   const tabItems = useMemo(() => {
-    const planLabel = intl.get('digitalHuman.detail.tabPlan')
-    const sessionLabel = intl.get('digitalHuman.detail.tabSession')
-    const configLabel = intl.get('digitalHuman.detail.tabConfig')
-
     return [
       {
         key: 'plan',
-        label: planLabel,
+        label: '工作计划',
+        icon: <IconFont type="icon-dip-gailan" />,
       },
       {
         key: 'session',
-        label: sessionLabel,
+        label: '会话',
+        icon: <IconFont type="icon-dip-chat" />,
       },
       {
         key: 'config',
-        label: configLabel,
+        label: '员工配置',
+        icon: <IconFont type="icon-dip-shezhi" />,
       },
     ]
   }, [])
@@ -106,14 +104,6 @@ const Details = () => {
   }
 
   if (loading) {
-    return (
-      <div className="h-full flex items-center justify-center">
-        <Spin size="large" />
-      </div>
-    )
-  }
-
-  if (activeTab == null) {
     return (
       <div className="h-full flex items-center justify-center">
         <Spin size="large" />
@@ -142,16 +132,17 @@ const Details = () => {
             />
             <div className="flex flex-col gap-0.5">
               <span className="font-medium text-[--dip-text-color]">{basic.name}</span>
-              <span className="text-[--dip-text-color-65] text-xs">
-                {detail?.updated_at
-                  ? formatTimeSlash(new Date(detail?.updated_at).getTime())
-                  : '--'}
-              </span>
+              {detail?.updated_at && (
+                <span className="text-[--dip-text-color-65] text-xs">
+                  更新：{formatTimeSlash(new Date(detail.updated_at).getTime())}
+                </span>
+              )}
             </div>
           </div>
         </div>
         <div className="flex justify-center min-w-0 self-end">
           <Tabs
+            indicator={{ size: 0 }}
             size="small"
             activeKey={activeTab}
             onChange={onTabChange}
@@ -167,8 +158,8 @@ const Details = () => {
       </div>
 
       {activeTab === 'plan' && (
-        <div className="flex-1 min-h-0 overflow-hidden flex flex-col pt-4">
-          <PlanList
+        <div className="flex-1 min-h-0 overflow-hidden flex flex-col pt-5">
+          <WorkPlanList
             source={{ mode: 'digitalHuman', digitalHumanId: digitalHumanId }}
             onPlanClick={(job) => {
               const from = `${location.pathname}${location.search}`

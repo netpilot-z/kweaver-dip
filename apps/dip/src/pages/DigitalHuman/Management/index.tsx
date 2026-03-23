@@ -1,5 +1,5 @@
 import { Button, message, Spin, Tooltip } from 'antd'
-import { memo, useEffect, useMemo, useRef, useState } from 'react'
+import { memo, useEffect, useRef, useState } from 'react'
 import intl from 'react-intl-universal'
 import { useNavigate } from 'react-router-dom'
 import { type DigitalHuman, getDigitalHumanList } from '@/apis'
@@ -23,70 +23,76 @@ const Management = () => {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false)
   const [selectedItem, setSelectedItem] = useState<DigitalHuman>()
 
-  const { items, loading, error, searchValue, handleSearch, handleRefresh } =
-    useListService<DigitalHuman>({
-      fetchFn: getDigitalHumanList,
-    })
+  const {
+    items: digitalHumans,
+    loading,
+    error,
+    searchValue,
+    handleSearch,
+    handleRefresh,
+  } = useListService<DigitalHuman>({
+    fetchFn: getDigitalHumanList,
+  })
 
-  const digitalHumans: DigitalHuman[] = useMemo(() => {
-    if (loading) {
-      return []
-    }
-    return [
-      {
-        id: '1',
-        name: '运营小助手',
-        description: '负责日常运营数据统计、报表生成和用户消息回复',
-        icon: '',
-        creator: '张三',
-        created_at: new Date().toISOString(),
-        updated_by: '张三',
-        updated_at: new Date().toISOString(),
-        status: 1,
-        users: [
-          userInfo,
-          userInfo,
-          userInfo,
-          userInfo,
-          userInfo,
-          userInfo,
-          userInfo,
-          userInfo,
-          userInfo,
-          userInfo,
-        ],
-        plan_count: 100,
-        task_success_rate: [
-          { day: '2026-03-13', value: 80 },
-          { day: '2026-03-12', value: 90 },
-          { day: '2026-03-11', value: 60 },
-          { day: '2026-03-10', value: 50 },
-          { day: '2026-03-09', value: 70 },
-          { day: '2026-03-08', value: 30 },
-          { day: '2026-03-07', value: 50 },
-        ],
-      },
-      {
-        id: '2',
-        name: '销售小助手',
-        description: '负责日常销售数据统计、报表生成和用户消息回复',
-        icon: '',
-        creator: '张三',
-        created_at: new Date().toISOString(),
-        editor: '张三',
-        edited_at: new Date().toISOString(),
-        status: 1,
-        users: [userInfo],
-        plan_count: 100,
-        task_success_rate: [
-          { day: '2026-03-13', value: 80 },
-          { day: '2026-03-12', value: 90 },
-          { day: '2026-03-11', value: 60 },
-          { day: '2026-03-10', value: 50 },
-        ],
-      },
-    ]
-  }, [loading, userInfo])
+  // const digitalHumans: DigitalHuman[] = useMemo(() => {
+  //   if (loading) {
+  //     return []
+  //   }
+  //   return [
+  //     {
+  //       id: '1',
+  //       name: '运营小助手',
+  //       description: '负责日常运营数据统计、报表生成和用户消息回复',
+  //       icon: '',
+  //       creator: '张三',
+  //       created_at: new Date().toISOString(),
+  //       updated_by: '张三',
+  //       updated_at: new Date().toISOString(),
+  //       status: 1,
+  //       users: [
+  //         userInfo,
+  //         userInfo,
+  //         userInfo,
+  //         userInfo,
+  //         userInfo,
+  //         userInfo,
+  //         userInfo,
+  //         userInfo,
+  //         userInfo,
+  //         userInfo,
+  //       ],
+  //       plan_count: 100,
+  //       task_success_rate: [
+  //         { day: '2026-03-13', value: 80 },
+  //         { day: '2026-03-12', value: 90 },
+  //         { day: '2026-03-11', value: 60 },
+  //         { day: '2026-03-10', value: 50 },
+  //         { day: '2026-03-09', value: 70 },
+  //         { day: '2026-03-08', value: 30 },
+  //         { day: '2026-03-07', value: 50 },
+  //       ],
+  //     },
+  //     {
+  //       id: '2',
+  //       name: '销售小助手',
+  //       description: '负责日常销售数据统计、报表生成和用户消息回复',
+  //       icon: '',
+  //       creator: '张三',
+  //       created_at: new Date().toISOString(),
+  //       editor: '张三',
+  //       edited_at: new Date().toISOString(),
+  //       status: 1,
+  //       users: [userInfo],
+  //       plan_count: 100,
+  //       task_success_rate: [
+  //         { day: '2026-03-13', value: 80 },
+  //         { day: '2026-03-12', value: 90 },
+  //         { day: '2026-03-11', value: 60 },
+  //         { day: '2026-03-10', value: 50 },
+  //       ],
+  //     },
+  //   ]
+  // }, [loading, userInfo])
 
   // 对齐项目列表页：根据是否曾经有过数据、是否是搜索态，控制头部和空态展示逻辑
   useEffect(() => {
@@ -137,15 +143,15 @@ const Management = () => {
       return <Spin size="large" />
     }
 
-    // if (error) {
-    //   return (
-    //     <Empty type="failed" title={intl.get('digitalHuman.management.loadFailedTitle')}>
-    //       <Button type="primary" onClick={handleRefresh}>
-    //         {intl.get('digitalHuman.management.retry')}
-    //       </Button>
-    //     </Empty>
-    //   )
-    // }
+    if (error) {
+      return (
+        <Empty type="failed" title={intl.get('digitalHuman.management.loadFailedTitle')}>
+          <Button type="primary" onClick={handleRefresh}>
+            {intl.get('digitalHuman.management.retry')}
+          </Button>
+        </Empty>
+      )
+    }
 
     if (digitalHumans.length === 0) {
       if (searchValue) {

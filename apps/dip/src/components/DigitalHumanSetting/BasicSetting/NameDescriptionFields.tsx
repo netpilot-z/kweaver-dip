@@ -14,7 +14,7 @@ const NameDescriptionFields = () => {
 
       <Form.Item label="简介" name="creature">
         <Input.TextArea
-          placeholder="一句话介绍数字员工擅长做的事情，方便团队快速理解和选择使用"
+          placeholder="请输入数字员工简介"
           rows={4}
           maxLength={DESCRIPTION_MAX_LENGTH}
           showCount
