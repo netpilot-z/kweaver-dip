@@ -4,6 +4,7 @@ import classNames from 'classnames'
 import '@ant-design/x-markdown/dist/x-markdown.css'
 import ScrollBarContainer from '@/components/ScrollBarContainer'
 import type { ArchivePreviewState } from './useArchivePreview'
+import styles from './ArchivePreviewPanel.module.less'
 
 export type ArchivePreviewPanelProps = {
   preview: ArchivePreviewState
@@ -76,7 +77,7 @@ const ArchivePreviewPanel = ({ preview, className }: ArchivePreviewPanelProps) =
             </a>
           </div>
         ) : preview.viewer === 'markdown' ? (
-          <XMarkdown className="text-[--dip-text-color]">{preview.body}</XMarkdown>
+          <XMarkdown className={styles.markdownRoot}>{preview.body}</XMarkdown>
         ) : (
           <pre className="m-0 whitespace-pre-wrap break-words text-[--dip-text-color]">
             {preview.body}

@@ -1,52 +1,80 @@
 import { message } from 'antd'
 import { create } from 'zustand'
-import type { Project } from '@/apis/dip-studio'
-import { deleteProjects, getProjects, postProjects, putProjects } from '@/apis/dip-studio'
+import {
+  deleteCronJob,
+  getCronJobList,
+  type CronJob,
+  updateCronJobEnabled,
+} from '@/apis/dip-studio/plan'
+import {
+  mockDeletePlan,
+  mockFetchPlanListPage,
+  mockPausePlan,
+  PLAN_LIST_USE_MOCK,
+} from '@/components/WorkPlanList/mockPlanList'
 
 interface UserWorkPlanState {
-  /** 当前用户可见的工作计划（项目）列表 */
-  plans: Project[]
-  /** 是否加载中 */
+  /** 全量计划缓存（实体缓存） */
+  plans: CronJob[]
+  /** 首页侧边栏是否加载中 */
   loading: boolean
+  /** 全量总数 */
+  total: number
+  /** 上次刷新时间 */
+  lastFetchedAt: number
   /** 当前选中的计划 id（用于侧边栏高亮等） */
-  selectedPlanId?: number
+  selectedPlanId?: string
 
-  /** 拉取当前用户的工作计划列表 */
-  fetchPlans: () => Promise<void>
-  /** 新建工作计划 */
-  createPlan: (payload: { name: string; description?: string }) => Promise<Project | null>
-  /** 更新工作计划名称/描述 */
-  updatePlan: (
-    id: number,
-    payload: { name?: string; description?: string },
-  ) => Promise<Project | null>
+  /** 拉取计划（用于首页侧边栏） */
+  fetchPlans: (opts?: { silent?: boolean }) => Promise<void>
+  /** 页面聚焦刷新（带节流） */
+  refreshPlansOnFocus: () => Promise<void>
+  /** 暂停计划 */
+  pausePlan: (id: string) => Promise<boolean>
   /** 删除工作计划 */
-  deletePlan: (id: number) => Promise<boolean>
+  deletePlan: (id: string) => Promise<boolean>
   /** 设置当前选中的计划 */
-  setSelectedPlanId: (id?: number) => void
+  setSelectedPlanId: (id?: string) => void
 }
 
-// 缓存正在进行中的计划加载 Promise，避免多个组件并发触发重复请求
+const FOCUS_REFRESH_THROTTLE_MS = 30 * 1000
+
+// 缓存正在进行中的计划加载 Promise，避免并发重复请求
 let fetchPlansPromise: Promise<void> | null = null
 
 export const useUserWorkPlanStore = create<UserWorkPlanState>()((set, get) => ({
   plans: [],
   loading: false,
+  total: 0,
+  lastFetchedAt: 0,
   selectedPlanId: undefined,
 
-  fetchPlans: async () => {
+  fetchPlans: async (opts) => {
     if (fetchPlansPromise) {
       return fetchPlansPromise
     }
 
     fetchPlansPromise = (async () => {
-      set({ loading: true })
+      if (!opts?.silent) {
+        set({ loading: true })
+      }
       try {
-        const plans = await getProjects()
-        set({ plans, loading: false })
+        const res = PLAN_LIST_USE_MOCK
+          ? await mockFetchPlanListPage(0, 200)
+          : await getCronJobList({
+              includeDisabled: true,
+              offset: 0,
+              limit: 200,
+              sortBy: 'updatedAtMs',
+              sortDir: 'desc',
+            })
+        set({
+          plans: res.jobs,
+          total: res.total,
+          loading: false,
+          lastFetchedAt: Date.now(),
+        })
       } catch (error) {
-        // 保守处理：只在控制台打印，避免打断主流程
-        // eslint-disable-next-line no-console
         console.error('Failed to fetch work plans:', error)
         set({ loading: false })
       } finally {
@@ -57,57 +85,52 @@ export const useUserWorkPlanStore = create<UserWorkPlanState>()((set, get) => ({
     return fetchPlansPromise
   },
 
-  createPlan: async (payload) => {
-    try {
-      const project = await postProjects(payload)
-      // 创建成功后刷新列表，保证侧边栏等视图同步
-      await get().fetchPlans()
-      message.success('创建工作计划成功')
-      return project
-    } catch (error: any) {
-      // eslint-disable-next-line no-console
-      console.error('Failed to create work plan:', error)
-      if (error?.description) {
-        message.error(error.description)
-      } else {
-        message.error('创建工作计划失败，请稍后重试')
-      }
-      return null
+  refreshPlansOnFocus: async () => {
+    const { lastFetchedAt } = get()
+    if (Date.now() - lastFetchedAt < FOCUS_REFRESH_THROTTLE_MS) {
+      return
     }
+    await get().fetchPlans({ silent: true })
   },
 
-  updatePlan: async (id, payload) => {
+  pausePlan: async (id) => {
     try {
-      const project = await putProjects(id, payload)
-      // 更新成功后本地就地更新，避免不必要的全量刷新
+      if (PLAN_LIST_USE_MOCK) {
+        mockPausePlan(id)
+      } else {
+        await updateCronJobEnabled(id, false)
+      }
       set((state) => ({
-        plans: state.plans.map((p) => (p.id === id ? { ...p, ...project } : p)),
+        plans: state.plans.map((p) => (p.id === id ? { ...p, enabled: false } : p)),
       }))
-      message.success('更新工作计划成功')
-      return project
+      message.success('已暂停计划')
+      return true
     } catch (error: any) {
-      // eslint-disable-next-line no-console
-      console.error('Failed to update work plan:', error)
+      console.error('Failed to pause work plan:', error)
       if (error?.description) {
         message.error(error.description)
       } else {
-        message.error('更新工作计划失败，请稍后重试')
+        message.error('暂停计划失败，请稍后重试')
       }
-      return null
+      return false
     }
   },
 
   deletePlan: async (id) => {
     try {
-      await deleteProjects(id)
+      if (PLAN_LIST_USE_MOCK) {
+        mockDeletePlan(id)
+      } else {
+        await deleteCronJob(id)
+      }
       set((state) => ({
         plans: state.plans.filter((p) => p.id !== id),
+        total: state.total > 0 ? state.total - 1 : 0,
         selectedPlanId: state.selectedPlanId === id ? undefined : state.selectedPlanId,
       }))
       message.success('删除工作计划成功')
       return true
     } catch (error: any) {
-      // eslint-disable-next-line no-console
       console.error('Failed to delete work plan:', error)
       if (error?.description) {
         message.error(error.description)

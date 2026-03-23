@@ -1,8 +1,8 @@
 import type { MenuProps } from 'antd'
 import { Button, Menu, message, Tooltip } from 'antd'
 import clsx from 'classnames'
-import { useCallback, useMemo } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useCallback, useEffect, useMemo } from 'react'
+import { createSearchParams, useLocation, useNavigate } from 'react-router-dom'
 import logoImage from '@/assets/images/brand/logo.png'
 import SidebarAiStoreIcon from '@/assets/images/sider/aiStore.svg?react'
 import SidebarSystemIcon from '@/assets/images/sider/proton.svg?react'
@@ -15,11 +15,13 @@ import {
 } from '@/routes/utils'
 import { useLanguageStore } from '@/stores/languageStore'
 import { useOEMConfigStore } from '@/stores/oemConfigStore'
+import { useUserWorkPlanStore } from '@/stores/userWorkPlanStore'
 import { getFullPath } from '@/utils/config'
 import { getAccessToken, getRefreshToken } from '@/utils/http/token-config'
 import IconFont from '../../IconFont'
 import { MaskIcon } from '../components/GradientMaskIcon'
 import { UserMenuItem } from '../components/UserMenuItem'
+import { WorkPlanSection } from '../components/WorkPlanSection'
 
 interface HomeSiderProps {
   /** 是否折叠 */
@@ -38,6 +40,8 @@ const HomeSider = ({ collapsed, onCollapse }: HomeSiderProps) => {
   const navigate = useNavigate()
   const location = useLocation()
   const [, messageContextHolder] = message.useMessage()
+  const { plans, total, fetchPlans, refreshPlansOnFocus, pausePlan, deletePlan } =
+    useUserWorkPlanStore()
   const { language } = useLanguageStore()
   const { getOEMResourceConfig } = useOEMConfigStore()
   const oemResourceConfig = getOEMResourceConfig(language)
@@ -48,6 +52,18 @@ const HomeSider = ({ collapsed, onCollapse }: HomeSiderProps) => {
   const handleCreateSession = () => {
     navigate('/home')
   }
+  const handleOpenPlanDetail = useCallback(
+    (planId: string, agentId: string, sessionId: string) => {
+      navigate({
+        pathname: `/work-plan/${planId}`,
+        search: `?${createSearchParams({
+          dhId: agentId,
+          sessionId,
+        })}`,
+      })
+    },
+    [navigate],
+  )
 
   /** 根据当前路由确定选中的菜单项 */
   const getSelectedKey = useCallback(() => {
@@ -61,6 +77,29 @@ const HomeSider = ({ collapsed, onCollapse }: HomeSiderProps) => {
   }, [location.pathname])
 
   const selectedKey = getSelectedKey()
+  const topPlans = useMemo(() => plans.slice(0, 5), [plans])
+  const hasPlanMore = total > 5
+
+  useEffect(() => {
+    void fetchPlans()
+  }, [fetchPlans])
+
+  useEffect(() => {
+    const handleWindowFocus = () => {
+      void refreshPlansOnFocus()
+    }
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        void refreshPlansOnFocus()
+      }
+    }
+    window.addEventListener('focus', handleWindowFocus)
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    return () => {
+      window.removeEventListener('focus', handleWindowFocus)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
+  }, [refreshPlansOnFocus])
 
   /** 菜单项 */
   const menuItems = useMemo<MenuProps['items']>(() => {
@@ -287,6 +326,16 @@ const HomeSider = ({ collapsed, onCollapse }: HomeSiderProps) => {
             selectable
           />
         </div>
+        {!collapsed && topPlans.length > 0 ? (
+          <WorkPlanSection
+            plans={topPlans}
+            hasMore={hasPlanMore}
+            onMore={() => navigate('/work-plan')}
+            onOpenPlanDetail={handleOpenPlanDetail}
+            onPausePlan={pausePlan}
+            onDeletePlan={deletePlan}
+          />
+        ) : null}
 
         {/* 外链菜单内容 */}
         <div className="shrink-0">

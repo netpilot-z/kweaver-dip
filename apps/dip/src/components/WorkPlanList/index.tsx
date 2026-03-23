@@ -1,10 +1,11 @@
-import { message, Spin } from 'antd'
+import { Spin } from 'antd'
 import { throttle } from 'lodash'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { List } from 'react-window'
-import { type CronJob, getCronJobList, getDigitalHumanPlanList } from '@/apis/dip-studio/plan'
+import { type CronJob, getDigitalHumanPlanList } from '@/apis/dip-studio/plan'
 import Empty from '@/components/Empty'
 import ScrollBarContainer from '@/components/ScrollBarContainer'
+import { useUserWorkPlanStore } from '@/stores/userWorkPlanStore'
 import { mockFetchPlanListPage, PLAN_LIST_USE_MOCK } from './mockPlanList'
 import PlanListItem from './PlanListItem'
 import {
@@ -20,6 +21,11 @@ function PlanListInner({
   className,
   onPlanClick,
 }: PlanListProps) {
+  const {
+    plans: globalPlans,
+    loading: globalLoading,
+    fetchPlans: fetchGlobalPlans,
+  } = useUserWorkPlanStore()
   const offsetRef = useRef(0)
   const hasMoreRef = useRef(true)
   const isLoadingMoreRef = useRef(false)
@@ -28,9 +34,17 @@ function PlanListInner({
   const [jobs, setJobs] = useState<CronJob[]>([])
   const [initialLoading, setInitialLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
+  const isGlobalMode = source.mode === 'global'
 
   const fetchPage = useCallback(
     async (isLoadMore: boolean) => {
+      if (isGlobalMode) {
+        if (!isLoadMore) {
+          await fetchGlobalPlans()
+        }
+        return
+      }
+
       if (source.mode === 'digitalHuman' && !source.digitalHumanId.trim()) {
         setJobs([])
         setInitialLoading(false)
@@ -55,9 +69,7 @@ function PlanListInner({
         const params = { offset: currentOffset, limit: pageSize }
         const res = PLAN_LIST_USE_MOCK
           ? await mockFetchPlanListPage(currentOffset, pageSize)
-          : source.mode === 'global'
-            ? await getCronJobList(params)
-            : await getDigitalHumanPlanList(source.digitalHumanId, params)
+          : await getDigitalHumanPlanList(source.digitalHumanId, params)
 
         if (reqId !== requestIdRef.current) return
 
@@ -81,7 +93,7 @@ function PlanListInner({
         }
       }
     },
-    [pageSize, source],
+    [fetchGlobalPlans, isGlobalMode, pageSize, source],
   )
 
   useEffect(() => {
@@ -123,7 +135,7 @@ function PlanListInner({
     )
   }
 
-  if (initialLoading) {
+  if ((isGlobalMode && globalLoading) || (!isGlobalMode && initialLoading)) {
     return (
       <div className={`flex flex-1 min-h-0 items-center justify-center ${className ?? ''}`}>
         <Spin />
@@ -131,7 +143,9 @@ function PlanListInner({
     )
   }
 
-  if (jobs.length === 0) {
+  const listData = isGlobalMode ? globalPlans : jobs
+
+  if (listData.length === 0) {
     return (
       <div className={`flex flex-1 min-h-0 items-center justify-center px-6 ${className ?? ''}`}>
         <Empty title="暂无数据" />
@@ -147,18 +161,20 @@ function PlanListInner({
             tagName={ScrollBarContainer as any}
             className="h-full w-full"
             rowComponent={getRow}
-            rowCount={jobs.length}
+            rowCount={listData.length}
             rowHeight={PLAN_LIST_ROW_HEIGHT}
             rowProps={{
-              data: jobs,
+              data: listData,
             }}
             style={{ height: '100%', width: '100%' }}
             onScroll={(e) => {
-              handleScroll({ target: e.currentTarget })
+              if (!isGlobalMode) {
+                handleScroll({ target: e.currentTarget })
+              }
             }}
           />
         </div>
-        {loadingMore ? (
+        {!isGlobalMode && loadingMore ? (
           <div className="flex shrink-0 justify-center px-6 py-2">
             <Spin size="small" />
           </div>

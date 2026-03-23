@@ -1,5 +1,5 @@
 import type { ModalProps } from 'antd'
-import { Button, Checkbox, Modal, message, Spin } from 'antd'
+import { Button, Checkbox, Modal, message, Spin, Tabs } from 'antd'
 import clsx from 'clsx'
 import { useEffect, useMemo, useState } from 'react'
 import { getKnowledgeNetworks, type KnowledgeNetworkInfo } from '@/apis'
@@ -134,7 +134,7 @@ const SelectKnowledgeModal = ({
 
               <div className="flex flex-col justify-end flex-1 h-0">
                 <div className="h-px bg-[--dip-line-color-10] my-2" />
-                <div className="text-right mt-2 text-xs text-[--dip-text-color-45]">
+                <div className="text-right mt-2 text-xs text-[--dip-text-color-65]">
                   更新：{formatTimeSlash(item.update_time || '') || '--'}
                 </div>
               </div>
@@ -161,43 +161,42 @@ const SelectKnowledgeModal = ({
       <Modal
         title="新建知识网络"
         open={open}
+        onOk={handleOk}
         onCancel={onCancel}
         closable
         mask={{ closable: false }}
         destroyOnHidden
         width={744}
-        styles={{
-          body: { paddingTop: 8 },
-        }}
-        footer={
-          <div className="flex justify-end gap-2">
-            <Button
-              type="primary"
-              className="h-8 min-w-[74px] rounded-md px-3 py-1 text-sm leading-[22px]"
-              onClick={handleOk}
-              disabled={status === LoadStatus.Loading}
-            >
-              确定
-            </Button>
-            <Button
-              className="h-8 min-w-[74px] rounded-md px-3 py-1 text-sm leading-[22px]"
-              onClick={onCancel}
-            >
-              取消
-            </Button>
-          </div>
-        }
+        okText="确定"
+        cancelText="取消"
+        footer={(_, { OkBtn, CancelBtn }) => (
+          <>
+            <OkBtn />
+            <CancelBtn />
+          </>
+        )}
       >
-        <div className="flex flex-col gap-y-6">
+        <div className="flex flex-col">
           {/* <AiPromptInput
             employeeOptions={[]}
             placeholder="可以直接输入你想要创建的业务知识网络，也可以直接选择下方的业务知识网络"
             onSubmit={handleSubmit}
             autoSize={{ minRows: 2, maxRows: 2 }}
           /> */}
-
-          <ScrollBarContainer className="grid max-h-[400px] overflow-y-auto relative min-h-[180px] mx-[-24px] px-6">
-            {renderContent()}
+          <Tabs
+            size="small"
+            items={[
+              {
+                key: 'all',
+                label: '全部业务知识网络',
+              },
+            ]}
+            activeKey="all"
+          />
+          <ScrollBarContainer className="mx-[-24px] px-6">
+            <div className="flex-1 grid max-h-[400px] overflow-y-auto relative min-h-[180px]">
+              {renderContent()}
+            </div>
           </ScrollBarContainer>
         </div>
       </Modal>

@@ -1,4 +1,4 @@
-import { get } from '@/utils/http'
+import { del, get, put } from '@/utils/http'
 import type {
   CronJobListResponse,
   CronRunListResponse,
@@ -57,3 +57,10 @@ export const getDigitalHumanPlanRuns = (
   get(`${BASE}/plans/${planId}/runs`, {
     params: cleanParams(params as Record<string, unknown> | undefined),
   }) as Promise<CronRunListResponse>
+
+/** 删除计划任务 */
+export const deleteCronJob = (planId: string): Promise<void> => del(`${BASE}/plans/${planId}`)
+
+/** 更新计划启用状态 */
+export const updateCronJobEnabled = (planId: string, enabled: boolean): Promise<void> =>
+  put(`${BASE}/plans/${planId}`, { body: { enabled } })

@@ -10,8 +10,8 @@ const Home = lazy(() => import('../pages/Home'))
 const WorkPlan = lazy(() => import('../pages/WorkPlan'))
 const WorkPlanDetail = lazy(() => import('../pages/WorkPlan/Details'))
 const ChatKitTest = lazy(() => import('../pages/ChatKitTest'))
-const History = lazy(() => import('../pages/DigitalHuman/History'))
-const HistoryItem = lazy(() => import('../pages/DigitalHuman/History/HistoryItem'))
+const History = lazy(() => import('../pages/History'))
+const HistoryItem = lazy(() => import('../pages/History/HistoryItem'))
 const DigitalHumanManagement = lazy(() => import('../pages/DigitalHuman/Management'))
 const DigitalHumanDetail = lazy(() => import('../pages/DigitalHuman/Details'))
 const DHSetting = lazy(() => import('../pages/DigitalHuman/DHSetting'))
@@ -118,7 +118,6 @@ export const routeConfigs: RouteConfig[] = [
     label: '工作计划',
     iconUrl: dipStudioUrl,
     element: <WorkPlan />,
-    showInSidebar: true,
     showInHeader: true,
     handle: {
       layout: {
@@ -144,23 +143,22 @@ export const routeConfigs: RouteConfig[] = [
       },
     },
   },
-  // {
-  //   path: 'digital-human/history',
-  //   key: 'history',
-  //   label: '历史记录',
-  //   iconUrl: dipStudioUrl,
-  //   element: <History />,
-  //   showInSidebar: true,
-  //   showInHeader: true,
-  //   handle: {
-  //     layout: {
-  //       hasSider: true,
-  //       hasHeader: false,
-  //       siderType: 'digital-human',
-  //       headerType: 'home',
-  //     },
-  //   },
-  // },
+  {
+    path: 'digital-human/history',
+    key: 'history',
+    label: '历史记录',
+    iconUrl: dipStudioUrl,
+    element: <History />,
+    showInHeader: true,
+    handle: {
+      layout: {
+        hasSider: true,
+        hasHeader: false,
+        siderType: 'digital-human',
+        headerType: 'home',
+      },
+    },
+  },
   {
     path: 'digital-human/history/:historyId',
     key: 'history-item',

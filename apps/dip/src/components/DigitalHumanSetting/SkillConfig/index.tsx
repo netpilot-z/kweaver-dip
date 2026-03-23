@@ -1,7 +1,6 @@
 import { Button, Flex, Table, Tooltip } from 'antd'
 import { memo, useMemo, useState } from 'react'
 import type { DigitalHumanSkill } from '@/apis/dip-studio/digital-human'
-import AgentIcon from '@/assets/icons/agent3.svg?react'
 import type { AiPromptSubmitPayload } from '@/components/DipChatKit/components/AiPromptInput/types.ts'
 import Empty from '@/components/Empty'
 import IconFont from '@/components/IconFont'
@@ -9,7 +8,7 @@ import ScrollBarContainer from '@/components/ScrollBarContainer'
 import { useDigitalHumanStore } from '../digitalHumanStore'
 import AddSkillDrawer from './AddSkillDrawer.tsx'
 import styles from './index.module.less'
-import SelectSkillModal from './SelectSkillModal.tsx'
+import SelectSkillModal from './SelectSkillModal.tsx.tsx'
 
 interface SkillConfigProps {
   readonly?: boolean

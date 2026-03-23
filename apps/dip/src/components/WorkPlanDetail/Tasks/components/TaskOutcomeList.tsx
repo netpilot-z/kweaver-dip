@@ -1,4 +1,16 @@
-import { Spin } from 'antd'
+import {
+  AudioOutlined,
+  FileExcelOutlined,
+  FileImageOutlined,
+  FileMarkdownOutlined,
+  FilePdfOutlined,
+  FileTextOutlined,
+  FileUnknownOutlined,
+  FileWordOutlined,
+  FileZipOutlined,
+  VideoCameraOutlined,
+} from '@ant-design/icons'
+import { Drawer, Spin } from 'antd'
 import { memo, useEffect, useState } from 'react'
 import {
   getDigitalHumanSessionArchiveSubpath,
@@ -7,10 +19,12 @@ import {
   type SessionArchivesResponse,
 } from '@/apis/dip-studio/sessions'
 import Empty from '@/components/Empty'
+import ScrollBarContainer from '@/components/ScrollBarContainer'
+import { ArchivePreviewPanel, useArchivePreview } from '@/components/WorkPlanDetail/Outcome/Preview'
 import {
-  RESULTS_PANEL_USE_MOCK,
   mockGetDigitalHumanSessionArchiveSubpath,
   mockGetDigitalHumanSessionArchives,
+  RESULTS_PANEL_USE_MOCK,
 } from '../../Outcome/resultsPanelMock'
 
 export type TaskOutcomeListProps = {
@@ -24,14 +38,79 @@ type SessionArchiveFileItem = {
   type: SessionArchiveEntry['type']
 }
 
+function getFileExt(fileName: string): string {
+  const index = fileName.lastIndexOf('.')
+  if (index < 0) return ''
+  return fileName.slice(index + 1).toLowerCase()
+}
+
+function renderFileTypeMeta(fileName: string) {
+  const ext = getFileExt(fileName)
+  const iconClassName = 'text-[--dip-text-color-45]'
+
+  if (['png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp', 'svg', 'ico', 'avif'].includes(ext)) {
+    return { icon: <FileImageOutlined className={iconClassName} />, label: '图片' }
+  }
+  if (ext === 'pdf') {
+    return { icon: <FilePdfOutlined className={iconClassName} />, label: 'PDF' }
+  }
+  if (['doc', 'docx'].includes(ext)) {
+    return { icon: <FileWordOutlined className={iconClassName} />, label: 'Word' }
+  }
+  if (['xls', 'xlsx', 'csv'].includes(ext)) {
+    return { icon: <FileExcelOutlined className={iconClassName} />, label: 'Excel' }
+  }
+  if (['zip', 'rar', '7z', 'tar', 'gz', 'tgz'].includes(ext)) {
+    return { icon: <FileZipOutlined className={iconClassName} />, label: '压缩包' }
+  }
+  if (['mp4', 'webm', 'mov', 'm4v', 'ogv'].includes(ext)) {
+    return { icon: <VideoCameraOutlined className={iconClassName} />, label: '视频' }
+  }
+  if (['mp3', 'wav', 'aac', 'flac', 'm4a', 'opus', 'oga', 'weba'].includes(ext)) {
+    return { icon: <AudioOutlined className={iconClassName} />, label: '音频' }
+  }
+  if (['md', 'mdx', 'markdown'].includes(ext)) {
+    return { icon: <FileMarkdownOutlined className={iconClassName} />, label: 'Markdown' }
+  }
+  if (
+    [
+      'txt',
+      'json',
+      'xml',
+      'yml',
+      'yaml',
+      'log',
+      'ts',
+      'tsx',
+      'js',
+      'jsx',
+      'css',
+      'less',
+      'html',
+    ].includes(ext)
+  ) {
+    return {
+      icon: <FileTextOutlined className={iconClassName} />,
+      label: ext ? ext.toUpperCase() : '文本',
+    }
+  }
+
+  return {
+    icon: <FileUnknownOutlined className={iconClassName} />,
+    label: ext ? ext.toUpperCase() : '未知',
+  }
+}
+
 async function resolveFilesInDirectory(
   dhId: string,
   sessionId: string,
   currentPath: string,
 ): Promise<SessionArchiveFileItem[]> {
-  const res = (RESULTS_PANEL_USE_MOCK
-    ? await mockGetDigitalHumanSessionArchiveSubpath(currentPath, { responseType: 'json' })
-    : await getDigitalHumanSessionArchiveSubpath(sessionId, currentPath, { responseType: 'json' })) as SessionArchivesResponse
+  const res = (
+    RESULTS_PANEL_USE_MOCK
+      ? await mockGetDigitalHumanSessionArchiveSubpath(currentPath, { responseType: 'json' })
+      : await getDigitalHumanSessionArchiveSubpath(sessionId, currentPath, { responseType: 'json' })
+  ) as SessionArchivesResponse
 
   const items = res.contents ?? []
   const nested = await Promise.all(
@@ -53,11 +132,16 @@ function TaskOutcomeListInner({ digitalHumanId, sessionId }: TaskOutcomeListProp
 
   const [entries, setEntries] = useState<SessionArchiveFileItem[]>([])
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(false)
+  const [error, setError] = useState('')
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const { preview, openFilePreview, closePreview } = useArchivePreview(
+    dhId ?? '',
+    sessionIdTrimmed ?? '',
+  )
 
   useEffect(() => {
     setEntries([])
-    setError(false)
+    setError('')
   }, [dhId, sessionIdTrimmed])
 
   useEffect(() => {
@@ -66,7 +150,7 @@ function TaskOutcomeListInner({ digitalHumanId, sessionId }: TaskOutcomeListProp
     const load = async () => {
       try {
         setLoading(true)
-        setError(false)
+        setError('')
 
         // 1) 先拉目录级（root）产物
         const root = RESULTS_PANEL_USE_MOCK
@@ -84,8 +168,8 @@ function TaskOutcomeListInner({ digitalHumanId, sessionId }: TaskOutcomeListProp
           }),
         )
         if (!cancelled) setEntries(nested.flat())
-      } catch {
-        if (!cancelled) setError(true)
+      } catch (error: any) {
+        if (!cancelled) setError(error?.description ?? '归档产物拉取失败')
       } finally {
         if (!cancelled) setLoading(false)
       }
@@ -97,7 +181,7 @@ function TaskOutcomeListInner({ digitalHumanId, sessionId }: TaskOutcomeListProp
   }, [dhId, sessionIdTrimmed])
 
   if (!canFetch) {
-    return <Empty title="暂无产物" desc="缺少数字员工 ID 或本次执行的会话 ID" />
+    return <Empty title="暂无产物" desc="缺少请求参数" />
   }
   if (loading) {
     return (
@@ -107,19 +191,64 @@ function TaskOutcomeListInner({ digitalHumanId, sessionId }: TaskOutcomeListProp
     )
   }
   if (error) {
-    return <Empty type="failed" title="加载失败" desc="归档产物拉取失败" />
+    return <Empty type="failed" title="加载失败" desc={error} />
   }
   if (entries.length === 0) {
     return <Empty title="暂无产物" />
   }
   return (
-    <ul className="m-0 list-none space-y-1 p-0">
-      {entries.map((item) => (
-        <li key={`${item.type}-${item.path}`} className="text-sm text-black/85">
-          <span className="text-black/45">{item.type}</span> {item.path}
-        </li>
-      ))}
-    </ul>
+    <>
+      <ul className="mt-4 list-none space-y-2 p-0 px-4">
+        {entries.map((item) => {
+          const fileTypeMeta = renderFileTypeMeta(item.name)
+          return (
+            <li key={`${item.type}-${item.path}`}>
+              <button
+                type="button"
+                className="flex w-full items-center justify-between rounded-md border border-[--dip-border-color] bg-[--dip-white] px-3 py-2 text-left transition-colors hover:border-[--dip-primary-color] hover:bg-[--dip-hover-bg-color]"
+                onClick={() => {
+                  setDrawerOpen(true)
+                  void openFilePreview(item.path, item.name)
+                }}
+              >
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-sm text-[--dip-text-color]">{item.name}</div>
+                  <div className="mt-0.5 inline-flex items-center gap-1.5 text-xs text-[--dip-text-color-45]">
+                    {fileTypeMeta.icon}
+                    <span>{fileTypeMeta.label}</span>
+                  </div>
+                </div>
+                {/* <span className="ml-3 shrink-0 text-xs text-[--dip-primary-color]">预览</span> */}
+              </button>
+            </li>
+          )
+        })}
+      </ul>
+
+      <Drawer
+        title={preview?.title}
+        open={drawerOpen}
+        onClose={() => {
+          setDrawerOpen(false)
+          closePreview()
+        }}
+        size="60%"
+        closable={{ placement: 'end' }}
+        mask={{ closable: false }}
+        destroyOnHidden
+        styles={{ body: { padding: 0 } }}
+      >
+        <ScrollBarContainer className="h-full min-h-0 overflow-y-auto p-1">
+          {preview ? (
+            <ArchivePreviewPanel preview={preview} />
+          ) : (
+            <div className="flex h-full items-center justify-center p-6">
+              <Empty title="暂无预览内容" />
+            </div>
+          )}
+        </ScrollBarContainer>
+      </Drawer>
+    </>
   )
 }
 

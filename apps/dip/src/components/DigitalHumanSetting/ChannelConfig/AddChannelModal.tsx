@@ -12,8 +12,8 @@ export interface AddChannelModalProps extends Omit<ModalProps, 'onCancel' | 'onO
 }
 
 const CHANNEL_OPTIONS: Array<{ type: ChannelType; name: string; desc: string }> = [
-  { type: 'feishu', name: '飞书', desc: '配置飞书应用信息（appId / appSecret）' },
-  { type: 'dingtalk', name: '钉钉', desc: '配置钉钉应用信息（appId / appSecret）' },
+  { type: 'feishu', name: '飞书', desc: '配置飞书应用信息' },
+  { type: 'dingtalk', name: '钉钉', desc: '配置钉钉应用信息' },
 ]
 
 /** 添加通道弹窗 */

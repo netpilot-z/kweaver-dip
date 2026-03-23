@@ -1,5 +1,5 @@
 import type { ModalProps } from 'antd'
-import { Button, Checkbox, Modal, Spin } from 'antd'
+import { Checkbox, Modal, Spin } from 'antd'
 import clsx from 'clsx'
 import { useEffect, useState } from 'react'
 import { type DigitalHumanSkill, getEnabledSkills } from '@/apis/dip-studio/digital-human'
@@ -193,6 +193,7 @@ const SelectSkillModal = ({
     <Modal
       title="新建技能"
       open={open}
+      onOk={handleOk}
       onCancel={onCancel}
       width={744}
       mask={{ closable: false }}
@@ -200,23 +201,14 @@ const SelectSkillModal = ({
       styles={{
         body: { paddingTop: 8 },
       }}
-      footer={
-        <div className="flex justify-end gap-2">
-          <Button
-            type="primary"
-            className="h-8 min-w-[74px] rounded-md px-3 py-1 text-sm leading-[22px]"
-            onClick={handleOk}
-          >
-            确定
-          </Button>
-          <Button
-            className="h-8 min-w-[74px] rounded-md px-3 py-1 text-sm leading-[22px]"
-            onClick={onCancel}
-          >
-            取消
-          </Button>
-        </div>
-      }
+      okText="确定"
+      cancelText="取消"
+      footer={(_, { OkBtn, CancelBtn }) => (
+        <>
+          <OkBtn />
+          <CancelBtn />
+        </>
+      )}
     >
       <div className="flex flex-col gap-y-6">
         <AiPromptInput

@@ -47,9 +47,9 @@ function TasksPanelInner({ planId, dhId, sessionId: _sessionId }: TasksPanelProp
     <div className="flex min-h-0 flex-1 flex-row overflow-hidden">
       <div className="flex min-h-0 min-w-0 flex-1 flex-col border-r border-[--dip-border-color] bg-[#FAFAF9]">
         <ScrollBarContainer className="flex min-h-0 flex-1 flex-col">
-          <div className="flex shrink-0 flex-col gap-4 px-6">
+          <div className="flex shrink-0 flex-col gap-4 px-5">
             {!bannerDismissed ? (
-              <div className="flex items-start gap-2 mt-4 rounded-lg border border-[#d9f7be] px-3 py-[9px]">
+              <div className="flex items-start gap-2 mt-4 rounded-lg border border-[#d9f7be] px-3 py-[9px] bg-[--dip-white]">
                 <CheckCircleFilled
                   className="mt-0.5 shrink-0 text-base text-[#52c41a]"
                   aria-hidden
@@ -69,7 +69,7 @@ function TasksPanelInner({ planId, dhId, sessionId: _sessionId }: TasksPanelProp
             ) : null}
           </div>
           <div className="flex min-h-0 min-w-0 flex-1 flex-col pl-1">
-            <div className="flex min-h-0 min-w-0 flex-1 flex-col border-l-0 bg-[--dip-white]">
+            <div className="flex min-h-0 min-w-0 flex-1 flex-col border-l-0">
               <ArchivePreviewPanel preview={planPreview} />
             </div>
           </div>

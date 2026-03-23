@@ -1,10 +1,11 @@
 import type { CronJob, CronJobListResponse } from '@/apis/dip-studio/plan'
 
 /** 设为 `true` 时使用本地 mock 预览列表 UI；接好接口后改为 `false` */
-export const PLAN_LIST_USE_MOCK = true
+export const PLAN_LIST_USE_MOCK = false
 
 const MOCK_TOTAL = 35
 const MOCK_DELAY_MS = 380
+let mockJobsCache: CronJob[] | null = null
 
 function buildMockJob(index: number): CronJob {
   const now = Date.now()
@@ -73,23 +74,41 @@ function buildMockJob(index: number): CronJob {
 
 /** 模拟分页列表（含短延迟，便于看 loading） */
 export function mockFetchPlanListPage(offset: number, limit: number): Promise<CronJobListResponse> {
-  const jobs: CronJob[] = []
-  for (let i = 0; i < limit && offset + i < MOCK_TOTAL; i++) {
-    jobs.push(buildMockJob(offset + i))
+  if (!mockJobsCache) {
+    mockJobsCache = Array.from({ length: MOCK_TOTAL }, (_, index) => buildMockJob(index))
   }
-  const end = offset + jobs.length
-  const hasMore = end < MOCK_TOTAL
+  const pageJobs = mockJobsCache.slice(offset, offset + limit)
+  const end = offset + pageJobs.length
+  const hasMore = end < mockJobsCache.length
 
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve({
-        total: MOCK_TOTAL,
+        total: mockJobsCache?.length ?? 0,
         offset,
         limit,
         hasMore,
         nextOffset: hasMore ? end : null,
-        jobs,
+        jobs: pageJobs,
       })
     }, MOCK_DELAY_MS)
   })
+}
+
+/** mock: 删除计划 */
+export function mockDeletePlan(planId: string): void {
+  if (!mockJobsCache) {
+    mockJobsCache = Array.from({ length: MOCK_TOTAL }, (_, index) => buildMockJob(index))
+  }
+  mockJobsCache = (mockJobsCache || []).filter((job) => job.id !== planId)
+}
+
+/** mock: 暂停计划 */
+export function mockPausePlan(planId: string): void {
+  if (!mockJobsCache) {
+    mockJobsCache = Array.from({ length: MOCK_TOTAL }, (_, index) => buildMockJob(index))
+  }
+  mockJobsCache = (mockJobsCache || []).map((job) =>
+    job.id === planId ? { ...job, enabled: false, updatedAtMs: Date.now() } : job,
+  )
 }
