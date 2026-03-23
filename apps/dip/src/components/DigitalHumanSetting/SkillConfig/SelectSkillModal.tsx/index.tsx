@@ -13,6 +13,7 @@ import { useListService } from '@/hooks/useListService'
 export interface SelectSkillModalProps extends Omit<ModalProps, 'onCancel' | 'onOk'> {
   onOk: (result: DigitalHumanSkill[]) => void
   onCancel: () => void
+  onSubmit: (payload: AiPromptSubmitPayload) => void
   /** 已选中的技能目录名（与 store `skills` / API 一致） */
   defaultSelectedSkills?: DigitalHumanSkill[]
   /** 当前数字员工 ID；有值时「我的技能」拉取该员工已配置技能 */
@@ -24,6 +25,7 @@ const SelectSkillModal = ({
   open,
   onOk,
   onCancel,
+  onSubmit,
   defaultSelectedSkills = [],
   digitalHumanId,
 }: SelectSkillModalProps) => {
@@ -35,7 +37,6 @@ const SelectSkillModal = ({
     loading,
     error,
     fetchList: fetchAllSkills,
-    handleRefresh,
   } = useListService<DigitalHumanSkill, []>({
     fetchFn: getEnabledSkills,
     autoLoad: false,
@@ -107,7 +108,10 @@ const SelectSkillModal = ({
     onCancel()
   }
 
-  const handleSubmit = (payload: AiPromptSubmitPayload) => {}
+  const handleSubmit = (payload: AiPromptSubmitPayload) => {
+    onSubmit(payload)
+    onCancel()
+  }
 
   /** 渲染状态内容 */
   const renderStateContent = () => {

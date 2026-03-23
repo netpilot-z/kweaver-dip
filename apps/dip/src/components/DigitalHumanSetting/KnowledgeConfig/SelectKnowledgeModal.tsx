@@ -73,10 +73,6 @@ const SelectKnowledgeModal = ({
     onCancel()
   }
 
-  const handleSubmit = (payload: AiPromptSubmitPayload) => {
-    console.log(payload)
-  }
-
   const renderStateContent = () => {
     if (status === LoadStatus.Loading) {
       return <Spin />

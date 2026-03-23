@@ -2,7 +2,7 @@ import type { CronRunListResponse } from '@/apis/dip-studio/plan'
 import type { TaskRunDisplayEntry } from './types'
 
 /** 设为 `true` 时使用本地 mock；接入稳定接口后改为 `false` */
-export const TASKS_USE_MOCK = true
+export const TASKS_USE_MOCK = false
 
 const MOCK_TOTAL = 16
 const MOCK_DELAY_MS = 320

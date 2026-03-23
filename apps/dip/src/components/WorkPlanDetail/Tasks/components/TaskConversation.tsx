@@ -11,7 +11,7 @@ const TaskConversation = ({ digitalHumanId, sessionId }: TaskConversationProps) 
       <DipChatKit
         // defaultMessageTurns={defaultMessageTurns}
         defaultEmployeeValue={digitalHumanId}
-        className="bg-transparent"
+        className="!bg-transparent"
       />
     </div>
   )

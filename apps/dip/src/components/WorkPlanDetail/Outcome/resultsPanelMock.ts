@@ -1,7 +1,7 @@
 import type { SessionArchivesResponse } from '@/apis/dip-studio/sessions'
 
 /** 为 true 时成果 Tab 走本地 mock，不调归档接口 */
-export const RESULTS_PANEL_USE_MOCK = true
+export const RESULTS_PANEL_USE_MOCK = false
 
 const delay = (ms: number) => new Promise<void>((r) => setTimeout(r, ms))
 

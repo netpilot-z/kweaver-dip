@@ -179,7 +179,7 @@ const Details = () => {
       )}
       {activeTab === 'session' && (
         <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
-          <Conversation />
+          <Conversation digitalHumanId={digitalHumanId} />
         </div>
       )}
       {activeTab === 'config' && (

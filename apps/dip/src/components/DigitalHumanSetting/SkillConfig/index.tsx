@@ -2,10 +2,12 @@ import { Button, Flex, Table, Tooltip } from 'antd'
 import { memo, useMemo, useState } from 'react'
 import type { DigitalHumanSkill } from '@/apis/dip-studio/digital-human'
 import AgentIcon from '@/assets/icons/agent3.svg?react'
+import type { AiPromptSubmitPayload } from '@/components/DipChatKit/components/AiPromptInput/types.ts'
 import Empty from '@/components/Empty'
 import IconFont from '@/components/IconFont'
 import ScrollBarContainer from '@/components/ScrollBarContainer'
 import { useDigitalHumanStore } from '../digitalHumanStore'
+import AddSkillDrawer from './AddSkillDrawer.tsx'
 import styles from './index.module.less'
 import SelectSkillModal from './SelectSkillModal.tsx'
 
@@ -16,7 +18,10 @@ interface SkillConfigProps {
 const SkillConfig = ({ readonly }: SkillConfigProps) => {
   const { skills, deleteSkill, updateSkills, digitalHumanId } = useDigitalHumanStore()
   const [selectSkillModalOpen, setSelectSkillModalOpen] = useState(false)
-
+  const [addSkillDrawerOpen, setAddSkillDrawerOpen] = useState(false)
+  const [addSkillDrawerPayload, setAddSkillDrawerPayload] = useState<AiPromptSubmitPayload | null>(
+    null,
+  )
   /** 添加技能 */
   const handleAddSkill = () => {
     setSelectSkillModalOpen(true)
@@ -146,8 +151,21 @@ const SkillConfig = ({ readonly }: SkillConfigProps) => {
         onOk={(result) => {
           updateSkills(result || [])
         }}
+        onSubmit={(payload) => {
+          console.log('payload', payload)
+          setAddSkillDrawerPayload(payload)
+          setAddSkillDrawerOpen(true)
+        }}
         onCancel={() => setSelectSkillModalOpen(false)}
         defaultSelectedSkills={skills}
+      />
+      <AddSkillDrawer
+        open={addSkillDrawerOpen}
+        payload={addSkillDrawerPayload}
+        onClose={() => {
+          setAddSkillDrawerOpen(false)
+          setAddSkillDrawerPayload(null)
+        }}
       />
     </ScrollBarContainer>
   )
