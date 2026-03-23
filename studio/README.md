@@ -262,3 +262,19 @@ openssl pkey -in private.pem -pubout -out public.pem
 响应：`200 text/event-stream`
 
 返回数字员工响应事件流，响应体为 SSE 流。
+
+#### 获取会话消息详情
+
+`GET /api/dip-studio/v1/sessions/{key}/messages`
+
+路径参数：
+
+| 参数 | 类型 | 是否必填 | 说明 |
+| -- | -- | -- | -- |
+| key | string | 是 | 会话 key |
+
+支持查询参数：`limit`
+
+响应：`200 application/json`
+
+返回指定会话的详情与消息列表，结构同 `GET /api/dip-studio/v1/sessions/{key}`。

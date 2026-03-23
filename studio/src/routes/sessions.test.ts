@@ -8,7 +8,6 @@ import {
   normalizeArchiveSessionId,
   readRequiredPathParam,
   readRequiredSubpathParam,
-  resolveSessionKeyBySessionId,
   readSessionGetParams,
   readSessionsListQuery,
 } from "./sessions";
@@ -98,32 +97,6 @@ describe("digital human sessions helpers", () => {
     );
   });
 
-  it("resolves session key by session id", () => {
-    expect(
-      resolveSessionKeyBySessionId(
-        [
-          {
-            key: "session_key_1",
-            sessionId: "session-1"
-          }
-        ],
-        "session-1"
-      )
-    ).toBe("session_key_1");
-
-    expect(() =>
-      resolveSessionKeyBySessionId(
-        [
-          {
-            key: "session_key_1",
-            sessionId: "session-1"
-          }
-        ],
-        "missing"
-      )
-    ).toThrow("Session not found");
-  });
-
   it("parses required wildcard subpath params", () => {
     expect(readRequiredSubpathParam("reports/a.md", "subpath")).toBe("reports/a.md");
     expect(readRequiredSubpathParam(["reports", "a.md"], "subpath")).toBe(
@@ -190,8 +163,7 @@ describe("createSessionsRouter", () => {
     );
     const digitalHumanMessagesLayer = router.stack.find(
       (entry) =>
-        entry.route?.path ===
-        "/api/dip-studio/v1/digital-human/:id/sessions/:session_id/messages"
+        entry.route?.path === "/api/dip-studio/v1/sessions/:key/messages"
     );
     const digitalHumanArchivesLayer = router.stack.find(
       (entry) =>
@@ -366,21 +338,13 @@ describe("createSessionsRouter", () => {
     expect(next).not.toHaveBeenCalled();
   });
 
-  it("handles digital human session messages request", async () => {
-    const listSessions = vi.fn().mockResolvedValue({
-      sessions: [
-        {
-          key: "session_key_1",
-          sessionId: "session-1"
-        }
-      ]
-    });
+  it("handles session messages request", async () => {
     const getSession = vi.fn().mockResolvedValue({
       key: "session_key_1",
       messages: []
     });
     const router = createSessionsRouter({
-      listSessions,
+      listSessions: vi.fn(),
       getSession,
       previewSessions: vi.fn()
     }) as {
@@ -398,9 +362,7 @@ describe("createSessionsRouter", () => {
       }>;
     };
     const getLayer = router.stack.find(
-      (entry) =>
-        entry.route?.path ===
-        "/api/dip-studio/v1/digital-human/:id/sessions/:session_id/messages"
+      (entry) => entry.route?.path === "/api/dip-studio/v1/sessions/:key/messages"
     );
     const handler = getLayer?.route?.stack[0]?.handle;
     const response = createResponseDouble();
@@ -409,8 +371,7 @@ describe("createSessionsRouter", () => {
     await handler?.(
       {
         params: {
-          id: "agent-1",
-          session_id: "session-1"
+          key: " session_key_1 "
         },
         query: {
           limit: "100"
@@ -420,9 +381,6 @@ describe("createSessionsRouter", () => {
       next
     );
 
-    expect(listSessions).toHaveBeenCalledWith({
-      agentId: "agent-1"
-    });
     expect(getSession).toHaveBeenCalledWith({
       key: "session_key_1",
       limit: 100
@@ -636,15 +594,13 @@ describe("createSessionsRouter", () => {
     });
   });
 
-  it("forwards digital human session HttpError and wraps unknown errors", async () => {
+  it("forwards session messages HttpError and wraps unknown errors", async () => {
     const { HttpError } = await import("../errors/http-error");
     const notFound = new HttpError(404, "Session not found");
 
     const router1 = createSessionsRouter({
-      listSessions: vi.fn().mockResolvedValue({
-        sessions: []
-      }),
-      getSession: vi.fn(),
+      listSessions: vi.fn(),
+      getSession: vi.fn().mockRejectedValue(notFound),
       previewSessions: vi.fn()
     }) as {
       stack: Array<{
@@ -661,9 +617,7 @@ describe("createSessionsRouter", () => {
       }>;
     };
     const getLayer1 = router1.stack.find(
-      (entry) =>
-        entry.route?.path ===
-        "/api/dip-studio/v1/digital-human/:id/sessions/:session_id/messages"
+      (entry) => entry.route?.path === "/api/dip-studio/v1/sessions/:key/messages"
     );
     const handler1 = getLayer1?.route?.stack[0]?.handle;
     const response1 = createResponseDouble();
@@ -672,8 +626,7 @@ describe("createSessionsRouter", () => {
     await handler1?.(
       {
         params: {
-          id: "agent-1",
-          session_id: "missing"
+          key: "missing"
         },
         query: {}
       } as unknown as Request,
@@ -684,8 +637,8 @@ describe("createSessionsRouter", () => {
     expect(next1).toHaveBeenCalledWith(notFound);
 
     const router2 = createSessionsRouter({
-      listSessions: vi.fn().mockRejectedValue(new Error("boom")),
-      getSession: vi.fn(),
+      listSessions: vi.fn(),
+      getSession: vi.fn().mockRejectedValue(new Error("boom")),
       previewSessions: vi.fn()
     }) as {
       stack: Array<{
@@ -701,17 +654,17 @@ describe("createSessionsRouter", () => {
         };
       }>;
     };
-    const listLayer2 = router2.stack.find(
-      (entry) => entry.route?.path === "/api/dip-studio/v1/digital-human/:id/sessions"
+    const getLayer2 = router2.stack.find(
+      (entry) => entry.route?.path === "/api/dip-studio/v1/sessions/:key/messages"
     );
-    const handler2 = listLayer2?.route?.stack[0]?.handle;
+    const handler2 = getLayer2?.route?.stack[0]?.handle;
     const response2 = createResponseDouble();
     const next2 = vi.fn<NextFunction>();
 
     await handler2?.(
       {
         params: {
-          id: "agent-1"
+          key: "session-key"
         },
         query: {}
       } as unknown as Request,
@@ -722,7 +675,7 @@ describe("createSessionsRouter", () => {
     expect(next2).toHaveBeenCalledOnce();
     expect(vi.mocked(next2).mock.calls[0]?.[0]).toMatchObject({
       statusCode: 502,
-      message: "Failed to query digital human sessions"
+      message: "Failed to query session messages"
     });
   });
 

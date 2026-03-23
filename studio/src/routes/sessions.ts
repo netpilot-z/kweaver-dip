@@ -57,9 +57,20 @@ export interface DigitalHumanSessionsParams {
 }
 
 /**
- * Path parameters for digital human session messages endpoint.
+ * Path parameters for session messages endpoint.
  */
-export interface DigitalHumanSessionMessagesParams extends DigitalHumanSessionsParams {
+export interface SessionMessagesParams {
+  /**
+   * Session key.
+   */
+  key: string;
+}
+
+/**
+ * Path parameters for digital human session archives endpoint.
+ */
+export interface DigitalHumanSessionArchivesParams
+extends DigitalHumanSessionsParams {
   /**
    * Session id.
    */
@@ -70,7 +81,7 @@ export interface DigitalHumanSessionMessagesParams extends DigitalHumanSessionsP
  * Path parameters for digital human session archives subpath endpoint.
  */
 export interface DigitalHumanSessionArchivesSubpathParams
-extends DigitalHumanSessionMessagesParams {
+extends DigitalHumanSessionArchivesParams {
   /**
    * Archive subpath.
    */
@@ -177,10 +188,10 @@ export function createSessionsRouter(
   );
 
   router.get(
-    "/api/dip-studio/v1/digital-human/:id/sessions/:session_id/messages",
+    "/api/dip-studio/v1/sessions/:key/messages",
     async (
       request: Request<
-        DigitalHumanSessionMessagesParams,
+        SessionMessagesParams,
         unknown,
         unknown,
         SessionMessagesQuery
@@ -189,12 +200,7 @@ export function createSessionsRouter(
       next: NextFunction
     ): Promise<void> => {
       try {
-        const dhId = readRequiredPathParam(request.params.id, "id");
-        const sessionId = readRequiredPathParam(request.params.session_id, "session_id");
-        const sessions = await logic.listSessions({
-          agentId: dhId
-        });
-        const sessionKey = resolveSessionKeyBySessionId(sessions.sessions, sessionId);
+        const sessionKey = readRequiredPathParam(request.params.key, "key");
         const params = readSessionGetParams(sessionKey, request.query);
         const result = await logic.getSession(params);
 
@@ -203,7 +209,7 @@ export function createSessionsRouter(
         next(
           error instanceof HttpError
             ? error
-            : new HttpError(502, "Failed to query digital human session messages")
+            : new HttpError(502, "Failed to query session messages")
         );
       }
     }
@@ -213,7 +219,7 @@ export function createSessionsRouter(
     "/api/dip-studio/v1/digital-human/:id/sessions/:session_id/archives",
     async (
       request: Request<
-        DigitalHumanSessionMessagesParams,
+        DigitalHumanSessionArchivesParams,
         unknown,
         unknown,
         Record<string, never>
@@ -404,28 +410,6 @@ export function normalizeArchiveSessionId(rawSessionId: string): string {
   const lastPart = parts.at(-1);
 
   return lastPart ?? trimmed;
-}
-
-/**
- * Resolves OpenClaw session key from one session id.
- *
- * @param sessions Session summary list.
- * @param sessionId Requested session id.
- * @returns Resolved session key.
- */
-export function resolveSessionKeyBySessionId(
-  sessions: Array<{ key: string; sessionId: string }>,
-  sessionId: string
-): string {
-  const found = sessions.find(
-    (session) => session.sessionId === sessionId || session.key === sessionId
-  );
-
-  if (found === undefined) {
-    throw new HttpError(404, "Session not found");
-  }
-
-  return found.key;
 }
 
 /**
