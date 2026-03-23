@@ -169,11 +169,11 @@ describe("createCronRouter", () => {
       (entry) => entry.route?.path === "/api/dip-studio/v1/plans"
     );
     const plansLayer = router.stack.find(
-      (entry) => entry.route?.path === "/api/dip-studio/v1/digital-human/:dh_id/plans"
+      (entry) => entry.route?.path === "/api/dip-studio/v1/digital-human/:id/plans"
     );
     const planRunsLayer = router.stack.find(
       (entry) =>
-        entry.route?.path === "/api/dip-studio/v1/digital-human/:dh_id/plans/:plan_id/runs"
+        entry.route?.path === "/api/dip-studio/v1/digital-human/:id/plans/:plan_id/runs"
     );
 
     expect(jobsLayer).toBeDefined();
@@ -285,7 +285,7 @@ describe("createCronRouter", () => {
     });
   });
 
-  it("handles digital human plans request with dh_id filtering", async () => {
+  it("handles digital human plans request with id filtering", async () => {
     const listCronJobs = vi.fn().mockResolvedValue({
       jobs: [
         {
@@ -339,7 +339,7 @@ describe("createCronRouter", () => {
       }>;
     };
     const layer = router.stack.find(
-      (entry) => entry.route?.path === "/api/dip-studio/v1/digital-human/:dh_id/plans"
+      (entry) => entry.route?.path === "/api/dip-studio/v1/digital-human/:id/plans"
     );
     const handler = layer?.route?.stack[0]?.handle;
     const response = createResponseDouble();
@@ -348,7 +348,7 @@ describe("createCronRouter", () => {
     await handler?.(
       {
         params: {
-          dh_id: "dh-1"
+          id: "dh-1"
         },
         query: {}
       } as unknown as Request,
@@ -411,7 +411,7 @@ describe("createCronRouter", () => {
     };
     const layer = router.stack.find(
       (entry) =>
-        entry.route?.path === "/api/dip-studio/v1/digital-human/:dh_id/plans/:plan_id/runs"
+        entry.route?.path === "/api/dip-studio/v1/digital-human/:id/plans/:plan_id/runs"
     );
     const handler = layer?.route?.stack[0]?.handle;
     const response = createResponseDouble();
@@ -420,7 +420,7 @@ describe("createCronRouter", () => {
     await handler?.(
       {
         params: {
-          dh_id: "dh-1",
+          id: "dh-1",
           plan_id: "plan-1"
         },
         query: {}

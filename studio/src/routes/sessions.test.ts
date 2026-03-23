@@ -92,9 +92,9 @@ describe("readSessionGetParams", () => {
 
 describe("digital human sessions helpers", () => {
   it("parses required path params", () => {
-    expect(readRequiredPathParam(" dh-1 ", "dh_id")).toBe("dh-1");
-    expect(() => readRequiredPathParam("  ", "dh_id")).toThrow(
-      "Invalid path parameter `dh_id`"
+    expect(readRequiredPathParam(" dh-1 ", "id")).toBe("dh-1");
+    expect(() => readRequiredPathParam("  ", "id")).toThrow(
+      "Invalid path parameter `id`"
     );
   });
 
@@ -186,22 +186,22 @@ describe("createSessionsRouter", () => {
       (entry) => entry.route?.path === "/api/dip-studio/v1/sessions/:key"
     );
     const digitalHumanListLayer = router.stack.find(
-      (entry) => entry.route?.path === "/api/dip-studio/v1/digital-human/:dh_id/sessions"
+      (entry) => entry.route?.path === "/api/dip-studio/v1/digital-human/:id/sessions"
     );
     const digitalHumanMessagesLayer = router.stack.find(
       (entry) =>
         entry.route?.path ===
-        "/api/dip-studio/v1/digital-human/:dh_id/sessions/:session_id/messages"
+        "/api/dip-studio/v1/digital-human/:id/sessions/:session_id/messages"
     );
     const digitalHumanArchivesLayer = router.stack.find(
       (entry) =>
         entry.route?.path ===
-        "/api/dip-studio/v1/digital-human/:dh_id/sessions/:session_id/archives"
+        "/api/dip-studio/v1/digital-human/:id/sessions/:session_id/archives"
     );
     const digitalHumanArchiveSubpathLayer = router.stack.find(
       (entry) =>
         entry.route?.path ===
-        "/api/dip-studio/v1/digital-human/:dh_id/sessions/:session_id/archives/*subpath"
+        "/api/dip-studio/v1/digital-human/:id/sessions/:session_id/archives/*subpath"
     );
 
     expect(listLayer).toBeDefined();
@@ -332,7 +332,7 @@ describe("createSessionsRouter", () => {
       }>;
     };
     const listLayer = router.stack.find(
-      (entry) => entry.route?.path === "/api/dip-studio/v1/digital-human/:dh_id/sessions"
+      (entry) => entry.route?.path === "/api/dip-studio/v1/digital-human/:id/sessions"
     );
     const handler = listLayer?.route?.stack[0]?.handle;
     const response = createResponseDouble();
@@ -341,7 +341,7 @@ describe("createSessionsRouter", () => {
     await handler?.(
       {
         params: {
-          dh_id: "agent-1"
+          id: "agent-1"
         },
         query: {
           limit: "10"
@@ -400,7 +400,7 @@ describe("createSessionsRouter", () => {
     const getLayer = router.stack.find(
       (entry) =>
         entry.route?.path ===
-        "/api/dip-studio/v1/digital-human/:dh_id/sessions/:session_id/messages"
+        "/api/dip-studio/v1/digital-human/:id/sessions/:session_id/messages"
     );
     const handler = getLayer?.route?.stack[0]?.handle;
     const response = createResponseDouble();
@@ -409,7 +409,7 @@ describe("createSessionsRouter", () => {
     await handler?.(
       {
         params: {
-          dh_id: "agent-1",
+          id: "agent-1",
           session_id: "session-1"
         },
         query: {
@@ -463,7 +463,7 @@ describe("createSessionsRouter", () => {
     const getLayer = router.stack.find(
       (entry) =>
         entry.route?.path ===
-        "/api/dip-studio/v1/digital-human/:dh_id/sessions/:session_id/archives"
+        "/api/dip-studio/v1/digital-human/:id/sessions/:session_id/archives"
     );
     const handler = getLayer?.route?.stack[0]?.handle;
     const response = createResponseDouble();
@@ -472,7 +472,7 @@ describe("createSessionsRouter", () => {
     await handler?.(
       {
         params: {
-          dh_id: "agent-1",
+          id: "agent-1",
           session_id: "agent:de_finance:cron:session-1"
         },
         query: {}
@@ -663,7 +663,7 @@ describe("createSessionsRouter", () => {
     const getLayer1 = router1.stack.find(
       (entry) =>
         entry.route?.path ===
-        "/api/dip-studio/v1/digital-human/:dh_id/sessions/:session_id/messages"
+        "/api/dip-studio/v1/digital-human/:id/sessions/:session_id/messages"
     );
     const handler1 = getLayer1?.route?.stack[0]?.handle;
     const response1 = createResponseDouble();
@@ -672,7 +672,7 @@ describe("createSessionsRouter", () => {
     await handler1?.(
       {
         params: {
-          dh_id: "agent-1",
+          id: "agent-1",
           session_id: "missing"
         },
         query: {}
@@ -702,7 +702,7 @@ describe("createSessionsRouter", () => {
       }>;
     };
     const listLayer2 = router2.stack.find(
-      (entry) => entry.route?.path === "/api/dip-studio/v1/digital-human/:dh_id/sessions"
+      (entry) => entry.route?.path === "/api/dip-studio/v1/digital-human/:id/sessions"
     );
     const handler2 = listLayer2?.route?.stack[0]?.handle;
     const response2 = createResponseDouble();
@@ -711,7 +711,7 @@ describe("createSessionsRouter", () => {
     await handler2?.(
       {
         params: {
-          dh_id: "agent-1"
+          id: "agent-1"
         },
         query: {}
       } as unknown as Request,
@@ -757,7 +757,7 @@ describe("createSessionsRouter", () => {
     const getLayer1 = router1.stack.find(
       (entry) =>
         entry.route?.path ===
-        "/api/dip-studio/v1/digital-human/:dh_id/sessions/:session_id/archives"
+        "/api/dip-studio/v1/digital-human/:id/sessions/:session_id/archives"
     );
     const handler1 = getLayer1?.route?.stack[0]?.handle;
     const response1 = createResponseDouble();
@@ -766,7 +766,7 @@ describe("createSessionsRouter", () => {
     await handler1?.(
       {
         params: {
-          dh_id: "agent-1",
+          id: "agent-1",
           session_id: "session-1"
         },
         query: {}
@@ -804,7 +804,7 @@ describe("createSessionsRouter", () => {
     const getLayer2 = router2.stack.find(
       (entry) =>
         entry.route?.path ===
-        "/api/dip-studio/v1/digital-human/:dh_id/sessions/:session_id/archives"
+        "/api/dip-studio/v1/digital-human/:id/sessions/:session_id/archives"
     );
     const handler2 = getLayer2?.route?.stack[0]?.handle;
     const response2 = createResponseDouble();
@@ -813,7 +813,7 @@ describe("createSessionsRouter", () => {
     await handler2?.(
       {
         params: {
-          dh_id: "agent-1",
+          id: "agent-1",
           session_id: "session-1"
         },
         query: {}
@@ -864,7 +864,7 @@ describe("createSessionsRouter", () => {
     const getLayer = router.stack.find(
       (entry) =>
         entry.route?.path ===
-        "/api/dip-studio/v1/digital-human/:dh_id/sessions/:session_id/archives/*subpath"
+        "/api/dip-studio/v1/digital-human/:id/sessions/:session_id/archives/*subpath"
     );
     const handler = getLayer?.route?.stack[0]?.handle;
     const response = {
@@ -878,7 +878,7 @@ describe("createSessionsRouter", () => {
     await handler?.(
       {
         params: {
-          dh_id: "agent-1",
+          id: "agent-1",
           session_id: "agent:de_finance:cron:session-1",
           subpath: "notes/today.txt"
         },
@@ -930,7 +930,7 @@ describe("createSessionsRouter", () => {
     const getLayer1 = router1.stack.find(
       (entry) =>
         entry.route?.path ===
-        "/api/dip-studio/v1/digital-human/:dh_id/sessions/:session_id/archives/*subpath"
+        "/api/dip-studio/v1/digital-human/:id/sessions/:session_id/archives/*subpath"
     );
     const handler1 = getLayer1?.route?.stack[0]?.handle;
     const response1 = {
@@ -944,7 +944,7 @@ describe("createSessionsRouter", () => {
     await handler1?.(
       {
         params: {
-          dh_id: "agent-1",
+          id: "agent-1",
           session_id: "session-1",
           subpath: "notes/today.txt"
         },
@@ -983,7 +983,7 @@ describe("createSessionsRouter", () => {
     const getLayer2 = router2.stack.find(
       (entry) =>
         entry.route?.path ===
-        "/api/dip-studio/v1/digital-human/:dh_id/sessions/:session_id/archives/*subpath"
+        "/api/dip-studio/v1/digital-human/:id/sessions/:session_id/archives/*subpath"
     );
     const handler2 = getLayer2?.route?.stack[0]?.handle;
     const response2 = {
@@ -997,7 +997,7 @@ describe("createSessionsRouter", () => {
     await handler2?.(
       {
         params: {
-          dh_id: "agent-1",
+          id: "agent-1",
           session_id: "session-1",
           subpath: "notes/today.txt"
         },

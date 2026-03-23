@@ -53,7 +53,7 @@ export interface DigitalHumanSessionsParams {
   /**
    * Digital human identifier.
    */
-  dh_id: string;
+  id: string;
 }
 
 /**
@@ -151,7 +151,7 @@ export function createSessionsRouter(
   );
 
   router.get(
-    "/api/dip-studio/v1/digital-human/:dh_id/sessions",
+    "/api/dip-studio/v1/digital-human/:id/sessions",
     async (
       request: Request<DigitalHumanSessionsParams, unknown, unknown, SessionsListQuery>,
       response: Response,
@@ -159,7 +159,7 @@ export function createSessionsRouter(
     ): Promise<void> => {
       try {
         const query = readSessionsListQuery(request.query);
-        const dhId = readRequiredPathParam(request.params.dh_id, "dh_id");
+        const dhId = readRequiredPathParam(request.params.id, "id");
         const result = await logic.listSessions({
           ...query,
           agentId: dhId
@@ -177,7 +177,7 @@ export function createSessionsRouter(
   );
 
   router.get(
-    "/api/dip-studio/v1/digital-human/:dh_id/sessions/:session_id/messages",
+    "/api/dip-studio/v1/digital-human/:id/sessions/:session_id/messages",
     async (
       request: Request<
         DigitalHumanSessionMessagesParams,
@@ -189,7 +189,7 @@ export function createSessionsRouter(
       next: NextFunction
     ): Promise<void> => {
       try {
-        const dhId = readRequiredPathParam(request.params.dh_id, "dh_id");
+        const dhId = readRequiredPathParam(request.params.id, "id");
         const sessionId = readRequiredPathParam(request.params.session_id, "session_id");
         const sessions = await logic.listSessions({
           agentId: dhId
@@ -210,7 +210,7 @@ export function createSessionsRouter(
   );
 
   router.get(
-    "/api/dip-studio/v1/digital-human/:dh_id/sessions/:session_id/archives",
+    "/api/dip-studio/v1/digital-human/:id/sessions/:session_id/archives",
     async (
       request: Request<
         DigitalHumanSessionMessagesParams,
@@ -222,7 +222,7 @@ export function createSessionsRouter(
       next: NextFunction
     ): Promise<void> => {
       try {
-        const dhId = readRequiredPathParam(request.params.dh_id, "dh_id");
+        const dhId = readRequiredPathParam(request.params.id, "id");
         const sessionId = normalizeArchiveSessionId(
           readRequiredPathParam(request.params.session_id, "session_id")
         );
@@ -240,7 +240,7 @@ export function createSessionsRouter(
   );
 
   router.get(
-    "/api/dip-studio/v1/digital-human/:dh_id/sessions/:session_id/archives/*subpath",
+    "/api/dip-studio/v1/digital-human/:id/sessions/:session_id/archives/*subpath",
     async (
       request: Request<
         DigitalHumanSessionArchivesSubpathParams,
@@ -252,7 +252,7 @@ export function createSessionsRouter(
       next: NextFunction
     ): Promise<void> => {
       try {
-        const dhId = readRequiredPathParam(request.params.dh_id, "dh_id");
+        const dhId = readRequiredPathParam(request.params.id, "id");
         const sessionId = normalizeArchiveSessionId(
           readRequiredPathParam(request.params.session_id, "session_id")
         );

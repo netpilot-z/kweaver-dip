@@ -119,7 +119,7 @@ export interface DigitalHumanPlansParams {
   /**
    * Digital human identifier.
    */
-  dh_id: string;
+  id: string;
 }
 
 /**
@@ -176,7 +176,7 @@ export function createCronRouter(logic: CronLogic = cronLogic): Router {
   );
 
   router.get(
-    "/api/dip-studio/v1/digital-human/:dh_id/plans",
+    "/api/dip-studio/v1/digital-human/:id/plans",
     async (
       request: Request<DigitalHumanPlansParams, unknown, unknown, CronJobListQuery>,
       response: Response,
@@ -185,7 +185,7 @@ export function createCronRouter(logic: CronLogic = cronLogic): Router {
       try {
         const query = readCronJobListQuery(request.query);
         const result = await logic.listCronJobs(query);
-        const plans = result.jobs.filter((job) => job.agentId === request.params.dh_id);
+        const plans = result.jobs.filter((job) => job.agentId === request.params.id);
 
         response.status(200).json({
           ...result,
@@ -207,7 +207,7 @@ export function createCronRouter(logic: CronLogic = cronLogic): Router {
   );
 
   router.get(
-    "/api/dip-studio/v1/digital-human/:dh_id/plans/:plan_id/runs",
+    "/api/dip-studio/v1/digital-human/:id/plans/:plan_id/runs",
     async (
       request: Request<DigitalHumanPlanRunsParams, unknown, unknown, CronRunListQuery>,
       response: Response,

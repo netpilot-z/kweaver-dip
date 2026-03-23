@@ -129,12 +129,12 @@ paths:
         "500":
           $ref: '../common.schemas.yaml#/errors/InternalServerError'
 
-  /digital-human/{dh_id}/sessions:
+  /digital-human/{id}/sessions:
     get:
       operationId: getDigitalHumanSessionsList
       summary: 获取指定数字员工的会话列表
       parameters:
-        - name: dh_id
+        - name: id
           in: path
           required: true
           description: 数字员工 ID
@@ -210,12 +210,12 @@ paths:
         "500":
           $ref: '../common.schemas.yaml#/errors/InternalServerError'
 
-  /digital-human/{dh_id}/sessions/{session_id}/messages:
+  /digital-human/{id}/sessions/{session_id}/messages:
     get:
       operationId: getDigitalHumanSessionMessages
       summary: 获取指定数字员工会话消息详情
       parameters:
-        - name: dh_id
+        - name: id
           in: path
           required: true
           description: 数字员工 ID
@@ -254,12 +254,12 @@ paths:
         "500":
           $ref: '../common.schemas.yaml#/errors/InternalServerError'
 
-  /digital-human/{dh_id}/sessions/{session_id}/archives:
+  /digital-human/{id}/sessions/{session_id}/archives:
     get:
       operationId: getDigitalHumanSessionArchives
       summary: 获取指定数字员工会话下的归档物
       parameters:
-        - name: dh_id
+        - name: id
           in: path
           required: true
           description: 数字员工 ID
@@ -291,12 +291,12 @@ paths:
         "500":
           $ref: '../common.schemas.yaml#/errors/InternalServerError'
 
-  /digital-human/{dh_id}/sessions/{session_id}/archives/{subpath}:
+  /digital-human/{id}/sessions/{session_id}/archives/{subpath}:
     get:
       operationId: getDigitalHumanSessionArchiveSubpath
       summary: 获取指定数字员工会话归档子路径内容
       parameters:
-        - name: dh_id
+        - name: id
           in: path
           required: true
           description: 数字员工 ID
