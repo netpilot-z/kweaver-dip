@@ -9,9 +9,8 @@ export type ConversationProps = {
 /** 对话 Tab（接入会话 API 后替换） */
 const Conversation = ({ planId: _planId, dhId, sessionId }: ConversationProps) => {
   return (
-    <div className="flex flex-1 flex-col items-center justify-center">
+    <div className="flex h-full min-h-0 w-full flex-1 flex-col overflow-hidden">
       <DipChatKit
-        // defaultMessageTurns={defaultMessageTurns}
         defaultEmployeeValue={dhId}
       />
     </div>
