@@ -7,7 +7,8 @@
 1. 部署 OpenClaw 项目。项目地址：https://openclaw.ai 或从 GitHub：https://github.com/openclaw/openclaw
 2. 启动 OpenClaw Gateway
 3. 完成 OpenClaw 配置后，从 `openclaw.json` 中复制 `gateway.auth.token`
-4. 执行 `openclaw config set gateway.http.endpoints.responses.enabled true`，开启 POST /v1/responses HTTP 接口
+4. 执行 `openclaw gateway status`，从 `Gateway: bind=loopback (127.0.0.1), port=19001 (env/config)` 记住 OpenClaw 网关地址和端口
+5. 执行 `openclaw config set gateway.http.endpoints.responses.enabled true`，开启 POST /v1/responses HTTP 接口
 
 ## 启动
 
@@ -22,7 +23,7 @@ openssl pkey -in private.pem -pubout -out public.pem
 ```
 4. 执行 `npm run init:agents` 初始化 OpenClaw 默认配置、builtin agents 以及 extensions
 5. 执行 `npm run build` 构建
-6. 执行 `npm run dev` 启动服务
+6. 执行 `NODE_ENV=development npm run dev` 启动服务
 
 
 ### 调试
