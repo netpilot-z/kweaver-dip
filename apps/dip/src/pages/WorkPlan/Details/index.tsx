@@ -1,4 +1,4 @@
-import { EllipsisOutlined, ExclamationCircleFilled, SnippetsOutlined } from '@ant-design/icons'
+import { EllipsisOutlined, ExclamationCircleFilled } from '@ant-design/icons'
 import type { MenuProps } from 'antd'
 import { Dropdown, Modal, message, Tabs } from 'antd'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -264,7 +264,7 @@ const WorkPlanDetail = () => {
           </button>
           <div className="flex min-w-0 items-center gap-3">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#60AEFF]">
-              <SnippetsOutlined className="text-lg text-white" />
+              <IconFont type="icon-plan" className="text-[18px] text-white" />
             </div>
             <div className="flex min-w-0 flex-col gap-0.5">
               <span className="truncate font-medium text-[--dip-text-color]">
@@ -323,7 +323,7 @@ const WorkPlanDetail = () => {
         onCancel={() => setEditModalOpen(false)}
         onSuccess={async () => {
           setEditModalOpen(false)
-          await Promise.all([fetchPlans({ silent: true })])
+          await Promise.all([loadCurrentPlan(), fetchPlans({ silent: true })])
         }}
       />
     </div>

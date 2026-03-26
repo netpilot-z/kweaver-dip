@@ -38,6 +38,11 @@ export interface DigitalHumanState {
   /** 标记是否有未发布改动（后续可用于提示） */
   dirty: boolean
 
+  /**
+   * 管理员配置页进入「编辑」时快照的名称，用于顶栏/面包屑；表单内改名不更新该字段，保存成功或退出编辑后清除。
+   */
+  frozenDisplayNameForEdit: string | null
+
   /** 绑定当前数字员工，并根据详情初始化数据 */
   bindDigitalHuman: (digitalHuman: DigitalHumanDetail | null) => void
 
@@ -87,10 +92,16 @@ export const useDigitalHumanStore = create<DigitalHumanState>()((set) => ({
   channel: undefined,
   detail: null,
   dirty: false,
+  frozenDisplayNameForEdit: null,
 
-  setUiMode: (mode) => {
-    set({ uiMode: mode })
-  },
+  setUiMode: (mode) =>
+    set((state) => {
+      if (mode === 'edit') {
+        const name = state.basic.name.trim()
+        return { uiMode: mode, frozenDisplayNameForEdit: name || null }
+      }
+      return { uiMode: mode, frozenDisplayNameForEdit: null }
+    }),
 
   bindDigitalHuman: (digitalHuman) => {
     if (!digitalHuman) {
@@ -102,22 +113,30 @@ export const useDigitalHumanStore = create<DigitalHumanState>()((set) => ({
         channel: undefined,
         dirty: false,
         detail: null,
+        frozenDisplayNameForEdit: null,
       })
       return
     }
 
-    set({
-      digitalHumanId: digitalHuman.id,
-      basic: {
-        name: digitalHuman.name ?? '',
-        creature: digitalHuman.creature ?? '',
-        soul: digitalHuman.soul ?? '',
-      },
-      bkn: digitalHuman.bkn ?? defaultBkn,
-      skills: digitalHuman.skills ?? defaultSkills,
-      channel: digitalHuman.channel,
-      detail: digitalHuman,
-      dirty: false,
+    set((state) => {
+      const name = digitalHuman.name?.trim() ?? ''
+      const next = {
+        digitalHumanId: digitalHuman.id,
+        basic: {
+          name: digitalHuman.name ?? '',
+          creature: digitalHuman.creature ?? '',
+          soul: digitalHuman.soul ?? '',
+        },
+        bkn: digitalHuman.bkn ?? defaultBkn,
+        skills: digitalHuman.skills ?? defaultSkills,
+        channel: digitalHuman.channel,
+        detail: digitalHuman,
+        dirty: false,
+      }
+      if (state.uiMode === 'edit' && state.frozenDisplayNameForEdit === null && name) {
+        return { ...next, frozenDisplayNameForEdit: name }
+      }
+      return next
     })
   },
 
@@ -189,5 +208,6 @@ export const useDigitalHumanStore = create<DigitalHumanState>()((set) => ({
       channel: undefined,
       dirty: false,
       detail: null,
+      frozenDisplayNameForEdit: null,
     })),
 }))

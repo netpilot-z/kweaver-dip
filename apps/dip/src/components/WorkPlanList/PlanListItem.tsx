@@ -101,7 +101,7 @@ function PlanListItemInner({
         className="group max-w-[880px] mx-auto flex w-full items-center gap-4 rounded-lg border border-[#EAEEF3] bg-[--dip-white] px-4 py-3 text-left transition-[border-color,background-color] hover:border-[#BEDBFF] hover:bg-[#EFF6FF]"
       >
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#60AEFF]">
-          <IconFont type="icon-plan" className="text-lg text-white" />
+          <IconFont type="icon-plan" className="text-[18px] text-white" />
         </div>
 
         <div className="min-w-0 flex-1 flex flex-col gap-1">

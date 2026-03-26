@@ -36,6 +36,7 @@ const DHSetting = () => {
     skills,
     channel,
     resetAllToDetail,
+    frozenDisplayNameForEdit,
   } = useDigitalHumanStore()
   const [, messageContextHolder] = message.useMessage()
   const [publishing, setPublishing] = useState(false)
@@ -69,6 +70,11 @@ const DHSetting = () => {
     setUiMode('view')
   }
 
+  const headerDisplayName =
+    uiMode === 'edit'
+      ? (frozenDisplayNameForEdit ?? basic.name).trim() || basic.name
+      : basic.name
+
   const handlePublish = async () => {
     const name = basic.name.trim()
     if (!name) {
@@ -100,11 +106,8 @@ const DHSetting = () => {
           ...(channel !== undefined ? { channel } : {}),
         }
         await updateDigitalHuman(digitalHumanId, updateBody)
+        useDigitalHumanStore.setState({ frozenDisplayNameForEdit: name })
         message.success('发布成功')
-        // const detail = await getDigitalHumanDetail(digitalHumanId)
-        // bindDigitalHuman(detail)
-        // resetDirtyState()
-        // setUiMode('view')
         handleBack()
       } else {
         await createDigitalHuman(createBody)
@@ -158,13 +161,13 @@ const DHSetting = () => {
             ) : routeId ? (
               <>
                 <AppIcon
-                  name={basic.name}
+                  name={headerDisplayName}
                   size={32}
                   className="w-8 h-8 rounded-md overflow-hidden"
                   shape="square"
                 />
                 <div className="flex flex-col gap-0.5">
-                  <span className="font-medium text-[--dip-text-color]">{basic.name}</span>
+                  <span className="font-medium text-[--dip-text-color]">{headerDisplayName}</span>
                   {detail?.updated_at && (
                     <span className="text-[--dip-text-color-65] text-xs">
                       更新：

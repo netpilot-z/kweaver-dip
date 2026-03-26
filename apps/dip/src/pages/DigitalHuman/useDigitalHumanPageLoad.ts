@@ -23,6 +23,8 @@ export function useDigitalHumanPageLoad(
 ): boolean {
   const { bindDigitalHuman, reset, setUiMode } = useDigitalHumanStore()
   const basicName = useDigitalHumanStore((s) => s.basic.name)
+  const uiMode = useDigitalHumanStore((s) => s.uiMode)
+  const frozenDisplayNameForEdit = useDigitalHumanStore((s) => s.frozenDisplayNameForEdit)
   const storeDigitalHumanId = useDigitalHumanStore((s) => s.digitalHumanId)
   const setDetailBreadcrumb = useBreadcrumbDetailStore((s) => s.setDetailBreadcrumb)
   const { setCollapsed } = useGlobalLayoutStore()
@@ -42,14 +44,26 @@ export function useDigitalHumanPageLoad(
       return
     }
     const routeKey = variant === 'detail' ? 'digital-human-detail' : 'digital-human-setting-item'
-    const title = basicName?.trim()
+    const title =
+      variant === 'setting' && uiMode === 'edit'
+        ? (frozenDisplayNameForEdit ?? basicName)?.trim()
+        : basicName?.trim()
     if (title) {
       setDetailBreadcrumb({ routeKey, title })
     } else {
       setDetailBreadcrumb(null)
     }
     return () => setDetailBreadcrumb(null)
-  }, [basicName, digitalHumanId, enabled, setDetailBreadcrumb, storeDigitalHumanId, variant])
+  }, [
+    basicName,
+    digitalHumanId,
+    enabled,
+    frozenDisplayNameForEdit,
+    setDetailBreadcrumb,
+    storeDigitalHumanId,
+    uiMode,
+    variant,
+  ])
 
   useEffect(() => {
     // setCollapsed(true)
