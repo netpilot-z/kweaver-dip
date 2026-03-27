@@ -8,6 +8,7 @@
   "ContentAbstractData": "摘要",
   "extractFile": "檔案",
   "extractFilePlaceholder": "請選擇檔案",
+  "selectVariablePlaceholder": "請選擇變數",
   "select": "選擇",
   "fileSelectTitle": "選擇檔案",
   "version": "檔案版本",

@@ -95,20 +95,16 @@ const AttachementInput = forwardRef<Validatable, AttachementInputProps>(
   ({ value, index, t, onChange, onRemove, videoAttachmentIndex }, ref) => {
     const [form] = Form.useForm();
 
-    useImperativeHandle(
-      ref,
-      () => {
-        return {
-          validate() {
-            return form.validateFields().then(
-              () => true,
-              () => false
-            );
-          },
-        };
-      },
-      [form]
-    );
+    useImperativeHandle(ref, () => {
+      return {
+        validate() {
+          return form.validateFields().then(
+            () => true,
+            () => false,
+          );
+        },
+      };
+    }, [form]);
 
     const fileTypeRadioOptions = useMemo(() => {
       const videoOptionDisabled =
@@ -121,7 +117,7 @@ const AttachementInput = forwardRef<Validatable, AttachementInputProps>(
           `支持 ${displayExtensions.video} 格式`,
           {
             displayExtensions: displayExtensions.video,
-          }
+          },
         ),
         showDescriptionTooltip: !videoOptionDisabled,
         tooltip: videoOptionDisabled
@@ -136,7 +132,7 @@ const AttachementInput = forwardRef<Validatable, AttachementInputProps>(
           description: t(
             "formatSupport",
             `支持 ${displayExtensions.image} 格式`,
-            { displayExtensions: displayExtensions.image }
+            { displayExtensions: displayExtensions.image },
           ),
           showDescriptionTooltip: true,
         },
@@ -149,7 +145,10 @@ const AttachementInput = forwardRef<Validatable, AttachementInputProps>(
         form={form}
         initialValues={value}
         onFieldsChange={() => {
-          onChange?.(form.getFieldsValue());
+          onChange?.({
+            ...form.getFieldsValue(),
+            source_type: SourceTypeEnum.Docid,
+          });
         }}
       >
         <div className={styles["attachement"]}>
@@ -204,98 +203,33 @@ const AttachementInput = forwardRef<Validatable, AttachementInputProps>(
             </Radio.Group>
           </FormItem>
 
-          {value?.source_type === SourceTypeEnum.Docid && (
-            <FormItem
-              label={t("extractFile", "文件")}
-              name="docid"
-              allowVariable
-              type="asFile"
-              rules={[
-                {
-                  required: true,
-                  message: t("emptyMessage", "此项不能为空"),
-                },
-              ]}
-            >
-              <AsFileSelect
-                title={t("fileSelectTitle")}
-                multiple={false}
-                omitUnavailableItem
-                selectType={1}
-                placeholder={t("imagePlaceholder", "请选择")}
-                selectButtonText={t("select")}
-                supportExtensions={
-                  value?.media_type === MediaTypeEnum.Image
-                    ? supportExtensions.image
-                    : supportExtensions.video
-                }
-              />
-            </FormItem>
-          )}
-
-          {value?.source_type === SourceTypeEnum.Url && (
-            <FormItem
-              label="URL"
-              name="url"
-              allowVariable
-              type="string"
-              rules={[
-                {
-                  required: true,
-                  message: t("emptyMessage", "此项不能为空"),
-                },
-              ]}
-            >
-              <Input
-                placeholder={
-                  value?.media_type === MediaTypeEnum.Image
-                    ? t(
-                        "imageUrlPlaceholder",
-                        "请输入URL，示例：https://www.example.com/123.jpg"
-                      )
-                    : t(
-                        "videoUrlPlaceholder",
-                        "请输入URL，示例：https://www.example.com/123.mp4"
-                      )
-                }
-              />
-            </FormItem>
-          )}
-
-          <FormItem name="source_type" style={{ marginTop: "-18px" }}>
-            <Switch
-              className={styles["switch"]}
-              size="small"
-              defaultChecked={value?.source_type === SourceTypeEnum.Url}
-              onChange={(checked) => {
-                form.setFieldValue(
-                  "source_type",
-                  checked ? SourceTypeEnum.Url : SourceTypeEnum.Docid
-                );
-
-                onChange?.(form.getFieldsValue());
-              }}
+          <FormItem
+            label={t("extractFile", "文件")}
+            name="docid"
+            allowVariable
+            type="asFile"
+            rules={[
+              {
+                required: true,
+                message: t("emptyMessage", "此项不能为空"),
+              },
+            ]}
+          >
+            <AsFileSelect
+              readOnly
+              title={t("fileSelectTitle")}
+              multiple={false}
+              omitUnavailableItem
+              selectType={1}
+              placeholder={t("selectVariablePlaceholder", "请选择变量")}
+              selectButtonText={t("select")}
+              supportExtensions={
+                value?.media_type === MediaTypeEnum.Image
+                  ? supportExtensions.image
+                  : supportExtensions.video
+              }
             />
-            <div className={styles["switch-label"]}>
-              {t("urlSwitchLabel", "通过 URL 地址选择文件")}
-            </div>
           </FormItem>
-
-          {value?.source_type === SourceTypeEnum.Docid && (
-            <FormItem
-              label={t("version", "文件版本")}
-              name="version"
-              allowVariable
-              type="string"
-            >
-              <Input
-                placeholder={t(
-                  "versionPlaceholder",
-                  "请输入文件版本，默认获取所选文件的最新版本"
-                )}
-              />
-            </FormItem>
-          )}
 
           <CloseOutlined
             style={{
@@ -310,7 +244,7 @@ const AttachementInput = forwardRef<Validatable, AttachementInputProps>(
         </div>
       </Form>
     );
-  }
+  },
 );
 
 export const ChatCompletionConfig = forwardRef<
@@ -327,7 +261,7 @@ export const ChatCompletionConfig = forwardRef<
       },
       onChange,
     },
-    ref
+    ref,
   ) => {
     const [form] = Form.useForm<ChatCompletionParameters>();
     const initialSettings = {
@@ -361,7 +295,7 @@ export const ChatCompletionConfig = forwardRef<
       {
         revalidateIfStale: false,
         revalidateOnFocus: false,
-      }
+      },
     );
 
     // 选择的模型信息，包含model_type
@@ -372,14 +306,14 @@ export const ChatCompletionConfig = forwardRef<
 
     const attachementInputs = useMemo(
       () => parameters.attachements?.map(() => createRef<Validatable>()),
-      [parameters.attachements]
+      [parameters.attachements],
     );
 
     // 附件中视频类文件类型的index
     const videoAttachmentIndex = useMemo(() => {
       if (!parameters?.attachements) return -1;
       return parameters.attachements.findIndex(
-        (item) => item.media_type === MediaTypeEnum.Video
+        (item) => item.media_type === MediaTypeEnum.Video,
       );
     }, [parameters?.attachements]);
 
@@ -390,11 +324,11 @@ export const ChatCompletionConfig = forwardRef<
             ...(attachementInputs || []).map(
               (ref) =>
                 typeof ref.current?.validate !== "function" ||
-                ref.current?.validate()
+                ref.current?.validate(),
             ),
             form.validateFields().then(
               () => true,
-              () => false
+              () => false,
             ),
           ]).then((results) => {
             return results.every((r) => r);
@@ -539,7 +473,7 @@ export const ChatCompletionConfig = forwardRef<
         )}
       </Form>
     );
-  }
+  },
 );
 
 export const ChatCompletionAction: ExecutorAction = {

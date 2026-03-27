@@ -4,37 +4,40 @@ import { FormItem } from "../../../editor/form-item";
 import { useTranslate } from "@applet/common";
 import { DocLibItem, DocLibList } from "../../../as-file-select/doclib-list";
 // @ts-ignore
-import { apis } from '@aishu-tech/components/dist/dip-components.full.js';
+import { apis } from "@aishu-tech/components/dist/dip-components.full.js";
 import { DocLibListNew } from "../../../as-file-select/doclib-list-new";
 import _ from "lodash";
 interface Parameters {
-    docids?: string[]
-    docs?: DocLibItem[]
-    depth?: number
+  docids?: string[];
+  docs?: DocLibItem[];
+  depth?: number;
 }
 
 interface SelectDocLibProps {
-    parameters: Parameters,
-    onChange: (value: Parameters) => void
+  parameters: Parameters;
+  onChange: (value: Parameters) => void;
+  // Controls whether the "scope" field is required. Defaults to true.
+  scopeRequired?: boolean;
 }
 
-const SelectDocLib = forwardRef(({ parameters, onChange }: SelectDocLibProps, ref) => {
-    const { docs: docLibs = [] } = parameters
+const SelectDocLib = forwardRef(
+  ({ parameters, onChange, scopeRequired = true }: SelectDocLibProps, ref) => {
+    const { docs: docLibs = [] } = parameters;
     const t = useTranslate();
-    const [form] = Form.useForm()
+    const [form] = Form.useForm();
 
     useImperativeHandle(ref, () => {
-        return {
-            validate() {
-                if (!docLibs.length) {
-                    form?.validateFields()
+      return {
+        validate() {
+          if (scopeRequired && !docLibs.length) {
+            form?.validateFields();
 
-                    return false
-                }
+            return false;
+          }
 
-                return true
-            },
-        };
+          return true;
+        },
+      };
     });
 
     const docLibsArry = () => {
@@ -51,7 +54,7 @@ const SelectDocLib = forwardRef(({ parameters, onChange }: SelectDocLibProps, re
         multiple: true,
         selectType: 2,
         onConfirm: (selections: any[]) => {
-          const newDocLibs = docLibsArry()
+          const newDocLibs = docLibsArry();
           const docsArry = [...newDocLibs, ...selections];
           const docs = _.uniqBy(docsArry, "id");
           onChange({
@@ -64,46 +67,48 @@ const SelectDocLib = forwardRef(({ parameters, onChange }: SelectDocLibProps, re
     };
 
     return (
-        <div>
-            <Form
-                form={form}
-                layout={'vertical'}
-            >
-                <FormItem
-                    name={'docids'}
-                    required
-                    label={t("datastudio.trigger.scope", "适用范围")}
-                    rules={[
-                        {
-                            required: true,
-                            message: t("emptyMessage"),
-                        },
-                    ]}
-                >
-                    {
-                        docLibs.length === 0
-                            ? <div style={{ display: 'flex' }}>
-                                <Input
-                                    style={{ marginRight: '8px' }}
-                                    placeholder={t("datastudio.trigger.scope.placeholder", "请选择文档库")}
-                                />
-                                <Button onClick={() => selectFn()}>
-                                    {t("datastudio.trigger.scope.select", "选择")}
-                                </Button>
-                            </div>
-                            : <DocLibListNew
-                                data={docLibsArry()}
-                                onAdd={() => selectFn()}
-                                onChange={(value:any) => onChange({
-                                    depth: -1,
-                                    docs: value,
-                                    docids: value.map(({ id }:any) => id)
-                                })}
-                            />
-                    }
-                </FormItem>
-            </Form>
-            {/* {
+      <div>
+        <Form form={form} layout={"vertical"}>
+          <FormItem
+            name={"docids"}
+            required={scopeRequired}
+            label={t("datastudio.trigger.scope", "适用范围")}
+            rules={[
+              {
+                required: scopeRequired,
+                message: t("emptyMessage"),
+              },
+            ]}
+          >
+            {docLibs.length === 0 ? (
+              <div style={{ display: "flex" }}>
+                <Input
+                  style={{ marginRight: "8px" }}
+                  placeholder={t(
+                    "datastudio.trigger.scope.placeholder",
+                    "请选择文档库",
+                  )}
+                />
+                <Button onClick={() => selectFn()}>
+                  {t("datastudio.trigger.scope.select", "选择")}
+                </Button>
+              </div>
+            ) : (
+              <DocLibListNew
+                data={docLibsArry()}
+                onAdd={() => selectFn()}
+                onChange={(value: any) =>
+                  onChange({
+                    depth: -1,
+                    docs: value,
+                    docids: value.map(({ id }: any) => id),
+                  })
+                }
+              />
+            )}
+          </FormItem>
+        </Form>
+        {/* {
                 showPicker
                     ? (
                         <DocLibsPicker
@@ -132,8 +137,9 @@ const SelectDocLib = forwardRef(({ parameters, onChange }: SelectDocLibProps, re
                     )
                     : null
             } */}
-        </div >
-    )
-})
+      </div>
+    );
+  },
+);
 
-export { SelectDocLib }
+export { SelectDocLib };

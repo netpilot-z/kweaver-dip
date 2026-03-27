@@ -8,6 +8,7 @@
   "ContentAbstractData": "Summary",
   "extractFile": "File",
   "extractFilePlaceholder": "Please select a file.",
+  "selectVariablePlaceholder": "Please select a variable.",
   "select": "Select",
   "fileSelectTitle": "Select File",
   "version": "File Version",

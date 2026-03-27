@@ -71,16 +71,20 @@ const TriggerConfig = ({
   } = flowDetail;
   const dataSourceOperator = (steps && steps[0]?.operator) || "";
   const Triggers: any =
-    steps && steps[0]?.operator === "@trigger/dataview"
+    steps?.[0]?.operator === "@trigger/dataflow-doc"
       ? {
-          [TriggerType.Cron]: Cron,
           [TriggerType.Manual]: Manual,
         }
-      : {
-          [TriggerType.Cron]: Cron,
-          [TriggerType.Event]: Event,
-          [TriggerType.Manual]: Manual,
-        };
+      : steps?.[0]?.operator === "@trigger/dataview"
+        ? {
+            [TriggerType.Cron]: Cron,
+            [TriggerType.Manual]: Manual,
+          }
+        : {
+            [TriggerType.Cron]: Cron,
+            [TriggerType.Event]: Event,
+            [TriggerType.Manual]: Manual,
+          };
 
   // 数据源为非结构类型（文件）时才可选择【适用范围】
   const isFile = dataSourceOperator === "@trigger/dataflow-doc";
@@ -91,18 +95,20 @@ const TriggerConfig = ({
   const tCron = useTranslateExtension("cron");
 
   const [step, setStep] = useState<number>(
-    operator && !includes(onlyOneStep, Actions[operator]?.trigger) ? 1 : 0
+    operator && !includes(onlyOneStep, Actions[operator]?.trigger) ? 1 : 0,
   );
 
   const [currentOperator, setCurrentOperator] = useState<string | null>(
-    operator
+    operator,
   );
   const [currentTrigger, setCurrentTrigger] = useState<TriggerType>(
-    Actions[currentOperator!]?.trigger
+    Actions[currentOperator!]?.trigger,
   );
   const [currentParameters, setCurrentParameters] = useState<any>(parameters);
 
-  const [currentSourceOperator, setCurrentSourceOperator] = useState<string | undefined>(flowDetail?.trigger_config?.dataSource?.operator);
+  const [currentSourceOperator, setCurrentSourceOperator] = useState<
+    string | undefined
+  >(flowDetail?.trigger_config?.dataSource?.operator);
 
   const [currrentDSParameters, setCurrrentDSParameters] = useState<any>(
     (() => {
@@ -115,7 +121,7 @@ const TriggerConfig = ({
       }
 
       return { accessorid: "00000000-0000-0000-0000-000000000000" };
-    })()
+    })(),
   );
 
   const selectRef = useRef<{ validate: () => Promise<boolean> }>();
@@ -146,7 +152,7 @@ const TriggerConfig = ({
   const confirm = async (
     trigger: any,
     operator: string,
-    data?: any
+    data?: any,
   ): Promise<void> => {
     const validate = await Promise.all([
       selectRef.current ? selectRef.current.validate() : Promise.resolve(true),
@@ -162,7 +168,10 @@ const TriggerConfig = ({
 
         dataSource = {
           dataSource: {
-            operator: currentSourceOperator || getDataSourceOperator[dataSourceOperator] || "",
+            operator:
+              currentSourceOperator ||
+              getDataSourceOperator[dataSourceOperator] ||
+              "",
             parameters: isTemplCreate
               ? currrentDSParameters
               : omit(currrentDSParameters, ["docs"]),
@@ -203,7 +212,7 @@ const TriggerConfig = ({
                 const { name, description, icon } = trigger;
                 const translateName = t(`datastudio.trigger.${name}`);
                 const translateDescription = t(
-                  `datastudio.trigger.${description}`
+                  `datastudio.trigger.${description}`,
                 );
 
                 return (
@@ -214,6 +223,11 @@ const TriggerConfig = ({
                     icon={icon || ""}
                     selected={name === Actions[currentOperator!]?.trigger}
                     onClick={() => {
+                      if (steps?.[0]?.operator === "@trigger/dataflow-doc") {
+                        // 当数据源是非结构化数据时，此流程只能手动触发，无需选择触发方式
+                        confirm(TriggerType.Manual, "@trigger/manual");
+                        return;
+                      }
                       setCurrentTrigger(trigger.name);
 
                       if (trigger.name !== currentTrigger) {
@@ -225,7 +239,7 @@ const TriggerConfig = ({
                         confirm(
                           trigger.name,
                           Triggers[trigger?.name as TriggerType]
-                            ?.defaultOperator
+                            ?.defaultOperator,
                         );
 
                         return;
@@ -277,7 +291,7 @@ const TriggerConfig = ({
                 currentSourceOperator={currentSourceOperator}
                 onChange={(value: any, operator?: string) => {
                   setCurrrentDSParameters(value);
-                  if(operator) setCurrentSourceOperator(operator)
+                  if (operator) setCurrentSourceOperator(operator);
                 }}
                 dagsId={dagsId || flowDetail?.id}
               />

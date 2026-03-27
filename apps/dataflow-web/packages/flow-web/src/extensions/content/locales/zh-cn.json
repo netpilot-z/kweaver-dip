@@ -8,6 +8,7 @@
   "ContentAbstractData": "摘要",
   "extractFile": "文件",
   "extractFilePlaceholder": "请选择文件",
+  "selectVariablePlaceholder": "请选择变量",
   "select": "选择",
   "fileSelectTitle": "选择文件",
   "version": "文件版本",

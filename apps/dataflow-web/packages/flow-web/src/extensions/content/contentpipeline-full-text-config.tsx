@@ -65,7 +65,7 @@ export const ContentpipelineFullTextConfig = forwardRef<
       validate() {
         return form.validateFields().then(
           () => true,
-          () => false
+          () => false,
         );
       },
     };
@@ -96,11 +96,12 @@ export const ContentpipelineFullTextConfig = forwardRef<
         ]}
       >
         <AsFileSelect
+          readOnly
           title={t("fileSelectTitle")}
           multiple={false}
           omitUnavailableItem
           selectType={1}
-          placeholder={t("extractFilePlaceholder", "请选择文件")}
+          placeholder={t("selectVariablePlaceholder", "请选择变量")}
           selectButtonText={t("select")}
           supportExtensions={supportExtensions}
         />
@@ -112,20 +113,6 @@ export const ContentpipelineFullTextConfig = forwardRef<
         <span style={{ color: "rgba(0, 0, 0, 0.45)" }}>
           {t("supportedFileFormats", "支持的文件格式")}
         </span>
-      </FormItem>
-
-      <FormItem
-        label={t("version", "文件版本")}
-        name="version"
-        allowVariable
-        type="string"
-      >
-        <Input
-          placeholder={t(
-            "versionPlaceholder",
-            "请输入文件版本，默认获取所选文件的最新版本"
-          )}
-        />
       </FormItem>
     </Form>
   );

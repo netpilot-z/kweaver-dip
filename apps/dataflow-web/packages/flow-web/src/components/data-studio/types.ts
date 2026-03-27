@@ -31,6 +31,7 @@ export interface ITaskItem {
     updated_at: string;
     status: string;
     id: string;
+    actions?: string[];
 }
 
 export interface IOriginal {

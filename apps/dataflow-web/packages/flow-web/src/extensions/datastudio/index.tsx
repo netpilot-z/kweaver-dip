@@ -33,18 +33,8 @@ const FileSource: ExecutorAction = {
   outputs: [
     {
       key: ".id",
-      name: "FileOutputId",
+      name: "FileOutputFileId",
       type: "asFile",
-    },
-    {
-      key: ".docid",
-      name: "FileOutputGns",
-      type: "string",
-    },
-    {
-      key: ".item_id",
-      name: "FileOutputObjectId",
-      type: "string",
     },
     {
       key: ".name",
@@ -52,49 +42,9 @@ const FileSource: ExecutorAction = {
       type: "string",
     },
     {
-      key: ".rev",
-      name: "FileOutputRev",
-      type: "string",
-    },
-    {
-      key: ".create_time",
-      name: "FileOutputCreateTime",
-      type: "string",
-    },
-    {
-      key: ".modify_time",
-      name: "FileOutputModifyTime",
-      type: "string",
-    },
-    {
       key: ".size",
       name: "FileOutputSize",
       type: "int",
-    },
-    {
-      key: ".path",
-      name: "FileOutputPath",
-      type: "string",
-    },
-    {
-      key: ".csflevel",
-      name: "FileOutputCsfLevel",
-      type: "int",
-    },
-    {
-      key: ".creator_id",
-      name: "FileOutputCreatorId",
-      type: "string",
-    },
-    {
-      key: ".editor_id",
-      name: "FileOutputEditorId",
-      type: "string",
-    },
-    {
-      key: ".download_url",
-      name: "FileOutputDownloadUrl",
-      type: "string",
     },
   ],
 };
@@ -315,22 +265,22 @@ export default {
     //   ],
     //   actions: [...GraphDataBaseExecutorActions],
     // },
-    {
-      name: "WriteFile",
-      icon: FileSVG,
-      description: "WriteFile",
-      groups: [
-        {
-          group: "file",
-          name: "EGFile",
-        },
-        {
-          group: "folder",
-          name: "EGFolder",
-        },
-      ],
-      actions: [...FileCreate],
-    },
+    // {
+    //   name: "WriteFile",
+    //   icon: FileSVG,
+    //   description: "WriteFile",
+    //   groups: [
+    //     {
+    //       group: "file",
+    //       name: "EGFile",
+    //     },
+    //     {
+    //       group: "folder",
+    //       name: "EGFolder",
+    //     },
+    //   ],
+    //   actions: [...FileCreate],
+    // },
     // ...EcoConfigExecutorActions
   ] as any,
   translations: {
