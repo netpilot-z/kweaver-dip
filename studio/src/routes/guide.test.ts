@@ -71,11 +71,15 @@ describe("readInitializeGuideRequestBody", () => {
     expect(
       readInitializeGuideRequestBody({
         openclaw_address: "ws://127.0.0.1:19001",
-        openclaw_token: "token-1"
+        openclaw_token: "token-1",
+        kweaver_base_url: "https://kweaver.example.com",
+        kweaver_token: "kw-token"
       })
     ).toEqual({
       openclaw_address: "ws://127.0.0.1:19001",
-      openclaw_token: "token-1"
+      openclaw_token: "token-1",
+      kweaver_base_url: "https://kweaver.example.com",
+      kweaver_token: "kw-token"
     });
     expect(() => readInitializeGuideRequestBody(null)).toThrow(
       "Guide initialize request body must be a JSON object"
@@ -84,6 +88,16 @@ describe("readInitializeGuideRequestBody", () => {
       openclaw_address: "",
       openclaw_token: "token-1"
     })).toThrow("openclaw_address is required");
+    expect(() => readInitializeGuideRequestBody({
+      openclaw_address: "ws://127.0.0.1:19001",
+      openclaw_token: "token-1",
+      kweaver_base_url: "https://kweaver.example.com"
+    })).toThrow("kweaver_token is required when kweaver_base_url is provided");
+    expect(() => readInitializeGuideRequestBody({
+      openclaw_address: "ws://127.0.0.1:19001",
+      openclaw_token: "token-1",
+      kweaver_token: "kw-token"
+    })).toThrow("kweaver_base_url is required when kweaver_token is provided");
   });
 });
 
@@ -177,7 +191,9 @@ describe("createGuideRouter", () => {
       {
         body: {
           openclaw_address: "ws://127.0.0.1:19001",
-          openclaw_token: "token-1"
+          openclaw_token: "token-1",
+          kweaver_base_url: "https://kweaver.example.com",
+          kweaver_token: "kw-token"
         }
       } as Request,
       response,
@@ -215,7 +231,9 @@ describe("createGuideRouter", () => {
       {
         body: {
           openclaw_address: "ws://127.0.0.1:19001",
-          openclaw_token: "token-1"
+          openclaw_token: "token-1",
+          kweaver_base_url: "https://kweaver.example.com",
+          kweaver_token: "kw-token"
         }
       } as Request,
       response,

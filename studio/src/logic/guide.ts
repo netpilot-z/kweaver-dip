@@ -62,6 +62,16 @@ export interface NormalizedInitializeGuideRequest {
   openclaw_token: string;
 
   /**
+   * Optional KWeaver service base URL.
+   */
+  kweaver_base_url?: string;
+
+  /**
+   * Optional KWeaver access token.
+   */
+  kweaver_token?: string;
+
+  /**
    * Derived OpenClaw config file path.
    */
   configPath: string;
@@ -309,7 +319,11 @@ export class DefaultGuideLogic implements GuideLogic {
   public async initialize(
     request: InitializeGuideRequest
   ): Promise<void> {
-    const normalized = normalizeInitializeGuideRequest(request);
+    const localPaths = await resolveOpenClawLocalPaths(
+      this.commandRunner,
+      this.studioRootDir
+    );
+    const normalized = normalizeInitializeGuideRequest(request, localPaths);
     const envFilePath = join(this.studioRootDir, ".env");
     const envExamplePath = join(this.studioRootDir, ".env.example");
     const assetsDir = join(this.studioRootDir, "assets");
@@ -351,6 +365,10 @@ export class DefaultGuideLogic implements GuideLogic {
       token: normalized.openclaw_token,
       connector: this.gatewayConnector
     });
+    await mergeOpenClawRootEnv(
+      join(normalized.stateDir, ".env"),
+      buildOpenClawRootEnvEntries(normalized)
+    );
   }
 }
 
@@ -436,21 +454,32 @@ export function readGatewayTokenFromConfig(rawConfig: string): string {
  * @throws {HttpError} Thrown when required fields are invalid.
  */
 export function normalizeInitializeGuideRequest(
-  request: InitializeGuideRequest
+  request: InitializeGuideRequest,
+  localPaths?: {
+    configPath: string;
+    stateDir: string;
+    workspaceDir: string;
+  }
 ): NormalizedInitializeGuideRequest {
   const address = readRequiredGuideString(
     request.openclaw_address,
     "openclaw_address"
   );
   const token = readRequiredGuideString(request.openclaw_token, "openclaw_token");
+  const kweaverBaseUrl = readOptionalString(request.kweaver_base_url);
+  const kweaverToken = readOptionalString(request.kweaver_token);
   const parsedAddress = parseOpenClawAddress(address);
-  const stateDir = readRequiredGuideString(join(process.env.HOME ?? "", ".openclaw"), "stateDir");
-  const workspaceDir = resolveWorkspaceDir(stateDir);
-  const configPath = join(stateDir, "openclaw.json");
+  const stateDir =
+    localPaths?.stateDir ??
+    readRequiredGuideString(join(process.env.HOME ?? "", ".openclaw"), "stateDir");
+  const workspaceDir = localPaths?.workspaceDir ?? resolveWorkspaceDir(stateDir);
+  const configPath = localPaths?.configPath ?? join(stateDir, "openclaw.json");
 
   return {
     openclaw_address: address,
     openclaw_token: token,
+    kweaver_base_url: kweaverBaseUrl,
+    kweaver_token: kweaverToken,
     configPath,
     protocol: parsedAddress.protocol,
     host: parsedAddress.host,
@@ -533,8 +562,69 @@ export function buildGuideEnvEntries(
     ["OPENCLAW_GATEWAY_HOST", request.host],
     ["OPENCLAW_GATEWAY_PORT", String(request.port)],
     ["OPENCLAW_GATEWAY_TOKEN", request.token],
-    ["OPENCLAW_WORKSPACE_DIR", request.workspaceDir]
+    ["OPENCLAW_WORKSPACE_DIR", request.workspaceDir],
+    ["KWEAVER_BASE_URL", request.kweaver_base_url ?? ""],
+    ["KWEAVER_TOKEN", request.kweaver_token ?? ""]
   ];
+}
+
+/**
+ * Builds the env entries written to the OpenClaw root `.env` file.
+ *
+ * @param request Normalized initialization payload.
+ * @returns The KWeaver-related env key/value pairs.
+ */
+export function buildOpenClawRootEnvEntries(
+  request: NormalizedInitializeGuideRequest
+): ReadonlyArray<readonly [string, string]> {
+  return [
+    ["KWEAVER_BASE_URL", request.kweaver_base_url ?? ""],
+    ["KWEAVER_TOKEN", request.kweaver_token ?? ""]
+  ];
+}
+
+/**
+ * Resolves OpenClaw local filesystem paths from `openclaw gateway status`.
+ *
+ * @param commandRunner Command runner used to invoke the local CLI.
+ * @param studioRootDir Base directory used to resolve relative config paths.
+ * @returns The resolved config, state, and workspace paths.
+ */
+export async function resolveOpenClawLocalPaths(
+  commandRunner: GuideCommandRunner,
+  studioRootDir: string
+): Promise<{
+  configPath: string;
+  stateDir: string;
+  workspaceDir: string;
+}> {
+  const statusOutput = await commandRunner.execFile("openclaw", ["gateway", "status"]);
+  const parsedStatus = parseOpenClawGatewayStatus(statusOutput.stdout);
+  const configPath = resolveOpenClawConfigPath(parsedStatus.configPath, studioRootDir);
+  const stateDir = dirname(configPath);
+
+  return {
+    configPath,
+    stateDir,
+    workspaceDir: resolveWorkspaceDir(stateDir)
+  };
+}
+
+/**
+ * Writes or updates the OpenClaw root `.env` file.
+ *
+ * @param envFilePath Absolute target `.env` path.
+ * @param entries Key/value pairs to merge.
+ */
+export async function mergeOpenClawRootEnv(
+  envFilePath: string,
+  entries: ReadonlyArray<readonly [string, string]>
+): Promise<void> {
+  const current = (await pathExists(envFilePath))
+    ? await readFile(envFilePath, "utf8")
+    : "";
+
+  await writeFile(envFilePath, upsertEnvEntries(current, entries), "utf8");
 }
 
 /**
@@ -548,7 +638,7 @@ export function upsertEnvEntries(
   content: string,
   entries: ReadonlyArray<readonly [string, string]>
 ): string {
-  const lines = content.split(/\r?\n/);
+  const lines = content === "" ? [] : content.split(/\r?\n/);
   const pending = new Map(entries.map(([key, value]) => [key, value]));
 
   const nextLines = lines.map((line) => {

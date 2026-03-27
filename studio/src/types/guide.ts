@@ -74,4 +74,14 @@ export interface InitializeGuideRequest {
    * OpenClaw gateway auth token.
    */
   openclaw_token: string;
+
+  /**
+   * Optional KWeaver service base URL.
+   */
+  kweaver_base_url?: string;
+
+  /**
+   * Optional KWeaver access token.
+   */
+  kweaver_token?: string;
 }

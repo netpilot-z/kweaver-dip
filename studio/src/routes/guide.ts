@@ -98,8 +98,23 @@ export function readInitializeGuideRequestBody(
     throw new HttpError(400, "openclaw_token is required");
   }
 
+  const kweaverBaseUrl =
+    typeof body.kweaver_base_url === "string" ? body.kweaver_base_url.trim() : "";
+  const kweaverToken =
+    typeof body.kweaver_token === "string" ? body.kweaver_token.trim() : "";
+
+  if (kweaverBaseUrl !== "" && kweaverToken === "") {
+    throw new HttpError(400, "kweaver_token is required when kweaver_base_url is provided");
+  }
+
+  if (kweaverBaseUrl === "" && kweaverToken !== "") {
+    throw new HttpError(400, "kweaver_base_url is required when kweaver_token is provided");
+  }
+
   return {
     openclaw_address: body.openclaw_address.trim(),
-    openclaw_token: body.openclaw_token.trim()
+    openclaw_token: body.openclaw_token.trim(),
+    kweaver_base_url: kweaverBaseUrl === "" ? undefined : kweaverBaseUrl,
+    kweaver_token: kweaverToken === "" ? undefined : kweaverToken
   };
 }

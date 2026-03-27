@@ -63,6 +63,12 @@ components:
           description: 完整 OpenClaw Gateway 地址，例如 `ws://127.0.0.1:19001`
         openclaw_token:
           type: string
+        kweaver_base_url:
+          type: string
+          description: KWeaver 服务地址；为空时表示禁用 KWeaver 配置
+        kweaver_token:
+          type: string
+          description: KWeaver Token；当 `kweaver_base_url` 非空时必填
 
     GuideInitializeResponse:
       type: object

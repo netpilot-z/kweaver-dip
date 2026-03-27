@@ -31,6 +31,8 @@ activate BE
 SW ->> BE: 确认配置
 BE ->> BE: 写入 .env
 BE ->> OC: 与 OpenClaw Gateway 建立 WebSocket 连接
+BE ->> OC: 追加环境变量到 OpenClaw 根目录下 .env
+BE ->> BE: 
 BE ->> SW: 完成初始化
 deactivate BE
 end
@@ -71,7 +73,9 @@ Studio Backend 读取完配置（成功或失败）后：
 用户可以在 Web 修改配置信息，配置项包括：
 
 * OpenClaw 网关连接地址
-* OpenClaw 网关 Token （不显示明文）
+* OpenClaw 网关 Token（不显示明文）
+* KWeaver 服务地址（访问 KWeaver API 需要，可选）
+* KWeaver Token（默认禁用，如填写了 KWeaver 服务地址，则启用且必填）
 
 用户修改并确认配置后发送初始化请求到 Studio Backend， Studio Backend 执行初始化操作：
 
@@ -85,7 +89,8 @@ openssl pkey -in private.pem -pubout -out public.pem
 ```
 4. 执行 `npm run init:agents` 初始化 OpenClaw 默认配置、built-in agents 以及 extensions。
 5. 初始化成功后，与 OpenClaw Gateway 建立 WebSocket 连接。
-6. 连接成功后返回初始化结果。
+6. 连接成功后，追加 KWEAVER_BASE_URL 和 KWEAVER_TOKEN 到 OpenClaw 根目录下的 .env 文件（没有则创建）
+7. 返回初始化结果。
 
 ## HTTP 接口
 
@@ -93,5 +98,5 @@ Studio Backend 提供以下 HTTP 接口：
 
 - 获取 DIP Studio 系统初始化状态；
 - 获取 OpenClaw 配置；
-- 完成  DIP Studio 系统初始化；
+- 完成 DIP Studio 系统初始化；
 

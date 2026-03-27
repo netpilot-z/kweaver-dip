@@ -6,15 +6,18 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { HttpError } from "../errors/http-error";
 import {
+  buildOpenClawRootEnvEntries,
   buildGuideEnvEntries,
   collectMissingRequirements,
   DefaultGuideLogic,
   encodeEnvValue,
+  mergeOpenClawRootEnv,
   normalizeInitializeGuideRequest,
   parseOpenClawAddress,
   parseDotEnv,
   parseOpenClawGatewayStatus,
   readGatewayTokenFromConfig,
+  resolveOpenClawLocalPaths,
   resolveOpenClawConfigPath,
   stripWrappingQuotes,
   upsertEnvEntries
@@ -115,11 +118,15 @@ describe("normalizeInitializeGuideRequest", () => {
     expect(
       normalizeInitializeGuideRequest({
         openclaw_address: "ws://127.0.0.1:19001",
-        openclaw_token: "token-1"
+        openclaw_token: "token-1",
+        kweaver_base_url: "https://kweaver.example.com",
+        kweaver_token: "kw-token"
       })
     ).toEqual({
       openclaw_address: "ws://127.0.0.1:19001",
       openclaw_token: "token-1",
+      kweaver_base_url: "https://kweaver.example.com",
+      kweaver_token: "kw-token",
       configPath: join(process.env.HOME ?? "", ".openclaw", "openclaw.json"),
       protocol: "ws",
       host: "127.0.0.1",
@@ -135,6 +142,8 @@ describe("normalizeInitializeGuideRequest", () => {
       buildGuideEnvEntries({
         openclaw_address: "ws://127.0.0.1:19001",
         openclaw_token: "token-1",
+        kweaver_base_url: "https://kweaver.example.com",
+        kweaver_token: "kw-token",
         configPath: "/tmp/openclaw/openclaw.json",
         protocol: "ws",
         host: "127.0.0.1",
@@ -150,7 +159,30 @@ describe("normalizeInitializeGuideRequest", () => {
       ["OPENCLAW_GATEWAY_HOST", "127.0.0.1"],
       ["OPENCLAW_GATEWAY_PORT", "19001"],
       ["OPENCLAW_GATEWAY_TOKEN", "token-1"],
-      ["OPENCLAW_WORKSPACE_DIR", "/tmp/openclaw/workspace"]
+      ["OPENCLAW_WORKSPACE_DIR", "/tmp/openclaw/workspace"],
+      ["KWEAVER_BASE_URL", "https://kweaver.example.com"],
+      ["KWEAVER_TOKEN", "kw-token"]
+    ]);
+  });
+
+  it("builds the expected OpenClaw root env entries", () => {
+    expect(
+      buildOpenClawRootEnvEntries({
+        openclaw_address: "ws://127.0.0.1:19001",
+        openclaw_token: "token-1",
+        kweaver_base_url: "https://kweaver.example.com",
+        kweaver_token: "kw-token",
+        configPath: "/tmp/openclaw/openclaw.json",
+        protocol: "ws",
+        host: "127.0.0.1",
+        port: 19001,
+        token: "token-1",
+        stateDir: "/tmp/openclaw",
+        workspaceDir: "/tmp/openclaw/workspace"
+      })
+    ).toEqual([
+      ["KWEAVER_BASE_URL", "https://kweaver.example.com"],
+      ["KWEAVER_TOKEN", "kw-token"]
     ]);
   });
 });
@@ -319,7 +351,15 @@ describe("DefaultGuideLogic", () => {
   it("initializes env, assets, and init script", async () => {
     const studioRootDir = await mkdtemp(join(tmpdir(), "dip-studio-guide-init-"));
     await writeFile(join(studioRootDir, ".env.example"), "PORT=3000\n", "utf8");
+    await mkdir(join(studioRootDir, "openclaw"), { recursive: true });
     const execFile = vi.fn()
+      .mockResolvedValueOnce({
+        stdout: [
+          `Config (service): ${join(studioRootDir, "openclaw", "openclaw.json")}`,
+          "Probe target: ws://127.0.0.1:19001"
+        ].join("\n"),
+        stderr: ""
+      })
       .mockResolvedValueOnce({
         stdout: "",
         stderr: ""
@@ -347,21 +387,29 @@ describe("DefaultGuideLogic", () => {
     await expect(
       logic.initialize({
         openclaw_address: "ws://127.0.0.1:19001",
-        openclaw_token: "token-1"
+        openclaw_token: "token-1",
+        kweaver_base_url: "https://kweaver.example.com",
+        kweaver_token: "kw-token"
       })
     ).resolves.toBeUndefined();
 
     expect(await readFile(join(studioRootDir, ".env"), "utf8")).toContain(
       "OPENCLAW_GATEWAY_TOKEN=token-1"
     );
+    expect(await readFile(join(studioRootDir, ".env"), "utf8")).toContain(
+      "KWEAVER_BASE_URL=https://kweaver.example.com"
+    );
+    expect(await readFile(join(studioRootDir, "openclaw", ".env"), "utf8")).toContain(
+      "KWEAVER_BASE_URL=https://kweaver.example.com"
+    );
     expect(execFile).toHaveBeenNthCalledWith(
-      1,
+      2,
       "openssl",
       ["genpkey", "-algorithm", "ED25519", "-out", join(studioRootDir, "assets", "private.pem")],
       { cwd: join(studioRootDir, "assets") }
     );
     expect(execFile).toHaveBeenNthCalledWith(
-      3,
+      4,
       "npm",
       ["run", "init:agents"],
       { cwd: studioRootDir }
@@ -373,5 +421,50 @@ describe("DefaultGuideLogic", () => {
     expect(gatewayConnector.connect).toHaveBeenCalledOnce();
 
     await rm(studioRootDir, { recursive: true, force: true });
+  });
+});
+
+describe("OpenClaw root env helpers", () => {
+  it("resolves local OpenClaw paths from gateway status", async () => {
+    const commandRunner = {
+      execFile: vi.fn().mockResolvedValue({
+        stdout: [
+          "Config (service): ~/.openclaw-dev/openclaw.json",
+          "Probe target: ws://127.0.0.1:19001"
+        ].join("\n"),
+        stderr: ""
+      })
+    };
+
+    await expect(
+      resolveOpenClawLocalPaths(commandRunner, "/tmp/studio")
+    ).resolves.toEqual({
+      configPath: join(process.env.HOME ?? "", ".openclaw-dev", "openclaw.json"),
+      stateDir: join(process.env.HOME ?? "", ".openclaw-dev"),
+      workspaceDir: join(process.env.HOME ?? "", ".openclaw-dev")
+    });
+  });
+
+  it("creates or updates the OpenClaw root env file", async () => {
+    const rootDir = await mkdtemp(join(tmpdir(), "dip-openclaw-root-env-"));
+    const envFilePath = join(rootDir, ".env");
+
+    await mergeOpenClawRootEnv(envFilePath, [
+      ["KWEAVER_BASE_URL", "https://kweaver.example.com"],
+      ["KWEAVER_TOKEN", "kw-token"]
+    ]);
+
+    expect(await readFile(envFilePath, "utf8")).toBe(
+      ["KWEAVER_BASE_URL=https://kweaver.example.com", "KWEAVER_TOKEN=kw-token", ""].join("\n")
+    );
+
+    await mergeOpenClawRootEnv(envFilePath, [
+      ["KWEAVER_BASE_URL", ""],
+      ["KWEAVER_TOKEN", ""]
+    ]);
+
+    expect(await readFile(envFilePath, "utf8")).toBe(
+      ["KWEAVER_BASE_URL=", "KWEAVER_TOKEN=", ""].join("\n")
+    );
   });
 });

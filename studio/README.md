@@ -18,7 +18,7 @@
 
 1. 执行 `npm install` 安装依赖
 2. 重命名 `.env.example` → `.env`，配置 OpenClaw 连接信息以及 OpenClaw 的 Auth Token。
-   同时配置 `BKN_BACKEND_URL` 和 `APP_USER_TOKEN`，用于转发 BKN Backend 请求。
+   同时配置 `KWEAVER_BASE_URL` 和 `KWEAVER_TOKEN`，用于转发 KWeaver Core 请求。
 3. 在 `assets` 目录下执行 OpenSSL 命令生成 Ed25519 PEM 私钥和 PEM 公钥，用于调用 OpenClaw Gateway 接口时进行签名
 ```bash
 cd assets
@@ -108,7 +108,9 @@ GitHub：https://github.com/kweaver-ai/web
 ```json
 {
   "openclaw_address": "ws://127.0.0.1:18789",
-  "openclaw_token": "your-openclaw-token"
+  "openclaw_token": "your-openclaw-token",
+  "kweaver_base_url": "https://kweaver.example.com",
+  "kweaver_token": "your-kweaver-token"
 }
 ```
 
@@ -118,6 +120,8 @@ GitHub：https://github.com/kweaver-ai/web
 | -- | -- | -- | -- |
 | openclaw_address | string | 是 | 完整 OpenClaw Gateway 地址，例如 `ws://127.0.0.1:18789` |
 | openclaw_token | string | 是 | OpenClaw Gateway Token |
+| kweaver_base_url | string | 否 | KWeaver 服务地址；为空时表示禁用 KWeaver 配置 |
+| kweaver_token | string | 否 | KWeaver Token；当 `kweaver_base_url` 非空时必填 |
 
 响应：`200`，无响应体。
 
@@ -203,7 +207,7 @@ GitHub：https://github.com/kweaver-ai/web
 
 公开接口基础路径：`/api/dip-studio/v1`
 
-服务会将以下请求转发到 `BKN_BACKEND_URL` 的 BKN Backend 接口，并使用环境变量 `APP_USER_TOKEN` 生成上游请求头 `Authorization: Bearer <APP_USER_TOKEN>`。
+服务会将以下请求转发到 `KWEAVER_BASE_URL` 的 KWeaver Core 接口，并使用环境变量 `KWEAVER_TOKEN` 生成上游请求头 `Authorization: Bearer <KWEAVER_TOKEN>`。
 
 两个接口均支持请求头 `x-business-domain`：会原样透传到 BKN Backend；若调用方未传或值为空，服务端会默认使用 `bd_public`。
 
