@@ -10,6 +10,7 @@ export interface AiAnswerBubbleProps {
 export interface DipChatKitToolCardItem {
   id: string
   kind: 'call' | 'result'
+  status?: 'in_progress' | 'completed'
   title: string
   detail: string
   toolName: string
@@ -19,4 +20,3 @@ export interface DipChatKitToolCardItem {
   previewText: string
   isError?: boolean
 }
-

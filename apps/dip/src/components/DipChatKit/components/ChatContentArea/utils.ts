@@ -41,7 +41,10 @@ const normalizeSessionMessageContentPart = (part: unknown): string => {
   if (typeof part === 'number' || typeof part === 'boolean') return String(part)
 
   if (Array.isArray(part)) {
-    return part.map((item) => normalizeSessionMessageContentPart(item)).filter(Boolean).join('')
+    return part
+      .map((item) => normalizeSessionMessageContentPart(item))
+      .filter(Boolean)
+      .join('')
   }
 
   if (typeof part === 'object') {
@@ -114,7 +117,8 @@ const extractToolCallEventsFromMessage = (
   const content = message.content
   if (!Array.isArray(content)) return []
 
-  const timestamp = typeof message.ts === 'number' && Number.isFinite(message.ts) ? message.ts : undefined
+  const timestamp =
+    typeof message.ts === 'number' && Number.isFinite(message.ts) ? message.ts : undefined
 
   return content.reduce<DipChatKitAnswerEvent[]>((events, part, partIndex) => {
     if (!part || typeof part !== 'object' || Array.isArray(part)) return events
@@ -151,7 +155,8 @@ const createSessionEvent = (
   const toolCallId = normalizeToolCallId((message as Record<string, unknown>).toolCallId)
   const isError = (message as Record<string, unknown>).isError === true
   const details = normalizeDetails((message as Record<string, unknown>).details)
-  const timestamp = typeof message.ts === 'number' && Number.isFinite(message.ts) ? message.ts : undefined
+  const timestamp =
+    typeof message.ts === 'number' && Number.isFinite(message.ts) ? message.ts : undefined
   const contentText = normalizeSessionMessageContent(message.content).trim()
   const detailsText = details ? toTextFromUnknown(details) : ''
   const text = contentText || detailsText

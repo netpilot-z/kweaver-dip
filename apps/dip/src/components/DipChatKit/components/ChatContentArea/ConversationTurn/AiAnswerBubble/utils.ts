@@ -3,8 +3,7 @@ import intl from 'react-intl-universal'
 import type { DipChatKitAnswerEvent, DipChatKitPreviewPayload } from '../../../../types'
 import type { DipChatKitToolCardItem } from './types'
 
-const MARKDOWN_FILE_NAME_PATTERN =
-  /([^\s"'<>()[\]{}]+?\.md)(?=$|[\s,.;:!?"'<>()[\]{}])/gi
+const MARKDOWN_FILE_NAME_PATTERN = /([^\s"'<>()[\]{}]+?\.md)(?=$|[\s,.;:!?"'<>()[\]{}])/gi
 const TOOL_INLINE_THRESHOLD = 80
 const TOOL_PREVIEW_MAX_LINES = 2
 const TOOL_PREVIEW_MAX_CHARS = 100
@@ -260,6 +259,16 @@ const normalizeToolCardKind = (event: DipChatKitAnswerEvent): 'call' | 'result' 
   return null
 }
 
+const normalizeToolCardStatus = (
+  event: DipChatKitAnswerEvent,
+): 'in_progress' | 'completed' | undefined => {
+  const statusValue = event.details?.status
+  if (statusValue === 'in_progress' || statusValue === 'completed') {
+    return statusValue
+  }
+  return undefined
+}
+
 const getAnswerEventRoleLabel = (event: DipChatKitAnswerEvent): string => {
   const normalizedRole = event.role.trim().toLowerCase()
   if (normalizedRole === 'assistant') {
@@ -384,16 +393,21 @@ export const buildToolCardItems = (events: DipChatKitAnswerEvent[]): DipChatKitT
     }
 
     const normalizedText = getAnswerEventDisplayText(event)
+    const textForDetail = kind === 'call' ? normalizeLineBreak(event.text || '') : normalizedText
+    const text = kind === 'call' ? '' : normalizedText
+    const status = normalizeToolCardStatus(event)
+
     cards.push({
       id: event.id || `tool_card_${index}`,
       kind,
-      title: buildToolCardTitle(event),
-      detail: buildToolCardDetail(event, normalizedText, kind),
+      status,
+      title: buildToolCardTitle(event).trim().toLowerCase(),
+      detail: buildToolCardDetail(event, textForDetail, kind),
       toolName: event.toolName || (intl.get('dipChatKit.eventRoleTool').d('Tool') as string),
       toolCallId: event.toolCallId || '',
-      text: normalizedText,
-      inlineText: buildInlineText(normalizedText),
-      previewText: buildPreviewText(normalizedText),
+      text,
+      inlineText: buildInlineText(text),
+      previewText: buildPreviewText(text),
       isError: event.isError,
     })
 

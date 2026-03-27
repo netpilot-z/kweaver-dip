@@ -73,42 +73,45 @@
 
 .chatToolsCollapse {
   margin-top: 2px;
+  :global {
+    .dip-collapse {
+      background: transparent;
+    }
+
+    .dip-collapse-item {
+      border: none;
+      background: transparent;
+    }
+
+    .dip-collapse-header {
+      align-items: center !important;
+      padding: 8px 12px !important;
+      border-radius: 8px;
+      color: #667085;
+      font-size: 12px;
+      transition: background 0.15s ease;
+    }
+
+    .dip-collapse-header:hover {
+      background: rgba(242, 244, 247, 0.6);
+    }
+
+    .dip-collapse-content {
+      background: transparent;
+      border-top: 1px solid rgba(208, 213, 221, 0.75);
+    }
+
+    .dip-collapse-content-box {
+      padding: 4px 12px 12px !important;
+    }
+  }
 }
 
-.chatToolsSummary {
-  display: flex;
+.chatToolsSummaryContent {
+  display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 12px;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 500;
-  color: #667085;
-  user-select: none;
-  list-style: none;
-  transition:
-    color 0.15s ease,
-    background 0.15s ease;
-}
-
-.chatToolsSummary::-webkit-details-marker {
-  display: none;
-}
-
-.chatToolsSummary::before {
-  content: '\25B8';
-  font-size: 10px;
-  flex-shrink: 0;
-  transition: transform 0.15s ease;
-}
-
-.chatToolsCollapse[open] > .chatToolsSummary::before {
-  transform: rotate(90deg);
-}
-
-.chatToolsSummary:hover {
-  color: #101828;
-  background: rgba(242, 244, 247, 0.6);
+  min-width: 0;
 }
 
 .chatToolsSummaryIcon {
@@ -120,6 +123,8 @@
   color: #126ee3;
   opacity: 0.7;
   flex-shrink: 0;
+  font-size: 14px;
+  line-height: 1;
 }
 
 .chatToolsSummaryCount {
@@ -138,122 +143,36 @@
 }
 
 .chatToolsCollapseBody {
-  padding: 4px 12px 12px;
-  border-top: 1px solid rgba(208, 213, 221, 0.75);
+  padding: 0;
 }
 
-.toolThoughtChain {
+.chatToolsList {
   margin-top: 8px;
-}
-
-.toolThoughtChainTitle {
-  color: #101828;
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1.4;
-}
-
-.toolThoughtChainDescription {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-}
-
-.toolThoughtChainMeta {
-  color: #667085;
-  font-size: 12px;
-  line-height: 18px;
-}
-
-.toolThoughtChainContent {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.toolThoughtChainItem {
-  margin-bottom: 2px;
-}
-
-.toolThoughtChainItemContent {
-  background: #f8fafc;
-  border: 1px solid #eaecf0;
-  border-radius: 6px;
-}
-
-.toolThoughtChainItemFooter {
-  margin-bottom: 10px;
-}
-
-.toolThoughtChainInline {
-  font-size: 11px;
-  color: #101828;
-  padding: 6px 8px;
-  white-space: pre-wrap;
-  word-break: break-word;
-  font-family:
-    'SFMono-Regular',
-    Consolas,
-    'Liberation Mono',
-    Menlo,
-    Courier,
-    monospace;
-}
-
-.toolThoughtChainPreview {
-  margin: 0;
-  font-size: 11px;
-  color: #667085;
-  padding: 0 8px 8px;
-  white-space: pre-wrap;
-  word-break: break-word;
-  font-family:
-    'SFMono-Regular',
-    Consolas,
-    'Liberation Mono',
-    Menlo,
-    Courier,
-    monospace;
-}
-
-.toolThoughtChainView {
-  display: inline-flex;
-  align-items: center;
   gap: 4px;
-  color: #126ee3;
-  font-size: 12px;
-  cursor: pointer;
-  user-select: none;
 }
 
-.toolThoughtChainView:hover {
-  color: #0f5bc0;
+.chatToolsListToolOnly {
+  margin-top: 0;
 }
 
 .chatToolCard {
-  border: 1px solid #d0d5dd;
-  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
   padding: 10px 12px;
-  margin-top: 6px;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.06);
   transition:
-    border-color 0.15s ease-out,
-    background 0.15s ease-out;
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
   max-height: 120px;
   overflow: hidden;
 }
 
-.chatToolCard:first-child {
-  margin-top: 0;
-}
-
-.chatToolCardClickable {
-  cursor: pointer;
-}
-
-.chatToolCardClickable:hover {
-  border-color: #98a2b3;
-  background: #f9fafb;
+.chatToolCard:hover {
+  box-shadow: 0 2px 8px rgba(16, 24, 40, 0.08);
 }
 
 .chatToolCardError {
@@ -293,27 +212,14 @@
   height: 16px;
   color: #126ee3;
   flex-shrink: 0;
-}
-
-.chatToolCardAction {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 12px;
-  color: #126ee3;
-  opacity: 0.8;
-  transition: opacity 0.15s ease-out;
-  flex-shrink: 0;
-}
-
-.chatToolCardClickable:hover .chatToolCardAction {
-  opacity: 1;
+  font-size: 16px;
+  line-height: 1;
 }
 
 .chatToolCardStatus {
   display: inline-flex;
   align-items: center;
-  color: #12b76a;
+  color: #f04438;
   flex-shrink: 0;
 }
 
@@ -344,13 +250,14 @@
   max-height: 44px;
   line-height: 1.4;
   border: 1px solid #eaecf0;
-  font-family:
-    'SFMono-Regular',
-    Consolas,
-    'Liberation Mono',
-    Menlo,
-    Courier,
-    monospace;
+}
+
+.chatToolCardPreview > pre {
+  margin: 0;
+  font-size: inherit;
+  line-height: inherit;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .chatToolCardInline {
@@ -362,57 +269,103 @@
   border-radius: 4px;
   white-space: pre-wrap;
   word-break: break-word;
-  font-family:
-    'SFMono-Regular',
-    Consolas,
-    'Liberation Mono',
-    Menlo,
-    Courier,
-    monospace;
+}
+
+.toolCardMarkdown {
+  width: 100%;
+  font-size: inherit;
+  line-height: 1.45;
+  color: inherit;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+
+  :global {
+    p,
+    ul,
+    ol,
+    pre {
+      margin: 0;
+    }
+
+    p + p,
+    p + pre,
+    pre + p,
+    ul + p,
+    ol + p {
+      margin-top: 6px;
+    }
+
+    ul,
+    ol {
+      padding-inline-start: 16px;
+    }
+
+    li + li {
+      margin-top: 2px;
+    }
+
+    pre {
+      padding: 6px 8px;
+      border: 1px solid #d0d5dd;
+      border-radius: 4px;
+      background: #f8f9fb;
+      max-height: 96px;
+      overflow: auto;
+      font-size: 11px;
+      line-height: 1.4;
+      white-space: pre-wrap;
+    }
+
+    code {
+      font-size: 11px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    pre code {
+      padding: 0;
+      border: none;
+      background: transparent;
+    }
+  }
 }
 
 .chatToolMsgCollapse {
   margin-top: 2px;
+  :global {
+    .dip-collapse {
+      background: transparent;
+    }
+
+    .dip-collapse-item {
+      border: none;
+      background: transparent;
+    }
+
+    .dip-collapse-header {
+      padding: 0 !important;
+    }
+
+    .dip-collapse-content {
+      border: none;
+      background: transparent;
+    }
+
+    .dip-collapse-content-box {
+      padding: 0 !important;
+    }
+  }
 }
 
 .chatToolMsgSummary {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 10px;
-  cursor: pointer;
+  width: 100%;
+  padding: 6px 10px 6px 0;
   font-size: 12px;
   color: #667085;
-  user-select: none;
-  list-style: none;
-  border: 1px solid rgba(208, 213, 221, 0.75);
-  border-radius: 8px;
-  background: rgba(242, 244, 247, 0.5);
-  transition:
-    color 0.15s ease,
-    background 0.15s ease,
-    border-color 0.15s ease;
-}
-
-.chatToolMsgSummary::-webkit-details-marker {
-  display: none;
-}
-
-.chatToolMsgSummary::before {
-  content: '\25B8';
-  font-size: 10px;
-  flex-shrink: 0;
-  transition: transform 0.15s ease;
-}
-
-.chatToolMsgCollapse[open] > .chatToolMsgSummary::before {
-  transform: rotate(90deg);
-}
-
-.chatToolMsgSummary:hover {
-  color: #101828;
-  background: rgba(242, 244, 247, 0.8);
-  border-color: rgba(152, 162, 179, 0.9);
+  min-width: 0;
 }
 
 .chatToolMsgSummaryIcon {
@@ -424,6 +377,8 @@
   color: #126ee3;
   opacity: 0.75;
   flex-shrink: 0;
+  font-size: 14px;
+  line-height: 1;
 }
 
 .chatToolMsgSummaryLabel {
@@ -442,7 +397,7 @@
 }
 
 .chatToolMsgBody {
-  margin-top: 6px;
+  margin-top: 8px;
 }
 
 @media (max-width: 768px) {
@@ -466,11 +421,7 @@
     font-size: 11px;
   }
 
-  .chatToolsSummary {
-    padding: 6px 10px;
-  }
-
-  .chatToolsCollapseBody {
-    padding: 6px 10px 10px;
+  .chatToolsSummaryContent {
+    gap: 4px;
   }
 }

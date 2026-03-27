@@ -1,10 +1,5 @@
-import {
-  CopyOutlined,
-  RedoOutlined,
-  RightOutlined,
-  ToolOutlined,
-} from '@ant-design/icons'
-import { Bubble, CodeHighlighter, Mermaid, ThoughtChain } from '@ant-design/x'
+import { CheckOutlined, CopyOutlined, RedoOutlined } from '@ant-design/icons'
+import { Bubble, CodeHighlighter, Mermaid } from '@ant-design/x'
 import XMarkdown, { type ComponentProps as MarkdownComponentProps } from '@ant-design/x-markdown'
 import '@ant-design/x-markdown/dist/x-markdown.css'
 import clsx from 'clsx'
@@ -12,9 +7,10 @@ import isEmpty from 'lodash/isEmpty'
 import type React from 'react'
 import { Children, useMemo } from 'react'
 import intl from 'react-intl-universal'
+import IconFont from '@/components/IconFont'
 import MessageActions from '../MessageActions'
-import ArtifactMessageCard from './ArtifactMessageCard'
 import type { MessageAction } from '../MessageActions/types'
+import ArtifactMessageCard from './ArtifactMessageCard'
 import styles from './index.module.less'
 import type { AiAnswerBubbleProps, DipChatKitToolCardItem } from './types'
 import {
@@ -25,7 +21,6 @@ import {
   buildToolCardItems,
   extractMarkdownFileNameFromHref,
   getDomDataAttributes,
-  getToolCardsSummary,
   isMermaidLanguage,
   isToolRoleEvent,
   normalizeLanguage,
@@ -33,14 +28,15 @@ import {
   splitTextByMarkdownFileName,
 } from './utils'
 
-const AiAnswerBubble: React.FC<AiAnswerBubbleProps> = ({ turn, onCopy, onRegenerate, onOpenPreview }) => {
+const AiAnswerBubble: React.FC<AiAnswerBubbleProps> = ({
+  turn,
+  onCopy,
+  onRegenerate,
+  onOpenPreview,
+}) => {
   const toolCards = useMemo(() => {
     return buildToolCardItems(turn.answerEvents)
   }, [turn.answerEvents])
-
-  const toolCardsSummary = useMemo(() => {
-    return getToolCardsSummary(toolCards)
-  }, [toolCards])
 
   const hasToolRoleEvents = useMemo(() => {
     return turn.answerEvents.some(isToolRoleEvent)
@@ -51,7 +47,10 @@ const AiAnswerBubble: React.FC<AiAnswerBubbleProps> = ({ turn, onCopy, onRegener
       onOpenPreview(buildMarkdownFilePreviewPayload(fileName, sourceContent))
     }
 
-    const renderTextWithMarkdownFilePreview = (text: string, keyPrefix: string): React.ReactNode[] => {
+    const renderTextWithMarkdownFilePreview = (
+      text: string,
+      keyPrefix: string,
+    ): React.ReactNode[] => {
       const segments = splitTextByMarkdownFileName(text)
       if (segments.length === 0) {
         return [text]
@@ -204,7 +203,9 @@ const AiAnswerBubble: React.FC<AiAnswerBubbleProps> = ({ turn, onCopy, onRegener
         return <div className={className}>{children}</div>
       }
 
-      const title = attrs['data-preview-title'] || (intl.get('dipChatKit.answerCard').d('Answer card') as string)
+      const title =
+        attrs['data-preview-title'] ||
+        (intl.get('dipChatKit.answerCard').d('Answer card') as string)
       const content = attrs['data-preview-content'] || normalizeMarkdownText(children)
 
       return (
@@ -230,15 +231,56 @@ const AiAnswerBubble: React.FC<AiAnswerBubbleProps> = ({ turn, onCopy, onRegener
     }
   }, [onOpenPreview, turn.sessionKey])
 
+  const toolCardMarkdownComponents = useMemo(() => {
+    const ToolCardCodeRenderer: React.FC<MarkdownComponentProps> = ({
+      children,
+      lang,
+      block,
+      className,
+    }) => {
+      const language = normalizeLanguage(lang)
+      const codeText = normalizeMarkdownText(children)
+
+      if (!block) {
+        return <code className={clsx(styles.inlineCode, className)}>{codeText}</code>
+      }
+
+      if (isMermaidLanguage(language)) {
+        return <Mermaid>{codeText}</Mermaid>
+      }
+
+      return <CodeHighlighter lang={language || 'text'}>{codeText}</CodeHighlighter>
+    }
+
+    const ToolCardLinkRenderer: React.FC<MarkdownComponentProps> = ({
+      children,
+      className,
+      href,
+    }) => {
+      const hrefText = normalizeMarkdownText(href)
+      return (
+        <a className={className} href={hrefText || undefined} target="_blank" rel="noreferrer">
+          {children}
+        </a>
+      )
+    }
+
+    return {
+      code: ToolCardCodeRenderer,
+      a: ToolCardLinkRenderer,
+    }
+  }, [])
+
   const answerContent =
-    turn.answerMarkdown || (turn.answerLoading ? intl.get('dipChatKit.answerLoading').d('Processing...') : '')
+    turn.answerMarkdown ||
+    (turn.answerLoading ? intl.get('dipChatKit.answerLoading').d('Processing...') : '')
   const hasToolCards = toolCards.length > 0
   const shouldRenderAnswerBubble =
     Boolean(answerContent) || turn.answerLoading || turn.answerStreaming || hasToolCards
 
   const bubbleActions = useMemo<MessageAction[]>(() => {
     const actions: MessageAction[] = []
-    if (hasToolRoleEvents) {
+    if (hasToolCards) {
       return actions
     }
 
@@ -261,103 +303,99 @@ const AiAnswerBubble: React.FC<AiAnswerBubbleProps> = ({ turn, onCopy, onRegener
     }
 
     return actions
-  }, [hasToolRoleEvents, onCopy, onRegenerate, turn.answerMarkdown, turn.question])
+  }, [hasToolCards, onCopy, onRegenerate, turn.answerMarkdown, turn.question])
 
-  const toolThoughtChainItems = useMemo(() => {
-    return toolCards.map((toolCard: DipChatKitToolCardItem) => {
-      const canOpenPreview = Boolean(toolCard.text)
-      const hasPreviewContent = Boolean(toolCard.inlineText || toolCard.previewText)
-      const status: 'error' | 'success' | undefined = toolCard.isError
-        ? 'error'
-        : toolCard.kind === 'result'
-          ? 'success'
-          : undefined
+  const resolveToolIconType = (toolName: string): string => {
+    const normalizedToolName = toolName.trim().toLowerCase()
+    if (
+      normalizedToolName === 'read' ||
+      normalizedToolName.includes('read') ||
+      normalizedToolName.includes('doc') ||
+      normalizedToolName.includes('file')
+    ) {
+      return 'icon-plan'
+    }
+    return 'icon-tool'
+  }
 
-      return {
-        key: toolCard.id,
-        icon: status ? undefined : <ToolOutlined />,
-        status,
-        title: <span className={styles.toolThoughtChainTitle}>{toolCard.title}</span>,
-        description: (
-          <div className={styles.toolThoughtChainDescription}>
-            {toolCard.detail && <span className={styles.toolThoughtChainMeta}>{toolCard.detail}</span>}
-            {toolCard.toolCallId && (
-              <span className={styles.toolThoughtChainMeta}>
-                {intl.get('dipChatKit.eventCallId').d('Call ID')}: {toolCard.toolCallId}
-              </span>
-            )}
-            {!canOpenPreview && toolCard.kind === 'result' && (
-              <span className={styles.toolThoughtChainMeta}>
-                {intl.get('dipChatKit.toolCompleted').d('Completed')}
-              </span>
-            )}
-          </div>
-        ),
-        collapsible: hasPreviewContent,
-        content: hasPreviewContent ? (
-          <div className={styles.toolThoughtChainContent}>
-            {toolCard.inlineText && (
-              <div className={styles.toolThoughtChainInline}>{toolCard.inlineText}</div>
-            )}
-            {toolCard.previewText && (
-              <pre className={styles.toolThoughtChainPreview}>{toolCard.previewText}</pre>
-            )}
-          </div>
-        ) : undefined,
-        footer: canOpenPreview ? (
-          <span
-            className={styles.toolThoughtChainView}
-            role="button"
-            tabIndex={0}
-            onClick={() => {
-              const artifactPreviewPayload = buildArchiveGridPreviewPayload(turn.sessionKey, toolCard.text)
-              onOpenPreview(
-                artifactPreviewPayload ?? buildCardPreviewPayload(toolCard.title, toolCard.text),
-              )
-            }}
-            onKeyDown={(event) => {
-              if (event.key !== 'Enter' && event.key !== ' ') return
-              event.preventDefault()
-              const artifactPreviewPayload = buildArchiveGridPreviewPayload(turn.sessionKey, toolCard.text)
-              onOpenPreview(
-                artifactPreviewPayload ?? buildCardPreviewPayload(toolCard.title, toolCard.text),
-              )
-            }}
-          >
-            {intl.get('dipChatKit.eventActionView').d('View')} <RightOutlined />
-          </span>
-        ) : null,
-      }
-    })
-  }, [onOpenPreview, toolCards, turn.sessionKey])
+  const renderToolCard = (toolCard: DipChatKitToolCardItem) => {
+    const hasText = Boolean(toolCard.text.trim())
+    const showPreview = Boolean(toolCard.previewText)
+    const showInline = Boolean(toolCard.inlineText)
+    const shouldRenderResultMarkdown = toolCard.kind === 'result' && hasText
+    const statusText = toolCard.isError
+      ? (intl.get('dipChatKit.eventActionError').d('Error') as string)
+      : toolCard.status === 'in_progress'
+        ? (intl.get('dipChatKit.toolInProgress').d('In progress') as string)
+        : toolCard.kind === 'result' || toolCard.status === 'completed'
+          ? (intl.get('dipChatKit.toolCompleted').d('Completed') as string)
+          : (intl.get('dipChatKit.toolCompleted').d('Completed') as string)
 
-  const renderToolCardsCollapse = () => {
     return (
-      <details className={styles.chatToolsCollapse}>
-        <summary className={styles.chatToolsSummary}>
-          <span className={styles.chatToolsSummaryIcon}>
-            <ToolOutlined />
-          </span>
-          <span className={styles.chatToolsSummaryCount}>
-            {intl
-              .get('dipChatKit.toolCountText', { count: toolCards.length })
-              .d(`${toolCards.length} tool${toolCards.length === 1 ? '' : 's'}`)}
-          </span>
-          <span className={styles.chatToolsSummaryNames}>{toolCardsSummary}</span>
-        </summary>
-        <div className={styles.chatToolsCollapseBody}>
-          <ThoughtChain
-            className={styles.toolThoughtChain}
-            line="dashed"
-            items={toolThoughtChainItems}
-            classNames={{
-              item: styles.toolThoughtChainItem,
-              itemContent: styles.toolThoughtChainItemContent,
-              itemFooter: styles.toolThoughtChainItemFooter,
-            }}
-          />
+      <div
+        key={toolCard.id}
+        className={clsx(
+          'chatToolCard',
+          styles.chatToolCard,
+          toolCard.isError && styles.chatToolCardError,
+        )}
+      >
+        <div className={styles.chatToolCardHeader}>
+          <div className={styles.chatToolCardTitle}>
+            <span className={styles.chatToolCardIcon}>
+              <IconFont type={resolveToolIconType(toolCard.toolName || toolCard.title)} />
+            </span>
+            <span>{toolCard.title}</span>
+          </div>
+          {!hasText && (
+            <span className={styles.chatToolCardStatus}>
+              <CheckOutlined />
+            </span>
+          )}
         </div>
-      </details>
+        {toolCard.detail && <div className={styles.chatToolCardDetail}>{toolCard.detail}</div>}
+        {!hasText && <div className={styles.chatToolCardStatusText}>{statusText}</div>}
+        {showPreview && (
+          <div className={styles.chatToolCardPreview}>
+            {shouldRenderResultMarkdown ? (
+              <XMarkdown
+                className={styles.toolCardMarkdown}
+                components={toolCardMarkdownComponents}
+              >
+                {toolCard.text}
+              </XMarkdown>
+            ) : (
+              <pre>{toolCard.previewText}</pre>
+            )}
+          </div>
+        )}
+        {showInline && (
+          <div className={styles.chatToolCardInline}>
+            {shouldRenderResultMarkdown ? (
+              <XMarkdown
+                className={styles.toolCardMarkdown}
+                components={toolCardMarkdownComponents}
+              >
+                {toolCard.text}
+              </XMarkdown>
+            ) : (
+              <span>{toolCard.inlineText}</span>
+            )}
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  const renderToolCards = (isToolOnly = false) => {
+    if (!hasToolCards) {
+      return null
+    }
+
+    return (
+      <div className={clsx(styles.chatToolsList, isToolOnly && styles.chatToolsListToolOnly)}>
+        {toolCards.map(renderToolCard)}
+      </div>
     )
   }
 
@@ -380,34 +418,12 @@ const AiAnswerBubble: React.FC<AiAnswerBubbleProps> = ({ turn, onCopy, onRegener
           }}
           contentRender={(content) => {
             const normalizedContent = normalizeMarkdownText(content)
-            const toolPreview = normalizedContent.trim().replace(/\s+/g, ' ').slice(0, 120)
-            const toolSummary = toolCardsSummary || toolPreview
-            const shouldRenderToolMessageCollapse = hasToolCards && hasToolRoleEvents
+            const shouldRenderToolOnlyCards = hasToolCards && hasToolRoleEvents
 
             return (
               <>
-                {shouldRenderToolMessageCollapse ? (
-                  <details className={styles.chatToolMsgCollapse}>
-                    <summary className={styles.chatToolMsgSummary}>
-                      <span className={styles.chatToolMsgSummaryIcon}>
-                        <ToolOutlined />
-                      </span>
-                      <span className={styles.chatToolMsgSummaryLabel}>
-                        {intl.get('dipChatKit.toolOutputLabel').d('Tool output')}
-                      </span>
-                      {!!toolSummary && (
-                        <span className={styles.chatToolMsgSummaryNames}>{toolSummary}</span>
-                      )}
-                    </summary>
-                    <div className={styles.chatToolMsgBody}>
-                      {!!normalizedContent && (
-                        <XMarkdown className={styles.markdownRoot} components={markdownComponents}>
-                          {normalizedContent}
-                        </XMarkdown>
-                      )}
-                      {renderToolCardsCollapse()}
-                    </div>
-                  </details>
+                {shouldRenderToolOnlyCards ? (
+                  renderToolCards(true)
                 ) : (
                   <>
                     {!!normalizedContent && (
@@ -415,7 +431,7 @@ const AiAnswerBubble: React.FC<AiAnswerBubbleProps> = ({ turn, onCopy, onRegener
                         {normalizedContent}
                       </XMarkdown>
                     )}
-                    {hasToolCards && renderToolCardsCollapse()}
+                    {renderToolCards()}
                   </>
                 )}
               </>
