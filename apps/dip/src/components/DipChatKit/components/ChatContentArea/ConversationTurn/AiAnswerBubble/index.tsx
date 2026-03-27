@@ -1,11 +1,18 @@
-import { CheckOutlined, CopyOutlined, RedoOutlined } from '@ant-design/icons'
+import {
+  CheckOutlined,
+  CopyOutlined,
+  DownOutlined,
+  RedoOutlined,
+  UpOutlined,
+} from '@ant-design/icons'
 import { Bubble, CodeHighlighter, Mermaid } from '@ant-design/x'
 import XMarkdown, { type ComponentProps as MarkdownComponentProps } from '@ant-design/x-markdown'
 import '@ant-design/x-markdown/dist/x-markdown.css'
+import { Button, Tag, Tooltip } from 'antd'
 import clsx from 'clsx'
 import isEmpty from 'lodash/isEmpty'
 import type React from 'react'
-import { Children, useMemo } from 'react'
+import { Children, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import intl from 'react-intl-universal'
 import IconFont from '@/components/IconFont'
 import MessageActions from '../MessageActions'
@@ -28,6 +35,18 @@ import {
   splitTextByMarkdownFileName,
 } from './utils'
 
+const TOOL_CARD_COLLAPSED_MAX_HEIGHT = 200
+
+const isToolCardStateEqual = (
+  left: Record<string, boolean>,
+  right: Record<string, boolean>,
+): boolean => {
+  const leftKeys = Object.keys(left)
+  const rightKeys = Object.keys(right)
+  if (leftKeys.length !== rightKeys.length) return false
+  return leftKeys.every((key) => left[key] === right[key])
+}
+
 const AiAnswerBubble: React.FC<AiAnswerBubbleProps> = ({
   turn,
   onCopy,
@@ -41,6 +60,68 @@ const AiAnswerBubble: React.FC<AiAnswerBubbleProps> = ({
   const hasToolRoleEvents = useMemo(() => {
     return turn.answerEvents.some(isToolRoleEvent)
   }, [turn.answerEvents])
+  const [overflowToolCards, setOverflowToolCards] = useState<Record<string, boolean>>({})
+  const [expandedToolCards, setExpandedToolCards] = useState<Record<string, boolean>>({})
+  const toolCardBodyRefMap = useRef<Record<string, HTMLDivElement | null>>({})
+
+  const setToolCardBodyRef = useCallback((cardId: string, node: HTMLDivElement | null) => {
+    toolCardBodyRefMap.current[cardId] = node
+  }, [])
+
+  const measureToolCardOverflow = useCallback(() => {
+    const nextOverflowState: Record<string, boolean> = {}
+    toolCards.forEach((toolCard) => {
+      const bodyElement = toolCardBodyRefMap.current[toolCard.id]
+      if (!bodyElement) return
+      nextOverflowState[toolCard.id] = bodyElement.scrollHeight > TOOL_CARD_COLLAPSED_MAX_HEIGHT
+    })
+
+    setOverflowToolCards((prevState) => {
+      if (isToolCardStateEqual(prevState, nextOverflowState)) return prevState
+      return nextOverflowState
+    })
+
+    setExpandedToolCards((prevState) => {
+      const nextExpandedState: Record<string, boolean> = {}
+      toolCards.forEach((toolCard) => {
+        if (nextOverflowState[toolCard.id] && prevState[toolCard.id]) {
+          nextExpandedState[toolCard.id] = true
+        }
+      })
+      if (isToolCardStateEqual(prevState, nextExpandedState)) return prevState
+      return nextExpandedState
+    })
+  }, [toolCards])
+
+  useEffect(() => {
+    const validCardIdSet = new Set(toolCards.map((toolCard) => toolCard.id))
+    Object.keys(toolCardBodyRefMap.current).forEach((cardId) => {
+      if (!validCardIdSet.has(cardId)) {
+        delete toolCardBodyRefMap.current[cardId]
+      }
+    })
+  }, [toolCards])
+
+  useEffect(() => {
+    measureToolCardOverflow()
+    const rafId = window.requestAnimationFrame(measureToolCardOverflow)
+    const handleWindowResize = () => {
+      measureToolCardOverflow()
+    }
+
+    window.addEventListener('resize', handleWindowResize)
+    return () => {
+      window.cancelAnimationFrame(rafId)
+      window.removeEventListener('resize', handleWindowResize)
+    }
+  }, [measureToolCardOverflow])
+
+  const toggleToolCardExpanded = useCallback((cardId: string) => {
+    setExpandedToolCards((prevState) => ({
+      ...prevState,
+      [cardId]: !prevState[cardId],
+    }))
+  }, [])
 
   const markdownComponents = useMemo(() => {
     const openMarkdownFilePreview = (fileName: string, sourceContent?: string) => {
@@ -323,6 +404,9 @@ const AiAnswerBubble: React.FC<AiAnswerBubbleProps> = ({
     const showPreview = Boolean(toolCard.previewText)
     const showInline = Boolean(toolCard.inlineText)
     const shouldRenderResultMarkdown = toolCard.kind === 'result' && hasText
+    const isOverflow = Boolean(overflowToolCards[toolCard.id])
+    const isExpanded = Boolean(expandedToolCards[toolCard.id])
+    const shouldCollapse = isOverflow && !isExpanded
     const statusText = toolCard.isError
       ? (intl.get('dipChatKit.eventActionError').d('Error') as string)
       : toolCard.status === 'in_progress'
@@ -330,6 +414,11 @@ const AiAnswerBubble: React.FC<AiAnswerBubbleProps> = ({
         : toolCard.kind === 'result' || toolCard.status === 'completed'
           ? (intl.get('dipChatKit.toolCompleted').d('Completed') as string)
           : (intl.get('dipChatKit.toolCompleted').d('Completed') as string)
+    const statusTagColor = toolCard.isError
+      ? 'error'
+      : toolCard.status === 'in_progress'
+        ? 'processing'
+        : 'success'
 
     return (
       <div
@@ -337,51 +426,95 @@ const AiAnswerBubble: React.FC<AiAnswerBubbleProps> = ({
         className={clsx(
           'chatToolCard',
           styles.chatToolCard,
+          isOverflow && styles.chatToolCardOverflow,
+          shouldCollapse && styles.chatToolCardCollapsed,
           toolCard.isError && styles.chatToolCardError,
         )}
+        style={shouldCollapse ? { maxHeight: `${TOOL_CARD_COLLAPSED_MAX_HEIGHT}px` } : undefined}
       >
-        <div className={styles.chatToolCardHeader}>
-          <div className={styles.chatToolCardTitle}>
-            <span className={styles.chatToolCardIcon}>
-              <IconFont type={resolveToolIconType(toolCard.toolName || toolCard.title)} />
-            </span>
-            <span>{toolCard.title}</span>
+        <div
+          className={styles.chatToolCardBody}
+          ref={(node) => {
+            setToolCardBodyRef(toolCard.id, node)
+          }}
+        >
+          <div className={styles.chatToolCardHeader}>
+            <div className={styles.chatToolCardTitle}>
+              <span className={styles.chatToolCardIcon}>
+                <IconFont type={resolveToolIconType(toolCard.toolName || toolCard.title)} />
+              </span>
+              <span>{toolCard.title}</span>
+            </div>
+            {!hasText && (
+              <span className={styles.chatToolCardStatus}>
+                <CheckOutlined />
+              </span>
+            )}
           </div>
+          {toolCard.detail && <div className={styles.chatToolCardDetail}>{toolCard.detail}</div>}
           {!hasText && (
-            <span className={styles.chatToolCardStatus}>
-              <CheckOutlined />
-            </span>
+            <div className={styles.chatToolCardStatusText}>
+              <Tag color={statusTagColor}>{statusText}</Tag>
+            </div>
+          )}
+          {showPreview && (
+            <div className={styles.chatToolCardPreview}>
+              {shouldRenderResultMarkdown ? (
+                <XMarkdown
+                  className={styles.toolCardMarkdown}
+                  components={toolCardMarkdownComponents}
+                >
+                  {toolCard.text}
+                </XMarkdown>
+              ) : (
+                <pre>{toolCard.previewText}</pre>
+              )}
+            </div>
+          )}
+          {showInline && (
+            <div className={styles.chatToolCardInline}>
+              {shouldRenderResultMarkdown ? (
+                <XMarkdown
+                  className={styles.toolCardMarkdown}
+                  components={toolCardMarkdownComponents}
+                >
+                  {toolCard.text}
+                </XMarkdown>
+              ) : (
+                <span>{toolCard.inlineText}</span>
+              )}
+            </div>
           )}
         </div>
-        {toolCard.detail && <div className={styles.chatToolCardDetail}>{toolCard.detail}</div>}
-        {!hasText && <div className={styles.chatToolCardStatusText}>{statusText}</div>}
-        {showPreview && (
-          <div className={styles.chatToolCardPreview}>
-            {shouldRenderResultMarkdown ? (
-              <XMarkdown
-                className={styles.toolCardMarkdown}
-                components={toolCardMarkdownComponents}
+
+        {isOverflow && (
+          <>
+            {shouldCollapse && <div className={styles.chatToolCardFadeMask} />}
+            <div className={styles.chatToolCardToggleWrap}>
+              <Tooltip
+                title={
+                  isExpanded
+                    ? (intl.get('dipChatKit.collapse').d('收起') as string)
+                    : (intl.get('dipChatKit.expand').d('更多') as string)
+                }
               >
-                {toolCard.text}
-              </XMarkdown>
-            ) : (
-              <pre>{toolCard.previewText}</pre>
-            )}
-          </div>
-        )}
-        {showInline && (
-          <div className={styles.chatToolCardInline}>
-            {shouldRenderResultMarkdown ? (
-              <XMarkdown
-                className={styles.toolCardMarkdown}
-                components={toolCardMarkdownComponents}
-              >
-                {toolCard.text}
-              </XMarkdown>
-            ) : (
-              <span>{toolCard.inlineText}</span>
-            )}
-          </div>
+                <Button
+                  type="text"
+                  size="small"
+                  className={styles.chatToolCardToggleBtn}
+                  icon={isExpanded ? <UpOutlined /> : <DownOutlined />}
+                  aria-label={
+                    isExpanded
+                      ? (intl.get('dipChatKit.collapse').d('收起') as string)
+                      : (intl.get('dipChatKit.expand').d('更多') as string)
+                  }
+                  onClick={() => {
+                    toggleToolCardExpanded(toolCard.id)
+                  }}
+                />
+              </Tooltip>
+            </div>
+          </>
         )}
       </div>
     )
