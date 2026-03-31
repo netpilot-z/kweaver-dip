@@ -14,8 +14,8 @@ replicaCount: 1
 image:
   studio:
     registry: acr.aishu.cn
-    repository: dip/studio-local
-    tag: "latest"
+    repository: dip/studio
+    tag: "1.0.0-develop"
     pullPolicy: IfNotPresent
 
 service:
@@ -42,6 +42,7 @@ studio:
   gatewayHost: 127.0.0.1
   gatewayPort: 19001
   gatewayTimeoutMs: 5000
+  configPath: /data/openclaw/config/openclaw.json
   workspaceDir: /data/openclaw/workspace
   bknBackendUrl: http://127.0.0.1:13014
   hydraAdminUrl: http://hydra-admin:4445
@@ -58,10 +59,12 @@ resources:
 persistence:
   workspace:
     enabled: true
-    size: 10Gi
-    storageClassName: ""
-    accessModes:
-      - ReadWriteOnce
+    hostPath: /root/.openclaw/workspace
+    mountPath: /data/openclaw/workspace
+  config:
+    enabled: true
+    hostPath: /root/.openclaw/openclaw.json
+    mountPath: /data/openclaw/config/openclaw.json
 
 nodeSelector: {}
 affinity: {}

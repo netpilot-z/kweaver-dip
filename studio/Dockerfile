@@ -21,6 +21,8 @@ COPY --from=build /app/dist ./dist
 COPY --from=build /app/assets ./assets
 COPY --from=build /app/templates ./templates
 
+RUN mkdir -p /data/openclaw/config /data/openclaw/workspace
+
 EXPOSE 3100
 
 CMD ["node", "dist/server.js"]

@@ -11,6 +11,7 @@ data:
   OPENCLAW_GATEWAY_HOST: {{ .Values.studio.gatewayHost | quote }}
   OPENCLAW_GATEWAY_PORT_STUDIO: {{ .Values.studio.gatewayPort | quote }}
   OPENCLAW_GATEWAY_TIMEOUT_MS: {{ .Values.studio.gatewayTimeoutMs | quote }}
+  OPENCLAW_CONFIG_PATH: {{ .Values.studio.configPath | quote }}
   OPENCLAW_WORKSPACE_DIR_STUDIO: {{ .Values.studio.workspaceDir | quote }}
   BKN_BACKEND_URL: {{ .Values.studio.bknBackendUrl | quote }}
   HYDRA_ADMIN_URL: {{ .Values.studio.hydraAdminUrl | quote }}

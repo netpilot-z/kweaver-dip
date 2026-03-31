@@ -17,12 +17,19 @@ spec:
       labels:
         {{- toYaml .Values.labels.pod | nindent 8 }}
     spec:
-      {{- if .Values.persistence.workspace.enabled }}
       volumes:
+        {{- if .Values.persistence.workspace.enabled }}
         - name: openclaw-workspace
-          persistentVolumeClaim:
-            claimName: {{ .Chart.Name }}-workspace
-      {{- end }}
+          hostPath:
+            path: {{ .Values.persistence.workspace.hostPath }}
+            type: DirectoryOrCreate
+        {{- end }}
+        {{- if .Values.persistence.config.enabled }}
+        - name: openclaw-config
+          hostPath:
+            path: {{ .Values.persistence.config.hostPath }}
+            type: FileOrCreate
+        {{- end }}
       containers:
         - name: dip-studio
           image: "{{ .Values.image.studio.registry }}/{{ .Values.image.studio.repository }}:{{ .Values.image.studio.tag }}"
@@ -72,6 +79,11 @@ spec:
                 configMapKeyRef:
                   name: {{ .Chart.Name }}-config
                   key: OPENCLAW_WORKSPACE_DIR_STUDIO
+            - name: OPENCLAW_CONFIG_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Chart.Name }}-config
+                  key: OPENCLAW_CONFIG_PATH
             - name: BKN_BACKEND_URL
               valueFrom:
                 configMapKeyRef:
@@ -89,11 +101,16 @@ spec:
                   key: OPENCLAW_GATEWAY_TOKEN
           resources:
             {{- toYaml .Values.resources.studio | nindent 12 }}
-          {{- if .Values.persistence.workspace.enabled }}
           volumeMounts:
+            {{- if .Values.persistence.workspace.enabled }}
             - name: openclaw-workspace
-              mountPath: /data/openclaw/workspace
-          {{- end }}
+              mountPath: {{ .Values.persistence.workspace.mountPath }}
+            {{- end }}
+            {{- if .Values.persistence.config.enabled }}
+            - name: openclaw-config
+              mountPath: {{ .Values.persistence.config.mountPath }}
+              subPath: {{ base .Values.persistence.config.mountPath }}
+            {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
