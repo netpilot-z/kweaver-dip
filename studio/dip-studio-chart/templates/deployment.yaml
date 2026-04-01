@@ -32,8 +32,8 @@ spec:
         {{- end }}
       containers:
         - name: dip-studio
-          image: "{{ .Values.image.studio.registry }}/{{ .Values.image.studio.repository }}:{{ .Values.image.studio.tag }}"
-          imagePullPolicy: {{ .Values.image.studio.pullPolicy }}
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.studio.port }}
               name: studio-http

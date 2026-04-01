@@ -1,5 +1,5 @@
 # 名称空间，服务都要在同一个空间。
-namespace: anyshare
+namespace: kweaver
 
 # 1 修改标签
 labels:
@@ -12,9 +12,9 @@ labels:
 
 # 2 修改仓库服务的镜像地址：不同的项目记得修改repository中af后的项目名和tag
 image:
-  registry: acr.aishu.cn
+  registry: swr.cn-east-3.myhuaweicloud.com/kweaver-ai
   repository: dip/dip-hub
-  tag: "1.0.0-develop"
+  tag: "0.4.0-main-2026040101"
   pullPolicy: IfNotPresent
 
 #3 修改容器副本数量
@@ -33,7 +33,7 @@ ports:
   containerPort: 8000
 
 accessAddress:
-  host: 10.4.175.152
+  host: 192.168.40.113
   port: 443
   scheme: https
   path: /
@@ -62,12 +62,12 @@ depServices:
     ingressClass: class-443
   rds:
     system_id: ""
-    host: mariadb-mariadb-master.resource
-    port: 3330
-    database: "dip"
-    user: "anyshare"
-    password: "xxxxxx"
-    type: "mysql"
+    host: mariadb-proton-mariadb.resource.svc.cluster.local
+    port: 3306
+    database: "adp"
+    user: "adp"
+    password: "3Ci72ILMVn"
+    type: "MariaDB"
   redis:
     connectInfo:
       host: ""
@@ -77,9 +77,9 @@ depServices:
       slaveHost: ""
       slavePort: 26379
       masterGroupName: mymaster
-      password: EJlRgakfKM
+      password: NSRP4sUULP
       sentinelHost: redis-proton-redis-sentinel.resource.svc.cluster.local
-      sentinelPassword: EJlRgakfKM
+      sentinelPassword: NSRP4sUULP
       sentinelPort: 26379
       sentinelUsername: root
       username: root
@@ -101,12 +101,12 @@ depServices:
   mq:
     kafka:
       type: kafka
-      host: kafka-headless.resource
-      port: 9097
-      lookupdHost: kafka-headless.resource
-      lookupdPort: 9097
-      username: kafkaclient
-      password: eisoo.com123
+      host: kafka.resource.svc.cluster.local
+      port: 9092
+      lookupdHost: ""
+      lookupdPort: 0
+      username: kafkauser
+      password: cRVPpQThsP
       mechanism: PLAIN
   auth-service:
     host: auth-service

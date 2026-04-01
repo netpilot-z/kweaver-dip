@@ -1,4 +1,4 @@
-namespace: anyshare
+namespace: kweaver
 
 labels:
   deployment:
@@ -12,11 +12,10 @@ name: dip-studio-deployment
 replicaCount: 1
 
 image:
-  studio:
-    registry: acr.aishu.cn
-    repository: dip/studio
-    tag: "1.0.0-develop"
-    pullPolicy: IfNotPresent
+  registry: swr.cn-east-3.myhuaweicloud.com/kweaver-ai
+  repository: dip/dip-studio
+  tag: "0.4.0-main-2026040101"
+  pullPolicy: IfNotPresent
 
 service:
   name: dip-studio
@@ -24,9 +23,11 @@ service:
   port: 3100
   targetPort: 3100
 
+class-443:
+  ingressClass: 'class-443'
+
 ingress:
   enabled: true
-  className: class-443
   path: /api/dip-studio
   pathType: Prefix
   annotations:
@@ -59,11 +60,11 @@ resources:
 persistence:
   workspace:
     enabled: true
-    hostPath: /root/.openclaw/workspace
+    hostPath: /Users/yannan/.openclaw/workspace
     mountPath: /data/openclaw/workspace
   config:
     enabled: true
-    hostPath: /root/.openclaw/openclaw.json
+    hostPath: /Users/yannan/.openclaw/openclaw.json
     mountPath: /data/openclaw/config/openclaw.json
 
 nodeSelector: {}
