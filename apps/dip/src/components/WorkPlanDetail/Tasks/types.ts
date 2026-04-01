@@ -10,6 +10,7 @@ export type TasksPanelProps = {
   planId?: string
   dhId: string
   sessionId: string
+  previewDrawerGetContainer?: HTMLElement | (() => HTMLElement | null | undefined)
 }
 
 /** 列表展示用：运行记录 + 可选成果数量（mock 或接口扩展） */

@@ -292,6 +292,7 @@ const ResultsPanel = ({
           showInlineDownload={false}
           onClose={() => {
             setPreviewFullscreenOpen(false)
+            closePreview()
           }}
           onExitPreviewFullscreen={() => setPreviewFullscreenOpen(false)}
           onDownload={() => downloadFile(preview.subpath, preview.title)}

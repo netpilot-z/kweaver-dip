@@ -131,19 +131,21 @@ const AppList: React.FC<AppListProps> = ({
         //     : undefined
         // }
       />
-      <ScrollBarContainer className="p-2 pt-0 ml-[-8px] ml-[-8px] mr-[-24px]">
-        <AutoSizer style={{ width: 'calc(100% - 8px)' }} disableHeight>
-          {({ width }) => {
-            const count = computeColumnCount(width)
-            const calculatedCardWidth = width / count
+      <ScrollBarContainer className="h-full min-h-0 px-2 ml-[-8px] mr-[-24px]">
+        <div className="pt-0 pb-2">
+          <AutoSizer style={{ width: 'calc(100% - 8px)' }} disableHeight>
+            {({ width }) => {
+              const count = computeColumnCount(width)
+              const calculatedCardWidth = width / count
 
-            return (
-              <Row gutter={[gap, gap]}>
-                {currentApps.map((app) => renderCard(app, calculatedCardWidth))}
-              </Row>
-            )
-          }}
-        </AutoSizer>
+              return (
+                <Row gutter={[gap, gap]}>
+                  {currentApps.map((app) => renderCard(app, calculatedCardWidth))}
+                </Row>
+              )
+            }}
+          </AutoSizer>
+        </div>
       </ScrollBarContainer>
     </div>
   )

@@ -74,15 +74,11 @@ const ArchivePreviewNav = ({
           />
         </Tooltip>
       ) : null}
+      <div className="h-4 w-px bg-[--dip-border-color]" />
       {closable ? (
-        <button
-          type="button"
-          aria-label="关闭预览"
-          className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-md text-[var(--dip-text-color-45)] transition-colors hover:bg-[--dip-hover-bg-color] hover:text-[--dip-text-color]"
-          onClick={() => onClose?.()}
-        >
-          <IconFont type="icon-close" />
-        </button>
+        <Tooltip title="关闭预览">
+          <Button type="text" icon={<IconFont type="icon-close" />} onClick={() => onClose?.()} />
+        </Tooltip>
       ) : null}
     </div>
   )

@@ -42,19 +42,23 @@ const DigitalHumanList: React.FC<DigitalHumanListProps> = ({
 
   return (
     <div className="flex flex-col h-0 flex-1">
-      <ScrollBarContainer className="p-4 pt-0 -ml-4 -mb-4 -mr-6">
-        <AutoSizer style={{ width: 'calc(100% - 8px)' }} disableHeight>
-          {({ width }) => {
-            const count = computeColumnCount(width)
-            const calculatedCardWidth = width / count
+      <ScrollBarContainer className="h-full min-h-0 pl-4 pr-2 -ml-4 -mr-6">
+        <div className="pt-2 pb-4">
+          <AutoSizer style={{ width: 'calc(100% - 8px)' }} disableHeight>
+            {({ width }) => {
+              const count = computeColumnCount(width)
+              const calculatedCardWidth = width / count
 
-            return (
-              <Row gutter={[gap, gap]}>
-                {digitalHumans.map((digitalHuman) => renderCard(digitalHuman, calculatedCardWidth))}
-              </Row>
-            )
-          }}
-        </AutoSizer>
+              return (
+                <Row gutter={[gap, gap]}>
+                  {digitalHumans.map((digitalHuman) =>
+                    renderCard(digitalHuman, calculatedCardWidth),
+                  )}
+                </Row>
+              )
+            }}
+          </AutoSizer>
+        </div>
       </ScrollBarContainer>
     </div>
   )

@@ -11,7 +11,7 @@ import {
   VideoCameraOutlined,
 } from '@ant-design/icons'
 import { Spin } from 'antd'
-import { memo, useEffect, useState } from 'react'
+import { memo, useEffect, useMemo, useState } from 'react'
 import {
   getSessionArchiveSubpath,
   getSessionArchives,
@@ -19,12 +19,16 @@ import {
   type SessionArchivesResponse,
 } from '@/apis/dip-studio/sessions'
 import Empty from '@/components/Empty'
-import { ArchivePreviewDrawer, useArchivePreview } from '@/components/WorkPlanDetail/Outcome/Preview'
+import {
+  ArchivePreviewDrawer,
+  useArchivePreview,
+} from '@/components/WorkPlanDetail/Outcome/Preview'
 import {
   mockGetDigitalHumanSessionArchiveSubpath,
   mockGetDigitalHumanSessionArchives,
   RESULTS_PANEL_USE_MOCK,
 } from '../../Outcome/resultsPanelMock'
+import { usePreviewDrawerContainer } from '../previewDrawerContainerContext'
 
 export type TaskOutcomeListProps = {
   digitalHumanId?: string
@@ -133,6 +137,14 @@ function TaskOutcomeListInner({ digitalHumanId, sessionId }: TaskOutcomeListProp
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const previewDrawerGetContainer = usePreviewDrawerContainer()
+  const drawerGetContainer = useMemo(() => {
+    if (!previewDrawerGetContainer) return undefined
+    if (typeof previewDrawerGetContainer === 'function') {
+      return () => previewDrawerGetContainer() ?? document.body
+    }
+    return previewDrawerGetContainer
+  }, [previewDrawerGetContainer])
   const { preview, openFilePreview, closePreview, downloadFile } = useArchivePreview(
     dhId ?? '',
     sessionIdTrimmed ?? '',
@@ -228,7 +240,8 @@ function TaskOutcomeListInner({ digitalHumanId, sessionId }: TaskOutcomeListProp
       <ArchivePreviewDrawer
         open={drawerOpen}
         preview={preview}
-        size="60%"
+        size="100%"
+        getContainer={drawerGetContainer}
         onClose={() => {
           setDrawerOpen(false)
           closePreview()

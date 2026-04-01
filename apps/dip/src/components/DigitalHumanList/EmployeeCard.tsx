@@ -34,6 +34,7 @@ interface EmployeeCardProps {
 
 const EmployeeCard: React.FC<EmployeeCardProps> = ({ digitalHuman, menuItems, onCardClick }) => {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [hovered, setHovered] = useState(false)
   const avatarSrc = digitalHuman.icon_id ? avatarIconMap[digitalHuman.icon_id] : undefined
   const ext = digitalHuman as DigitalHuman & {
     skills?: unknown[]
@@ -51,7 +52,11 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({ digitalHuman, menuItems, on
         root: {
           height: 282,
           border: '1px solid #E2E8F0',
-          boxShadow: '0px 10px 15px -3px rgba(0, 0, 0, 0.1)',
+          boxShadow: hovered
+            ? '0 20px 40px -18px rgba(0, 0, 0, 0.1), 0 12px 24px -12px rgba(0, 0, 0, 0.25)'
+            : '0px 10px 15px -3px rgba(0, 0, 0, 0.1)',
+          transform: hovered ? 'translateY(-2px)' : 'translateY(0)',
+          transition: 'transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease',
           overflow: 'hidden',
         },
         body: {
@@ -64,6 +69,8 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({ digitalHuman, menuItems, on
       onClick={() => {
         onCardClick?.(digitalHuman)
       }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
       <div className="flex items-start justify-between">
         <div className="w-14 h-14 flex-shrink-0 overflow-hidden rounded-xl">

@@ -318,7 +318,12 @@ const WorkPlanDetail = () => {
       )}
       {activeTab === 'tasks' && (
         <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-          <Tasks planId={workPlanId} dhId={digitalHumanId} sessionId={sessionKey} />
+          <Tasks
+            planId={workPlanId}
+            dhId={digitalHumanId}
+            sessionId={sessionKey}
+            previewDrawerGetContainer={() => workPlanDetailRootRef.current ?? undefined}
+          />
         </div>
       )}
       {activeTab === 'conversation' && (

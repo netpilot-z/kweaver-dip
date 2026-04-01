@@ -8,6 +8,7 @@ import ScrollBarContainer from '@/components/ScrollBarContainer'
 import type { ArchivePreviewState } from '@/components/WorkPlanDetail/Outcome/Preview'
 import { ArchivePreviewPanel } from '@/components/WorkPlanDetail/Outcome/Preview'
 import TaskRunRow from './components/TaskRunRow'
+import { PreviewDrawerContainerContext } from './previewDrawerContainerContext'
 import { TASKS_SCROLL_THRESHOLD_PX, type TasksPanelProps } from './types'
 import { useTaskRuns } from './useTaskRuns'
 
@@ -15,7 +16,12 @@ const BANNER_DISMISS_KEY = 'dip-work-plan-tasks-plan-banner-dismissed'
 const PLAN_PREVIEW_SUBPATH = 'plan.md'
 const PLAN_PREVIEW_TITLE = '计划对齐.md'
 
-function TasksPanelInner({ planId, dhId, sessionId: _sessionId }: TasksPanelProps) {
+function TasksPanelInner({
+  planId,
+  dhId,
+  sessionId: _sessionId,
+  previewDrawerGetContainer,
+}: TasksPanelProps) {
   const [planPreview, setPlanPreview] = useState<ArchivePreviewState>({
     title: PLAN_PREVIEW_TITLE,
     subpath: PLAN_PREVIEW_SUBPATH,
@@ -118,7 +124,8 @@ function TasksPanelInner({ planId, dhId, sessionId: _sessionId }: TasksPanelProp
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-row overflow-hidden">
+    <PreviewDrawerContainerContext.Provider value={previewDrawerGetContainer ?? undefined}>
+      <div className="flex min-h-0 flex-1 flex-row overflow-hidden">
       <div className="flex min-h-0 min-w-0 flex-1 flex-col border-r border-[--dip-border-color] bg-[#FAFAF9]">
         <ScrollBarContainer className="flex min-h-0 flex-1 flex-col">
           <div className="flex shrink-0 flex-col gap-4 px-5">
@@ -203,7 +210,8 @@ function TasksPanelInner({ planId, dhId, sessionId: _sessionId }: TasksPanelProp
           </div>
         ) : null}
       </div>
-    </div>
+      </div>
+    </PreviewDrawerContainerContext.Provider>
   )
 }
 
