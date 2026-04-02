@@ -188,13 +188,6 @@ async function initOpenClawConfig(builtInAgents) {
     });
   }
 
-  cfg.gateway = cfg.gateway || {};
-  cfg.gateway.http = cfg.gateway.http || {};
-  cfg.gateway.http.endpoints = cfg.gateway.http.endpoints || {};
-  cfg.gateway.http.endpoints.chatCompletions = { enabled: true };
-  cfg.gateway.http.endpoints.responses = { enabled: true };
-  console.log("[配置] 开启 Gateway HTTP Endpoints (chatCompletions, responses)");
-
   const pluginNames = loadLocalPluginNames();
   cfg.plugins = cfg.plugins || {};
   cfg.plugins.entries = cfg.plugins.entries || {};

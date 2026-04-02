@@ -88,8 +88,6 @@ studio/built-in/<agent-name>/
 
 同时强制开启：
 
-- `gateway.http.endpoints.chatCompletions`
-- `gateway.http.endpoints.responses`
 - `plugins.entries` 中来自本地 `extensions` 目录的全部插件（当前为合并插件 `dip`，含原 skills-control、archives-access 能力与插件内 `contextloader` 技能目录）
 
 插件同步使用 `fs.cpSync(..., { dereference: true })`，以便将 `dip/skills/contextloader` 等符号链接展开为实际文件复制到 OpenClaw 状态目录。
