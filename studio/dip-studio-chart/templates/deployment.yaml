@@ -18,12 +18,10 @@ spec:
         {{- toYaml .Values.labels.pod | nindent 8 }}
     spec:
       volumes:
-        {{- if .Values.persistence.openclaw.enabled }}
         - name: openclaw-data
           hostPath:
-            path: {{ .Values.persistence.openclaw.hostPath }}
+            path: {{ .Values.studio.openclaw.hostPath }}
             type: DirectoryOrCreate
-        {{- end }}
       containers:
         - name: dip-studio
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -101,10 +99,8 @@ spec:
           resources:
             {{- toYaml .Values.resources.studio | nindent 12 }}
           volumeMounts:
-            {{- if .Values.persistence.openclaw.enabled }}
             - name: openclaw-data
-              mountPath: {{ .Values.persistence.openclaw.mountPath }}
-            {{- end }}
+              mountPath: {{ .Values.studio.mountPath }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

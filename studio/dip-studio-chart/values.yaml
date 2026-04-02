@@ -38,11 +38,14 @@ studio:
   nodeEnv: production
   port: 3100
   oauthMockUserId: local-user
-  gatewayToken: local-dev-token
-  gatewayProtocol: ws
-  gatewayHost: 127.0.0.1
-  gatewayPort: 19001
-  gatewayTimeoutMs: 5000
+  openclaw:
+    hostPath: /Users/yannan/.openclaw
+    gatewayToken: local-dev-token
+    gatewayProtocol: ws
+    gatewayHost: 127.0.0.1
+    gatewayPort: 19001
+    gatewayTimeoutMs: 5000
+  mountPath: /data/.openclaw
   configPath: /data/.openclaw/openclaw.json
   workspaceDir: /data/.openclaw/workspace
   rootDir: /data/.openclaw
@@ -57,12 +60,6 @@ resources:
     limits:
       cpu: 1
       memory: 1Gi
-
-persistence:
-  openclaw:
-    enabled: true
-    hostPath: /Users/yannan/.openclaw
-    mountPath: /data/.openclaw
 
 nodeSelector: {}
 affinity: {}
