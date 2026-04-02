@@ -67,7 +67,7 @@ releases:
     version: 0.4.0-main.20260331.1
   standardization:
     chart: standardization
-    version: 0.4.0-main.20260401.4
+    version: 0.4.0-main.20260402.7
   task-center:
     chart: task-center
     version: 0.4.0-main.20260331.2
