@@ -50,7 +50,7 @@ async def register_oauth_client(
         ],
         "metadata": {
             "device": {
-                "client_type": client_name,
+                "client_type": "web",
             },
             "login_form": {
                 "third_party_login_visible": False,
