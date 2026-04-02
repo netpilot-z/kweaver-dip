@@ -6,14 +6,16 @@
 请选择 ** v2026.3.11 ** 版本的 OpenClaw。
 ```
 
-## 准备
+## 开发模式
+
+### 准备
 
 1. 部署 OpenClaw 项目。项目地址：https://openclaw.ai 或从 GitHub：https://github.com/openclaw/openclaw
-2. 启动 OpenClaw Gateway
+2. 执行 `openclaw gateway` 启动 OpenClaw
 3. 完成 OpenClaw 配置后，从 `openclaw.json` 中复制 `gateway.auth.token`
 4. 执行 `openclaw gateway status`，从 `Gateway: bind=loopback (127.0.0.1), port=19001 (env/config)` 记住 OpenClaw 网关地址和端口
 
-## 启动
+### 启动
 
 1. 执行 `npm install` 安装依赖
 2. 重命名 `.env.example` → `.env`，配置 OpenClaw 连接信息以及 OpenClaw 的 Auth Token。
@@ -58,6 +60,41 @@ openssl pkey -in private.pem -pubout -out public.pem
     ]
 }
 ```
+
+## 生产模式
+
+### 准备
+
+1. 部署 OpenClaw 项目。项目地址：https://openclaw.ai 或从 GitHub：https://github.com/openclaw/openclaw
+2. 使用 lan 模式启动 OpenClaw：`openclaw gateway --bind lan`，监听 0.0.0.0:18789
+
+
+### 启动
+
+1. 通过 Helm Chart 部署 DIP-Studio 服务和 KWeaver Web
+
+2. 执行 `openclaw devices list`，找到如下的待授权设备：
+
+```bash
+Pending (1)
+┌──────────────────────────────────────┬──────────────────────────────────────────────────┬──────────┬───────────────┬──────────┬────────┐
+│ Request                              │ Device                                           │ Role     │ IP            │ Age      │ Flags  │
+├──────────────────────────────────────┼──────────────────────────────────────────────────┼──────────┼───────────────┼──────────┼────────┤
+│ 3ef1700e-cc91-4978-a980-4fb783925028 │ cc8d2143cf8fcd04161ade9e5161006c410a0bee65f835e2 │ operator │ 192.169.0.104 │ just now │        │
+│                                      │ 629792aa584bb119                                 │          │               │          │        │
+└──────────────────────────────────────┴──────────────────────────────────────────────────┴──────────┴───────────────┴──────────┴────────┘
+```
+
+3. 执行`openclaw devices approve <Request>` 进行授权。
+
+当提示：
+
+```bash
+Approved cc8d2143cf8fcd04161ade9e5161006c410a0bee65f835e2629792aa584bb119 (3ef1700e-cc91-4978-a980-4fb783925028)
+```
+表示授权成功。
+
+4. 访问 DIP 首页进行登录和使用。
 
 ## Studio Web
 
