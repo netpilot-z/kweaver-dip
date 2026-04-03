@@ -312,19 +312,10 @@ describe("DefaultGuideLogic", () => {
 
   it("initializes env, assets, and init script", async () => {
     const studioRootDir = await mkdtemp(join(tmpdir(), "dip-studio-guide-init-"));
-    const execFile = vi.fn()
-      .mockResolvedValueOnce({
-        stdout: "",
-        stderr: ""
-      })
-      .mockResolvedValueOnce({
-        stdout: "",
-        stderr: ""
-      })
-      .mockResolvedValueOnce({
-        stdout: "ok",
-        stderr: ""
-      });
+    const execFile = vi.fn().mockResolvedValue({
+      stdout: "ok",
+      stderr: ""
+    });
     const gatewayConnector = {
       reconfigureConnection: vi.fn(),
       connect: vi.fn().mockResolvedValue(undefined)
@@ -367,12 +358,6 @@ describe("DefaultGuideLogic", () => {
       );
       expect(execFile).toHaveBeenNthCalledWith(
         1,
-        "openssl",
-        ["genpkey", "-algorithm", "ED25519", "-out", join(studioRootDir, "assets", "private.pem")],
-        { cwd: join(studioRootDir, "assets") }
-      );
-      expect(execFile).toHaveBeenNthCalledWith(
-        3,
         "npm",
         ["run", "init:agents"],
         { cwd: studioRootDir }

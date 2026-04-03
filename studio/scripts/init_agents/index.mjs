@@ -69,7 +69,6 @@ if (fs.existsSync(dotenvFilePath)) {
 
 const STATE_DIR = process.env.OPENCLAW_ROOT_DIR || path.join(os.homedir(), ".openclaw");
 const BUILT_IN_DIR = process.env.OPENCLAW_BUILT_IN_DIR || path.join(__dirname, "../..", "built-in");
-const EXTENSIONS_DIR = process.env.OPENCLAW_EXTENSIONS_DIR || path.join(__dirname, "../..", "extensions");
 const WORKSPACE_ROOT = path.resolve(
   process.env.OPENCLAW_WORKSPACE_DIR || STATE_DIR
 );
@@ -188,14 +187,6 @@ async function initOpenClawConfig(builtInAgents) {
     });
   }
 
-  const pluginNames = loadLocalPluginNames();
-  cfg.plugins = cfg.plugins || {};
-  cfg.plugins.entries = cfg.plugins.entries || {};
-  for (const pluginName of pluginNames) {
-    cfg.plugins.entries[pluginName] = { enabled: true };
-    console.log(`[配置] 开启插件 ${pluginName}`);
-  }
-
   fs.writeFileSync(configPath, JSON.stringify(cfg, null, 2), "utf8");
   console.log(`✅ openclaw.json 成功写入 ${builtInAgents.length} 个内置 Agent 的配置保障！\n`);
 }
@@ -265,56 +256,11 @@ async function syncAuthProfiles(builtInAgents) {
   }
 }
 
-async function syncPlugins() {
-  console.log("📦 同步本地插件到工作区 plugins 目录...");
-  const pluginsDestDir = path.join(STATE_DIR, "extensions");
-
-  try {
-    if (!fs.existsSync(EXTENSIONS_DIR) || !fs.statSync(EXTENSIONS_DIR).isDirectory()) {
-      console.warn(`⚠️ 未找到源插件目录: ${EXTENSIONS_DIR}，跳过插件同步`);
-      return;
-    }
-
-    const pluginDirs = fs.readdirSync(EXTENSIONS_DIR, { withFileTypes: true })
-      .filter((entry) => entry.isDirectory());
-
-    if (pluginDirs.length === 0) {
-      console.warn(`⚠️ 源插件目录为空: ${EXTENSIONS_DIR}，跳过插件同步`);
-      return;
-    }
-
-    if (!fs.existsSync(pluginsDestDir)) {
-      fs.mkdirSync(pluginsDestDir, { recursive: true });
-    }
-
-    for (const pluginDir of pluginDirs) {
-      const pluginSrc = path.join(EXTENSIONS_DIR, pluginDir.name);
-      const pluginDest = path.join(pluginsDestDir, pluginDir.name);
-      fs.cpSync(pluginSrc, pluginDest, { recursive: true, dereference: true });
-      console.log(`[复制] 成功将 ${pluginDir.name} 插件复制到 -> ${pluginDest}`);
-    }
-  } catch (err) {
-    console.error("[失败] 插件复制报错:", err.message);
-  }
-}
-
-function loadLocalPluginNames() {
-  if (!fs.existsSync(EXTENSIONS_DIR) || !fs.statSync(EXTENSIONS_DIR).isDirectory()) {
-    console.warn(`⚠️ 未找到源插件目录: ${EXTENSIONS_DIR}，跳过插件启用`);
-    return [];
-  }
-
-  return fs.readdirSync(EXTENSIONS_DIR, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory())
-    .map((entry) => entry.name);
-}
-
 async function main() {
   const builtInAgents = loadBuiltInAgents();
   await initOpenClawConfig(builtInAgents);
   await syncAuthProfiles(builtInAgents);
   await initPersonas(builtInAgents);
-  await syncPlugins();
 }
 
 main().catch((err) => {

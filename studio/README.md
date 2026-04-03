@@ -20,12 +20,7 @@
 1. 执行 `npm install` 安装依赖
 2. 重命名 `.env.example` → `.env`，配置 OpenClaw 连接信息以及 OpenClaw 的 Auth Token。
    同时配置 `KWEAVER_BASE_URL` 和 `KWEAVER_TOKEN`，用于转发 KWeaver Core 请求。
-3. 在 `assets` 目录下执行 OpenSSL 命令生成 Ed25519 PEM 私钥和 PEM 公钥，用于调用 OpenClaw Gateway 接口时进行签名
-```bash
-cd assets
-openssl genpkey -algorithm ED25519 -out private.pem
-openssl pkey -in private.pem -pubout -out public.pem
-```
+3. 默认使用仓库 `assets/` 目录中已提交的 Ed25519 PEM 私钥和 PEM 公钥，用于调用 OpenClaw Gateway 接口时进行签名
 4. 执行 `npm run init:agents` 初始化 OpenClaw 默认配置、builtin agents 以及 extensions
 5. 执行 `npm run build` 构建
 6. 执行 `NODE_ENV=development npm run dev` 启动服务

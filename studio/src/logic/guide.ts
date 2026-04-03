@@ -257,26 +257,7 @@ export class DefaultGuideLogic implements GuideLogic {
     const localPaths = resolveOpenClawLocalPathsFromEnv(process.env, this.studioRootDir);
     const normalized = normalizeInitializeGuideRequest(request, localPaths);
     const envFilePath = join(this.studioRootDir, ".env");
-    const assetsDir = join(this.studioRootDir, "assets");
-    const privateKeyPath = join(assetsDir, "private.pem");
-    const publicKeyPath = join(assetsDir, "public.pem");
     await writeFile(envFilePath, buildGuideEnvFileContent(normalized), "utf8");
-
-    await mkdir(assetsDir, { recursive: true });
-    await this.commandRunner.execFile(
-      "openssl",
-      ["genpkey", "-algorithm", "ED25519", "-out", privateKeyPath],
-      {
-        cwd: assetsDir
-      }
-    );
-    await this.commandRunner.execFile(
-      "openssl",
-      ["pkey", "-in", privateKeyPath, "-pubout", "-out", publicKeyPath],
-      {
-        cwd: assetsDir
-      }
-    );
     await this.commandRunner.execFile("npm", ["run", "init:agents"], {
       cwd: this.studioRootDir
     });
