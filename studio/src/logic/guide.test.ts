@@ -175,37 +175,25 @@ describe("normalizeInitializeGuideRequest", () => {
     ]);
   });
 
-  it("builds the full guide env file content without reading .env.example", () => {
-    expect(
-      buildGuideEnvFileContent({
-        openclaw_address: "ws://127.0.0.1:19001",
-        openclaw_token: "token-1",
-        kweaver_base_url: "https://kweaver.example.com",
-        kweaver_token: "kw-token",
-        configPath: "/tmp/openclaw/openclaw.json",
-        protocol: "ws",
-        host: "127.0.0.1",
-        port: 19001,
-        token: "token-1",
-        stateDir: "/tmp/openclaw",
-        workspaceDir: "/tmp/openclaw/workspace"
-      })
-    ).toContain("OPENCLAW_CONFIG_PATH=/tmp/openclaw/openclaw.json");
-    expect(
-      buildGuideEnvFileContent({
-        openclaw_address: "ws://127.0.0.1:19001",
-        openclaw_token: "token-1",
-        kweaver_base_url: "https://kweaver.example.com",
-        kweaver_token: "kw-token",
-        configPath: "/tmp/openclaw/openclaw.json",
-        protocol: "ws",
-        host: "127.0.0.1",
-        port: 19001,
-        token: "token-1",
-        stateDir: "/tmp/openclaw",
-        workspaceDir: "/tmp/openclaw/workspace"
-      })
-    ).toContain("OAUTH_MOCK_USER_ID=");
+  it("builds the full guide env file content without comments or trailing spaces", () => {
+    const content = buildGuideEnvFileContent({
+      openclaw_address: "ws://127.0.0.1:19001",
+      openclaw_token: "token-1",
+      kweaver_base_url: "https://kweaver.example.com",
+      kweaver_token: "kw-token",
+      configPath: "/tmp/openclaw/openclaw.json",
+      protocol: "ws",
+      host: "127.0.0.1",
+      port: 19001,
+      token: "token-1",
+      stateDir: "/tmp/openclaw",
+      workspaceDir: "/tmp/openclaw/workspace"
+    });
+
+    expect(content).toContain("OPENCLAW_CONFIG_PATH=/tmp/openclaw/openclaw.json");
+    expect(content).toContain("OAUTH_MOCK_USER_ID=");
+    expect(content).not.toContain("#");
+    expect(content.split("\n").every((line) => line === line.replace(/[ \t]+$/, ""))).toBe(true);
   });
 });
 
@@ -323,6 +311,8 @@ describe("DefaultGuideLogic", () => {
     const prevConfigPath = process.env.OPENCLAW_CONFIG_PATH;
     const prevRootDir = process.env.OPENCLAW_ROOT_DIR;
     const prevWorkspaceDir = process.env.OPENCLAW_WORKSPACE_DIR;
+    const prevKweaverBaseUrl = process.env.KWEAVER_BASE_URL;
+    const prevKweaverToken = process.env.KWEAVER_TOKEN;
     process.env.OPENCLAW_ROOT_DIR = join(studioRootDir, "openclaw");
     process.env.OPENCLAW_CONFIG_PATH = join(studioRootDir, "openclaw", "openclaw.json");
     process.env.OPENCLAW_WORKSPACE_DIR = join(studioRootDir, "openclaw-workspace");
@@ -344,15 +334,19 @@ describe("DefaultGuideLogic", () => {
     ).resolves.toBeUndefined();
 
     try {
-      expect(await readFile(join(studioRootDir, ".env"), "utf8")).toContain(
-        "OPENCLAW_GATEWAY_TOKEN=token-1"
-      );
-      expect(await readFile(join(studioRootDir, ".env"), "utf8")).toContain(
+      const envContent = await readFile(join(studioRootDir, ".env"), "utf8");
+      expect(envContent).toContain("OPENCLAW_GATEWAY_TOKEN=token-1");
+      expect(envContent).toContain(
         `OPENCLAW_CONFIG_PATH=${join(studioRootDir, "openclaw", "openclaw.json")}`
       );
-      expect(await readFile(join(studioRootDir, ".env"), "utf8")).toContain(
+      expect(envContent).toContain(
         `OPENCLAW_WORKSPACE_DIR=${join(studioRootDir, "openclaw-workspace")}`
       );
+      expect(envContent).not.toContain("#");
+      expect(envContent.split("\n").every((line) => line === line.replace(/[ \t]+$/, ""))).toBe(true);
+      expect(process.env.OPENCLAW_GATEWAY_TOKEN).toBe("token-1");
+      expect(process.env.KWEAVER_BASE_URL).toBe("https://kweaver.example.com");
+      expect(process.env.KWEAVER_TOKEN).toBe("kw-token");
       expect(await readFile(join(studioRootDir, "openclaw", ".env"), "utf8")).toContain(
         "KWEAVER_BASE_URL=https://kweaver.example.com"
       );
@@ -368,9 +362,31 @@ describe("DefaultGuideLogic", () => {
       );
       expect(gatewayConnector.connect).toHaveBeenCalledOnce();
     } finally {
-      process.env.OPENCLAW_CONFIG_PATH = prevConfigPath;
-      process.env.OPENCLAW_ROOT_DIR = prevRootDir;
-      process.env.OPENCLAW_WORKSPACE_DIR = prevWorkspaceDir;
+      if (prevConfigPath === undefined) {
+        delete process.env.OPENCLAW_CONFIG_PATH;
+      } else {
+        process.env.OPENCLAW_CONFIG_PATH = prevConfigPath;
+      }
+      if (prevRootDir === undefined) {
+        delete process.env.OPENCLAW_ROOT_DIR;
+      } else {
+        process.env.OPENCLAW_ROOT_DIR = prevRootDir;
+      }
+      if (prevWorkspaceDir === undefined) {
+        delete process.env.OPENCLAW_WORKSPACE_DIR;
+      } else {
+        process.env.OPENCLAW_WORKSPACE_DIR = prevWorkspaceDir;
+      }
+      if (prevKweaverBaseUrl === undefined) {
+        delete process.env.KWEAVER_BASE_URL;
+      } else {
+        process.env.KWEAVER_BASE_URL = prevKweaverBaseUrl;
+      }
+      if (prevKweaverToken === undefined) {
+        delete process.env.KWEAVER_TOKEN;
+      } else {
+        process.env.KWEAVER_TOKEN = prevKweaverToken;
+      }
       await rm(studioRootDir, { recursive: true, force: true });
     }
   });

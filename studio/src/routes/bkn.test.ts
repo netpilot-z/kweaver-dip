@@ -7,8 +7,8 @@ import type {
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { HttpError } from "../errors/http-error";
-import type { BknHttpClient } from "../infra/bkn-http-client";
 import { DEFAULT_BKN_BUSINESS_DOMAIN } from "../infra/bkn-http-client";
+import type { BknLogic } from "../logic/bkn";
 import {
   createBknRouter,
   readRequiredKnId,
@@ -71,11 +71,11 @@ function findHandler(
 }
 
 /**
- * Creates a BKN client test double.
+ * Creates a BKN logic test double.
  *
- * @returns A mocked client.
+ * @returns A mocked logic object.
  */
-function createClientDouble(): BknHttpClient {
+function createLogicDouble(): BknLogic {
   return {
     listKnowledgeNetworks: vi.fn(),
     getKnowledgeNetwork: vi.fn()
@@ -87,20 +87,20 @@ describe("createBknRouter", () => {
   const detailPath = "/api/dip-studio/v1/knowledge-networks/:kn_id";
 
   it("registers all BKN routes", () => {
-    const router = createBknRouter(createClientDouble()) as Router;
+    const router = createBknRouter(createLogicDouble()) as Router;
 
     expect(findHandler(router, "get", collectionPath)).toBeDefined();
     expect(findHandler(router, "get", detailPath)).toBeDefined();
   });
 
   it("forwards list requests", async () => {
-    const client = createClientDouble();
-    vi.mocked(client.listKnowledgeNetworks).mockResolvedValue({
+    const logic = createLogicDouble();
+    vi.mocked(logic.listKnowledgeNetworks).mockResolvedValue({
       status: 200,
       headers: new Headers({ "content-type": "application/json" }),
       body: "{\"items\":[]}"
     });
-    const router = createBknRouter(client) as Router;
+    const router = createBknRouter(logic) as Router;
     const handler = findHandler(router, "get", collectionPath);
     const response = createResponseDouble();
     const next = vi.fn<NextFunction>();
@@ -114,7 +114,7 @@ describe("createBknRouter", () => {
       next
     );
 
-    expect(client.listKnowledgeNetworks).toHaveBeenCalledWith(
+    expect(logic.listKnowledgeNetworks).toHaveBeenCalledWith(
       { limit: "10" },
       DEFAULT_BKN_BUSINESS_DOMAIN
     );
@@ -128,13 +128,13 @@ describe("createBknRouter", () => {
   });
 
   it("forwards detail requests", async () => {
-    const client = createClientDouble();
-    vi.mocked(client.getKnowledgeNetwork).mockResolvedValue({
+    const logic = createLogicDouble();
+    vi.mocked(logic.getKnowledgeNetwork).mockResolvedValue({
       status: 200,
       headers: new Headers({ "content-type": "application/json" }),
       body: "{\"id\":\"kn-1\"}"
     });
-    const router = createBknRouter(client) as Router;
+    const router = createBknRouter(logic) as Router;
     const handler = findHandler(router, "get", detailPath);
     const response = createResponseDouble();
     const next = vi.fn<NextFunction>();
@@ -149,7 +149,7 @@ describe("createBknRouter", () => {
       next
     );
 
-    expect(client.getKnowledgeNetwork).toHaveBeenCalledWith(
+    expect(logic.getKnowledgeNetwork).toHaveBeenCalledWith(
       "kn-1",
       {
         include_statistics: "true"
@@ -160,13 +160,13 @@ describe("createBknRouter", () => {
   });
 
   it("forwards x-business-domain to the BKN client", async () => {
-    const client = createClientDouble();
-    vi.mocked(client.listKnowledgeNetworks).mockResolvedValue({
+    const logic = createLogicDouble();
+    vi.mocked(logic.listKnowledgeNetworks).mockResolvedValue({
       status: 200,
       headers: new Headers(),
       body: "{}"
     });
-    const router = createBknRouter(client) as Router;
+    const router = createBknRouter(logic) as Router;
     const handler = findHandler(router, "get", collectionPath);
     const response = createResponseDouble();
     const next = vi.fn<NextFunction>();
@@ -180,11 +180,11 @@ describe("createBknRouter", () => {
       next
     );
 
-    expect(client.listKnowledgeNetworks).toHaveBeenCalledWith({}, "bd_tenant_a");
+    expect(logic.listKnowledgeNetworks).toHaveBeenCalledWith({}, "bd_tenant_a");
   });
 
   it("rejects empty kn_id values", async () => {
-    const router = createBknRouter(createClientDouble()) as Router;
+    const router = createBknRouter(createLogicDouble()) as Router;
     const handler = findHandler(router, "get", detailPath);
     const response = createResponseDouble();
     const next = vi.fn<NextFunction>();
@@ -204,9 +204,9 @@ describe("createBknRouter", () => {
   });
 
   it("wraps unexpected list errors", async () => {
-    const client = createClientDouble();
-    vi.mocked(client.listKnowledgeNetworks).mockRejectedValue(new Error("boom"));
-    const router = createBknRouter(client) as Router;
+    const logic = createLogicDouble();
+    vi.mocked(logic.listKnowledgeNetworks).mockRejectedValue(new Error("boom"));
+    const router = createBknRouter(logic) as Router;
     const handler = findHandler(router, "get", collectionPath);
     const response = createResponseDouble();
     const next = vi.fn<NextFunction>();

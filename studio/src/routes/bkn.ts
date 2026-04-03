@@ -5,26 +5,17 @@ import {
   type Response
 } from "express";
 
-import { getEnv } from "../utils/env";
 import { HttpError } from "../errors/http-error";
 import {
-  DefaultBknHttpClient,
   resolveBknBusinessDomain,
-  type BknHttpClient,
   type BknProxyResponse
 } from "../infra/bkn-http-client";
+import { DefaultBknLogic, type BknLogic } from "../logic/bkn";
 import type {
   BknKnowledgeNetworkDetailQuery,
   BknKnowledgeNetworkParams,
   BknKnowledgeNetworksListQuery
 } from "../types/bkn";
-
-const env = getEnv();
-const bknHttpClient = new DefaultBknHttpClient({
-  baseUrl: env.bknBackendUrl,
-  token: env.appUserToken,
-  timeoutMs: env.openClawGatewayTimeoutMs
-});
 
 /**
  * Resolves `x-business-domain` from an Express request for BKN upstream calls.
@@ -39,10 +30,10 @@ function readBknBusinessDomainHeader(request: Pick<Request, "headers">): string 
 /**
  * Builds the BKN proxy router.
  *
- * @param client Optional BKN HTTP client implementation.
+ * @param logic Optional BKN application logic implementation.
  * @returns The router exposing BKN proxy endpoints.
  */
-export function createBknRouter(client: BknHttpClient = bknHttpClient): Router {
+export function createBknRouter(logic: BknLogic = new DefaultBknLogic()): Router {
   const router = Router();
 
   router.get(
@@ -54,7 +45,7 @@ export function createBknRouter(client: BknHttpClient = bknHttpClient): Router {
     ): Promise<void> => {
       try {
         const businessDomain = readBknBusinessDomainHeader(request);
-        const result = await client.listKnowledgeNetworks(
+        const result = await logic.listKnowledgeNetworks(
           request.query,
           businessDomain
         );
@@ -75,7 +66,7 @@ export function createBknRouter(client: BknHttpClient = bknHttpClient): Router {
       try {
         const knId = readRequiredKnId(request.params.kn_id);
         const businessDomain = readBknBusinessDomainHeader(request);
-        const result = await client.getKnowledgeNetwork(
+        const result = await logic.getKnowledgeNetwork(
           knId,
           request.query,
           businessDomain
