@@ -1,4 +1,4 @@
-import { access, copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
+import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import { constants as fsConstants } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { homedir } from "node:os";
@@ -125,7 +125,7 @@ export interface GuideCommandRunner {
  */
 export interface GuideLogicOptions {
   /**
-   * Repository root that contains `.env.example`, `assets/`, and package.json.
+   * Repository root that contains runtime files such as `.env`, `assets/`, and package.json.
    */
   studioRootDir?: string;
 
@@ -257,22 +257,10 @@ export class DefaultGuideLogic implements GuideLogic {
     const localPaths = resolveOpenClawLocalPathsFromEnv(process.env, this.studioRootDir);
     const normalized = normalizeInitializeGuideRequest(request, localPaths);
     const envFilePath = join(this.studioRootDir, ".env");
-    const envExamplePath = join(this.studioRootDir, ".env.example");
     const assetsDir = join(this.studioRootDir, "assets");
     const privateKeyPath = join(assetsDir, "private.pem");
     const publicKeyPath = join(assetsDir, "public.pem");
-
-    if (!(await pathExists(envFilePath))) {
-      if (!(await pathExists(envExamplePath))) {
-        throw new HttpError(500, "Missing .env.example template");
-      }
-
-      await copyFile(envExamplePath, envFilePath);
-    }
-
-    const envContent = await readFile(envFilePath, "utf8");
-    const updatedEnv = upsertEnvEntries(envContent, buildGuideEnvEntries(normalized));
-    await writeFile(envFilePath, updatedEnv, "utf8");
+    await writeFile(envFilePath, buildGuideEnvFileContent(normalized), "utf8");
 
     await mkdir(assetsDir, { recursive: true });
     await this.commandRunner.execFile(
@@ -472,6 +460,44 @@ export function buildGuideEnvEntries(
     ["KWEAVER_BASE_URL", request.kweaver_base_url ?? ""],
     ["KWEAVER_TOKEN", request.kweaver_token ?? ""]
   ];
+}
+
+/**
+ * Builds the full `.env` file content for guide initialization.
+ *
+ * The field order mirrors the checked-in `.env.example` template, but the
+ * content is generated directly so runtime initialization does not depend on
+ * reading that file from disk.
+ *
+ * @param request Normalized initialization payload.
+ * @returns The generated dotenv file content.
+ */
+export function buildGuideEnvFileContent(
+  request: NormalizedInitializeGuideRequest
+): string {
+  const lines = [
+    `PORT=${encodeEnvValue("3000")}`,
+    "",
+    `${"OPENCLAW_GATEWAY_PROTOCOL"}=${encodeEnvValue(request.protocol)}            # 必填，OpenClaw 网关协议`,
+    `${"OPENCLAW_GATEWAY_HOST"}=${encodeEnvValue(request.host)}         # 必填，OpenClaw 网关地址`,
+    `${"OPENCLAW_GATEWAY_PORT"}=${encodeEnvValue(String(request.port))}             # 必填，OpenClaw 网关端口`,
+    `${"OPENCLAW_GATEWAY_TOKEN"}=${encodeEnvValue(request.token)}                 # 必填，OpenClaw 网关认证 Token`,
+    "OPENCLAW_GATEWAY_TIMEOUT_MS=5000",
+    "",
+    `${"OPENCLAW_ROOT_DIR"}=${encodeEnvValue(request.stateDir)}                      # 必填，OpenClaw 根目录，通常是 ~/.openclaw/`,
+    `${"OPENCLAW_CONFIG_PATH"}=${encodeEnvValue(request.configPath)}                   # 必填，openclaw.json 配置文件路径，通常是 {OPENCLAW_ROOT_DIR}/openclaw.json`,
+    `${"OPENCLAW_WORKSPACE_DIR"}=${encodeEnvValue(request.workspaceDir)}                 # 必填，OpenClaw 工作目录，通常是 {OPENCLAW_ROOT_DIR}/workspace`,
+    "",
+    `${"KWEAVER_BASE_URL"}=${encodeEnvValue(request.kweaver_base_url ?? "")}                       # 可选，KWeaver 服务地址`,
+    `${"KWEAVER_TOKEN"}=${encodeEnvValue(request.kweaver_token ?? "")}                          # 可选，KWeaver Token`,
+    "",
+    "# 以下配置仅在 NODE_ENV=development 时有效",
+    "OAUTH_MOCK_USER_ID=                     # 可选，用于开发环境的 OAuth 模拟用户 ID",
+    "KWEAVER_HYDRA_ADMIN_URL=                # 可选，Hydra 管理后台地址，用于 Token 内省",
+    ""
+  ];
+
+  return lines.join("\n");
 }
 
 /**

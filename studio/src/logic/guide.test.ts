@@ -6,6 +6,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { HttpError } from "../errors/http-error";
 import {
+  buildGuideEnvFileContent,
   buildOpenClawRootEnvEntries,
   buildGuideEnvEntries,
   collectMissingRequirements,
@@ -173,6 +174,39 @@ describe("normalizeInitializeGuideRequest", () => {
       ["KWEAVER_TOKEN", "kw-token"]
     ]);
   });
+
+  it("builds the full guide env file content without reading .env.example", () => {
+    expect(
+      buildGuideEnvFileContent({
+        openclaw_address: "ws://127.0.0.1:19001",
+        openclaw_token: "token-1",
+        kweaver_base_url: "https://kweaver.example.com",
+        kweaver_token: "kw-token",
+        configPath: "/tmp/openclaw/openclaw.json",
+        protocol: "ws",
+        host: "127.0.0.1",
+        port: 19001,
+        token: "token-1",
+        stateDir: "/tmp/openclaw",
+        workspaceDir: "/tmp/openclaw/workspace"
+      })
+    ).toContain("OPENCLAW_CONFIG_PATH=/tmp/openclaw/openclaw.json");
+    expect(
+      buildGuideEnvFileContent({
+        openclaw_address: "ws://127.0.0.1:19001",
+        openclaw_token: "token-1",
+        kweaver_base_url: "https://kweaver.example.com",
+        kweaver_token: "kw-token",
+        configPath: "/tmp/openclaw/openclaw.json",
+        protocol: "ws",
+        host: "127.0.0.1",
+        port: 19001,
+        token: "token-1",
+        stateDir: "/tmp/openclaw",
+        workspaceDir: "/tmp/openclaw/workspace"
+      })
+    ).toContain("OAUTH_MOCK_USER_ID=");
+  });
 });
 
 describe("collectMissingRequirements", () => {
@@ -278,7 +312,6 @@ describe("DefaultGuideLogic", () => {
 
   it("initializes env, assets, and init script", async () => {
     const studioRootDir = await mkdtemp(join(tmpdir(), "dip-studio-guide-init-"));
-    await writeFile(join(studioRootDir, ".env.example"), "PORT=3000\n", "utf8");
     const execFile = vi.fn()
       .mockResolvedValueOnce({
         stdout: "",
