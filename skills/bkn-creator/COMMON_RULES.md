@@ -64,7 +64,7 @@
 - MUST：前一门禁未获用户确认前，不得提前执行或展示后续门禁所依赖的内容
 - “跳过未绑定对象并继续”仅作用于未绑定对象；已绑定对象保持不变
 - 阶段四细则（状态顺序、Step 4.5 必执行、放行条件、回填与确认）统一以 `FLOW_CREATE.md` 为唯一规则源，`COMMON_RULES.md` 不再重复定义
-- 阶段五细则（同名冲突处理、推送确认、报告生成、归档一致性）统一以 `FLOW_CREATE.md` 为唯一规则源，`COMMON_RULES.md` 不再重复定义
+- 阶段五细则（同名冲突处理、推送确认、报告生成）统一以 `FLOW_CREATE.md` 为唯一规则源，`COMMON_RULES.md` 不再重复定义
 - 新建网络默认样式固定为 `icon: icon-dip-graph`、`color: #0e5fc5`
 - 对象类必须有 `color`，由 `bkn-creator` 在阶段二按随机策略补齐
 - Never 自动更新网络；所有更新均需用户明确确认
@@ -95,21 +95,12 @@
 - MUST：当 `pending_objects` 非空时，必须先发起“待确认对象处理”确认请求；未完成处理前不得进入“清单确认”
 - MUST：关系类 `name` 使用中文业务名；英文仅可用于 `relation_id`（技术标识）
 
-## 统一目录管理（MUST）
+## 落盘与归档职责边界（MUST）
 
-- MUST：目录与落盘位置仅允许使用本文件与 `FLOW_CREATE.md` 已定义规则；禁止引用外部目录/落盘 skill 或规则
-- Never：读取、委托或依赖任何外部目录管理技能（包括但不限于 `archive-protocol`）来决定 `network_dir`
-- MUST：凡需写入任何文件（`.bkn`、报告、JSON 等），统一先获取 `ARCHIVE_ID` 与 `TIMESTAMP`
-- MUST：获取 `ARCHIVE_ID` 步骤——委托 `../kweaver-core/SKILL.md` 执行 `session_status` 命令，从返回的 `sessionKey` 字段按 `:` 切分取最后一段作为 `ARCHIVE_ID`；若命令失败或 `sessionKey` 为空，中止并回执 `ARCHIVE_STATUS: BLOCKED`
-- MUST：`TIMESTAMP` 格式固定为 `YYYY-MM-DD-HH-MM-SS`
-- MUST：归档根目录首段必须是 `archives/`，禁止使用 `arch/`、`archive/` 或 `arch/archives/`
-- MUST：计划文件路径为 `archives/{ARCHIVE_ID}/PLAN.md`
-- MUST：普通归档物路径为 `archives/{ARCHIVE_ID}/{TIMESTAMP}/{ORIGIN_NAME}`
-- MUST：BKN 草案目录（`network_dir`）采用 `archives/{ARCHIVE_ID}/{TIMESTAMP}/{NETWORK_DIR_NAME}`
-- MUST：写入后立即回读校验（存在性、路径正确、内容非空、关键字段完整）；未校验前不得声称成功
-- MUST：归档失败时输出 `ARCHIVE_STATUS: BLOCKED` 与 `ARCHIVE_REASON: <原因>`
-- MUST：归档成功时输出 `ARCHIVE_STATUS: OK` 与 `ARCHIVE_ROOT: archives/{ARCHIVE_ID}/`
-- MUST：需要 WebUI 卡片时，`archive_grid` 必须使用 `json` 语言标识的 Markdown 围栏代码块输出，且仅输出一个目录级 JSON 代码块（不按文件逐个输出）
+- MUST：`bkn-creator` 不负责目录分配、归档路径规则或归档回执格式
+- MUST：凡涉及文件写入与归档（`.bkn`、报告、JSON 等），统一遵循并直接委托 skill `archive-protocol`
+- MUST：`network_dir`、归档根目录、回读校验、`ARCHIVE_STATUS`/`ARCHIVE_ROOT`、`archive_grid` 等规则以 `archive-protocol` 为唯一规则源
+- Never：在 `bkn-creator` 内重复定义 `archives/*` 路径模板或归档输出模板
 
 ## 全局硬约束
 
@@ -130,7 +121,7 @@
 - MUST：工具调用失败时停在当前阶段，向用户报错并等待指令，Never 自动重试或跳过
 - Never：使用 `curl`、`kweaver-api.sh` 等已废弃方式
 - Never：Windows 环境使用 `/tmp/` 路径
-- Always：目录命名与落盘位置遵循 `bkn-creator` 内置目录规则（`COMMON_RULES.md` + `FLOW_CREATE.md`）
+- Always：目录命名与落盘位置遵循 `archive-protocol` 规则
 
 ## 用户回显模板（统一格式）
 

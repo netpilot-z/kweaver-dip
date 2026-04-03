@@ -155,9 +155,8 @@ rule_extraction_check:
 ## 阶段二：生成 BKN 草案
 
 - MUST 读取并委托：`../create-bkn/SKILL.md`
-- MUST：目录与落盘位置仅按 `bkn-creator` 内置规则执行（`./COMMON_RULES.md` + 本文件）；禁止引用外部目录类 skill/规则
-- 输出目录（统一目录管理）：`network_dir = archives/{ARCHIVE_ID}/{TIMESTAMP}/{NETWORK_DIR_NAME}`
-- 生成目录前必须先拿到 `ARCHIVE_ID` 与 `TIMESTAMP`；任一缺失则中止并回执 `ARCHIVE_STATUS: BLOCKED`
+- MUST：目录与落盘位置统一遵循并直接委托 skill `archive-protocol`，不在本流程内定义 `archives/*` 规则
+- 输出目录（`network_dir`）由 `archive-protocol` 提供与校验
 - 质量检查：
   - `network.bkn` 的 `id` 留空（阶段五回填）
   - `network.bkn` MUST 补齐默认样式：`icon: icon-dip-graph`、`color: #0e5fc5`
@@ -313,18 +312,8 @@ kweaver bkn push <network_dir> --branch main
 - 当推送成功时：按标准口径执行“草案 vs 线上”完整性检查，并生成完整报告
 - 当推送失败时：仍必须执行上述两步；完整性检查改为“草案 vs 最近可获取线上快照/已知状态”并标注 `integrity_mode: degraded`
 - 当推送失败且无法获取任何线上快照时：完整性检查不得跳过，需输出 `integrity_status: unavailable` 与原因；报告仍必须生成，并显式记录“推送失败 + 线上快照不可用”
-- 无论推送成功或失败，归档回执都必须在这两步完成后输出
-
-### 归档回执（MUST）
-
-- 失败回执：`ARCHIVE_STATUS: BLOCKED` | `ARCHIVE_REASON: <原因>`
-- 成功回执：`ARCHIVE_STATUS: OK` | `ARCHIVE_ROOT: archives/{ARCHIVE_ID}/`
-- 若返回 WebUI 卡片，`archive_grid` 必须使用 `json` 围栏代码块，且仅返回一个目录级代码块
-- 归档一致性（MUST）：
-  - 归档回执必须在“推送后必须执行”的两步完成后输出，不得提前输出
-  - 若缺少 `{network_dir}/reports/bkn_report.html`，禁止返回 `ARCHIVE_STATUS: OK`
-  - 若阶段五标记为“已跳过”，也必须先完成本地报告生成与校验；未完成则返回 `ARCHIVE_STATUS: BLOCKED`
-  - 最终“流程完成总结”中的阶段状态必须与归档物一致；若报告缺失，不得标注流程完成
+- 无论推送成功或失败，都必须在上述两步完成后给出阶段五执行回执
+- 归档回执与归档一致性规则由 `archive-protocol` 统一负责，本流程不重复定义
 
 ### HTML 报告生成规范（MUST）
 
@@ -437,20 +426,6 @@ kweaver bkn push <network_dir> --branch main
 下一步：如你确认进入推送阶段，请回复“确认”；如需先修复，请回复“先修复”并说明优先项。
 ```
 
-### 模板：归档失败回执（阶段五）
-
-```text
-ARCHIVE_STATUS: BLOCKED
-ARCHIVE_REASON: {blocked_reason}
-```
-
-### 模板：归档成功回执（阶段五）
-
-```text
-ARCHIVE_STATUS: OK
-ARCHIVE_ROOT: archives/{ARCHIVE_ID}/
-```
-
 ### 模板：BKN 报告回执（阶段五）
 
 ```text
@@ -464,16 +439,3 @@ ARCHIVE_ROOT: archives/{ARCHIVE_ID}/
 下一步：如果你希望我继续处理报告中的高优先级问题，直接说“继续修复”就行。
 ```
 
-### 模板：archive_grid（WebUI，目录示例）
-
-```json
-{
-  "type": "archive_grid",
-  "data": {
-    "type": "folder",
-    "archive_root": "archives/{ARCHIVE_ID}",
-    "subpath": "{NETWORK_DIR_NAME}",
-    "name": "{NETWORK_DIR_NAME}"
-  }
-}
-```
