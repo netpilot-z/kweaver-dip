@@ -14,11 +14,11 @@ This `deploy` directory is organized around `kweaver-dip` as the default product
 
 DIP Studio requires OpenClaw to be installed and running:
 
-1. Deploy [OpenClaw](https://openclaw.ai) first. The support version is `v2026.3.11`. You can also use the preparation notes in [kweaver-ai/dip-studio/studio/README.md](https://github.com/kweaver-ai/dip-studio/blob/main/studio/README.md).
+1. Deploy [OpenClaw](https://openclaw.ai) first. The supported version is `v2026.3.11`. You can also refer to the preparation notes in [kweaver-ai/dip-studio/studio/README.md](https://github.com/kweaver-ai/dip-studio/blob/main/studio/README.md).
 2. Start OpenClaw Gateway.
 3. Copy `gateway.auth.token` from `openclaw.json`, then run `openclaw gateway status` and record the gateway bind address and port.
-4. Run `openclaw config set gateway.http.endpoints.responses.enabled true` to enable the `POST /v1/responses` HTTP endpoint.
-5. Make sure the machine running `deploy.sh` can access the OpenClaw config file and workspace directory. If you want to preconfigure them, set `dipStudio.openClaw.configHostPath` and `dipStudio.openClaw.workspaceHostPath` in `deploy/conf/config.yaml` or in your custom config file.
+4. Make sure the machine running `deploy.sh` can access the OpenClaw config file and workspace directory. If you want to preconfigure them, set `dipStudio.openClaw.configHostPath` and `dipStudio.openClaw.workspaceHostPath` in `deploy/conf/config.yaml` or in your custom config file.
+5. Start OpenClaw in LAN mode: `openclaw gateway --bind lan`, listening on `0.0.0.0:18789`.
 
 ### Host prerequisites
 
@@ -45,12 +45,41 @@ cd kweaver-dip/deploy
 
 # 2. Install KWeaver DIP
 sudo ./deploy.sh kweaver-dip install
+
+# 3. Install OpenClaw DIP extensions
+openclaw plugins install ./openclaw-extensions/dip
 ```
 
-After deployment, open:
+### Authorization
 
-- `https://<node-ip>/deploy` for the deployment console
-- `https://<node-ip>/studio` for KWeaver Studio
+After deployment, authorize OpenClaw to link with DIP Studio:
+
+1. Run `openclaw devices list` and find the pending device shown below:
+
+```bash
+Pending (1)
+┌──────────────────────────────────────┬──────────────────────────────────────────────────┬──────────┬───────────────┬──────────┬────────┐
+│ Request                              │ Device                                           │ Role     │ IP            │ Age      │ Flags  │
+├──────────────────────────────────────┼──────────────────────────────────────────────────┼──────────┼───────────────┼──────────┼────────┤
+│ 3ef1700e-cc91-4978-a980-4fb783925028 │ cc8d2143cf8fcd04161ade9e5161006c410a0bee65f835e2 │ operator │ 192.169.0.104 │ just now │        │
+│                                      │ 629792aa584bb119                                 │          │               │          │        │
+└──────────────────────────────────────┴──────────────────────────────────────────────────┴──────────┴───────────────┴──────────┴────────┘
+```
+
+2. Run `openclaw devices approve <Request>` to approve it.
+
+When you see:
+
+```bash
+Approved cc8d2143cf8fcd04161ade9e5161006c410a0bee65f835e2629792aa584bb119 (3ef1700e-cc91-4978-a980-4fb783925028)
+```
+
+the authorization has succeeded.
+
+3. After authorization, you can access:
+
+- `https://<node-ip>/deploy`: deployment console
+- `https://<node-ip>/studio`: KWeaver Studio
 
 Default username: `admin`
 Initial password: `eisoo.com`
@@ -102,8 +131,6 @@ The DIP application layer currently includes charts such as:
 
 Notes:
 
-- DIP release names are read from the release manifest `releases` block when a manifest is provided.
-- Each release can declare `stage: pre|main|post`. Missing `stage` defaults to `main`.
 - `kweaver-core` can still be installed on its own if you only want the Core capability set.
 - `isf` can also be installed on its own if you want to prepare the base platform first.
 - The current auto-installed data service set does **not** include MongoDB. If your environment needs MongoDB, configure it manually as an external dependency in the config file.
@@ -128,14 +155,11 @@ Notes:
 # Install DIP from pre-downloaded charts
 ./deploy.sh kweaver-dip install --charts_dir=/path/to/charts
 
-# Install a specific release version
+# Install a specific version
 ./deploy.sh kweaver-dip install --version=0.4.0
 
-# Download a specific release version
+# Download a specific version
 ./deploy.sh kweaver-dip download --version=0.4.0
-
-# Continue even if configured dipStudio OpenClaw paths do not exist
-./deploy.sh kweaver-dip install --confirm-missing-openclaw-paths
 
 # Show DIP status
 ./deploy.sh kweaver-dip status
@@ -169,7 +193,7 @@ Notes:
 ### Chart pre-download and cache
 
 - The default shared cache directory is `deploy/.tmp/charts`
-- `kweaver-dip download` also downloads the dependent `kweaver-core` and `isf` charts
+- `kweaver-dip download` downloads the full dependency charts for DIP, `kweaver-core`, and `isf`
 - `install` only uses local `.tgz` files when `--charts_dir=<dir>` is passed explicitly
 - If `download` cannot find `helm`, it installs `helm` first
 - `download` refreshes incrementally by default instead of re-downloading everything
@@ -272,10 +296,6 @@ depServices:
     protocol: https
     port: 9200
 ```
-
-`dipStudio.openClaw` is specific to `kweaver-dip`. When the `dip-studio` chart is installed, the deploy script maps those values to Helm `persistence.config.hostPath` and `persistence.workspace.hostPath`.
-
-If either configured OpenClaw path does not exist, the installer prints the missing path and asks whether you really want to continue. In non-interactive runs it fails by default; use `--confirm-missing-openclaw-paths` only when the missing path is intentional.
 
 If you want to use the repository-local example config instead, pass it explicitly:
 

@@ -17,8 +17,8 @@ DIP Studio 需要安装并运行 OpenClaw：
 1. 先部署 [OpenClaw](https://openclaw.ai)。支持的版本是 `v2026.3.11`。你也可以参考 [kweaver-ai/dip-studio/studio/README.md](https://github.com/kweaver-ai/dip-studio/blob/main/studio/README.md) 中的准备说明。
 2. 启动 OpenClaw Gateway。
 3. 从 `openclaw.json` 复制 `gateway.auth.token`，然后运行 `openclaw gateway status` 并记录网关绑定地址和端口。
-4. 运行 `openclaw config set gateway.http.endpoints.responses.enabled true` 来启用 `POST /v1/responses` HTTP 端点。
-5. 确保运行 `deploy.sh` 的机器可以访问 OpenClaw 配置文件和工作空间目录。如果要预配置，请在 `deploy/conf/config.yaml` 或你的自定义配置文件中设置 `dipStudio.openClaw.configHostPath` 和 `dipStudio.openClaw.workspaceHostPath`。
+4. 确保运行 `deploy.sh` 的机器可以访问 OpenClaw 配置文件和工作空间目录。如果要预配置，请在 `deploy/conf/config.yaml` 或你的自定义配置文件中设置 `dipStudio.openClaw.configHostPath` 和 `dipStudio.openClaw.workspaceHostPath`。
+5. 使用 lan 模式启动 OpenClaw：`openclaw gateway --bind lan`，监听 0.0.0.0:18789
 
 ### 主机前置条件
 
@@ -45,9 +45,38 @@ cd kweaver-dip/deploy
 
 # 2. 安装 KWeaver DIP
 sudo ./deploy.sh kweaver-dip install
+
+# 3. 安装 OpenClaw DIP 插件
+openclaw plugins install ./openclaw-extensions/dip
 ```
 
-部署完成后，可访问：
+### 授权
+
+部署完成后，授权 OpenClaw 与 DIP Sutdio 进行链接：
+
+1. 执行 `openclaw devices list`，找到如下的待授权设备：
+
+```bash
+Pending (1)
+┌──────────────────────────────────────┬──────────────────────────────────────────────────┬──────────┬───────────────┬──────────┬────────┐
+│ Request                              │ Device                                           │ Role     │ IP            │ Age      │ Flags  │
+├──────────────────────────────────────┼──────────────────────────────────────────────────┼──────────┼───────────────┼──────────┼────────┤
+│ 3ef1700e-cc91-4978-a980-4fb783925028 │ cc8d2143cf8fcd04161ade9e5161006c410a0bee65f835e2 │ operator │ 192.169.0.104 │ just now │        │
+│                                      │ 629792aa584bb119                                 │          │               │          │        │
+└──────────────────────────────────────┴──────────────────────────────────────────────────┴──────────┴───────────────┴──────────┴────────┘
+```
+
+2. 执行`openclaw devices approve <Request>` 进行授权。
+
+当提示：
+
+```bash
+Approved cc8d2143cf8fcd04161ade9e5161006c410a0bee65f835e2629792aa584bb119 (3ef1700e-cc91-4978-a980-4fb783925028)
+```
+表示授权成功。
+
+
+3. 授权完成后，可访问：
 
 - `https://<节点IP>/deploy`：部署控制台
 - `https://<节点IP>/studio`：KWeaver Studio
