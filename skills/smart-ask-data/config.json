@@ -1,13 +1,13 @@
 {
   "name": "smart-ask-data",
   "version": "1.0.0",
-  "base_url": "https://dip-poc.aishu.cn",
+  "base_url": "",
   "openclaw": {
     "skillKey": "smart_ask_data"
   },
-  "description": "问数编排：kn_select → text2sql(show_ds → gen_exec) → execute_code_sync（可选）→ json2plot（可选）→ 总结",
+  "description": "问数编排：kn_select → text2sql(show_ds → gen_exec) → execute_code_sync（可选）→ json2plot（可选）→ 总结 → 清理临时脚本与临时数据（成功后）",
   "defaults": {
-    "user_id": "f6713976-1cf6-11f1-b2cd-d6e9efdbcbb2",
+    "user_id": "",
     "x_business_domain": "bd_public"
   },
   "tools": {
@@ -24,7 +24,7 @@
         "gen_exec_template": "注册资金单位为万"
       },
       "inner_llm": {
-        "id": "1951511743712858112",
+        "id": "",
         "name": "deepseek_v3",
         "temperature": 0.1,
         "top_k": 1,

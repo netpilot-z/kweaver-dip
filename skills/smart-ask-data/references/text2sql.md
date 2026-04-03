@@ -36,8 +36,76 @@
 ## 与本流程的衔接
 
 - **`kn_id`**：写入 `data_source.kn`（数组，通常单元素）的 id **必须落在 `SOUL.md` 已为问数声明的知识网络范围内**（见上文「知识网络来源」）；具体值通常来自上游 `kn_select` 或编排解析的 `kn_id_ask_data`。**禁止**使用元数据知识网络（与 [config.json](../config.json) → `tools.kn_select.forbidden_ask_data_kn_ids` 一致，当前示例含 `idrm_metadata_kn_object_lbb`）：`show_ds` / `gen_exec` 的 `data_source.kn` **不得**包含上述任一等价 id。
-- **`user_id`**：与 [config.json](../config.json) → `defaults.user_id` 一致（或与当前环境约定一致）。
-- **URL**：`base_url` + `tools.text2sql.url_path`。**dip-poc** 上 `Authorization` 与 `auth.token` 为同一凭证；`x-business-domain` 与 `defaults.x_business_domain` 对齐。
+- **`user_id` / `base_url` / 完整 URL**：HTTP 侧须正确填写 `data_source.user_id`，请求地址为 `base_url` + `tools.text2sql.url_path`。**如何用脚本自动解析 `user_id` 与 `base_url`**，见下文 **[「网关根地址与用户 ID 获取方式」](#text2sql-base-url-user-id)**（与 [`text2sql_request_example.py`](../scripts/text2sql_request_example.py) 行为一致）。编排文档中的 [config.json](../config.json) → `defaults.user_id` / `base_url` 仅作参考，**运行示例脚本时不依赖其中的固定 UUID 或写死网关**。
+- **`inner_llm.id`（大模型 ID）**：获取与持久化规则见 **[「inner_llm.id 获取与持久化」](#text2sql-inner-llm-id)**；与 OpenClaw 记忆区 / 本地 `inner_llm.txt` 的约定见该节，**不得**与 `kn_id` 的 `SOUL.md` 约束混用。
+- **凭证与 Header**：`Authorization` 与 `auth.token` 为同一 token；`x-business-domain` 与 [config.json](../config.json) → `defaults.x_business_domain` 对齐（如 `bd_public`）。
+
+<a id="text2sql-base-url-user-id"></a>
+
+## 网关根地址与用户 ID 获取方式（`text2sql_request_example.py`）
+
+下列顺序适用于通过 **[`text2sql_request_example.py`](../scripts/text2sql_request_example.py)**（及其 **同构临时脚本** `_tmp_t2s_*.py`）发起 `show_ds` / `gen_exec` 时，**拼装请求 URL** 与 **`data_source.user_id`**。脚本**不在代码内写死默认 `base_url`**；须按下述优先级解析。
+
+### `base_url`（网关根地址，不含 `url_path`）
+
+| 优先级 | 来源 | 说明 |
+|--------|------|------|
+| 1 | 命令行 **`--base-url` / `-b`** | 显式传入，末尾 `/` 会被去掉后再与 `url_path` 拼接。 |
+| 2 | 环境变量 **`TEXT2SQL_BASE_URL`** | 同上，去首尾空白与末尾 `/`。 |
+| 3 | **标准输入（交互）** | 若以上皆空且 stdin 为 TTY：先向 **stderr** 提示缺省，再 **`input` 让用户手动输入** `base_url`。 |
+| — | **失败** | 若仍无值（例如 **非 TTY** 且未配置前两项），**报错退出**；非交互场景须预先设置 **`TEXT2SQL_BASE_URL`** 或传入 **`-b`**。 |
+
+### `user_id`（`data_source.user_id`）
+
+| 优先级 | 来源 | 说明 |
+|--------|------|------|
+| 1 | 命令行 **`--user-id` / `-u`** | 显式 UUID。 |
+| 2 | 环境变量 **`TEXT2SQL_USER_ID`** | |
+| 3 | **标准输入（交互）** | 若以上皆空且 stdin 为 TTY：`input` 提示输入 UUID。 |
+| — | **失败** | **非 TTY** 且无前两项则 **报错退出**；非交互场景须预先设置 **`TEXT2SQL_USER_ID`** 或传入 **`-u`**。 |
+
+### `token`（简述）
+
+- **`--token` / `-t`** → 环境变量 **`TEXT2SQL_TOKEN`** → **`KN_SELECT_TOKEN`**；写入 `auth.token` 与 Header `Authorization`，并经 `_clean_token` 处理（避免非 ASCII 污染 HTTP 头）。细则见脚本文档字符串与 [windows-http-troubleshooting.md](windows-http-troubleshooting.md)。
+
+<a id="text2sql-inner-llm-id"></a>
+
+## `inner_llm.id` 获取与持久化（OpenClaw 记忆区 vs `inner_llm.txt`）
+
+本节约定 **`body.inner_llm` 中 `id` 字段（大模型 id）** 的解析顺序与 **用户补录后的落盘/记忆** 行为；适用于 Agent 编排、[`text2sql_request_example.py`](../scripts/text2sql_request_example.py) 及与其 **同构** 的 `_tmp_t2s_*.py`。`inner_llm` 的 **`name`、`temperature` 等其余键** 仍默认同 [`text2sql_request_example.py`](../scripts/text2sql_request_example.py) 内建对象一致，仅 **`id` 走本节**。
+
+### 运行环境区分
+
+| 环境 | 判定（实现可择一或组合） | `id` 的「权威外部源」 |
+|------|-------------------------|----------------------|
+| **OpenClaw** | 技能在 OpenClaw 中加载（如存在 `metadata.openclaw.skillKey`），和/或宿主设置 **`OPENCLAW=1`** / **`OPENCLAW=true`** | **记忆区**：由宿主将会话/工作区记忆中的键（如 `text2sql_inner_llm_id`，名称以 OpenClaw 实现为准）注入请求；**CLI 侧**常用环境变量 **`OPENCLAW_MEMORY_INNER_LLM_ID`** 作为记忆区映射。若记忆未注入，可回读宿主落盘的 **`inner_llm.openclaw.txt`**（见下）。 |
+| **其他（非 OpenClaw）** | 未满足上列 OpenClaw 条件 | 工作目录下文本文件 **`inner_llm.txt`**（**单行**即为 `id`）；路径可由 **`TEXT2SQL_INNER_LLM_FILE`** 覆盖绝对/相对路径。 |
+
+### 读取优先级（`id`）
+
+在 **拼出最终 HTTP 请求** 前，按序 **谁先命中用谁**（与 [`text2sql_request_example.py`](../scripts/text2sql_request_example.py) 对齐）：
+
+1. 命令行 **`--inner-llm-id`**
+2. 环境变量 **`TEXT2SQL_INNER_LLM_ID`**（通用覆盖，不限环境）
+3. **OpenClaw**：**`OPENCLAW_MEMORY_INNER_LLM_ID`**（记忆区镜像）；若仍空，读 **`TEXT2SQL_OPENCLAW_INNER_LLM_STORE`** 指向的文件，默认 **当前工作目录下 `inner_llm.openclaw.txt`**（单行 `id`，用于上一轮交互补录后的回读）
+4. **非 OpenClaw**：读 **`inner_llm.txt`**（或 **`TEXT2SQL_INNER_LLM_FILE`**）
+5. 仍无：若 **stdin 为 TTY**，向用户 **明确提示**「请输入 **`inner_llm.id`（大模型 id）**」并 **读一行**；若 **非 TTY**，不得挂起，应 **报错退出** 或（仅限脚本兼容）回退内置默认并 **`warn`**，以脚本实现为准
+6. 最后兜底：脚本内 **`DEFAULT_INNER_LLM["id"]`**（便于自动化；生产编排宜关闭无序依赖）
+
+### 用户输入 `inner_llm_id` 之后的持久化
+
+当 **`id` 来自上一步交互录入**（而非来自 1～4 的已有配置）时 **必须落库**，避免下次再问：
+
+| 环境 | 持久化要求 |
+|------|------------|
+| **OpenClaw** | **`id` 写入记忆区**（由 **OpenClaw Agent / 宿主** 调用记忆 API 保存；键名与 TTL 以平台为准）。**CLI 脚本**无法直接写远端记忆时，须将 **`id` 写入 `TEXT2SQL_OPENCLAW_INNER_LLM_STORE` 默认文件 `inner_llm.openclaw.txt`**（UTF-8、单行），并 **`stderr` 提示由宿主同步到记忆区**。 |
+| **非 OpenClaw** | 将 **`id` 写入 `inner_llm.txt`**（或 **`TEXT2SQL_INNER_LLM_FILE`**），UTF-8、单行，覆盖或新建均可。 |
+
+**不持久化**：通过 **`--inner-llm-id`** 或 **`TEXT2SQL_INNER_LLM_ID`** 显式传入的本次调用值，视为临时覆盖，**不必**自动写回文件/记忆（除非产品另有约定）。
+
+### 临时脚本同构要求
+
+新建 **`_tmp_t2s_*.py`** 时，**`inner_llm.id` 的解析与上述持久化** 须与 [`text2sql_request_example.py`](../scripts/text2sql_request_example.py) **逐段同构**（含 **`_is_openclaw`**、读写字段路径与环境变量名）；不得另起一套互斥逻辑。
 
 ## 完整参数与约束
 
@@ -90,8 +158,8 @@
 需要新建 **`_tmp_t2s_*.py`** 等临时脚本时，须满足：
 
 1. **与 [`text2sql_request_example.py`](../scripts/text2sql_request_example.py) 一致**  
-   - 同一套：`import`（标准库即可）、文件头编码声明、**`DEFAULT_*` 常量**（`base_url`、`url_path`、`inner_llm`、`x_business_domain` 等与样例内联一致）、**`_clean_token`**、**`_token_from_env`**、**`_build_payload`**、**`urllib` 请求与错误处理**、响应 **`json.dumps(..., indent=2)`** 输出。  
-   - **禁止**：`open(...config.json...)`、读取任意仓库外配置文件、`import` 本仓库其它 `.py` 作为依赖、删减或改写请求体字段层级（须与样例 A/B 及 `_build_payload` 同构）。
+   - 同一套：`import`（标准库即可）、文件头编码声明、**`DEFAULT_*` 常量**（**不含写死 `base_url`**；`url_path`、`inner_llm` 除 `id` 外默认值、`x_business_domain` 等与样例内联一致）、**`_resolve_base_url` / `_resolve_user_id` / `_resolve_inner_llm_id_for_request`**（或与其逐段同构的解析逻辑）、**`_clean_token`**、**`_token_from_env`**、**`_build_payload`**、**`urllib` 请求与错误处理**、响应 **`json.dumps(..., indent=2)`** 输出。`base_url` / `user_id` 与 **`inner_llm.id`** 的优先级分别与 [「网关根地址与用户 ID」](#text2sql-base-url-user-id)、[「inner_llm.id 获取与持久化」](#text2sql-inner-llm-id) **一致**。  
+   - **禁止**：`open(...config.json...)`、`import` 本仓库其它 `.py` 作为依赖、删减或改写请求体字段层级（须与样例 A/B 及 `_build_payload` 同构）。**允许**按 [「inner_llm.id 获取与持久化」](#text2sql-inner-llm-id) 读写用户本地的 **`inner_llm.txt` / `inner_llm.openclaw.txt`**（非仓库 `config.json`）。
 
 2. **不依赖其它文件**  
    - 临时脚本须 **单文件自包含**；环境差异只允许在本文件内改 **常量** 或保留与样例相同的 **argparse**（`--base-url`、`--kn-id` 等），**不得**把默认逻辑改成「运行时加载外部 JSON」。
@@ -107,7 +175,9 @@
    | `background` | `config.background`：`show_ds` 为 `""`；`gen_exec` 为 show_ds 摘要 |
    | `session_id` | `config.session_id`：可自行填写（两步不要求一致） |
    | `kn_id` | `data_source.kn[0]` |
-   | `user_id` | `data_source.user_id` |
+   | `base_url` | 请求 URL 前缀；**不写死在常量**：`-b` → `TEXT2SQL_BASE_URL` → 交互输入；见 [「网关根地址与用户 ID 获取方式」](#text2sql-base-url-user-id) |
+   | `user_id` | `data_source.user_id`：`-u` → `TEXT2SQL_USER_ID` → 交互输入（同上节） |
+   | `inner_llm.id` | 见 [「inner_llm.id 获取与持久化」](#text2sql-inner-llm-id)；样例脚本为 `--inner-llm-id` → `TEXT2SQL_INNER_LLM_ID` → OpenClaw 记忆/文件或 `inner_llm.txt` → 交互补录并持久化 |
 
 4. **推荐落地方式**  
    - **复制**整份 `text2sql_request_example.py` 为 `_tmp_t2s_<动作>_<主题>_<YYYYMMDD_HHMMSS>.py`（动作建议 `show` / `exec`），仅改文件名与（如需）顶部常量；或 **不复制**、直接对副本只通过命令行传入 `-a`、`-t`、`-i`、`-g`、`-S`、`-k`、`-u`。  
@@ -118,7 +188,7 @@
 
 | 类型 | 参考文件 | 说明 |
 |------|----------|------|
-| **推荐（跨平台）** | [`../scripts/text2sql_request_example.py`](../scripts/text2sql_request_example.py) | **单文件自包含**（默认与编排 `config.json` 对齐，不读外部文件）；`-a show_ds` / `gen_exec`、`-S session_id`、`-g background`；标准库 `urllib`；`--insecure` 跳过 TLS；可用 `--base-url`、`--url-path`、`--kn-id`、`--user-id`、`--x-business-domain` 等覆盖。环境变量 **`TEXT2SQL_TOKEN`**，未设时回退 **`KN_SELECT_TOKEN`**。 |
+| **推荐（跨平台）** | [`../scripts/text2sql_request_example.py`](../scripts/text2sql_request_example.py) | **单文件自包含**（不读 `config.json`）；`-a show_ds` / `gen_exec`、`-g background`；标准库 `urllib`；`--insecure` 跳过 TLS。**`base_url` / `user_id`** 见 [「网关根地址与用户 ID」](#text2sql-base-url-user-id)；**`inner_llm.id`** 见 [「inner_llm.id 获取与持久化」](#text2sql-inner-llm-id)。**`TEXT2SQL_TOKEN`**，未设时回退 **`KN_SELECT_TOKEN`**。 |
 | **备选（curl）** | [`../scripts/text2sql_request_example.sh`](../scripts/text2sql_request_example.sh) | 同上参数语义；依赖 **python3** 组装 JSON；`-K` 跳过 TLS。 |
 | **遗留对照** | [`../scripts/text2sql_request_example.ps1`](../scripts/text2sql_request_example.ps1) | 仅作 Windows PowerShell / `Invoke-RestMethod` 对照，**非**推荐入口。 |
 | **Windows 排错** | [windows-http-troubleshooting.md](windows-http-troubleshooting.md) | Token 头 `latin-1` 报错、控制台中文乱码、PowerShell/CMD 混用、`npx` 子进程找不到等；与 Python `urllib` 示例配合查阅。 |
