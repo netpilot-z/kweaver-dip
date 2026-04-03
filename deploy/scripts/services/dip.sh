@@ -624,7 +624,6 @@ _dip_update_config_with_openclaw_config() {
 _dip_append_release_extra_helm_args() {
     local release_name="$1"
     local target_array_name="$2"
-    local -n target_args="${target_array_name}"
 
     if [[ "${release_name}" != "dip-studio" ]]; then
         return 0
@@ -692,12 +691,13 @@ _dip_append_release_extra_helm_args() {
         need_reprompt=false
     done
 
-    target_args+=(
-        "--set-string" "studio.openclaw.hostPath=${host_path}"
-        "--set-string" "studio.openclaw.gatewayToken=${gateway_token}"
-        "--set-string" "studio.openclaw.gatewayHost=${gateway_host}"
-        "--set-string" "studio.openclaw.gatewayPort=${gateway_port}"
-    )
+    # Use eval to append to the array (Bash 4.2 compatible)
+    eval "${target_array_name}+=(
+        \"--set-string\" \"studio.openclaw.hostPath=\${host_path}\"
+        \"--set-string\" \"studio.openclaw.gatewayToken=\${gateway_token}\"
+        \"--set-string\" \"studio.openclaw.gatewayHost=\${gateway_host}\"
+        \"--set-string\" \"studio.openclaw.gatewayPort=\${gateway_port}\"
+    )"
 }
 
 init_dip_database() {
