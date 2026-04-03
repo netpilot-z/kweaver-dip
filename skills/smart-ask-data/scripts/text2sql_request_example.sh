@@ -7,7 +7,7 @@ usage() {
   echo "Usage: $0 -a show_ds|gen_exec -t <token> [-k kn_id] [-u user_id] [-S session_id] [-i input] [-g background]" >&2
   echo "       [-b base_url] [-d x_business_domain] [-L return_data_limit] [-R return_record_limit] [-T timeout_sec] [-o out.json] [-K]" >&2
   echo "  -K  curl --insecure（跳过 TLS 校验）" >&2
-  echo "  gen_exec 时请用 -g 传入 show_ds 产出的 background；show_ds 与 gen_exec 须共用同一 -S session_id。" >&2
+  echo "  gen_exec 时请用 -g 传入 show_ds 产出的 background；session_id 是否复用由平台约定决定。" >&2
   exit 1
 }
 
@@ -18,6 +18,7 @@ USER_ID="${USER_ID:-f6713976-1cf6-11f1-b2cd-d6e9efdbcbb2}"
 SESSION_ID="${SESSION_ID:-550e8400-e29b-41d4-a716-446655440000}"
 INPUT=""
 BACKGROUND=""
+DEFAULT_GEN_EXEC_BACKGROUND_TEMPLATE="候选表：{tables}。关键字段：{key_fields}。过滤与口径：{filters_and_caliber}。统计目标：{target_metric}。"
 BASE_URL="${BASE_URL:-https://dip-poc.aishu.cn}"
 URL_PATH="/api/af-sailor-agent/v1/assistant/tools/text2sql"
 X_BD="${X_BUSINESS_DOMAIN:-bd_public}"
@@ -66,6 +67,10 @@ fi
 
 if [[ "$ACTION" == "show_ds" ]]; then
   BACKGROUND="${BACKGROUND:-}"
+fi
+if [[ "$ACTION" == "gen_exec" && -z "${BACKGROUND// }" ]]; then
+  BACKGROUND="$DEFAULT_GEN_EXEC_BACKGROUND_TEMPLATE"
+  echo "warn: gen_exec 未传 -g background，已回退为默认模板（请按实际 show_ds 结果替换占位符）。" >&2
 fi
 
 URI="${BASE_URL%/}${URL_PATH}"

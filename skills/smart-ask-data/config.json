@@ -19,8 +19,12 @@
     "text2sql": {
       "url_path": "/api/af-sailor-agent/v1/assistant/tools/text2sql",
       "kn_id": "",
+      "background": {
+        "show_ds": "",
+        "gen_exec_template": "注册资金单位为万"
+      },
       "inner_llm": {
-        "id": "1991501525654048768",
+        "id": "1951511743712858112",
         "name": "deepseek_v3",
         "temperature": 0.1,
         "top_k": 1,
@@ -64,6 +68,7 @@
       "role": "query_data",
       "tool_skill": "text2sql",
       "action": "gen_exec",
+      "background_from": "tools.text2sql.background.gen_exec_template",
       "skill_path": "skills/text2sql/SKILL.md",
       "config_path": "skills/text2sql/config.json",
       "defaults_key": "text2sql",

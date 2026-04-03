@@ -49,6 +49,7 @@
 
 **禁止**：
 
+- **禁止**在仓库 **`skills/`** 及其任意子目录下创建临时脚本；若仓库内另有 **`.claude/skills/`** 等 skill 同步树，**同样禁止** 在其下创建。**宜** 使用工作区根目录、系统临时目录（如 `/tmp`、`%TEMP%`）等与上述路径隔离的位置。
 - **禁止**直接执行仓库内 `kn_select_request_example.py`、`kn_select_request_example.sh`、`kn_select_request_example.ps1` 及任何以 `*_example*` 等形式保留的 **样例脚本**（它们仅供对照结构，**不是**本轮调用的入口）。
 - **禁止**凭记忆删减字段或脱离样例手写零散 `curl`，以免与网关约定不一致。
 

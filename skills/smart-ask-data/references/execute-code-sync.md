@@ -30,7 +30,10 @@
 2. 按本文样例结构组装 Query（`poll_interval`、`sync_timeout`）与 Body（`code`、`event` 等），POST 至 `base_url` + `tools.execute_code_sync.url_path`。
 3. **再** 在终端仅执行你的临时脚本。
 
-**禁止**直接把 `../scripts/execute_code_sync_request_example.py` / `.sh` 当任务入口执行。
+**禁止**：
+
+- **禁止**直接把 `../scripts/execute_code_sync_request_example.py` / `.sh` 当任务入口执行。
+- **禁止**在仓库 **`skills/`** 及其任意子目录下创建临时脚本；若仓库内另有 **`.claude/skills/`** 等 skill 同步树，**同样禁止** 在其下创建。**宜** 使用工作区根目录、系统临时目录（如 `/tmp`、`%TEMP%`）等与上述路径隔离的位置。
 
 ### 结构参考文件（只读对照，不得当执行入口）
 

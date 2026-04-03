@@ -12,8 +12,20 @@
 
 - **目的**：基于用户问题 + `show_ds` 结论，生成 SQL 并执行，返回数据与（若平台返回）**结果缓存键** `tool_result_cache_key`，供 `json2plot` 使用。
 - **调用**：`action`: **`gen_exec`**；`input` 为完整中文问句；**同上 `kn_id`**；`config.background` 必填写入上一步的结构化摘要。
-- **会话约束**：`gen_exec` 的 `config.session_id` **必须与前一步 `show_ds` 的 `config.session_id` 完全一致**（同一个会话用于状态/缓存对齐）。
+- **会话说明**：`session_id` 用于状态/缓存对齐；是否复用前一步的 `session_id` 由调用方按平台约定决定。
 - **产出**：表格数据/记录；若需画图，保留返回中的 **`tool_result_cache_key`**（名称以实际 API 为准）。
+
+### `gen_exec` 背景知识：渐进式加载（单独文件）
+
+可复用的 SQL 模式（如前 X%、后续可扩展 TopN、占比等）**不内联在本文件**，见 **[text2sql-background-knowledge.md](text2sql-background-knowledge.md)**。
+
+**加载方式（摘要）**：
+
+1. 先完成 **`show_ds`**，形成表/字段摘要写入 `background`（含业务口径，如「注册资金单位为万」）。
+2. 再按用户意图 **仅打开** 背景知识文件中 **匹配的单个 `##` 章节**，将该节模板拼入同一段 `config.background`。
+3. **未命中**任何已登记意图时：**不要**读取背景知识全文，避免干扰。
+
+细则以 `text2sql-background-knowledge.md` 文首「渐进式加载规则」为准。
 
 ## 知识网络来源（强约束）
 
@@ -40,7 +52,7 @@
   - `action`：`show_ds` 或 `gen_exec`
   - `input`（中文）
   - `config.background`（`gen_exec` 必填；`show_ds` 可为空字符串）
-  - `config.session_id`（**两步须相同**）
+  - `config.session_id`（可选；如需复用缓存可保持两步一致）
   - `config.return_data_limit`、`config.return_record_limit`
   - `data_source.kn`、`data_source.user_id`（其中 **`data_source.kn` 不得为** `forbidden_ask_data_kn_ids` 中的元数据等 KN）
   - `timeout`
@@ -55,12 +67,13 @@
 
 **执行顺序（强约束）**：
 
-1. **先** 在本机任务目录 **新建临时脚本**（例如 `_tmp_t2s_show_<主题>.py`、`_tmp_t2s_exec_<主题>.py` 或 `.sh`；**不要**覆盖仓库内已有脚本）。
-2. 按本文 **「样例 A / 样例 B」** 分别组装 **`show_ds`** 与 **`gen_exec`** 请求（**共用同一 `session_id`**），POST 至 `base_url` + `tools.text2sql.url_path`。
+1. **先** 在本机任务目录 **新建临时脚本**（例如 `_tmp_t2s_show_<主题>_<YYYYMMDD_HHMMSS>.py`、`_tmp_t2s_exec_<主题>_<YYYYMMDD_HHMMSS>.py` 或 `.sh`；**不要**覆盖仓库内已有脚本）。
+2. 按本文 **「样例 A / 样例 B」** 分别组装 **`show_ds`** 与 **`gen_exec`** 请求（`session_id` 由调用方按需决定），POST 至 `base_url` + `tools.text2sql.url_path`。
 3. **再** 在终端 **仅执行你的临时脚本**。
 
 **禁止**：
 
+- **禁止**在仓库 **`skills/`** 及其任意子目录下创建临时脚本；若仓库内另有 **`.claude/skills/`** 等 skill 同步树，**同样禁止** 在其下创建。**宜** 使用工作区根目录、系统临时目录（如 `/tmp`、`%TEMP%`）等与上述路径隔离的位置。
 - **禁止**直接执行 `text2sql_request_example.py` / `text2sql_request_example.sh` / `text2sql_request_example.ps1` 等 **样例文件** 作为任务入口。
 - **禁止**凭记忆删减字段或脱离样例手写零散 `curl`。
 
@@ -68,7 +81,7 @@
 
 ### 编写临时脚本的要点
 
-- **会话**：生成一次 `session_id`（如 UUID），先 `show_ds` 再 `gen_exec` 两次请求均使用该值。
+- **会话**：`session_id` 可由调用方生成并按需复用（用于状态/缓存对齐）或分别生成。
 - **background**：将 `show_ds` 返回中的表/字段要点整理为纯文本，原样写入 `gen_exec` 的 `config.background`。
 - **实现参考**：见下方「结构参考文件」；逻辑落在临时脚本内。
 
@@ -92,12 +105,13 @@
    | `token` | `auth.token` 与 Header `Authorization`；优先环境变量 `TEXT2SQL_TOKEN` / `KN_SELECT_TOKEN` 或 `--token`，经 `_clean_token` 再发送 |
    | `input` | 中文 `input` |
    | `background` | `config.background`：`show_ds` 为 `""`；`gen_exec` 为 show_ds 摘要 |
-   | `session_id` | `config.session_id`：两步 **必须相同** |
+   | `session_id` | `config.session_id`：可自行填写（两步不要求一致） |
    | `kn_id` | `data_source.kn[0]` |
    | `user_id` | `data_source.user_id` |
 
 4. **推荐落地方式**  
-   - **复制**整份 `text2sql_request_example.py` 为 `_tmp_t2s_<主题>.py`，仅改文件名与（如需）顶部常量；或 **不复制**、直接对副本只通过命令行传入 `-a`、`-t`、`-i`、`-g`、`-S`、`-k`、`-u`。  
+   - **复制**整份 `text2sql_request_example.py` 为 `_tmp_t2s_<动作>_<主题>_<YYYYMMDD_HHMMSS>.py`（动作建议 `show` / `exec`），仅改文件名与（如需）顶部常量；或 **不复制**、直接对副本只通过命令行传入 `-a`、`-t`、`-i`、`-g`、`-S`、`-k`、`-u`。  
+   - 建议命名示例：`_tmp_t2s_show_sales_region_20260402_153045.py`、`_tmp_t2s_exec_sales_region_20260402_153052.py`（同一轮 show/exec 也建议不同秒级时间戳，避免覆盖）。  
    - 两种方式下，脚本体仍须与样例 **逐段同构**，不得写成精简版 `requests` 片段或缺字段的 `curl` 生成器。
 
 ### 结构参考文件（只读对照，不得当执行入口）
@@ -111,7 +125,7 @@
 
 ### 执行示例（仅执行你新建的临时脚本）
 
-推荐用 **Python**（与 [`text2sql_request_example.py`](../scripts/text2sql_request_example.py) 同构的临时脚本；**`show_ds` 与 `gen_exec` 共用同一 `session_id`**）。
+推荐用 **Python**（与 [`text2sql_request_example.py`](../scripts/text2sql_request_example.py) 同构的临时脚本；`session_id` 可复用也可分别生成）。
 
 Linux/macOS（Bash）：
 
@@ -222,7 +236,7 @@ Authorization: {token}
 
 **Header**：同样例 A。
 
-**Body**（`config.background` 承接 show_ds 摘要；`session_id` 与样例 A **相同**）
+**Body**（`config.background` 承接 show_ds 摘要；`session_id` 按调用方填写）
 
 ```json
 {
@@ -274,15 +288,16 @@ Authorization: {token}
 ## 输出硬约束（命中数据时）
 
 - 当 `gen_exec` 返回非空结果（如 `rows` 非空、或存在明确聚合值）时，最终面向用户的回复必须同时包含：
-  - `sql` 字段对应的 SQL 文本（可做脱敏，但不可省略）；
-  - 至少一段结果数据展示（表格/关键行/聚合数值），不可只给结论。
+  - `sql` 字段对应的 SQL 文本（必须原样返回，不可脱敏，不可省略）；
+  - 至少一段结果数据展示（表格/关键行/聚合数值，必须原样返回，不可篡改），不可只给结论。
+- `show_ds` 与 `gen_exec` 的工具返回，必须原样回传；禁止生成、补造、篡改任何数据或字段。
 - 若未命中数据（空结果），需明确说明“未查到数据”，并给出下一步建议（如调整时间范围、口径或 KN）。
 
 ## 注意事项
 
 - `input` 必须为中文。
 - `return_data_limit` / `return_record_limit` 等按业务在 `config` 中设置，避免一次拉取过大。
-- `gen_exec` 的 `config.session_id` 必须与前一步 `show_ds` 相同，避免会话状态/缓存不一致。
+- session_id：如需复用缓存/状态，可与 show_ds 保持一致；否则按平台约定处理。
 - 若 `show_ds` 结果为空或明显不匹配：先澄清业务对象或换 `kn_id`，不要强行 `gen_exec`。
 - **元数据 KN、问数 KN 与 `SOUL.md`（强约束）**：元数据知识网络仅用于目录/对象实例检索（见 smart-search-tables），**不是**业务事实数据源；**禁止**将 `idrm_metadata_kn_object_lbb` 等元数据 KN 写入 `data_source.kn` 并执行 `show_ds` / `gen_exec`。若 **`SOUL.md` 中无可用的问数知识网络**，或实际上下文**只能落到元数据 KN / 未声明 KN**：**立即停止本任务**，**不得**用 config、样例默认 `kn_id` 顶替，**不得**转入找表或其它路径「凑数」；须提醒用户仅在 **`SOUL.md` 配置适合的业务问数知识网络**后重试。具备合法问数 KN 后，再按需先找表再在业务 KN 上问数。
 - **Windows 本机执行**：Token、终端编码、PowerShell/CMD 等问题见 [windows-http-troubleshooting.md](windows-http-troubleshooting.md)。

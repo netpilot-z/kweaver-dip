@@ -6,7 +6,7 @@
   与 skills/smart-ask-data/references/text2sql.md 一致：
   直传 JSON：config、data_source、inner_llm、input、action、timeout、auth；
   HTTP 头含 Authorization、x-business-domain。
-  gen_exec 须与前置 show_ds 使用相同 SessionId。
+  sessionId 用于状态/缓存对齐；是否复用前一步会话由平台约定决定。
   data_source.kn 不得为 config 中 forbidden_ask_data_kn_ids（元数据 KN 等）。
   推荐入口为同目录 text2sql_request_example.py（跨平台、无 PowerShell 编码问题）；本文件仅作 Invoke-RestMethod 对照。
 
@@ -29,7 +29,7 @@
   与 config defaults.user_id 一致。
 
 .PARAMETER SessionId
-  show_ds 与 gen_exec 必须相同。
+  sessionId 可按需复用或分别填写。
 
 .PARAMETER BaseUrl
   网关根地址。
@@ -98,9 +98,11 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+$DefaultGenExecBackgroundTemplate = "候选表：{tables}。关键字段：{key_fields}。过滤与口径：{filters_and_caliber}。统计目标：{target_metric}。"
 
 if ($Action -eq "gen_exec" -and [string]::IsNullOrWhiteSpace($Background)) {
-    Write-Warning "gen_exec 建议传入非空 -Background（来自 show_ds 摘要）。当前为空仍按调用方要求发送。"
+    $Background = $DefaultGenExecBackgroundTemplate
+    Write-Warning "gen_exec 未传 -Background，已回退为默认模板（请按实际 show_ds 结果替换占位符）。"
 }
 
 $UrlPath = "/api/af-sailor-agent/v1/assistant/tools/text2sql"
