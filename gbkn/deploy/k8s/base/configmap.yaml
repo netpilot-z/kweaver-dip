@@ -1,0 +1,133 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: data-semantic-config
+  labels:
+    app: data-semantic
+data:
+  # API 服务配置文件 (完整 YAML)
+  api.yaml: |
+    Name: data-semantic-api
+    Host: 0.0.0.0
+    Port: 8888
+    Timeout: 180000
+
+    # Telemetry 配置
+    Telemetry:
+      ServiceName: data-semantic-api
+      ServiceVersion: "1.0.0"
+      Environment: production
+
+      Log:
+        Level: info
+        Mode: console
+        Path: logs
+        KeepDays: 7
+        RemoteEnabled: false
+
+      Trace:
+        Enabled: true
+        Endpoint: "otel-collector:4317"
+        Sampler: 1.0
+        Batcher: otlp
+
+      Audit:
+        Enabled: false
+
+    # 数据库配置
+    DB:
+      Default:
+        Host: mysql-service
+        Port: 3306
+        Database: data-semantic
+        Username: root
+        Password: root123456
+        Charset: utf8mb4
+        MaxIdleConns: 10
+        MaxOpenConns: 100
+        ConnMaxLifetime: 3600
+        ConnMaxIdleTime: 600
+
+    # Redis 配置
+    Redis:
+      Host: redis-service
+      Port: 6379
+      DB: 0
+      Password: ""
+
+    # 认证配置
+    Auth:
+      AccessSecret: "your-secret-key-change-in-production-please-use-32-chars"
+      AccessExpire: 7200
+      HydraAdminURL: "http://hydra:4445"
+      HydraTimeoutSec: 10
+
+    # Swagger 配置
+    Swagger:
+      Enabled: true
+      Path: api/doc/swagger
+
+    # Kafka 配置
+    Kafka:
+      Brokers:
+        - kafka-service:9092
+
+    # AI 服务配置
+    AIService:
+      URL: ""
+      TimeoutSeconds: 10
+
+    # UserManagement 服务配置
+    UserManagement:
+      URL: ""
+      TimeoutSeconds: 10
+
+  # Consumer 服务配置文件（与 consumer/etc/consumer.yaml 结构一致）
+  consumer.yaml: |
+    Name: gbkn-consumer
+    Mode: console
+
+    Log:
+      ServiceName: gbkn-consumer
+      Mode: console
+      Level: info
+
+    Telemetry:
+      Name: gbkn-consumer
+      Endpoint: "otel-collector:4317"
+      Sampler: 1.0
+      Batcher: otlp
+
+    MQ:
+      Type: kafka
+      Kafka:
+        Brokers:
+          - kafka-service:9092
+        Topics:
+          - data-understanding-responses
+        Group: gbkn-consumer-group
+        Username: ""
+        Password: ""
+      Redis:
+        Host: redis-service
+        Port: 6379
+        Password: ""
+        Channel: messages
+
+    DB:
+      Default:
+        Host: mysql-service
+        Port: 3306
+        Database: data-semantic
+        Username: root
+        Password: root123456
+        Charset: utf8mb4
+        MaxIdleConns: 10
+        MaxOpenConns: 100
+        ConnMaxLifetime: 3600
+        LogLevel: warn
+        SlowThreshold: 200
+
+    Cache:
+      - Host: redis-service:6379
+        Type: node
