@@ -284,6 +284,11 @@ GitHub：https://github.com/kweaver-ai/web
 
 响应：`200 application/json`
 
+说明：
+
+- Studio 会先通过 OpenClaw `skills.status` 解析该技能的绝对目录路径，再调用 Gateway `dip` 插件读取目录树。
+- `resolvedSkillPath` 仅在 Studio 与插件之间作为内部查询参数传递，客户端无需提供。
+
 | 参数 | 类型 | 说明 |
 | -- | -- | -- |
 | name | string | 技能 ID |
@@ -311,6 +316,7 @@ GitHub：https://github.com/kweaver-ai/web
 
 说明：
 
+- Studio 会先通过 OpenClaw `skills.status` 解析技能目录，再将解析结果作为内部参数透传给插件读取文件。
 - 仅支持预览技能目录内的普通文件。
 - 未传 `path` 时，默认返回 `SKILL.md` 内容。
 - 路径穿越（如 `../x`）会被拒绝。
@@ -344,6 +350,7 @@ GitHub：https://github.com/kweaver-ai/web
 
 说明：
 
+- Studio 会先通过 OpenClaw `skills.status` 解析技能目录，再将解析结果作为内部参数透传给插件下载文件。
 - 返回原始文件字节流，适合浏览器直接下载。
 - 仅允许下载技能目录内的普通文件。
 - 响应会尽量透传 `content-type` 和 `content-disposition`。

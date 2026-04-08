@@ -90,7 +90,10 @@ export interface OpenClawAgentSkillsHttpClient {
    *
    * @param name Skill id to inspect.
    */
-  getSkillTree(name: string): Promise<SkillTreeResult>;
+  getSkillTree(
+    name: string,
+    resolvedSkillPath?: string
+  ): Promise<SkillTreeResult>;
 
   /**
    * Reads one text file preview under a skill directory.
@@ -98,7 +101,11 @@ export interface OpenClawAgentSkillsHttpClient {
    * @param name Skill id to inspect.
    * @param filePath Skill-root-relative file path.
    */
-  getSkillContent(name: string, filePath: string): Promise<SkillContentResult>;
+  getSkillContent(
+    name: string,
+    filePath: string,
+    resolvedSkillPath?: string
+  ): Promise<SkillContentResult>;
 
   /**
    * Downloads one file under a skill directory.
@@ -108,7 +115,8 @@ export interface OpenClawAgentSkillsHttpClient {
    */
   downloadSkillFile(
     name: string,
-    filePath: string
+    filePath: string,
+    resolvedSkillPath?: string
   ): Promise<OpenClawAgentSkillsHttpResult>;
 }
 
@@ -263,9 +271,12 @@ implements OpenClawAgentSkillsHttpClient {
    * @param name Skill id (slug).
    * @returns Parsed tree payload from the plugin.
    */
-  public async getSkillTree(name: string): Promise<SkillTreeResult> {
+  public async getSkillTree(
+    name: string,
+    resolvedSkillPath?: string
+  ): Promise<SkillTreeResult> {
     const response = await this.fetchImpl(
-      buildOpenClawSkillTreeUrl(this.options.gatewayUrl, name),
+      buildOpenClawSkillTreeUrl(this.options.gatewayUrl, name, resolvedSkillPath),
       {
         method: "GET",
         headers: createOpenClawAgentSkillsHeaders(this.options.token)
@@ -290,10 +301,11 @@ implements OpenClawAgentSkillsHttpClient {
    */
   public async getSkillContent(
     name: string,
-    filePath: string
+    filePath: string,
+    resolvedSkillPath?: string
   ): Promise<SkillContentResult> {
     const response = await this.fetchImpl(
-      buildOpenClawSkillContentUrl(this.options.gatewayUrl, name, filePath),
+      buildOpenClawSkillContentUrl(this.options.gatewayUrl, name, filePath, resolvedSkillPath),
       {
         method: "GET",
         headers: createOpenClawAgentSkillsHeaders(this.options.token)
@@ -318,10 +330,11 @@ implements OpenClawAgentSkillsHttpClient {
    */
   public async downloadSkillFile(
     name: string,
-    filePath: string
+    filePath: string,
+    resolvedSkillPath?: string
   ): Promise<OpenClawAgentSkillsHttpResult> {
     const response = await this.fetchImpl(
-      buildOpenClawSkillDownloadUrl(this.options.gatewayUrl, name, filePath),
+      buildOpenClawSkillDownloadUrl(this.options.gatewayUrl, name, filePath, resolvedSkillPath),
       {
         method: "GET",
         headers: createOpenClawAgentSkillsHeaders(this.options.token)
@@ -440,7 +453,8 @@ export function buildOpenClawSkillUninstallUrl(
  */
 export function buildOpenClawSkillTreeUrl(
   gatewayUrl: string,
-  name: string
+  name: string,
+  resolvedSkillPath?: string
 ): string {
   const url = new URL(gatewayUrl);
 
@@ -454,6 +468,9 @@ export function buildOpenClawSkillTreeUrl(
   url.pathname = `/v1/config/agents/skills/${encodeURIComponent(trimmed)}/tree`;
   url.hash = "";
   url.search = "";
+  if (resolvedSkillPath !== undefined && resolvedSkillPath.trim().length > 0) {
+    url.searchParams.set("resolvedSkillPath", resolvedSkillPath.trim());
+  }
 
   return url.toString();
 }
@@ -469,7 +486,8 @@ export function buildOpenClawSkillTreeUrl(
 export function buildOpenClawSkillContentUrl(
   gatewayUrl: string,
   name: string,
-  filePath: string
+  filePath: string,
+  resolvedSkillPath?: string
 ): string {
   const url = new URL(gatewayUrl);
 
@@ -484,6 +502,9 @@ export function buildOpenClawSkillContentUrl(
   url.hash = "";
   url.search = "";
   url.searchParams.set("path", filePath);
+  if (resolvedSkillPath !== undefined && resolvedSkillPath.trim().length > 0) {
+    url.searchParams.set("resolvedSkillPath", resolvedSkillPath.trim());
+  }
 
   return url.toString();
 }
@@ -499,7 +520,8 @@ export function buildOpenClawSkillContentUrl(
 export function buildOpenClawSkillDownloadUrl(
   gatewayUrl: string,
   name: string,
-  filePath: string
+  filePath: string,
+  resolvedSkillPath?: string
 ): string {
   const url = new URL(gatewayUrl);
 
@@ -514,6 +536,9 @@ export function buildOpenClawSkillDownloadUrl(
   url.hash = "";
   url.search = "";
   url.searchParams.set("path", filePath);
+  if (resolvedSkillPath !== undefined && resolvedSkillPath.trim().length > 0) {
+    url.searchParams.set("resolvedSkillPath", resolvedSkillPath.trim());
+  }
 
   return url.toString();
 }

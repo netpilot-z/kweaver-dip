@@ -90,3 +90,57 @@ components:
       required:
         - name
       additionalProperties: false
+
+    SkillTreeEntry:
+      type: object
+      properties:
+        name:
+          type: string
+        path:
+          type: string
+        type:
+          type: string
+          enum: [file, directory]
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/SkillTreeEntry'
+      required:
+        - name
+        - path
+        - type
+
+    SkillTreeResult:
+      type: object
+      properties:
+        name:
+          type: string
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/SkillTreeEntry'
+      required:
+        - name
+        - entries
+      additionalProperties: false
+
+    SkillContentResult:
+      type: object
+      properties:
+        name:
+          type: string
+        path:
+          type: string
+        content:
+          type: string
+        bytes:
+          type: integer
+        truncated:
+          type: boolean
+      required:
+        - name
+        - path
+        - content
+        - bytes
+        - truncated
+      additionalProperties: false

@@ -1,18 +1,5 @@
 components:
   schemas:
-    AvailableSkillsResponse:
-      summary: 可用技能列表
-      type: object
-      properties:
-        skills:
-          type: array
-          description: 当前插件发现到的技能 ID 列表
-          items:
-            type: string
-      required:
-        - skills
-      additionalProperties: false
-
     AgentSkillsResponse:
       summary: 指定 agent 的技能配置
       type: object
@@ -22,7 +9,7 @@ components:
           description: 目标 agent ID
         skills:
           type: array
-          description: 该 agent 当前生效的技能 ID 列表
+          description: 该 agent 在配置文件中的技能 ID 列表；未配置时返回空数组
           items:
             type: string
       required:

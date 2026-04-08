@@ -20,9 +20,9 @@
 
 ## 背景与现有能力
 
-- **技能发现**：DIP `registerSkillsControl` 合并 `{repoRoot}/skills/` 与插件内置 `extensions/dip/skills/`，无本地项时回退 SDK（`extensions/dip/src/skills-discovery.ts`）。
+- **技能发现/状态管理**：统一由 Studio 通过 OpenClaw `skills.status` 实现；DIP 不再负责发现或归一化可用技能列表。
 - **repoRoot**：`extensions/dip/index.ts` 中 `path.resolve(__dirname, "../..")` 为 **Studio 仓库根**（与 `extensions` 同级）。插件**不**读取 `OPENCLAW_WORKSPACE_DIR`；部署上应保证网关进程看到的该根与运维约定一致。
-- **全局启用**：落盘后可能仍需在 OpenClaw 配置中 `skills.entries.<name>.enabled`，或通过 `/skills-manage enable <name>`，数字人侧 `listEnabledSkills` 才展示为可用。
+- **全局启用**：落盘后若需启用/禁用，由 Studio 侧基于 OpenClaw 配置与 `skills.status` 处理，数字人侧 `listEnabledSkills` 才展示为可用。
 - **数字人绑定**：DIP `GET/POST /v1/config/agents/skills`、Studio `GET /api/dip-studio/v1/digital-human/:id/skills` 等；导入后是否自动挂到某数字人为产品可选步骤。
 
 ## .skill 文件

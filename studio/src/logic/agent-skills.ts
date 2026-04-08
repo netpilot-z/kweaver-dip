@@ -93,7 +93,7 @@ export interface AgentSkillsLogic {
    *
    * @param name Skill id to inspect.
    */
-  getSkillTree(name: string): Promise<SkillTreeResult>;
+  getSkillTree(name: string, resolvedSkillPath: string): Promise<SkillTreeResult>;
 
   /**
    * Reads one text file preview under a skill directory.
@@ -101,7 +101,11 @@ export interface AgentSkillsLogic {
    * @param name Skill id to inspect.
    * @param filePath Skill-root-relative file path.
    */
-  getSkillContent(name: string, filePath: string): Promise<SkillContentResult>;
+  getSkillContent(
+    name: string,
+    filePath: string,
+    resolvedSkillPath: string
+  ): Promise<SkillContentResult>;
 
   /**
    * Downloads one file under a skill directory.
@@ -111,17 +115,26 @@ export interface AgentSkillsLogic {
    */
   downloadSkillFile(
     name: string,
-    filePath: string
+    filePath: string,
+    resolvedSkillPath: string
   ): Promise<OpenClawAgentSkillsHttpResult>;
 
   /**
    * Lists raw skill status entries returned by OpenClaw.
    */
   getSkillStatuses(): Promise<OpenClawSkillStatusEntry[]>;
+
+  /**
+   * Resolves one skill's absolute directory path from OpenClaw `skills.status`.
+   *
+   * @param name Skill id to inspect.
+   */
+  resolveSkillPath(name: string): Promise<string>;
 }
 
 /**
- * Logic implementation backed by the `dip` plugin skills HTTP API.
+ * Logic implementation backed by OpenClaw `skills.status` plus the `dip` plugin
+ * file/binding HTTP API.
  */
 export class DefaultAgentSkillsLogic implements AgentSkillsLogic {
   /**
@@ -165,10 +178,13 @@ export class DefaultAgentSkillsLogic implements AgentSkillsLogic {
   /**
    * Lists globally available skill ids.
    *
-   * @returns The plugin payload.
+   * @returns Skill ids derived from OpenClaw `skills.status`.
    */
   public async listAvailableSkills(): Promise<AgentSkillsCatalog> {
-    return this.client.listAvailableSkills();
+    const entries = await this.getAvailableSkillEntries();
+    return {
+      skills: entries.map((entry) => entry.skillKey)
+    };
   }
 
   /**
@@ -192,7 +208,8 @@ export class DefaultAgentSkillsLogic implements AgentSkillsLogic {
     agentId: string,
     skills: string[]
   ): Promise<UpdateAgentSkillsResult> {
-    return this.client.updateAgentSkills(agentId, skills);
+    const resolvedSkills = await this.resolveSkillBindingKeys(skills);
+    return this.client.updateAgentSkills(agentId, resolvedSkills);
   }
 
   /**
@@ -225,8 +242,11 @@ export class DefaultAgentSkillsLogic implements AgentSkillsLogic {
    * @param name Skill id (slug).
    * @returns The tree payload.
    */
-  public async getSkillTree(name: string): Promise<SkillTreeResult> {
-    return this.client.getSkillTree(name);
+  public async getSkillTree(
+    name: string,
+    resolvedSkillPath: string
+  ): Promise<SkillTreeResult> {
+    return this.client.getSkillTree(name, resolvedSkillPath);
   }
 
   /**
@@ -238,9 +258,10 @@ export class DefaultAgentSkillsLogic implements AgentSkillsLogic {
    */
   public async getSkillContent(
     name: string,
-    filePath: string
+    filePath: string,
+    resolvedSkillPath: string
   ): Promise<SkillContentResult> {
-    return this.client.getSkillContent(name, filePath);
+    return this.client.getSkillContent(name, filePath, resolvedSkillPath);
   }
 
   /**
@@ -252,9 +273,10 @@ export class DefaultAgentSkillsLogic implements AgentSkillsLogic {
    */
   public async downloadSkillFile(
     name: string,
-    filePath: string
+    filePath: string,
+    resolvedSkillPath: string
   ): Promise<OpenClawAgentSkillsHttpResult> {
-    return this.client.downloadSkillFile(name, filePath);
+    return this.client.downloadSkillFile(name, filePath, resolvedSkillPath);
   }
 
   public async listEnabledSkillsByQuery(name?: string): Promise<DigitalHumanSkillList> {
@@ -290,6 +312,44 @@ export class DefaultAgentSkillsLogic implements AgentSkillsLogic {
     }
 
     return this.openClawAgentsAdapter.getSkillStatuses();
+  }
+
+  public async resolveSkillPath(name: string): Promise<string> {
+    const normalized = normalizeSkillId(name);
+    if (normalized === undefined) {
+      throw new Error("Skill name is required");
+    }
+
+    const statuses = await this.getSkillStatuses();
+    const entry = statuses.find((candidate) => matchesSkillEntry(candidate, normalized));
+    const skillPath = entry?.skillPath?.trim();
+
+    if (skillPath === undefined || skillPath.length === 0) {
+      throw new Error(`Skill path not found: ${name}`);
+    }
+
+    return skillPath;
+  }
+
+  private async resolveSkillBindingKeys(skills: string[]): Promise<string[]> {
+    if (this.openClawAgentsAdapter === undefined) {
+      return skills;
+    }
+
+    const statuses = await this.getSkillStatuses();
+
+    return skills
+      .map((skill) => skill.trim())
+      .filter((skill) => skill.length > 0)
+      .map((skill) => {
+        const normalized = normalizeSkillId(skill);
+        if (normalized === undefined) {
+          return skill;
+        }
+
+        const entry = statuses.find((candidate) => matchesSkillEntry(candidate, normalized));
+        return entry?.skillKey ?? skill;
+      });
   }
 
   /**
@@ -385,14 +445,18 @@ export function filterAgentSkillEntries(
   availableEntries: OpenClawSkillStatusEntry[],
   agentSkillNames: string[]
 ): DigitalHumanAgentSkillList {
-  const allowedSlugs = new Set(
-    agentSkillNames.map((name) => name.trim()).filter((name) => name.length > 0)
-  );
+  const allowedSkillIds = 
+    agentSkillNames
+      .map((name) => normalizeSkillId(name))
+      .filter((name): name is string => name !== undefined);
 
   return availableEntries.flatMap((entry) => {
     const name = getSkillEntryName(entry);
 
-    if (name === undefined || !allowedSlugs.has(entry.skillKey)) {
+    if (
+      name === undefined ||
+      !allowedSkillIds.some((allowed) => matchesSkillEntry(entry, allowed))
+    ) {
       return [];
     }
 
@@ -420,5 +484,36 @@ export function getSkillEntryDescription(
 
   const trimmed = entry.description.trim();
 
+  return trimmed.length > 0 ? trimmed : undefined;
+}
+
+export function matchesSkillEntry(
+  entry: OpenClawSkillStatusEntry,
+  normalizedSkillId: string
+): boolean {
+  if (normalizeSkillId(entry.skillKey) === normalizedSkillId) {
+    return true;
+  }
+
+  if (normalizeSkillId(getSkillEntryName(entry)) === normalizedSkillId) {
+    return true;
+  }
+
+  const skillPath = entry.skillPath?.trim();
+  if (skillPath === undefined || skillPath.length === 0) {
+    return false;
+  }
+
+  const slashNormalized = skillPath.replace(/\\/g, "/");
+  const fromPath = slashNormalized.split("/").filter(Boolean).at(-1);
+  return normalizeSkillId(fromPath) === normalizedSkillId;
+}
+
+function normalizeSkillId(value: string | undefined): string | undefined {
+  if (value === undefined) {
+    return undefined;
+  }
+
+  const trimmed = value.trim().toLowerCase();
   return trimmed.length > 0 ? trimmed : undefined;
 }

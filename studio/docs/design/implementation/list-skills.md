@@ -47,3 +47,20 @@ BE ->> BE: 用绑定 id 过滤可用条目，保留 name / description / built_i
 | 技能文件预览 | GET | `/api/dip-studio/v1/skills/{name}/content?path=<relative-file-path>` |
 | 技能文件下载 | GET | `/api/dip-studio/v1/skills/{name}/download?path=<relative-file-path>` |
 | 指定数字员工已配置技能列表 | GET | `/api/dip-studio/v1/digital-human/{id}/skills` |
+
+## 技能内容读取链路
+
+```mermaid
+sequenceDiagram
+participant BE as Studio Backend（Express）
+participant OC as OpenClaw Gateway（WebSocket RPC）
+participant DIP as dip 插件（HTTP）
+
+BE ->> OC: skills.status
+BE ->> BE: 按 name / skillKey / skillPath basename 解析出 skillPath
+BE ->> DIP: GET tree/content/download + resolvedSkillPath
+DIP ->> DIP: 仅校验目录与相对路径，不再查询 skills.status
+```
+
+- `resolvedSkillPath` 是 Studio 到插件的内部查询参数，不对外暴露给前端。
+- 插件侧只负责本地文件系统访问；技能目录的权威来源由 Studio 基于 `skills.status` 决定。

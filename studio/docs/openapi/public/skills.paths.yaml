@@ -135,6 +135,118 @@ paths:
         "500":
           $ref: '../common.schemas.yaml#/errors/InternalServerError'
 
+  /skills/{name}/tree:
+    get:
+      operationId: getSkillTree
+      summary: 获取技能目录树
+      description: |
+        Studio 会先通过 OpenClaw `skills.status` 解析技能的绝对目录路径，再将该目录作为内部参数
+        `resolvedSkillPath` 传给 `dip` 插件读取目录树。客户端无需提供该参数。
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: 技能 ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: 技能目录树
+          content:
+            application/json:
+              schema:
+                $ref: './skills.schemas.yaml#/components/schemas/SkillTreeResult'
+        "400":
+          $ref: '../common.schemas.yaml#/errors/InvalidParameter'
+        "401":
+          $ref: '../common.schemas.yaml#/errors/Unauthorized'
+        "403":
+          $ref: '../common.schemas.yaml#/errors/Forbidden'
+        "404":
+          $ref: '../common.schemas.yaml#/errors/NotFound'
+        "502":
+          $ref: '../common.schemas.yaml#/errors/BadGateway'
+        "500":
+          $ref: '../common.schemas.yaml#/errors/InternalServerError'
+
+  /skills/{name}/content:
+    get:
+      operationId: getSkillContent
+      summary: 预览技能文件内容
+      description: |
+        Studio 会先通过 OpenClaw `skills.status` 解析技能绝对目录，再将该目录作为内部参数
+        `resolvedSkillPath` 传给 `dip` 插件读取文件。客户端只需提供相对 `path`。
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: 技能 ID
+          schema:
+            type: string
+        - name: path
+          in: query
+          required: false
+          description: 技能目录内文件的相对路径；默认 `SKILL.md`
+          schema:
+            type: string
+      responses:
+        "200":
+          description: 文件预览内容
+          content:
+            application/json:
+              schema:
+                $ref: './skills.schemas.yaml#/components/schemas/SkillContentResult'
+        "400":
+          $ref: '../common.schemas.yaml#/errors/InvalidParameter'
+        "401":
+          $ref: '../common.schemas.yaml#/errors/Unauthorized'
+        "403":
+          $ref: '../common.schemas.yaml#/errors/Forbidden'
+        "404":
+          $ref: '../common.schemas.yaml#/errors/NotFound'
+        "502":
+          $ref: '../common.schemas.yaml#/errors/BadGateway'
+        "500":
+          $ref: '../common.schemas.yaml#/errors/InternalServerError'
+
+  /skills/{name}/download:
+    get:
+      operationId: downloadSkillFile
+      summary: 下载技能文件
+      description: |
+        Studio 会先通过 OpenClaw `skills.status` 解析技能绝对目录，再将该目录作为内部参数
+        `resolvedSkillPath` 传给 `dip` 插件下载文件。客户端只需提供相对 `path`。
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: 技能 ID
+          schema:
+            type: string
+        - name: path
+          in: query
+          required: false
+          description: 技能目录内文件的相对路径；默认 `SKILL.md`
+          schema:
+            type: string
+      responses:
+        "200":
+          description: 原始文件字节流
+          content:
+            application/octet-stream: {}
+        "400":
+          $ref: '../common.schemas.yaml#/errors/InvalidParameter'
+        "401":
+          $ref: '../common.schemas.yaml#/errors/Unauthorized'
+        "403":
+          $ref: '../common.schemas.yaml#/errors/Forbidden'
+        "404":
+          $ref: '../common.schemas.yaml#/errors/NotFound'
+        "502":
+          $ref: '../common.schemas.yaml#/errors/BadGateway'
+        "500":
+          $ref: '../common.schemas.yaml#/errors/InternalServerError'
+
   /digital-human/{id}/skills:
     get:
       operationId: getDigitalHumanSkills

@@ -65,6 +65,11 @@ describe("buildOpenClawSkillTreeUrl", () => {
     expect(
       buildOpenClawSkillTreeUrl("http://127.0.0.1:19001", "a.b")
     ).toBe("http://127.0.0.1:19001/v1/config/agents/skills/a.b/tree");
+    expect(
+      buildOpenClawSkillTreeUrl("http://127.0.0.1:19001", "a.b", "/repo/skills/a.b")
+    ).toBe(
+      "http://127.0.0.1:19001/v1/config/agents/skills/a.b/tree?resolvedSkillPath=%2Frepo%2Fskills%2Fa.b"
+    );
   });
 });
 
@@ -75,6 +80,16 @@ describe("buildOpenClawSkillContentUrl", () => {
     ).toBe(
       "http://127.0.0.1:19001/v1/config/agents/skills/weather/content?path=docs%2Fguide.md"
     );
+    expect(
+      buildOpenClawSkillContentUrl(
+        "http://127.0.0.1:19001",
+        "weather",
+        "docs/guide.md",
+        "/repo/skills/weather"
+      )
+    ).toBe(
+      "http://127.0.0.1:19001/v1/config/agents/skills/weather/content?path=docs%2Fguide.md&resolvedSkillPath=%2Frepo%2Fskills%2Fweather"
+    );
   });
 });
 
@@ -84,6 +99,16 @@ describe("buildOpenClawSkillDownloadUrl", () => {
       buildOpenClawSkillDownloadUrl("ws://127.0.0.1:19001/ws", "weather", "docs/guide.md")
     ).toBe(
       "http://127.0.0.1:19001/v1/config/agents/skills/weather/download?path=docs%2Fguide.md"
+    );
+    expect(
+      buildOpenClawSkillDownloadUrl(
+        "http://127.0.0.1:19001",
+        "weather",
+        "docs/guide.md",
+        "/repo/skills/weather"
+      )
+    ).toBe(
+      "http://127.0.0.1:19001/v1/config/agents/skills/weather/download?path=docs%2Fguide.md&resolvedSkillPath=%2Frepo%2Fskills%2Fweather"
     );
   });
 });
@@ -431,13 +456,13 @@ describe("DefaultOpenClawAgentSkillsHttpClient", () => {
       fetchImpl
     );
 
-    await expect(client.getSkillTree("weather")).resolves.toEqual({
+    await expect(client.getSkillTree("weather", "/repo/skills/weather")).resolves.toEqual({
       name: "weather",
       entries: [{ name: "SKILL.md", path: "SKILL.md", type: "file" }]
     });
 
     expect(fetchImpl.mock.calls[0]?.[0]).toBe(
-      "http://127.0.0.1:19001/v1/config/agents/skills/weather/tree"
+      "http://127.0.0.1:19001/v1/config/agents/skills/weather/tree?resolvedSkillPath=%2Frepo%2Fskills%2Fweather"
     );
     expect(fetchImpl.mock.calls[0]?.[1]).toMatchObject({
       method: "GET"
@@ -470,7 +495,9 @@ describe("DefaultOpenClawAgentSkillsHttpClient", () => {
       fetchImpl
     );
 
-    await expect(client.getSkillContent("weather", "SKILL.md")).resolves.toEqual({
+    await expect(
+      client.getSkillContent("weather", "SKILL.md", "/repo/skills/weather")
+    ).resolves.toEqual({
       name: "weather",
       path: "SKILL.md",
       content: "# Weather",
@@ -479,7 +506,7 @@ describe("DefaultOpenClawAgentSkillsHttpClient", () => {
     });
 
     expect(fetchImpl.mock.calls[0]?.[0]).toBe(
-      "http://127.0.0.1:19001/v1/config/agents/skills/weather/content?path=SKILL.md"
+      "http://127.0.0.1:19001/v1/config/agents/skills/weather/content?path=SKILL.md&resolvedSkillPath=%2Frepo%2Fskills%2Fweather"
     );
     expect(fetchImpl.mock.calls[0]?.[1]).toMatchObject({
       method: "GET"
@@ -506,7 +533,11 @@ describe("DefaultOpenClawAgentSkillsHttpClient", () => {
       fetchImpl
     );
 
-    const result = await client.downloadSkillFile("weather", "docs/a.txt");
+    const result = await client.downloadSkillFile(
+      "weather",
+      "docs/a.txt",
+      "/repo/skills/weather"
+    );
     expect(result.status).toBe(200);
     expect(result.headers.get("content-type")).toBe("text/plain");
     expect(result.headers.get("content-disposition")).toBe(
@@ -515,7 +546,7 @@ describe("DefaultOpenClawAgentSkillsHttpClient", () => {
     expect(Buffer.from(result.body)).toEqual(Buffer.from("hello"));
 
     expect(fetchImpl.mock.calls[0]?.[0]).toBe(
-      "http://127.0.0.1:19001/v1/config/agents/skills/weather/download?path=docs%2Fa.txt"
+      "http://127.0.0.1:19001/v1/config/agents/skills/weather/download?path=docs%2Fa.txt&resolvedSkillPath=%2Frepo%2Fskills%2Fweather"
     );
     expect(fetchImpl.mock.calls[0]?.[1]).toMatchObject({
       method: "GET"

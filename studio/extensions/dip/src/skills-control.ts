@@ -1,9 +1,10 @@
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import type { IncomingMessage, ServerResponse } from "node:http";
-import { type OpenClawPluginApi, resolveAgentWorkspaceDir } from "openclaw/plugin-sdk";
+import { type OpenClawPluginApi } from "openclaw/plugin-sdk";
+import { resolveAgentWorkspaceDir } from "./skills-utils.js";
 import { ARCHIVES_MIME_MAP } from "./archives-utils.js";
-import { discoverSkillNames, discoverSkillStatus } from "./skills-discovery.js";
 import {
   installSkillFromZipBuffer,
   SkillInstallError,
@@ -61,7 +62,7 @@ function readRequestBodyLimited(
 }
 
 /**
- * Registers skills CLI command, `/v1/config/agents/skills/install`, `/v1/config/agents/skills/{name}`,
+ * Registers `/v1/config/agents/skills/install`, `/v1/config/agents/skills/{name}`,
  * and `/v1/config/agents/skills` HTTP routes.
  *
  * @param api OpenClaw plugin API.
@@ -71,7 +72,6 @@ function readRequestBodyLimited(
 export function registerSkillsControl(
   api: OpenClawPluginApi
 ): void {
-
   api.registerHttpRoute({
     path: "/v1/config/agents/skills/install",
     match: "prefix",
@@ -101,7 +101,7 @@ export function registerSkillsControl(
         const config = await api.runtime.config.loadConfig();
         const effectiveAgentId = agentId && agentId.trim().length > 0 ? agentId.trim() : null;
         const repoSkillsDir = effectiveAgentId
-          ? path.join(resolveAgentWorkspaceDir(config, effectiveAgentId), "skills")
+          ? path.join(resolveAgentWorkspaceDir(config, effectiveAgentId, api), "skills")
           : path.join(api.runtime.state.resolveStateDir(), "skills");
 
         const body = await readRequestBodyLimited(req, MAX_SKILL_INSTALL_BYTES);
@@ -139,57 +139,6 @@ export function registerSkillsControl(
     }
   });
 
-  api.registerCommand({
-    name: "skills-manage",
-    description: "Manage agent skills (list, enable, disable)",
-    acceptsArgs: true,
-    handler: async (ctx: any): Promise<any> => {
-      const args = (ctx.args || "").trim().split(/\s+/);
-      const sub = args[0]?.toLowerCase();
-
-      if (sub === "list") {
-        const skills = discoverSkillStatus(ctx.config);
-        if (skills.length === 0) return { text: "No skills discovered." };
-
-        const rows = skills.map(s => {
-          let status = "✓ ready";
-          if (s.disabled) status = "❌ disabled";
-          else if (s.blockedByAllowlist) status = "🚫 blocked";
-          else if (!s.eligible) status = "✗ missing";
-
-          const icon = s.emoji ? `${s.emoji} ` : "";
-          const source = s.source;
-          const desc = s.description ? s.description.replace(/(\n|\r)+/g, " ").slice(0, 100) : "";
-
-          return `| ${status} | ${icon}${s.name} | ${source} | ${desc} |`;
-        });
-
-        const header = "| Status | Skill | Source | Description |\n|---|---|---|---|";
-        return { text: "Available skills:\n\n" + header + "\n" + rows.join("\n") };
-      }
-
-      if (sub === "enable" || sub === "disable") {
-        const skillName = args[1];
-        if (!skillName) return { text: `Usage: /skills-manage ${sub} <name>` };
-
-        const currentConfig = await api.runtime.config.loadConfig();
-        const nextCfg = JSON.parse(JSON.stringify(currentConfig));
-
-        if (!nextCfg.skills) nextCfg.skills = {};
-        if (!nextCfg.skills.entries) nextCfg.skills.entries = {};
-        if (!nextCfg.skills.entries[skillName]) nextCfg.skills.entries[skillName] = {};
-
-        const enabled = sub === "enable";
-        nextCfg.skills.entries[skillName].enabled = enabled;
-
-        await api.runtime.config.writeConfigFile(nextCfg);
-        return { text: `Global skill "${skillName}" is now ${enabled ? "enabled" : "disabled"}.` };
-      }
-
-      return { text: "Usage: /skills-manage [list | enable <name> | disable <name>]" };
-    }
-  });
-
   api.registerHttpRoute({
     path: "/v1/config/agents/skills",
     match: "prefix",
@@ -218,7 +167,7 @@ export function registerSkillsControl(
           const config = await api.runtime.config.loadConfig();
           const effectiveAgentId = agentId && agentId.trim().length > 0 ? agentId.trim() : null;
           const repoSkillsDir = effectiveAgentId
-            ? path.join(resolveAgentWorkspaceDir(config, effectiveAgentId), "skills")
+            ? path.join(resolveAgentWorkspaceDir(config, effectiveAgentId, api), "skills")
             : path.join(api.runtime.state.resolveStateDir(), "skills");
 
           const result = uninstallSkillFromRepo(
@@ -251,7 +200,13 @@ export function registerSkillsControl(
       if (req.method === "GET" && routeTarget?.action === "tree") {
         try {
           const config = await api.runtime.config.loadConfig();
-          const entries = resolveSkillTreeEntries(config, routeTarget.name);
+          const resolvedSkillPath = url.searchParams.get("resolvedSkillPath");
+          const entries = resolveSkillTreeEntries(
+            config,
+            api,
+            routeTarget.name,
+            resolvedSkillPath
+          );
           res.statusCode = 200;
           res.setHeader("Content-Type", "application/json");
           res.end(JSON.stringify({ name: routeTarget.name, entries }));
@@ -278,7 +233,13 @@ export function registerSkillsControl(
       if (req.method === "GET" && routeTarget?.action === "content") {
         try {
           const config = await api.runtime.config.loadConfig();
-          const skillDir = resolveSkillDirectory(config, routeTarget.name);
+          const resolvedSkillPath = url.searchParams.get("resolvedSkillPath");
+          const skillDir = resolveSkillDirectory(
+            config,
+            api,
+            routeTarget.name,
+            resolvedSkillPath
+          );
           const previewPath = url.searchParams.get("path") ?? "";
           const result = readSkillFilePreview(skillDir, previewPath);
           res.statusCode = 200;
@@ -307,7 +268,13 @@ export function registerSkillsControl(
       if (req.method === "GET" && routeTarget?.action === "download") {
         try {
           const config = await api.runtime.config.loadConfig();
-          const skillDir = resolveSkillDirectory(config, routeTarget.name);
+          const resolvedSkillPath = url.searchParams.get("resolvedSkillPath");
+          const skillDir = resolveSkillDirectory(
+            config,
+            api,
+            routeTarget.name,
+            resolvedSkillPath
+          );
           const filePath = url.searchParams.get("path") ?? "";
           const file = resolveSkillFilePath(skillDir, filePath);
           const ext = path.extname(file.absolutePath).toLowerCase();
@@ -353,10 +320,9 @@ export function registerSkillsControl(
         const config = await api.runtime.config.loadConfig();
 
         if (!agentId) {
-          res.statusCode = 200;
+          res.statusCode = 400;
           res.setHeader("Content-Type", "application/json");
-          const responseSkills = discoverSkillNames(config);
-          res.end(JSON.stringify({ skills: responseSkills }));
+          res.end(JSON.stringify({ error: "agentId query parameter is required" }));
           return true;
         }
 
@@ -370,11 +336,7 @@ export function registerSkillsControl(
 
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
-        const agentSkills = agent.skills;
-        let responseSkills = agentSkills;
-        if (agentSkills === undefined) {
-          responseSkills = discoverSkillNames(config, [agentId]);
-        }
+        const responseSkills = Array.isArray(agent.skills) ? agent.skills : [];
         res.end(JSON.stringify({ agentId, skills: responseSkills }));
         return true;
       }
@@ -440,31 +402,20 @@ export function registerSkillsControl(
   });
 }
 
-function resolveSkillTreeEntries(config: any, skillName: string): SkillTreeEntry[] {
-  return listSkillTreeEntries(resolveSkillDirectory(config, skillName));
-}
-
-function readSkillDirectoryFromStatusEntry(entry: Record<string, unknown> | undefined): string | undefined {
-  if (entry === undefined) {
-    return undefined;
-  }
-
-  const baseDir = typeof entry.baseDir === "string" ? entry.baseDir.trim() : "";
-  if (baseDir.length > 0) {
-    return baseDir;
-  }
-
-  const filePath = typeof entry.filePath === "string" ? entry.filePath.trim() : "";
-  if (filePath.length > 0) {
-    return filePath;
-  }
-
-  return undefined;
+function resolveSkillTreeEntries(
+  config: any,
+  api: OpenClawPluginApi,
+  skillName: string,
+  resolvedSkillPath?: string | null
+): SkillTreeEntry[] {
+  return listSkillTreeEntries(
+    resolveSkillDirectory(config, api, skillName, resolvedSkillPath)
+  );
 }
 
 function extractSkillRouteTarget(
   pathname: string | null
-): { name: string; action: "detail" | "tree" | "content" } | undefined {
+): { name: string; action: "detail" | "tree" | "content" | "download" } | undefined {
   if (!pathname) {
     return undefined;
   }
@@ -509,20 +460,78 @@ function extractSkillRouteTarget(
   return { name: decodeURIComponent(suffix), action: "detail" };
 }
 
-function resolveSkillDirectory(config: any, skillName: string): string {
+function resolveSkillDirectory(
+  config: any,
+  api: OpenClawPluginApi,
+  skillName: string,
+  resolvedSkillPath?: string | null
+): string {
   const normalizedName = skillName.trim();
   if (normalizedName.length === 0) {
     throw new SkillTreeError("INVALID_NAME", "Path parameter name is required");
   }
 
-  const entry = discoverSkillStatus(config).find((candidate) => candidate.name === normalizedName);
-  const skillDir = readSkillDirectoryFromStatusEntry(entry);
-
-  if (skillDir === undefined) {
-    throw new SkillTreeError("SKILL_NOT_FOUND", `Skill not found: ${normalizedName}`);
+  const directPath = normalizeResolvedSkillPath(resolvedSkillPath);
+  if (directPath !== undefined) {
+    ensureResolvedSkillDirectory(directPath, normalizedName);
+    return directPath;
   }
 
-  return skillDir;
+  for (const candidate of listCandidateSkillDirectories(config, api, normalizedName)) {
+    if (isSkillDirectory(candidate)) {
+      return candidate;
+    }
+  }
+
+  throw new SkillTreeError("SKILL_NOT_FOUND", `Skill not found: ${normalizedName}`);
+}
+
+function normalizeResolvedSkillPath(value: string | null | undefined): string | undefined {
+  if (value === undefined || value === null) {
+    return undefined;
+  }
+
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? path.resolve(trimmed) : undefined;
+}
+
+function ensureResolvedSkillDirectory(skillDir: string, skillName: string): void {
+  if (!isSkillDirectory(skillDir)) {
+    throw new SkillTreeError("SKILL_NOT_FOUND", `Skill not found: ${skillName}`);
+  }
+}
+
+function listCandidateSkillDirectories(
+  config: any,
+  api: OpenClawPluginApi,
+  skillName: string
+): string[] {
+  const candidates = new Set<string>();
+  const stateDir = api.runtime.state.resolveStateDir();
+
+  candidates.add(path.join(stateDir, "skills", skillName));
+  candidates.add(path.join(os.homedir(), ".agents", "skills", skillName));
+
+  const agents = Array.isArray(config?.agents?.list) ? config.agents.list : [];
+  for (const agent of agents) {
+    if (!agent || typeof agent.id !== "string") {
+      continue;
+    }
+
+    const workspaceDir = resolveAgentWorkspaceDir(config, agent.id, api);
+    candidates.add(path.join(workspaceDir, "skills", skillName));
+    candidates.add(path.join(workspaceDir, ".agents", "skills", skillName));
+  }
+
+  return Array.from(candidates);
+}
+
+function isSkillDirectory(skillDir: string): boolean {
+  try {
+    return fs.statSync(skillDir).isDirectory() && fs.statSync(path.join(skillDir, "SKILL.md")).isFile();
+  } catch {
+    return false;
+  }
 }
 
 function mapSkillTreeErrorStatus(code: SkillTreeError["code"]): number {

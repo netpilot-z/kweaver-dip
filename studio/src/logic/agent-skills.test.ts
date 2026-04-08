@@ -250,11 +250,14 @@ describe("DefaultAgentSkillsLogic", () => {
     ]);
   });
 
-  it("delegates listAvailableSkills to the client", async () => {
+  it("lists available skills from OpenClaw skill statuses", async () => {
+    const getSkillStatuses = vi.fn().mockResolvedValue([
+      { skillKey: "weather", enabled: true },
+      { skillKey: "search", enabled: true },
+      { skillKey: "disabled", enabled: false }
+    ]);
     const logic = new DefaultAgentSkillsLogic({
-      listAvailableSkills: vi.fn().mockResolvedValue({
-        skills: ["weather", "search"]
-      }),
+      listAvailableSkills: vi.fn(),
       getAgentSkills: vi.fn(),
       updateAgentSkills: vi.fn(),
       installSkill: vi.fn(),
@@ -262,11 +265,21 @@ describe("DefaultAgentSkillsLogic", () => {
       getSkillTree: vi.fn(),
       getSkillContent: vi.fn(),
       downloadSkillFile: vi.fn()
-    });
+    }, {
+      listAgents: vi.fn(),
+      createAgent: vi.fn(),
+      deleteAgent: vi.fn(),
+      getAgentFile: vi.fn(),
+      setAgentFile: vi.fn(),
+      getConfig: vi.fn(),
+      patchConfig: vi.fn(),
+      getSkillStatuses
+    } as never);
 
     await expect(logic.listAvailableSkills()).resolves.toEqual({
       skills: ["weather", "search"]
     });
+    expect(getSkillStatuses).toHaveBeenCalledOnce();
   });
 
   it("delegates getAgentSkills to the client", async () => {
@@ -291,28 +304,45 @@ describe("DefaultAgentSkillsLogic", () => {
   });
 
   it("delegates updateAgentSkills to the client", async () => {
+    const getSkillStatuses = vi.fn().mockResolvedValue([
+      {
+        skillKey: "smart_ask_data",
+        name: "smart-ask-data",
+        skillPath: "/repo/skills/smart-ask-data"
+      }
+    ]);
     const logic = new DefaultAgentSkillsLogic({
       listAvailableSkills: vi.fn(),
       getAgentSkills: vi.fn(),
       updateAgentSkills: vi.fn().mockResolvedValue({
         success: true,
         agentId: "agent-1",
-        skills: ["weather", "search"]
+        skills: ["smart_ask_data", "search"]
       }),
       installSkill: vi.fn(),
       uninstallSkill: vi.fn(),
       getSkillTree: vi.fn(),
       getSkillContent: vi.fn(),
       downloadSkillFile: vi.fn()
-    });
+    }, {
+      listAgents: vi.fn(),
+      createAgent: vi.fn(),
+      deleteAgent: vi.fn(),
+      getAgentFile: vi.fn(),
+      setAgentFile: vi.fn(),
+      getConfig: vi.fn(),
+      patchConfig: vi.fn(),
+      getSkillStatuses
+    } as never);
 
     await expect(
-      logic.updateAgentSkills("agent-1", ["weather", "search"])
+      logic.updateAgentSkills("agent-1", ["smart-ask-data", "search"])
     ).resolves.toEqual({
       success: true,
       agentId: "agent-1",
-      skills: ["weather", "search"]
+      skills: ["smart_ask_data", "search"]
     });
+    expect(getSkillStatuses).toHaveBeenCalledOnce();
   });
 
   it("delegates installSkill to the client", async () => {
@@ -374,11 +404,11 @@ describe("DefaultAgentSkillsLogic", () => {
       downloadSkillFile: vi.fn()
     });
 
-    await expect(logic.getSkillTree("weather")).resolves.toEqual({
+    await expect(logic.getSkillTree("weather", "/repo/skills/weather")).resolves.toEqual({
       name: "weather",
       entries: [{ name: "SKILL.md", path: "SKILL.md", type: "file" }]
     });
-    expect(getSkillTree).toHaveBeenCalledWith("weather");
+    expect(getSkillTree).toHaveBeenCalledWith("weather", "/repo/skills/weather");
   });
 
   it("delegates getSkillContent to the client", async () => {
@@ -400,14 +430,20 @@ describe("DefaultAgentSkillsLogic", () => {
       downloadSkillFile: vi.fn()
     });
 
-    await expect(logic.getSkillContent("weather", "SKILL.md")).resolves.toEqual({
+    await expect(
+      logic.getSkillContent("weather", "SKILL.md", "/repo/skills/weather")
+    ).resolves.toEqual({
       name: "weather",
       path: "SKILL.md",
       content: "# Weather",
       bytes: 9,
       truncated: false
     });
-    expect(getSkillContent).toHaveBeenCalledWith("weather", "SKILL.md");
+    expect(getSkillContent).toHaveBeenCalledWith(
+      "weather",
+      "SKILL.md",
+      "/repo/skills/weather"
+    );
   });
 
   it("delegates downloadSkillFile to the client", async () => {
@@ -427,11 +463,84 @@ describe("DefaultAgentSkillsLogic", () => {
       downloadSkillFile
     });
 
-    const result = await logic.downloadSkillFile("weather", "SKILL.md");
+    const result = await logic.downloadSkillFile(
+      "weather",
+      "SKILL.md",
+      "/repo/skills/weather"
+    );
     expect(result.status).toBe(200);
     expect(result.headers.get("content-type")).toBe("text/plain");
     expect(Buffer.from(result.body)).toEqual(Buffer.from("hello"));
-    expect(downloadSkillFile).toHaveBeenCalledWith("weather", "SKILL.md");
+    expect(downloadSkillFile).toHaveBeenCalledWith(
+      "weather",
+      "SKILL.md",
+      "/repo/skills/weather"
+    );
+  });
+
+  it("resolves skill path from statuses", async () => {
+    const logic = new DefaultAgentSkillsLogic(
+      {
+        listAvailableSkills: vi.fn(),
+        getAgentSkills: vi.fn(),
+        updateAgentSkills: vi.fn(),
+        installSkill: vi.fn(),
+        uninstallSkill: vi.fn(),
+        getSkillTree: vi.fn(),
+        getSkillContent: vi.fn(),
+        downloadSkillFile: vi.fn()
+      },
+      {
+        listAgents: vi.fn(),
+        createAgent: vi.fn(),
+        deleteAgent: vi.fn(),
+        getAgentFile: vi.fn(),
+        setAgentFile: vi.fn(),
+        getConfig: vi.fn(),
+        patchConfig: vi.fn(),
+        getSkillStatuses: vi.fn().mockResolvedValue([
+          {
+            skillKey: "weather",
+            name: "Weather",
+            skillPath: "/repo/skills/weather"
+          }
+        ])
+      } as never
+    );
+
+    await expect(logic.resolveSkillPath("weather")).resolves.toBe("/repo/skills/weather");
+  });
+
+  it("resolves skill path by basename when skillPath slug differs from display name lookup", async () => {
+    const logic = new DefaultAgentSkillsLogic(
+      {
+        listAvailableSkills: vi.fn(),
+        getAgentSkills: vi.fn(),
+        updateAgentSkills: vi.fn(),
+        installSkill: vi.fn(),
+        uninstallSkill: vi.fn(),
+        getSkillTree: vi.fn(),
+        getSkillContent: vi.fn(),
+        downloadSkillFile: vi.fn()
+      },
+      {
+        listAgents: vi.fn(),
+        createAgent: vi.fn(),
+        deleteAgent: vi.fn(),
+        getAgentFile: vi.fn(),
+        setAgentFile: vi.fn(),
+        getConfig: vi.fn(),
+        patchConfig: vi.fn(),
+        getSkillStatuses: vi.fn().mockResolvedValue([
+          {
+            skillKey: "excel-xlsx",
+            skillPath: "/repo/skills/excel-xlsx"
+          }
+        ])
+      } as never
+    );
+
+    await expect(logic.resolveSkillPath("excel-xlsx")).resolves.toBe("/repo/skills/excel-xlsx");
   });
 
   it("getSkillEntryName prefers name and trims whitespace", () => {
@@ -469,14 +578,20 @@ describe("DefaultAgentSkillsLogic", () => {
       filterAgentSkillEntries(
         [
           { skillKey: "planner", description: "plan tasks", enabled: true },
-          { skillKey: "writer", description: "write docs", enabled: undefined },
+          {
+            skillKey: "smart_ask_data",
+            name: "smart-ask-data",
+            description: "write docs",
+            enabled: undefined,
+            skillPath: "/repo/skills/smart-ask-data"
+          },
           { skillKey: "coder", description: "write code", enabled: true }
         ],
-        ["writer", "coder", "missing"]
+        ["smart-ask-data", "coder", "missing"]
       )
     ).toEqual([
       {
-        name: "writer",
+        name: "smart-ask-data",
         description: "write docs",
         built_in: false,
         type: "unknown"

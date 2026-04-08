@@ -10,7 +10,11 @@ import {
   DefaultOpenClawAgentSkillsHttpClient
 } from "../infra/openclaw-agent-skills-http-client";
 import { OpenClawGatewayClient } from "../infra/openclaw-gateway-client";
-import { DefaultAgentSkillsLogic, getSkillEntryName } from "../logic/agent-skills";
+import {
+  DefaultAgentSkillsLogic,
+  getSkillEntryName,
+  matchesSkillEntry
+} from "../logic/agent-skills";
 import { deriveSkillIdFromUploadedFilename, isValidSkillSlug } from "../utils/skills";
 import type { OpenClawSkillStatusEntry } from "../types/openclaw";
 
@@ -189,7 +193,8 @@ export function createSkillsRouter(): Router {
           throw new HttpError(400, "Path parameter name must be a valid skill id");
         }
 
-        const result = await agentSkillsLogic.getSkillTree(name);
+        const resolvedSkillPath = await agentSkillsLogic.resolveSkillPath(name);
+        const result = await agentSkillsLogic.getSkillTree(name, resolvedSkillPath);
         response.status(200).json(result);
       } catch (error) {
         next(
@@ -219,7 +224,8 @@ export function createSkillsRouter(): Router {
         }
 
         const filePath = parseSkillFilePathQuery(request.query);
-        const result = await agentSkillsLogic.getSkillContent(name, filePath);
+        const resolvedSkillPath = await agentSkillsLogic.resolveSkillPath(name);
+        const result = await agentSkillsLogic.getSkillContent(name, filePath, resolvedSkillPath);
         response.status(200).json(result);
       } catch (error) {
         next(
@@ -249,7 +255,12 @@ export function createSkillsRouter(): Router {
         }
 
         const filePath = parseSkillFilePathQuery(request.query);
-        const result = await agentSkillsLogic.downloadSkillFile(name, filePath);
+        const resolvedSkillPath = await agentSkillsLogic.resolveSkillPath(name);
+        const result = await agentSkillsLogic.downloadSkillFile(
+          name,
+          filePath,
+          resolvedSkillPath
+        );
         const contentType = result.headers.get("content-type");
         const contentDisposition = result.headers.get("content-disposition");
 
@@ -396,9 +407,7 @@ async function resolveDeletableSkillEntry(name: string): Promise<OpenClawSkillSt
     return undefined;
   }
 
-  return statuses.find(
-    (entry) => normalizeSkillId(entry.skillKey) === normalized
-  );
+  return statuses.find((entry) => matchesSkillEntry(entry, normalized));
 }
 
 function canDeleteSkillEntry(entry: OpenClawSkillStatusEntry): boolean {

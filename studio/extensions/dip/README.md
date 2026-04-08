@@ -2,9 +2,9 @@
 
 `dip` 是一个 OpenClaw 网关扩展，当前主要提供三类能力：
 
-1. **Agent skills**：可发现技能列表、按 agent 读写技能绑定、以及通过 Gateway 上传 `.skill`（zip）安装到仓库 `skills/`。
+1. **Agent skills**：按 agent 读写技能绑定、通过 Gateway 上传 `.skill`（zip）安装到仓库 `skills/`，以及读取 skill 目录内容。
 2. **工作区 archives**：HTTP 读取 `archives/`，以及写文件后的归档路径补齐。
-3. **内置技能包**：插件目录下附带若干 skill 文档，参与发现逻辑。
+3. **内置技能包**：插件目录下附带若干 skill 文档，供 Studio 侧状态管理与内容访问使用。
 4. **工作区临时上传**：将上传文件写入 `workspace/tmp`（可按会话分目录）。
 
 插件自身打包了 2 个 skills：
@@ -16,23 +16,13 @@
 
 ### 1. Skills 管理
 
-#### CLI
-
-```text
-/skills-manage [list | enable <name> | disable <name>]
-```
-
-- `list`：返回当前可发现的 skill 名称，以及全局配置中的启用状态（`skills.entries.<name>.enabled`）。
-- `enable <name>` / `disable <name>`：写入 `openclaw` 配置里的 `skills.entries.<name>.enabled`。
-
 #### HTTP
 
 ```text
-GET    /v1/config/agents/skills
 GET    /v1/config/agents/skills?agentId=<id>
-GET    /v1/config/agents/skills/<name>/tree
-GET    /v1/config/agents/skills/<name>/content?path=<relative-file-path>
-GET    /v1/config/agents/skills/<name>/download?path=<relative-file-path>
+GET    /v1/config/agents/skills/<name>/tree?resolvedSkillPath=<abs-skill-dir>
+GET    /v1/config/agents/skills/<name>/content?path=<relative-file-path>&resolvedSkillPath=<abs-skill-dir>
+GET    /v1/config/agents/skills/<name>/download?path=<relative-file-path>&resolvedSkillPath=<abs-skill-dir>
 POST   /v1/config/agents/skills
 PUT    /v1/config/agents/skills
 POST   /v1/config/agents/skills/install
@@ -41,21 +31,20 @@ DELETE /v1/config/agents/skills/<name>
 
 **查询与更新 agent 技能绑定**
 
-- `GET` 无 `agentId`：返回当前可发现的 skill id 列表（JSON：`{ "skills": string[] }`）。
-- `GET` 带 `agentId`：
-  - 若该 agent 在配置中显式设置了 `skills`，直接返回该数组；
-  - 若未显式设置，则按发现逻辑返回该 agent 可见的 skills（JSON：`{ "agentId", "skills" }`）。
+- `GET` 必须带 `agentId`：返回该 agent 在配置中的 `skills` 数组；未显式设置时返回空数组（JSON：`{ "agentId", "skills" }`）。
 - `POST` / `PUT`：请求体为 JSON，需包含 `agentId`（string）与 `skills`（string[]），整组写回 `agents.list[].skills`（JSON：`{ "success", "agentId", "skills" }`）。
 
 **读取技能目录树**
 
-- `GET /v1/config/agents/skills/<name>/tree`
+- `GET /v1/config/agents/skills/<name>/tree?resolvedSkillPath=<abs-skill-dir>`
+- `resolvedSkillPath` 由 Studio 基于 `skills.status` 预先解析并传入；插件优先按该目录直接读取。
 - 返回技能目录下的完整文件树（JSON：`{ "name", "entries" }`）。
 - `entries[].type` 为 `file` 或 `directory`；目录节点额外带 `children`。
 
 **预览技能文件**
 
-- `GET /v1/config/agents/skills/<name>/content?path=<relative-file-path>`
+- `GET /v1/config/agents/skills/<name>/content?path=<relative-file-path>&resolvedSkillPath=<abs-skill-dir>`
+- `resolvedSkillPath` 为 Studio 解析出的技能绝对目录；插件不再自己查询 `skills.status`。
 - `path` 是技能目录内的相对路径，例如 `SKILL.md`、`docs/guide.md`；不传时默认 `SKILL.md`。
 - 仅允许读取普通文件；路径穿越和目录读取都会返回 `400`。
 - 成功返回：`{ "name", "path", "content", "bytes", "truncated" }`。
@@ -63,7 +52,8 @@ DELETE /v1/config/agents/skills/<name>
 
 **下载技能文件**
 
-- `GET /v1/config/agents/skills/<name>/download?path=<relative-file-path>`
+- `GET /v1/config/agents/skills/<name>/download?path=<relative-file-path>&resolvedSkillPath=<abs-skill-dir>`
+- `resolvedSkillPath` 为 Studio 解析出的技能绝对目录；插件仅做本地路径校验与流式输出。
 - `path` 是技能目录内的相对路径；不传时默认 `SKILL.md`。
 - 仅允许读取普通文件；路径穿越和目录读取都会返回 `400`。
 - 成功时返回原始文件字节流，并设置 `Content-Type` 与 `Content-Disposition: attachment`。
@@ -84,10 +74,10 @@ DELETE /v1/config/agents/skills/<name>
 - 仅删除 **`{repoRoot}/skills/<name>/`**（或同名 `*.skill` 条目）若存在；若该 id **仅**存在于插件内置 `extensions/dip/skills/`，返回 **403**（`BUNDLED`），不删除内置包。Studio 仅会在 `skills.status` 条目 `source === "openclaw-managed"` 且目录位于 `~/.openclaw/skills/<name>/` 时调用此接口。
 - 成功：`200` + `{ "name": "<id>" }`。
 
-### 2. Skills 发现
+### 2. Skills 管理边界
 
-`discoverSkillNames` 统一使用 OpenClaw 原生 SDK 的 `listSkillCommandsForAgents` 进行发现，
-并对返回的 `skillName` 做去重和字典序排序。不再通过读取仓库或插件目录来列举技能。
+技能状态查询、可用技能列表归一化，以及启用/禁用等管理逻辑统一放在 Studio 侧，
+dip 插件仅保留本地文件动作：技能安装、卸载、agent 绑定读写，以及基于 `resolvedSkillPath` 的 skill 目录内容访问。
 
 ### 3. Archives 访问
 

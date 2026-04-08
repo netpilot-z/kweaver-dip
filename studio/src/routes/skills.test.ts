@@ -112,12 +112,14 @@ async function importRouterWithLogicMock(
       options?: { overwrite?: boolean; name?: string }
     ) => Promise<unknown>;
     uninstallSkill?: (name: string) => Promise<unknown>;
-    getSkillTree?: (name: string) => Promise<unknown>;
-    getSkillContent?: (name: string, path: string) => Promise<unknown>;
-    downloadSkillFile?: (name: string, path: string) => Promise<unknown>;
+    getSkillTree?: (name: string, resolvedSkillPath: string) => Promise<unknown>;
+    getSkillContent?: (name: string, path: string, resolvedSkillPath: string) => Promise<unknown>;
+    downloadSkillFile?: (name: string, path: string, resolvedSkillPath: string) => Promise<unknown>;
+    resolveSkillPath?: (name: string) => Promise<string>;
     getSkillStatuses?: () => Promise<
       Array<{
         skillKey: string;
+        name?: string;
         source?: string;
         skillPath?: string;
       }>
@@ -125,6 +127,25 @@ async function importRouterWithLogicMock(
   }
 ): Promise<typeof import("./skills")> {
   vi.doMock("../logic/agent-skills", () => ({
+    getSkillEntryName: (entry: { name?: string; skillKey: string }) =>
+      entry.name ?? entry.skillKey,
+    matchesSkillEntry: (
+      entry: { skillKey: string; name?: string; skillPath?: string },
+      normalizedSkillId: string
+    ) => {
+      const normalize = (value: string | undefined): string | undefined => {
+        const trimmed = value?.trim().toLowerCase();
+        return trimmed ? trimmed : undefined;
+      };
+      if (normalize(entry.skillKey) === normalizedSkillId) {
+        return true;
+      }
+      if (normalize(entry.name) === normalizedSkillId) {
+        return true;
+      }
+      const base = entry.skillPath?.replace(/\\/g, "/").split("/").filter(Boolean).at(-1);
+      return normalize(base) === normalizedSkillId;
+    },
     DefaultAgentSkillsLogic: vi.fn().mockImplementation(() => ({
       listEnabledSkills: logic.listEnabledSkills,
       listEnabledSkillsByQuery:
@@ -149,6 +170,9 @@ async function importRouterWithLogicMock(
           name: "default",
           entries: []
         }),
+      resolveSkillPath:
+        logic.resolveSkillPath ??
+        vi.fn().mockResolvedValue("/repo/skills/default"),
       getSkillContent:
         logic.getSkillContent ??
         vi.fn().mockResolvedValue({
@@ -265,7 +289,7 @@ describe("createSkillsRouter", () => {
       next
     );
 
-    expect(getSkillTree).toHaveBeenCalledWith("weather");
+    expect(getSkillTree).toHaveBeenCalledWith("weather", "/repo/skills/default");
     expect(response.status).toHaveBeenCalledWith(200);
     expect(response.json).toHaveBeenCalledWith({
       name: "weather",
@@ -333,7 +357,11 @@ describe("createSkillsRouter", () => {
       next
     );
 
-    expect(getSkillContent).toHaveBeenCalledWith("weather", "docs/guide.md");
+    expect(getSkillContent).toHaveBeenCalledWith(
+      "weather",
+      "docs/guide.md",
+      "/repo/skills/default"
+    );
     expect(response.status).toHaveBeenCalledWith(200);
     expect(response.json).toHaveBeenCalledWith({
       name: "weather",
@@ -368,7 +396,11 @@ describe("createSkillsRouter", () => {
       next
     );
 
-    expect(getSkillContent).toHaveBeenCalledWith("weather", "SKILL.md");
+    expect(getSkillContent).toHaveBeenCalledWith(
+      "weather",
+      "SKILL.md",
+      "/repo/skills/default"
+    );
     expect(response.status).toHaveBeenCalledWith(200);
     expect(response.json).toHaveBeenCalledWith({
       name: "weather",
@@ -404,7 +436,11 @@ describe("createSkillsRouter", () => {
       next
     );
 
-    expect(downloadSkillFile).toHaveBeenCalledWith("weather", "SKILL.md");
+    expect(downloadSkillFile).toHaveBeenCalledWith(
+      "weather",
+      "SKILL.md",
+      "/repo/skills/default"
+    );
     expect(response.setHeader).toHaveBeenCalledWith("content-type", "text/markdown");
     expect(response.setHeader).toHaveBeenCalledWith(
       "content-disposition",
@@ -542,6 +578,40 @@ describe("createSkillsRouter", () => {
     expect(uninstallSkill).toHaveBeenCalledWith("excel-xlsx");
     expect(response.status).toHaveBeenCalledWith(200);
     expect(response.json).toHaveBeenCalledWith({ name: "excel-xlsx" });
+    expect(next).not.toHaveBeenCalled();
+  });
+
+  it("matches uninstall target by public skill name when skillKey differs", async () => {
+    const uninstallSkill = vi.fn().mockResolvedValue({ name: "smart-ask-data" });
+    const { createSkillsRouter } = await importRouterWithLogicMock({
+      listEnabledSkills: async () => [],
+      uninstallSkill,
+      getSkillStatuses: async () => [
+        {
+          skillKey: "smart_ask_data",
+          name: "smart-ask-data",
+          source: "openclaw-managed",
+          skillPath: "/Users/test/.openclaw/skills/smart-ask-data"
+        }
+      ]
+    });
+    const router = createSkillsRouter() as Router;
+    const handler = findHandler(
+      router,
+      "delete",
+      "/api/dip-studio/v1/skills/:name"
+    );
+    const response = createResponseDouble();
+    const next = vi.fn<NextFunction>();
+
+    await handler?.(
+      { params: { name: "smart-ask-data" }, query: {} } as unknown as Request,
+      response,
+      next
+    );
+
+    expect(uninstallSkill).toHaveBeenCalledWith("smart-ask-data");
+    expect(response.status).toHaveBeenCalledWith(200);
     expect(next).not.toHaveBeenCalled();
   });
 
