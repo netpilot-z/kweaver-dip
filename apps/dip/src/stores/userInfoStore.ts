@@ -60,7 +60,7 @@ export const useUserInfoStore = create<UserInfoState>((set) => ({
       }
     : null,
   isLoading: false,
-  isAdmin: false,
+  isAdmin: process.env.PUBLIC_IS_ADMIN === 'true',
   modules: parseModulesFromEnv(),
 
   setUserInfo: (userInfo: UserInfo | null) =>

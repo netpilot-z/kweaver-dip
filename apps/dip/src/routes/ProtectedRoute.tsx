@@ -29,7 +29,7 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
   // 通过环境变量控制是否跳过登录认证
   // 在 .env.local 中设置 PUBLIC_SKIP_AUTH=true 即可跳过登录认证
-  const skipAuth = false
+  const skipAuth = process.env.PUBLIC_SKIP_AUTH === 'true'
 
   // 0) 支持外部平台通过 URL 携带 token和 refreshToken 免登录
   useEffect(() => {
