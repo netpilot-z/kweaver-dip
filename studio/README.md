@@ -103,6 +103,135 @@ GitHub：https://github.com/kweaver-ai/web
 
 除白名单接口外，所有接口都需要在请求头中携带 `Authorization: Bearer <access-token>`。服务端会通过 Hydra `/admin/oauth2/introspect` 做令牌内省；在 `NODE_ENV=development` 时，会跳过 Hydra，改为使用 `.env` 中的 `OAUTH_MOCK_USER_ID` 作为鉴权用户。
 
+### 错误响应规范
+
+所有接口的错误响应统一使用如下 JSON 结构：
+
+```json
+{
+  "code": "DipStudio.SkillBadLayout",
+  "description": "SKILL.md is missing required front matter metadata",
+  "solution": "补充合法的 front matter，并确保包含 name 字段",
+  "detail": {
+    "upstream": {
+      "service": "openclaw",
+      "operation": "skills.install",
+      "httpStatus": 400,
+      "code": "BAD_LAYOUT"
+    }
+  },
+  "link": "https://example.internal/docs/errors#DipStudio.SkillBadLayout"
+}
+```
+
+字段约束如下：
+
+| 字段 | 是否必填 | 说明 |
+| -- | -- | -- |
+| `code` | 是 | Studio 对外稳定业务错误码，供前端和调用方判断 |
+| `description` | 是 | 人类可读的错误描述 |
+| `solution` | 否 | 建议的处理方式 |
+| `detail` | 否 | 排障细节，不作为前端主判断依据 |
+| `link` | 否 | 错误帮助文档链接 |
+
+约束如下：
+
+- 前端必须优先依赖 `code` 做分支判断，不得依赖 `description`
+- 上游原始错误码只能放在 `detail.upstream.code`，不直接作为 Studio 稳定公共错误码
+- 未识别的异常允许使用兜底码，但新增接口和新增映射必须优先使用稳定业务错误码
+
+### 错误码命名规范
+
+错误码统一使用大驼峰，并采用以下格式：
+
+`ServiceName.ErrorCode`
+
+当前服务统一使用 `DipStudio` 作为 `ServiceName`。
+
+示例：
+
+- `DipStudio.InvalidParameter`
+- `DipStudio.Unauthorized`
+- `DipStudio.SkillBadLayout`
+- `DipStudio.SkillAlreadyExists`
+- `DipStudio.UpstreamTimeout`
+
+命名要求如下：
+
+- `ErrorCode` 必须使用大驼峰
+- `ErrorCode` 必须表达稳定语义，不直接暴露上游实现细节
+- 上游的原始错误码如 `BAD_LAYOUT`、`CONFLICT` 仅保留在 `detail.upstream.code`
+
+### HTTP 状态码使用规则
+
+客户端可修复的请求错误应返回 4xx：
+
+- `400`：参数非法、请求体格式错误、业务校验失败
+- `401`：未认证、认证失败
+- `403`：无权限
+- `404`：资源不存在
+- `409`：资源冲突
+- `413`：请求体过大
+
+服务端或上游异常应返回 5xx：
+
+- `500`：Studio 内部未预期错误
+- `502`：上游服务异常、响应不可解析、连接失败
+- `504`：上游请求超时
+
+规则如下：
+
+- 上游明确返回业务错误时，Studio 应尽量透传对应语义，不应统一包装为 `502`
+- 上游连接失败、TLS、DNS、协议错误、不可解析响应等，应映射为 `DipStudio.Upstream*` 系列错误码
+
+### 系统错误码列表
+
+以下列表为当前系统维护的稳定错误码。新增错误码时，必须同步更新本节。
+
+#### 通用错误码
+
+| HTTP 状态 | 错误码 | 说明 |
+| -- | -- | -- |
+| 400 | `DipStudio.InvalidParameter` | 参数非法、缺失或格式不符合要求 |
+| 401 | `DipStudio.Unauthorized` | 未认证或认证失败 |
+| 403 | `DipStudio.Forbidden` | 已认证但无权限执行 |
+| 404 | `DipStudio.NotFound` | 目标资源不存在 |
+| 409 | `DipStudio.Conflict` | 资源状态冲突 |
+| 413 | `DipStudio.PayloadTooLarge` | 请求体超过限制 |
+| 500 | `DipStudio.InternalServerError` | Studio 内部异常 |
+| 502 | `DipStudio.UpstreamServiceError` | 上游服务异常或返回非预期错误 |
+| 502 | `DipStudio.UpstreamUnavailable` | 上游不可达、连接失败或网络异常 |
+| 502 | `DipStudio.UpstreamBadResponse` | 上游返回体不可解析或不符合约定 |
+| 504 | `DipStudio.UpstreamTimeout` | 上游请求超时 |
+
+#### 技能安装错误码
+
+适用于 `POST /api/dip-studio/v1/skills/install`：
+
+| 上游 HTTP | 上游 code | Studio HTTP | Studio 错误码 | 说明 |
+| -- | -- | -- | -- | -- |
+| 400 | `BAD_LAYOUT` | 400 | `DipStudio.SkillBadLayout` | 技能包目录结构不合法 |
+| 400 | `MISSING_SKILL_MD` | 400 | `DipStudio.SkillMissingSkillMd` | 缺少 `SKILL.md` |
+| 400 | `INVALID_ZIP` | 400 | `DipStudio.SkillInvalidPackage` | 上传包不是合法 ZIP 或解压失败 |
+| 400 | `INVALID_NAME` | 400 | `DipStudio.SkillInvalidName` | 技能名称不合法 |
+| 400 | `BAD_FRONT_MATTER` | 400 | `DipStudio.SkillBadFrontMatter` | `SKILL.md` front matter 非法 |
+| 409 | `CONFLICT` | 409 | `DipStudio.SkillAlreadyExists` | 技能已存在且未允许覆盖 |
+| 413 | `TOO_LARGE` | 413 | `DipStudio.SkillPackageTooLarge` | 上传包超出限制 |
+| 401 | 任意 | 401 | `DipStudio.UpstreamUnauthorized` | 调用网关时认证失败 |
+| 403 | 任意 | 403 | `DipStudio.UpstreamForbidden` | 网关拒绝当前调用 |
+| 5xx | 任意 | 502 | `DipStudio.UpstreamServiceError` | 网关或插件内部错误 |
+| 无响应 | 超时 | 504 | `DipStudio.UpstreamTimeout` | 上游请求超时 |
+| 无响应 | 连接失败 | 502 | `DipStudio.UpstreamUnavailable` | 网络连接失败 |
+| 非 JSON | 任意 | 502 | `DipStudio.UpstreamBadResponse` | 上游返回体无法按约定解析 |
+
+维护要求如下：
+
+- 新增公开错误码时，必须同步更新本 README 中的“系统错误码列表”
+- 若错误码含义发生变化，必须同步修改说明和涉及的接口文档
+- 若路由新增了明确业务错误码，需同时更新对应 OpenAPI 文档
+
+完整规范可参考 [docs/references/error-codes.md](/Users/yannan/work/aishu/kweaver-dip/studio/docs/references/error-codes.md)。
+
 ### 数字员工
 
 公开接口基础路径：`/api/dip-studio/v1`
@@ -377,7 +506,7 @@ GitHub：https://github.com/kweaver-ai/web
 
 前端示例：`form.append("file", fileBlob, "my-skill.skill")`（可用文件名代替显式 `skillName`）；覆盖时 `form.append("overwrite", "true")`；覆盖默认推导 id 时 `form.append("skillName", "other-id")`。
 
-> ⚠️ `SKILL.md` 中 front matter 的 `name` 字段必须与 `skillName`/目录名完全一致，否则安装会被拒绝。
+> ⚠️ `SKILL.md` 必须包含 front matter 元数据头，其中 `name` 字段必须与 `skillName`/目录名完全一致，否则安装会被拒绝。
 
 响应：`200 application/json`
 
@@ -633,7 +762,7 @@ GitHub：https://github.com/kweaver-ai/web
 | 参数 | 类型 | 是否必填 | 说明 |
 | -- | -- | -- | -- |
 | input | string \| MessageItem[] | 是 | OpenResponse 风格输入；当前服务会从中提取最后一条 `role=user` 的文本消息，或直接使用字符串 |
-| attachments | ChatAttachment[] | 否 | 附件数组。若包含文件，需先调用 `POST /api/dip-studio/v1/chat/upload` 拿到 `path`，再在此处传入 |
+| attachments | ChatAttachment[] | 否 | 附件数组。若包含文件，需先调用 `POST /api/dip-studio/v1/chat/upload` 拿到 `path`；其中 `name` 用于展示，`path` 用于实际引用 |
 
 `ChatAttachment` 字段：
 
@@ -683,15 +812,16 @@ If any file cannot be read, explicitly report which path failed and why.
 
 | 字段 | 类型 | 是否必填 | 说明 |
 | -- | -- | -- | -- |
-| file | binary | 是 | 本地文件二进制内容（字段名固定为 `file`） |
+| file | binary | 是 | 本地文件二进制内容（字段名固定为 `file`）；服务端会修正常见的 multipart UTF-8 中文文件名乱码 |
 
 响应：`200 application/json`
 
 | 参数 | 类型 | 说明 |
 | -- | -- | -- |
-| path | string | 工作区相对路径，用于后续 `POST /api/dip-studio/v1/chat/agent` 的 `attachments[].path` |
+| name | string | 原始文件名，供前端展示 |
+| path | string | 内部存储路径，用于后续 `POST /api/dip-studio/v1/chat/agent` 的 `attachments[].path` |
 
-推荐调用顺序：先调用 `POST /api/dip-studio/v1/chat/upload` 上传文件并拿到 `path`，再调用 `POST /api/dip-studio/v1/chat/agent` 发起对话。
+推荐调用顺序：先调用 `POST /api/dip-studio/v1/chat/upload` 上传文件并拿到 `name + path`，前端展示 `name`，再将 `path` 传给 `POST /api/dip-studio/v1/chat/agent` 发起对话。
 
 #### 获取会话消息详情
 

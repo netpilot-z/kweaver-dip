@@ -212,7 +212,7 @@ describe("errorHandler", () => {
 
     expect(response.status).toHaveBeenCalledWith(418);
     expect(response.json).toHaveBeenCalledWith({
-      code: "HTTP_418",
+      code: "DipStudio.Http418",
       description: "Diagnostic failure"
     });
   });
@@ -224,7 +224,7 @@ describe("errorHandler", () => {
 
     expect(response.status).toHaveBeenCalledWith(500);
     expect(response.json).toHaveBeenCalledWith({
-      code: "INTERNAL_SERVER_ERROR",
+      code: "DipStudio.InternalServerError",
       description: "Internal Server Error"
     });
   });
@@ -261,13 +261,16 @@ describe("errorHandler", () => {
 
 describe("resolveErrorCode", () => {
   it("maps common public error codes and falls back for unsupported status codes", () => {
-    expect(resolveErrorCode(400)).toBe("INVALID_PARAMETER");
-    expect(resolveErrorCode(401)).toBe("UNAUTHORIZED");
-    expect(resolveErrorCode(403)).toBe("FORBIDDEN");
-    expect(resolveErrorCode(404)).toBe("NOT_FOUND");
-    expect(resolveErrorCode(409)).toBe("CONFLICT");
-    expect(resolveErrorCode(500)).toBe("INTERNAL_SERVER_ERROR");
-    expect(resolveErrorCode(418)).toBe("HTTP_418");
+    expect(resolveErrorCode(400)).toBe("DipStudio.InvalidParameter");
+    expect(resolveErrorCode(401)).toBe("DipStudio.Unauthorized");
+    expect(resolveErrorCode(403)).toBe("DipStudio.Forbidden");
+    expect(resolveErrorCode(404)).toBe("DipStudio.NotFound");
+    expect(resolveErrorCode(409)).toBe("DipStudio.Conflict");
+    expect(resolveErrorCode(413)).toBe("DipStudio.PayloadTooLarge");
+    expect(resolveErrorCode(500)).toBe("DipStudio.InternalServerError");
+    expect(resolveErrorCode(502)).toBe("DipStudio.UpstreamServiceError");
+    expect(resolveErrorCode(504)).toBe("DipStudio.UpstreamTimeout");
+    expect(resolveErrorCode(418)).toBe("DipStudio.Http418");
   });
 });
 
