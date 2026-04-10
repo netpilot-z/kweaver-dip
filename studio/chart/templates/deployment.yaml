@@ -31,7 +31,7 @@ spec:
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: {{ .Values.studio.port }}
+            - containerPort: {{ .Values.service.port }}
               name: studio-http
               protocol: TCP
           env:
