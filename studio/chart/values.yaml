@@ -14,14 +14,14 @@ replicaCount: 1
 image:
   registry: swr.cn-east-3.myhuaweicloud.com/kweaver-ai
   repository: dip/dip-studio
-  tag: "0.4.0-main-2026040101"
+  tag: "0.4.0-poc"
   pullPolicy: IfNotPresent
 
 service:
   name: dip-studio
   type: ClusterIP
-  port: 3100
-  targetPort: 3100
+  port: 3000
+  targetPort: 3000
 
 class-443:
   ingressClass: 'class-443'
@@ -36,21 +36,11 @@ ingress:
 
 studio:
   nodeEnv: production
-  port: 3100
-  oauthMockUserId: local-user
-  openclaw:
-    hostPath: /Users/yannan/.openclaw
-    gatewayToken: local-dev-token
-    gatewayProtocol: ws
-    gatewayHost: 127.0.0.1
-    gatewayPort: 19001
-    gatewayTimeoutMs: 5000
-  mountPath: /data/.openclaw
-  configPath: /data/.openclaw/openclaw.json
-  workspaceDir: /data/.openclaw/workspace
-  rootDir: /data/.openclaw
-  bknBackendUrl: http://bkn-backend-svc:13014
-  hydraAdminUrl: http://hydra-admin:4445
+  port: 3000
+  envFilePath: /data/.env
+  OpenClawRootDir: /data/.openclaw
+  KWeaverBaseURL: http://bkn-backend-svc:13014
+  KWeaverHydraAdminURL: http://hydra-admin:4445
 
 resources:
   studio:
