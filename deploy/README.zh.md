@@ -173,17 +173,12 @@ Approved cc8d2143cf8fcd04161ade9e5161006c410a0bee65f835e2629792aa584bb119 (3ef17
 # 单独安装 Core
 ./deploy.sh kweaver-core install
 
-# 安装 Core，但跳过 ISF
-./deploy.sh kweaver-core install --enable-isf=false
-
 # 单独安装 ISF
 ./deploy.sh isf install
 
 # 仅安装基础设施和数据服务
 ./deploy.sh infra install
 
-# 生成默认配置文件
-./deploy.sh config generate
 ```
 
 ### Chart 预下载与缓存

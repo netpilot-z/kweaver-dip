@@ -182,17 +182,12 @@ Notes:
 # Install Core only
 ./deploy.sh kweaver-core install
 
-# Install Core but skip ISF
-./deploy.sh kweaver-core install --enable-isf=false
-
 # Install ISF only
 ./deploy.sh isf install
 
 # Install infrastructure and data services only
 ./deploy.sh infra install
 
-# Generate the default config file
-./deploy.sh config generate
 ```
 
 ### Chart pre-download and cache

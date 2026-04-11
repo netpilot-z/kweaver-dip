@@ -85,14 +85,6 @@ parse_core_args() {
                 CONFIG_YAML_PATH="$2"
                 shift 2
                 ;;
-            --enable-isf=*)
-                ENABLE_ISF="${1#*=}"
-                shift
-                ;;
-            --enable-isf)
-                ENABLE_ISF="$2"
-                shift 2
-                ;;
             *)
                 log_error "Unknown argument: $1"
                 return 1
@@ -163,11 +155,10 @@ _core_release_names() {
 
 _core_resolve_isf_dependency_version() {
     if [[ -z "${CORE_VERSION_MANIFEST_FILE:-}" ]]; then
-        echo "${HELM_CHART_VERSION:-}"
         return 0
     fi
 
-    get_release_manifest_dependency_version "${CORE_VERSION_MANIFEST_FILE}" "isf"
+    get_release_manifest_dependency_version_optional "${CORE_VERSION_MANIFEST_FILE}" "isf"
 }
 
 _core_resolve_isf_dependency_manifest() {
@@ -175,7 +166,7 @@ _core_resolve_isf_dependency_manifest() {
         return 0
     fi
 
-    get_release_manifest_dependency_manifest "${CORE_VERSION_MANIFEST_FILE}" "isf"
+    get_release_manifest_dependency_manifest_optional "${CORE_VERSION_MANIFEST_FILE}" "isf"
 }
 
 init_core_databases() {
@@ -228,22 +219,30 @@ download_core() {
 
     ensure_helm_repo "${HELM_CHART_REPO_NAME}" "${HELM_CHART_REPO_URL}"
 
-    if [[ "${ENABLE_ISF}" != "false" ]]; then
+    # Check if ISF dependency is declared in manifest
+    local isf_dep_version=""
+    local isf_dep_manifest=""
+    if [[ -n "${CORE_VERSION_MANIFEST_FILE:-}" ]]; then
+        isf_dep_version="$(_core_resolve_isf_dependency_version)"
+        isf_dep_manifest="$(_core_resolve_isf_dependency_manifest)"
+    fi
+
+    if [[ -n "${isf_dep_version}" ]]; then
+        log_info "ISF dependency found in manifest (version: ${isf_dep_version}), downloading ISF charts"
         local original_isf_charts_dir="${ISF_LOCAL_CHARTS_DIR:-}"
         local original_isf_manifest_file="${ISF_VERSION_MANIFEST_FILE:-}"
         local original_chart_version="${HELM_CHART_VERSION:-}"
         ISF_LOCAL_CHARTS_DIR="${charts_dir}"
-
-        if [[ -n "${CORE_VERSION_MANIFEST_FILE:-}" ]]; then
-            HELM_CHART_VERSION="$(_core_resolve_isf_dependency_version)"
-            ISF_VERSION_MANIFEST_FILE="$(_core_resolve_isf_dependency_manifest)"
-        fi
+        HELM_CHART_VERSION="${isf_dep_version}"
+        ISF_VERSION_MANIFEST_FILE="${isf_dep_manifest}"
 
         download_isf
 
         ISF_LOCAL_CHARTS_DIR="${original_isf_charts_dir}"
         ISF_VERSION_MANIFEST_FILE="${original_isf_manifest_file}"
         HELM_CHART_VERSION="${original_chart_version}"
+    else
+        log_info "No ISF dependency declared in manifest, skipping ISF download"
     fi
 
     local -a release_names=()
@@ -399,21 +398,25 @@ install_core() {
 
     log_info "Target namespace: ${namespace}"
 
-    # Check if ISF should be enabled (default: install ISF)
-    if [[ "${ENABLE_ISF}" == "false" ]]; then
-        log_info "ISF installation disabled via --enable-isf=false"
-    else
-        log_info "Installing ISF services (default, use --enable-isf=false to skip)"
+    # Check if ISF dependency is declared in manifest
+    local isf_dep_version=""
+    local isf_dep_manifest=""
+    if [[ -n "${CORE_VERSION_MANIFEST_FILE:-}" ]]; then
+        isf_dep_version="$(_core_resolve_isf_dependency_version)"
+        isf_dep_manifest="$(_core_resolve_isf_dependency_manifest)"
+    fi
+
+    if [[ -n "${isf_dep_version}" ]]; then
+        log_info "ISF dependency found in manifest (version: ${isf_dep_version}), installing ISF"
         local original_isf_charts_dir="${ISF_LOCAL_CHARTS_DIR:-}"
         local original_isf_manifest_file="${ISF_VERSION_MANIFEST_FILE:-}"
         local original_chart_version="${HELM_CHART_VERSION:-}"
         if [[ "${use_local}" == "true" ]]; then
             ISF_LOCAL_CHARTS_DIR="${charts_dir}"
         fi
-        if [[ -n "${CORE_VERSION_MANIFEST_FILE:-}" ]]; then
-            HELM_CHART_VERSION="$(_core_resolve_isf_dependency_version)"
-            ISF_VERSION_MANIFEST_FILE="$(_core_resolve_isf_dependency_manifest)"
-        fi
+        HELM_CHART_VERSION="${isf_dep_version}"
+        ISF_VERSION_MANIFEST_FILE="${isf_dep_manifest}"
+        
         if ! install_isf; then
             ISF_LOCAL_CHARTS_DIR="${original_isf_charts_dir}"
             ISF_VERSION_MANIFEST_FILE="${original_isf_manifest_file}"
@@ -424,6 +427,8 @@ install_core() {
         ISF_LOCAL_CHARTS_DIR="${original_isf_charts_dir}"
         ISF_VERSION_MANIFEST_FILE="${original_isf_manifest_file}"
         HELM_CHART_VERSION="${original_chart_version}"
+    else
+        log_info "No ISF dependency declared in manifest, skipping ISF installation"
     fi
 
     if ! init_core_databases; then

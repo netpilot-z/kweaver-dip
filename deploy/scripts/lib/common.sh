@@ -598,6 +598,43 @@ get_release_manifest_dependency_manifest() {
     echo "$(cd "${manifest_dir}" && cd "$(dirname "${value}")" && pwd)/$(basename "${value}")"
 }
 
+# Get one dependency's aggregate version from a release manifest (optional, returns empty if not found).
+# Args: <manifest_file> <dependency_product>
+get_release_manifest_dependency_version_optional() {
+    local manifest_file="$1"
+    local dependency_product="$2"
+
+    [[ -f "${manifest_file}" ]] || return 0
+
+    local value
+    value="$(_manifest_strip_quotes "$(_manifest_read_dependency_field "${manifest_file}" "${dependency_product}" "version")")"
+    echo "${value}"
+}
+
+# Get one dependency's manifest file from a release manifest (optional, returns empty if not found).
+# Args: <manifest_file> <dependency_product>
+get_release_manifest_dependency_manifest_optional() {
+    local manifest_file="$1"
+    local dependency_product="$2"
+    local manifest_dir
+
+    [[ -f "${manifest_file}" ]] || return 0
+
+    local value
+    value="$(_manifest_strip_quotes "$(_manifest_read_dependency_field "${manifest_file}" "${dependency_product}" "manifest")")"
+    if [[ -z "${value}" ]]; then
+        return 0
+    fi
+
+    if [[ "${value}" == /* ]]; then
+        echo "${value}"
+        return 0
+    fi
+
+    manifest_dir="$(cd "$(dirname "${manifest_file}")" && pwd)"
+    echo "$(cd "${manifest_dir}" && cd "$(dirname "${value}")" && pwd)/$(basename "${value}")"
+}
+
 # Decide whether upgrade can be skipped when installed chart version equals target version.
 # Return 0 => skip upgrade, Return 1 => continue upgrade.
 # Args: <release_name> <namespace> <chart_name> <target_version>
