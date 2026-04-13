@@ -3,7 +3,7 @@
 `dip` 是一个 OpenClaw 网关扩展，当前主要提供三类能力：
 
 1. **Agent skills**：按 agent 读写技能绑定、通过 Gateway 上传 `.skill`（zip）安装到仓库 `skills/`，以及读取 skill 目录内容。
-2. **工作区 archives**：HTTP 读取 `archives/`，以及通过工具执行归档搬移。
+2. **工作区 archives**：HTTP 读取 `archives/`，以及通过工具执行归档搬移与 cron run 镜像。
 3. **内置技能包**：插件目录下附带若干 skill 文档，供 Studio 侧状态管理与内容访问使用。
 4. **工作区临时上传**：将上传文件写入 `workspace/tmp`（可按会话分目录）。
 
@@ -33,6 +33,14 @@
   - 可选 `timestamp`: `YYYY-MM-DD-HH-MM-SS`（仅 `file` 变体，可复用同一时间桶）
   - 可选 `sessionKey` / `sessionId`: 当上下文未携带 session 信息时的覆盖值
   - 可选 `workspace`: 当插件无法自动解析时的工作区绝对路径
+
+`archive` 工具当前的归档语义：
+
+- 普通会话：`PLAN.md` 写入 `archives/{ARCHIVE_ID}/PLAN.md`，普通产物写入 `archives/{ARCHIVE_ID}/{TIMESTAMP}/{ORIGIN_NAME}`
+- cron run：通过当前运行上下文解析 `jobId`，再读取 cron job 的原始 `sessionKey` 反查 `ARCHIVE_ID`
+- cron run 的普通产物以 `runId` 为主目录，写入 `archives/{runId}/{TIMESTAMP}/{ORIGIN_NAME}`
+- 同一次 cron run 的普通产物会镜像到原始计划会话目录 `archives/{ARCHIVE_ID}/{TIMESTAMP}/{ORIGIN_NAME}`
+- cron run 的 `PLAN.md` 仍只保留在 `archives/{ARCHIVE_ID}/PLAN.md`，不会生成 `archives/{runId}/PLAN.md`
 
 示例：
 
@@ -124,6 +132,12 @@ GET /v1/archives...
 - 通过 `?agent=<agentId>` 切换到对应 agent 的 `workspace` 下读取 `archives/`
 - 通过 `?session=<sessionKey或sessionId>` 将会话标识归一化后，直接定位到对应归档目录
 
+对 cron 相关会话：
+
+- 传入原始计划会话 `sessionKey` 时，会读取 `archives/{ARCHIVE_ID}`
+- 传入 cron run 会话 `sessionKey` 时，会读取 `archives/{runId}`
+- 插件不会在读取阶段做 run/chat 互跳；哪个会话 key 被查询，就读取哪个目录
+
 当前返回行为：
 
 - 目标是目录时：返回 JSON，包含 `path` 和 `contents`
@@ -165,31 +179,18 @@ POST /v1/workspace/tmp/upload
 }
 ```
 
-### 4. 写文件后的归档补齐
+### 4. 归档执行约束
 
-插件监听 `after_tool_call`，只在以下工具名命中时生效：
+插件当前不再依赖 `after_tool_call` hook 自动补齐归档。归档由 `archive` 工具显式完成，原因是：
 
-- 名称包含 `write`
-- 名称包含 `edit`
-- 名称包含 `replace`
+- 避免写文件工具和 `archive` 工具同时生效时产生重复时间桶目录
+- 让 cron run 的“`runId` 主写、`ARCHIVE_ID` 镜像”在同一条工具链路里一次完成
+- 避免在 hook 阶段基于不完整的 session 上下文推断出错误的归档根
 
-当前只处理 `event.params.path`、`file` 或 `filename` 中给出的单个文件路径，并且要求：
+因此当前约束是：
 
-- 文件位于当前工作区内
-- 文件真实存在
-- 目标是普通文件
-
-归档规则是当前代码里真正实现的规则：
-
-- 如果文件名是 `plan.md`，补齐到 `archives/{sessionId}/PLAN.md`
-- 其他文件补齐到 `archives/{sessionId}/{YYYY-MM-DD-HH-mm-ss}/{sanitizedFileName}`
-
-其中：
-
-- `sessionId` 来自 `ctx.sessionKey` 最后一段，取不到时回退到 `ctx.sessionId`
-- 文件名会被标准化为小写、空白转 `_`、移除非法字符，扩展名保留为小写
-- 如果原路径已经符合上述规则，则不会重复搬移
-- 当前实现是“搬移到合规归档路径”；跨设备场景会退化为 copy + delete，原文件不会继续保留在工作区
+- Agent 生成需要保留的文件后，应显式调用 `archive` 工具
+- `archives-access` 仅负责通过 `/v1/archives` 暴露归档读取能力，不再负责写后搬移或补齐
 
 ## 当前内置 skills
 
@@ -197,7 +198,7 @@ POST /v1/workspace/tmp/upload
 
 这是一个归档约束 skill，文档中要求在涉及文件写入时遵守：
 
-- 从 `session_status` 的 `sessionKey` 提取 `ARCHIVE_ID`
+- 优先通过运行上下文解析归档目标；cron run 需结合 `jobId` 反查原始 `ARCHIVE_ID`
 - 生成固定格式的时间戳
 - `PLAN.md` 与普通产物走不同归档路径
 - 写入后必须回读校验

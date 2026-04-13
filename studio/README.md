@@ -933,6 +933,13 @@ If any file cannot be read, explicitly report which path failed and why.
 
 返回指定会话的归档物列表。
 
+说明：
+
+- 普通会话会读取该会话末段对应的归档目录
+- 对 cron run 会话，会读取 `archives/{runId}` 下的运行归档
+- 对创建计划的原始会话，会读取 `archives/{chatId}` 下的计划归档与镜像产物
+- `PLAN.md` 仅保留在原始计划会话对应的归档目录中，不会出现在 `runId` 目录下
+
 #### 获取会话归档子路径内容
 
 `GET /api/dip-studio/v1/sessions/{key}/archives/{subpath}`
@@ -946,4 +953,4 @@ If any file cannot be read, explicitly report which path failed and why.
 
 响应：`200 application/json | application/octet-stream | text/plain`
 
-目录返回 JSON，文件返回原始内容。
+目录返回 JSON，文件返回原始内容。路径解析规则与“获取会话归档列表”一致。

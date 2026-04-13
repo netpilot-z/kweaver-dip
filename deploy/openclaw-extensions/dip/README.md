@@ -191,6 +191,8 @@ POST /v1/workspace/tmp/upload
 - 如果原路径已经符合上述规则，则不会重复搬移
 - 当前实现是“搬移到合规归档路径”；跨设备场景会退化为 copy + delete，原文件不会继续保留在工作区
 
+cron run 场景下的 run/plan 归档镜像，现已收口到 `archive` 工具内部；`archives-access` 不再负责该逻辑。
+
 ## 当前内置 skills
 
 ### `archive-protocol`

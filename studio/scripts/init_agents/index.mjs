@@ -176,6 +176,10 @@ async function initOpenClawConfig(builtInAgents) {
 
   cfg.agents = cfg.agents || {};
   cfg.agents.list = cfg.agents.list || [];
+  cfg.cron = {
+    ...(cfg.cron || {}),
+    sessionRetention: false
+  };
 
   for (const agent of builtInAgents) {
     upsertAgentConfig(cfg.agents.list, {

@@ -8,7 +8,8 @@ import {
   createOpenClawArchivesStatusError,
   encodePathSegment,
   encodePathSubpath,
-  normalizeOpenClawArchivesError
+  normalizeOpenClawArchivesError,
+  throwIfUnexpectedArchivesContentType
 } from "./openclaw-archives-http-client";
 
 describe("buildOpenClawSessionArchivesUrl", () => {
@@ -108,6 +109,38 @@ describe("normalizeOpenClawArchivesError", () => {
   });
 });
 
+describe("throwIfUnexpectedArchivesContentType", () => {
+  it("rejects html responses and unexpected json content types", () => {
+    expect(() =>
+      throwIfUnexpectedArchivesContentType(
+        new Response("<html></html>", {
+          status: 200,
+          headers: {
+            "content-type": "text/html; charset=utf-8"
+          }
+        }),
+        "application/json"
+      )
+    ).toThrow(
+      "OpenClaw /v1/archives returned HTML instead of archives data. The dip plugin archives route may not be loaded."
+    );
+
+    expect(() =>
+      throwIfUnexpectedArchivesContentType(
+        new Response("plain", {
+          status: 200,
+          headers: {
+            "content-type": "text/plain"
+          }
+        }),
+        "application/json"
+      )
+    ).toThrow(
+      "OpenClaw /v1/archives returned unexpected content-type: text/plain"
+    );
+  });
+});
+
 describe("DefaultOpenClawArchivesHttpClient", () => {
   it("calls upstream and returns parsed json", async () => {
     const fetchImpl = vi.fn<typeof fetch>().mockResolvedValue(
@@ -164,6 +197,31 @@ describe("DefaultOpenClawArchivesHttpClient", () => {
     });
   });
 
+  it("rejects html responses when archives route is not loaded", async () => {
+    const client = new DefaultOpenClawArchivesHttpClient(
+      {
+        gatewayUrl: "ws://127.0.0.1:19001",
+        timeoutMs: 5000
+      },
+      vi.fn<typeof fetch>().mockResolvedValue(
+        new Response("<!doctype html><html></html>", {
+          status: 200,
+          headers: {
+            "content-type": "text/html; charset=utf-8"
+          }
+        })
+      )
+    );
+
+    await expect(
+      client.listSessionArchives("de_finance", "session-1")
+    ).rejects.toMatchObject({
+      statusCode: 502,
+      message:
+        "OpenClaw /v1/archives returned HTML instead of archives data. The dip plugin archives route may not be loaded."
+    });
+  });
+
   it("reads archive subpath and returns raw response", async () => {
     const fetchImpl = vi.fn<typeof fetch>().mockResolvedValue(
       new Response("hello world", {
@@ -194,5 +252,31 @@ describe("DefaultOpenClawArchivesHttpClient", () => {
     expect(fetchImpl.mock.calls[0]?.[0]).toBe(
       "http://127.0.0.1:19001/v1/archives/session-1/notes/today.txt?agent=de_finance"
     );
+  });
+
+  it("rejects html responses for archive subpaths", async () => {
+    const client = new DefaultOpenClawArchivesHttpClient(
+      {
+        gatewayUrl: "ws://127.0.0.1:19001/ws",
+        token: "secret",
+        timeoutMs: 5000
+      },
+      vi.fn<typeof fetch>().mockResolvedValue(
+        new Response("<!doctype html><html></html>", {
+          status: 200,
+          headers: {
+            "content-type": "text/html; charset=utf-8"
+          }
+        })
+      )
+    );
+
+    await expect(
+      client.getSessionArchiveSubpath("de_finance", "session-1", "PLAN.md")
+    ).rejects.toMatchObject({
+      statusCode: 502,
+      message:
+        "OpenClaw /v1/archives returned HTML instead of archives data. The dip plugin archives route may not be loaded."
+    });
   });
 });

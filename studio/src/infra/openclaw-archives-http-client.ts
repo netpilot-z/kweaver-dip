@@ -122,6 +122,8 @@ implements OpenClawArchivesHttpClient {
       throw await createOpenClawArchivesStatusError(upstreamResponse);
     }
 
+    throwIfUnexpectedArchivesContentType(upstreamResponse, "application/json");
+
     return (await upstreamResponse.json()) as OpenClawSessionArchivesResult;
   }
 
@@ -156,6 +158,8 @@ implements OpenClawArchivesHttpClient {
     if (!upstreamResponse.ok) {
       throw await createOpenClawArchivesStatusError(upstreamResponse);
     }
+
+    throwIfUnexpectedArchivesContentType(upstreamResponse);
 
     return {
       status: upstreamResponse.status,
@@ -304,4 +308,36 @@ export function normalizeOpenClawArchivesError(error: unknown): HttpError {
     502,
     `Failed to communicate with OpenClaw /v1/archives: ${message}`
   );
+}
+
+/**
+ * Validates the upstream content type returned by OpenClaw `/v1/archives`.
+ *
+ * @param response Successful upstream response.
+ * @param expectedPrefix Optional expected content-type prefix.
+ * @throws {HttpError} Thrown when OpenClaw returned HTML instead of archives data.
+ */
+export function throwIfUnexpectedArchivesContentType(
+  response: Response,
+  expectedPrefix?: string
+): void {
+  const contentType = response.headers.get("content-type")?.toLowerCase() ?? "";
+
+  if (contentType.startsWith("text/html")) {
+    throw new HttpError(
+      502,
+      "OpenClaw /v1/archives returned HTML instead of archives data. The dip plugin archives route may not be loaded."
+    );
+  }
+
+  if (
+    expectedPrefix !== undefined &&
+    contentType !== "" &&
+    !contentType.startsWith(expectedPrefix.toLowerCase())
+  ) {
+    throw new HttpError(
+      502,
+      `OpenClaw /v1/archives returned unexpected content-type: ${contentType}`
+    );
+  }
 }

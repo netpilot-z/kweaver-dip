@@ -3,6 +3,7 @@ import { Router, type NextFunction, type Request, type Response } from "express"
 import { OpenClawCronGatewayAdapter } from "../adapters/openclaw-cron-adapter";
 import { getEnv } from "../utils/env";
 import { HttpError } from "../errors/http-error";
+import { DefaultOpenClawArchivesHttpClient } from "../infra/openclaw-archives-http-client";
 import { OpenClawGatewayClient } from "../infra/openclaw-gateway-client";
 import { readAuthenticatedUserId } from "../middleware/hydra-auth";
 import { DefaultCronLogic, type CronLogic } from "../logic/plan";
@@ -112,6 +113,11 @@ export interface PlanParams {
 
 const MAX_LIMIT = 200;
 const env = getEnv();
+const openClawArchivesHttpClient = new DefaultOpenClawArchivesHttpClient({
+  gatewayUrl: env.openClawGatewayHttpUrl,
+  token: env.openClawGatewayToken,
+  timeoutMs: env.openClawGatewayTimeoutMs
+});
 const cronLogic = new DefaultCronLogic(
   new OpenClawCronGatewayAdapter(
     OpenClawGatewayClient.getInstance({
@@ -120,7 +126,7 @@ const cronLogic = new DefaultCronLogic(
       timeoutMs: env.openClawGatewayTimeoutMs
     })
   ),
-  env.openClawWorkspaceDir
+  openClawArchivesHttpClient
 );
 
 /**
