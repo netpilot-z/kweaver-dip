@@ -3,6 +3,7 @@ import clsx from 'clsx'
 import { useState } from 'react'
 import type { DigitalHuman } from '@/apis'
 import { resolveDigitalHumanIconSrc } from '@/utils/digital-human/resolveDigitalHumanIcon'
+import { isPublicChannelVisible } from '@/utils/publicEnv'
 import AppIcon from '../AppIcon'
 import IconFont from '../IconFont'
 
@@ -106,10 +107,12 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({ digitalHuman, menuItems, on
           <IconFont type="icon-graph" className="text-base text-black mr-0.5" />
           <span>{knowledgeCount} 个知识网络</span>
         </div>
-        <div className="flex items-center gap-1">
-          <IconFont type="icon-index-management" className="text-base text-black mr-0.5" />
-          <span>{channelCount} 个通道</span>
-        </div>
+        {isPublicChannelVisible ? (
+          <div className="flex items-center gap-1">
+            <IconFont type="icon-index-management" className="text-base text-black mr-0.5" />
+            <span>{channelCount} 个通道</span>
+          </div>
+        ) : null}
       </div>
     </Card>
   )

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { DESettingMenuKey } from '../types'
-import { deSettingMenuItems } from '../utils'
+import { deSettingMenuItems, getDeSettingMenuItems } from '../utils'
 
 describe('DigitalHumanSetting/utils', () => {
   it('菜单项顺序与 key 正确', () => {
@@ -20,5 +20,11 @@ describe('DigitalHumanSetting/utils', () => {
       '知识配置',
       '通道接入',
     ])
+  })
+
+  it('getDeSettingMenuItems 在默认环境下与 deSettingMenuItems 一致', () => {
+    expect(getDeSettingMenuItems().map((item) => item.key)).toEqual(
+      deSettingMenuItems.map((item) => item.key),
+    )
   })
 })
