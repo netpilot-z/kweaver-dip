@@ -1,3 +1,5 @@
+import type { UserRole } from '@/apis/dip-hub/user';
+
 export interface SystemMenuLeafItem {
   key: string;
   icon?: string;
@@ -15,6 +17,7 @@ export interface SystemMenuLeafItem {
         type: 'component';
         componentKey: string;
       };
+  roles?: UserRole[];
 }
 
 export interface SystemMenuGroupItem {
@@ -25,6 +28,8 @@ export interface SystemMenuGroupItem {
 }
 
 export type SystemMenuItem = SystemMenuLeafItem | SystemMenuGroupItem;
+
+export type SystemRoleFlags = Partial<Record<UserRole, boolean>>;
 
 export const SYSTEM_WORKBENCH_BASE_PATH = '/system-workbench';
 export const buildSystemWorkbenchPath = (suffix = ''): string => `${SYSTEM_WORKBENCH_BASE_PATH}${suffix}`;
@@ -55,6 +60,7 @@ export const systemMenuItems: SystemMenuItem[] = [
                 entry: '//ip:port/isfweb/userorgmgnt.html',
               },
             },
+            roles: ['super_admin', 'sys_admin', 'sec_admin', 'org_manager'],
           },
           {
             key: 'cert-manage',
@@ -67,6 +73,7 @@ export const systemMenuItems: SystemMenuItem[] = [
                 entry: '//ip:port/isfweb/certifictionmgnt.html',
               },
             },
+            roles: ['super_admin', 'sys_admin', 'sec_admin'],
           },
         ],
       },
@@ -85,6 +92,7 @@ export const systemMenuItems: SystemMenuItem[] = [
                 entry: '//ip:port/isfweb/rolemgnt.html',
               },
             },
+            roles: ['super_admin', 'sec_admin'],
           },
         ],
       },
@@ -103,6 +111,7 @@ export const systemMenuItems: SystemMenuItem[] = [
                 entry: '//ip:port/isfweb/auditlog.html',
               },
             },
+            roles: ['super_admin', 'sec_admin', 'audit_admin', 'org_audit'],
           },
         ],
       },
@@ -123,6 +132,7 @@ export const systemMenuItems: SystemMenuItem[] = [
             entry: '//ip:port/mf-model-manager/index.html',
           },
         },
+        roles: ['super_admin', 'sys_admin'],
       },
       {
         key: 'model-quota',
@@ -135,6 +145,7 @@ export const systemMenuItems: SystemMenuItem[] = [
             entry: '//ip:port/mf-model-manager/index.html',
           },
         },
+        roles: ['super_admin', 'sys_admin'],
       },
       {
         key: 'default-model',
@@ -147,6 +158,7 @@ export const systemMenuItems: SystemMenuItem[] = [
             entry: '//ip:port/mf-model-manager/index.html',
           },
         },
+        roles: ['super_admin', 'sys_admin'],
       },
       {
         key: 'model-statistics',
@@ -159,6 +171,7 @@ export const systemMenuItems: SystemMenuItem[] = [
             entry: '//ip:port/mf-model-manager/index.html',
           },
         },
+        roles: ['super_admin', 'sys_admin'],
       },
     ],
   },
@@ -177,6 +190,7 @@ export const systemMenuItems: SystemMenuItem[] = [
             entry: '//ip:port/isfweb/mailconfig.html',
           },
         },
+        roles: ['super_admin', 'sys_admin'],
       },
       {
         key: 'third-party-messaging-plugin',
@@ -189,6 +203,7 @@ export const systemMenuItems: SystemMenuItem[] = [
             entry: '//ip:port/isfweb/third-party-messaging-plugin.html',
           },
         },
+        roles: ['super_admin', 'sys_admin'],
       },
     ],
   },
@@ -198,6 +213,32 @@ const flattenLeafItems = (items: SystemMenuItem[]): SystemMenuLeafItem[] =>
   items.flatMap(item => ('children' in item ? flattenLeafItems(item.children) : item));
 
 export const systemLeafMenuItems: SystemMenuLeafItem[] = flattenLeafItems(systemMenuItems);
+
+const hasAnyAllowedRole = (itemRoles: UserRole[] | undefined, roleFlags: SystemRoleFlags): boolean => {
+  if (!itemRoles || itemRoles.length === 0) {
+    return true;
+  }
+  return itemRoles.some(role => roleFlags[role]);
+};
+
+export const filterSystemMenuItemsByRoles = (
+  items: SystemMenuItem[],
+  roleFlags: SystemRoleFlags
+): SystemMenuItem[] =>
+  items.reduce<SystemMenuItem[]>((acc, item) => {
+    if ('children' in item) {
+      const filteredChildren = filterSystemMenuItemsByRoles(item.children, roleFlags);
+      if (filteredChildren.length === 0) {
+        return acc;
+      }
+      acc.push({ ...item, children: filteredChildren });
+      return acc;
+    }
+    if (hasAnyAllowedRole(item.roles, roleFlags)) {
+      acc.push(item);
+    }
+    return acc;
+  }, []);
 
 const findAncestorKeysByPath = (items: SystemMenuItem[], pathname: string, parentKeys: string[] = []): string[] => {
   for (const item of items) {
@@ -215,7 +256,9 @@ const findAncestorKeysByPath = (items: SystemMenuItem[], pathname: string, paren
   return [];
 };
 
-export const getSystemWorkbenchAncestorKeysByPath = (pathname: string): string[] =>
-  findAncestorKeysByPath(systemMenuItems, pathname);
+export const getSystemWorkbenchAncestorKeysByPath = (
+  pathname: string,
+  items: SystemMenuItem[] = systemMenuItems
+): string[] => findAncestorKeysByPath(items, pathname);
 
 export const defaultSystemMenuItem = systemLeafMenuItems[0];

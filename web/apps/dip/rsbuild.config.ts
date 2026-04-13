@@ -77,6 +77,9 @@ export default defineConfig({
       '/api/eacp': proxyBase,
       '/api/audit-log': proxyBase,
       '/api/mf-model-manager': proxyBase,
+      '/api/policy-management': proxyBase,
+      '/api/license': proxyBase,
+      '/api/thirdparty-message-plugin': proxyBase,
       // 开发环境：将 API 请求代理到远程服务器
       // 登录相关路由由中间件插件处理，不走代理
       '/api/dip-hub': {
@@ -99,7 +102,6 @@ export default defineConfig({
       '/api/dip-studio': proxyBase,
       '/api/mdl-data-model': proxyBase,
       '/api/agent-factory': proxyBase,
-      '/api/deploy-web-service': proxyBase,
       // 剩余所有 API 请求代理到 DEBUG_ORIGIN
       '/api/*': proxyBase,
       '/oauth2/*': proxyBase,

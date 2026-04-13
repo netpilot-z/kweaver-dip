@@ -2,14 +2,15 @@ import type { MenuProps } from 'antd';
 import { Menu, Tooltip } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useUserInfoStore } from '@/stores';
 import IconFont from '../../IconFont';
 import { UserMenuItem } from '../components/UserMenuItem';
 import {
+  filterSystemMenuItemsByRoles,
+  type SystemMenuLeafItem,
   type SystemMenuItem,
-  systemLeafMenuItems,
   getSystemWorkbenchAncestorKeysByPath,
   systemMenuItems,
-  defaultSystemMenuItem,
 } from './menus';
 import styles from './index.module.less';
 
@@ -21,6 +22,8 @@ interface SystemSiderProps {
 const SystemSider = ({ collapsed, onCollapse }: SystemSiderProps) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { userInfo } = useUserInfoStore();
+  const roleFlags = userInfo?.roles ?? {};
   const renderMenuIcon = (iconType?: string) =>
     iconType ? (
       <span className="inline-flex h-4 w-4 items-center justify-center">
@@ -28,11 +31,27 @@ const SystemSider = ({ collapsed, onCollapse }: SystemSiderProps) => {
       </span>
     ) : undefined;
 
+  const visibleSystemMenuItems = useMemo(
+    () => filterSystemMenuItemsByRoles(systemMenuItems, roleFlags),
+    [roleFlags]
+  );
+
+  const flattenLeafItems = (items: SystemMenuItem[]): SystemMenuLeafItem[] =>
+    items.flatMap(item => ('children' in item ? flattenLeafItems(item.children) : item));
+
+  const visibleSystemLeafMenuItems = useMemo(
+    () => flattenLeafItems(visibleSystemMenuItems),
+    [visibleSystemMenuItems]
+  );
+
   const selectedKey = useMemo(() => {
-    const matched = systemLeafMenuItems.find(item => location.pathname.startsWith(item.path));
-    return matched?.key ?? defaultSystemMenuItem.key;
-  }, [location.pathname]);
-  const routeAncestorKeys = useMemo(() => getSystemWorkbenchAncestorKeysByPath(location.pathname), [location.pathname]);
+    const matched = visibleSystemLeafMenuItems.find(item => location.pathname.startsWith(item.path));
+    return matched?.key ?? visibleSystemLeafMenuItems[0]?.key ?? '';
+  }, [location.pathname, visibleSystemLeafMenuItems]);
+  const routeAncestorKeys = useMemo(
+    () => getSystemWorkbenchAncestorKeysByPath(location.pathname, visibleSystemMenuItems),
+    [location.pathname, visibleSystemMenuItems]
+  );
   const [openKeys, setOpenKeys] = useState<string[]>(routeAncestorKeys);
 
   useEffect(() => {
@@ -58,8 +77,8 @@ const SystemSider = ({ collapsed, onCollapse }: SystemSiderProps) => {
       };
     };
 
-    return systemMenuItems.map(toAntMenuItem);
-  }, [navigate]);
+    return visibleSystemMenuItems.map(toAntMenuItem);
+  }, [navigate, visibleSystemMenuItems]);
 
   return (
     <div className="flex flex-col h-full px-0 pt-4 pb-1 overflow-hidden">
@@ -68,7 +87,7 @@ const SystemSider = ({ collapsed, onCollapse }: SystemSiderProps) => {
           <Menu
             className={styles['menu']}
             mode="inline"
-            selectedKeys={[selectedKey]}
+            selectedKeys={selectedKey ? [selectedKey] : []}
             items={menuItems}
             openKeys={openKeys}
             onOpenChange={keys => setOpenKeys(keys as string[])}

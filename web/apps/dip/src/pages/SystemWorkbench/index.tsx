@@ -1,9 +1,12 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-  defaultSystemMenuItem,
   SYSTEM_WORKBENCH_BASE_PATH,
+  filterSystemMenuItemsByRoles,
   systemLeafMenuItems,
+  systemMenuItems,
+  type SystemMenuItem,
+  type SystemMenuLeafItem,
 } from '@/components/Sider/SystemSider/menus';
 import { MenuWorkbenchContent } from '@/pages/_shared/menu-workbench/MenuWorkbenchContent';
 import { createNavigateToMicroWidgetHandler } from '@/pages/_shared/menu-workbench/navigateToMicroWidget';
@@ -12,6 +15,7 @@ import { useRedirectToDefaultMenuWhenAtRoot } from '@/pages/_shared/menu-workben
 import { useLanguageStore, useUserInfoStore } from '@/stores';
 import { BASE_PATH } from '@/utils/config';
 import { canAccessSystemWorkbench } from './access';
+import { SYSTEM_WORKBENCH_DUPLICATE_LOAD_GUARD_BASENAME_INCLUDES } from './duplicateLoadGuardBasenames';
 import styles from './index.module.less';
 import { buildSystemWorkbenchMicroAppProps } from './micro-app-props';
 import { systemWorkbenchComponentPageRegistry } from './page-registry';
@@ -22,14 +26,25 @@ const SystemWorkbenchAuthorized = () => {
   const navigate = useNavigate();
   const { language } = useLanguageStore();
   const { userInfo } = useUserInfoStore();
+  const roleFlags = userInfo?.roles ?? {};
+
+  const flattenLeafItems = (items: SystemMenuItem[]): SystemMenuLeafItem[] =>
+    items.flatMap(item => ('children' in item ? flattenLeafItems(item.children) : item));
+
+  const visibleSystemLeafMenuItems = useMemo(
+    () => flattenLeafItems(filterSystemMenuItemsByRoles(systemMenuItems, roleFlags)),
+    [roleFlags]
+  );
+  const defaultVisibleMenuItem = visibleSystemLeafMenuItems[0] ?? systemLeafMenuItems[0];
+  const hasVisibleRouteMatch = visibleSystemLeafMenuItems.some(item => location.pathname.startsWith(item.path));
   const currentMenu =
-    systemLeafMenuItems.find(item => location.pathname.startsWith(item.path)) ?? defaultSystemMenuItem;
+    visibleSystemLeafMenuItems.find(item => location.pathname.startsWith(item.path)) ?? defaultVisibleMenuItem;
 
   const microAppInfo = useMenuWorkbenchMicroAppInfo(currentMenu);
 
   const navigateToMicroWidget = useMemo(
-    () => createNavigateToMicroWidgetHandler(systemLeafMenuItems, navigate),
-    [navigate]
+    () => createNavigateToMicroWidgetHandler(visibleSystemLeafMenuItems, navigate, location.pathname),
+    [navigate, visibleSystemLeafMenuItems]
   );
 
   const customProps = useMemo(() => {
@@ -48,9 +63,19 @@ const SystemWorkbenchAuthorized = () => {
   useRedirectToDefaultMenuWhenAtRoot(
     location.pathname,
     SYSTEM_WORKBENCH_BASE_PATH,
-    defaultSystemMenuItem.path,
+    defaultVisibleMenuItem.path,
     navigate
   );
+
+  useEffect(() => {
+    const inSystemWorkbench =
+      location.pathname === SYSTEM_WORKBENCH_BASE_PATH ||
+      location.pathname.startsWith(`${SYSTEM_WORKBENCH_BASE_PATH}/`);
+    if (!inSystemWorkbench || hasVisibleRouteMatch || !defaultVisibleMenuItem) {
+      return;
+    }
+    navigate(defaultVisibleMenuItem.path, { replace: true });
+  }, [defaultVisibleMenuItem, hasVisibleRouteMatch, location.pathname, navigate]);
 
   return (
     <div className="w-full h-full">
@@ -61,7 +86,7 @@ const SystemWorkbenchAuthorized = () => {
         sectionBasePath={SYSTEM_WORKBENCH_BASE_PATH}
         microAppScopeClassName={styles.microAppScope}
         componentRegistry={systemWorkbenchComponentPageRegistry}
-        duplicateLoadGuardBasenameIncludes="/mf-model-manager/"
+        duplicateLoadGuardBasenameIncludes={SYSTEM_WORKBENCH_DUPLICATE_LOAD_GUARD_BASENAME_INCLUDES}
       />
     </div>
   );
