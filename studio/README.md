@@ -56,7 +56,7 @@
 }
 ```
 
-## 生产模式（ OpenClaw 主机模式）
+## 生产模式（ OpenClaw 主机部署）
 
 以下步骤适用于 OpenClaw 部署在主机，Studio 服务部署在 K8s 服务中
 
@@ -93,7 +93,7 @@ Approved cc8d2143cf8fcd04161ade9e5161006c410a0bee65f835e2629792aa584bb119 (3ef17
 
 4. 访问 DIP 首页进行登录和使用。
 
-## Docker 模式
+## 生产模式（OpenClaw + Studio 容器化）
 
 以下模式适用 OpenClaw 和 Studio 服务部署在同一个容器镜像中。OpenClaw 固定为 v2026.3.11 版本，您可以通过修改 `pakcage.json` 中的 `dependencies.openclaw` 并修改代码来兼容更新版本。
 
