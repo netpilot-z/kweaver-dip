@@ -1,35 +1,36 @@
-import { useMemo } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useMemo } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   defaultSystemMenuItem,
   SYSTEM_WORKBENCH_BASE_PATH,
   systemLeafMenuItems,
-} from '@/components/Sider/SystemSider/menus'
-import { MenuWorkbenchContent } from '@/pages/_shared/menu-workbench/MenuWorkbenchContent'
-import { createNavigateToMicroWidgetHandler } from '@/pages/_shared/menu-workbench/navigateToMicroWidget'
-import { useMenuWorkbenchMicroAppInfo } from '@/pages/_shared/menu-workbench/useMenuWorkbenchMicroAppInfo'
-import { useRedirectToDefaultMenuWhenAtRoot } from '@/pages/_shared/menu-workbench/useRedirectToDefaultMenuWhenAtRoot'
-import { useLanguageStore, useUserInfoStore } from '@/stores'
-import { BASE_PATH } from '@/utils/config'
-import styles from './index.module.less'
-import { buildSystemWorkbenchMicroAppProps } from './micro-app-props'
-import { systemWorkbenchComponentPageRegistry } from './page-registry'
+} from '@/components/Sider/SystemSider/menus';
+import { MenuWorkbenchContent } from '@/pages/_shared/menu-workbench/MenuWorkbenchContent';
+import { createNavigateToMicroWidgetHandler } from '@/pages/_shared/menu-workbench/navigateToMicroWidget';
+import { useMenuWorkbenchMicroAppInfo } from '@/pages/_shared/menu-workbench/useMenuWorkbenchMicroAppInfo';
+import { useRedirectToDefaultMenuWhenAtRoot } from '@/pages/_shared/menu-workbench/useRedirectToDefaultMenuWhenAtRoot';
+import { useLanguageStore, useUserInfoStore } from '@/stores';
+import { BASE_PATH } from '@/utils/config';
+import { canAccessSystemWorkbench } from './access';
+import styles from './index.module.less';
+import { buildSystemWorkbenchMicroAppProps } from './micro-app-props';
+import { systemWorkbenchComponentPageRegistry } from './page-registry';
+import SystemWorkbenchNoAccess from './SystemWorkbenchNoAccess';
 
-const SystemWorkbench = () => {
-  const location = useLocation()
-  const navigate = useNavigate()
-  const { language } = useLanguageStore()
-  const { userInfo } = useUserInfoStore()
+const SystemWorkbenchAuthorized = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { language } = useLanguageStore();
+  const { userInfo } = useUserInfoStore();
   const currentMenu =
-    systemLeafMenuItems.find((item) => location.pathname.startsWith(item.path)) ??
-    defaultSystemMenuItem
+    systemLeafMenuItems.find(item => location.pathname.startsWith(item.path)) ?? defaultSystemMenuItem;
 
-  const microAppInfo = useMenuWorkbenchMicroAppInfo(currentMenu)
+  const microAppInfo = useMenuWorkbenchMicroAppInfo(currentMenu);
 
   const navigateToMicroWidget = useMemo(
     () => createNavigateToMicroWidgetHandler(systemLeafMenuItems, navigate),
-    [navigate],
-  )
+    [navigate]
+  );
 
   const customProps = useMemo(() => {
     return buildSystemWorkbenchMicroAppProps({
@@ -38,18 +39,18 @@ const SystemWorkbench = () => {
       userInfo: userInfo ?? undefined,
       navigateToMicroWidget,
       navigate: (path: string) => {
-        const newPath = path.replace(BASE_PATH, '')
-        navigate(newPath)
+        const newPath = path.replace(BASE_PATH, '');
+        navigate(newPath);
       },
-    })
-  }, [currentMenu.path, language, navigate, navigateToMicroWidget, userInfo?.id])
+    });
+  }, [currentMenu.path, language, navigate, navigateToMicroWidget, userInfo?.id]);
 
   useRedirectToDefaultMenuWhenAtRoot(
     location.pathname,
     SYSTEM_WORKBENCH_BASE_PATH,
     defaultSystemMenuItem.path,
-    navigate,
-  )
+    navigate
+  );
 
   return (
     <div className="w-full h-full">
@@ -63,7 +64,17 @@ const SystemWorkbench = () => {
         duplicateLoadGuardBasenameIncludes="/mf-model-manager/"
       />
     </div>
-  )
-}
+  );
+};
 
-export default SystemWorkbench
+const SystemWorkbench = () => {
+  const { userInfo } = useUserInfoStore();
+  // 仅按 userInfo.roles 中管理员角色判断，不用 isAdmin
+  const allowed = canAccessSystemWorkbench(userInfo);
+  if (!allowed) {
+    return <SystemWorkbenchNoAccess />;
+  }
+  return <SystemWorkbenchAuthorized />;
+};
+
+export default SystemWorkbench;
