@@ -56,7 +56,9 @@
 }
 ```
 
-## 生产模式
+## 生产模式（ OpenClaw 主机模式）
+
+以下步骤适用于 OpenClaw 部署在主机，Studio 服务部署在 K8s 服务中
 
 ### 准备
 
@@ -90,6 +92,37 @@ Approved cc8d2143cf8fcd04161ade9e5161006c410a0bee65f835e2629792aa584bb119 (3ef17
 表示授权成功。
 
 4. 访问 DIP 首页进行登录和使用。
+
+## Docker 模式
+
+以下模式适用 OpenClaw 和 Studio 服务部署在同一个容器镜像中。OpenClaw 固定为 v2026.3.11 版本，您可以通过修改 `pakcage.json` 中的 `dependencies.openclaw` 并修改代码来兼容更新版本。
+
+### Docker build
+
+1. 执行 docker build 来构建镜像，`platform` 根据实际需要填写。
+
+```bash
+docker buildx build \
+  --progress=plain \                    
+  --platform linux/arm64,linux/amd64 \
+  --load \        
+  -t dip-studio:0.4.0 \
+  .                        
+```
+
+2. 启动容器。其中 3000 端口是 Studio 服务端口，18789 端口是 OpenClaw 默认端口。
+
+```bash
+docker run -d -p 3000:3000 -p 18789:18789 dip-studio:0.4.0
+```
+
+3. 复制 `container_id`
+
+4. 进入容器初始化 OpenClaw
+
+```bash
+docker exec -it <container_id> /bin/bash
+```
 
 ## Studio Web
 
