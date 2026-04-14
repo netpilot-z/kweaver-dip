@@ -6,13 +6,25 @@ import IconFont from '@/components/IconFont'
 import styles from './index.module.less'
 import type { DipChatHeaderProps } from './types'
 
-const DipChatHeader: React.FC<DipChatHeaderProps> = ({ title, digitalHumanName }) => {
+const DipChatHeader: React.FC<DipChatHeaderProps> = ({
+  title,
+  digitalHumanName,
+  digitalHumanAvatarSrc,
+}) => {
   const digitalHumanLabel = intl.get('dipChatKit.digitalHumanLabel').d('数字员工') as string
   const subtitle = `${digitalHumanLabel}：${digitalHumanName || '-'}`
 
   return (
     <div className={clsx('DipChatHeader', styles.root)}>
-      <IconFont type="icon-digital-human" className={styles.titleIcon} />
+      {digitalHumanAvatarSrc ? (
+        <img
+          src={digitalHumanAvatarSrc}
+          alt={digitalHumanName || ''}
+          className={styles.titleAvatar}
+        />
+      ) : (
+        <IconFont type="icon-digital-human" className={styles.titleIcon} />
+      )}
       <div className={styles.textWrap}>
         <Tooltip title={title} placement="right">
           <span className={styles.titleText}>{title}</span>

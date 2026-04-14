@@ -101,6 +101,19 @@ const normalizeDetails = (value: unknown): Record<string, unknown> | undefined =
   return value as Record<string, unknown>
 }
 
+const resolveMessageTimestamp = (message: DipChatKitSessionMessage): number | undefined => {
+  if (typeof message.ts === 'number' && Number.isFinite(message.ts)) {
+    return message.ts
+  }
+
+  const timestamp = (message as Record<string, unknown>).timestamp
+  if (typeof timestamp === 'number' && Number.isFinite(timestamp)) {
+    return timestamp
+  }
+
+  return undefined
+}
+
 const toTextFromUnknown = (value: unknown): string => {
   if (value === null || value === undefined) return ''
   if (typeof value === 'string') return value
@@ -119,8 +132,7 @@ const extractToolCallEventsFromMessage = (
   const content = message.content
   if (!Array.isArray(content)) return []
 
-  const timestamp =
-    typeof message.ts === 'number' && Number.isFinite(message.ts) ? message.ts : undefined
+  const timestamp = resolveMessageTimestamp(message)
 
   return content.reduce<DipChatKitAnswerEvent[]>((events, part, partIndex) => {
     if (!part || typeof part !== 'object' || Array.isArray(part)) return events
@@ -157,8 +169,7 @@ const createSessionEvent = (
   const toolCallId = normalizeToolCallId((message as Record<string, unknown>).toolCallId)
   const isError = (message as Record<string, unknown>).isError === true
   const details = normalizeDetails((message as Record<string, unknown>).details)
-  const timestamp =
-    typeof message.ts === 'number' && Number.isFinite(message.ts) ? message.ts : undefined
+  const timestamp = resolveMessageTimestamp(message)
   const contentText = normalizeSessionMessageContent(message.content).trim()
   const detailsText = details ? toTextFromUnknown(details) : ''
   const text = contentText || detailsText
@@ -248,6 +259,59 @@ const appendTurnAnswerEvent = (
   event: DipChatKitAnswerEvent,
   timelineId: string,
 ) => {
+  const normalizedToolCallId = event.toolCallId?.trim() || ''
+  const isToolLifecycleEvent = event.type === 'toolCall' || event.type === 'toolResult'
+  if (isToolLifecycleEvent && normalizedToolCallId) {
+    const existedEventIndex = turn.answerEvents.findIndex((item) => {
+      const candidateToolCallId = item.toolCallId?.trim() || ''
+      const candidateIsToolLifecycle = item.type === 'toolCall' || item.type === 'toolResult'
+      return candidateIsToolLifecycle && candidateToolCallId === normalizedToolCallId
+    })
+
+    if (existedEventIndex >= 0) {
+      const existedEvent = turn.answerEvents[existedEventIndex]
+      const shouldUseResultText = event.type === 'toolResult' && event.text.trim().length > 0
+      const mergedEvent: DipChatKitAnswerEvent = {
+        ...existedEvent,
+        ...event,
+        id: existedEvent.id,
+        type:
+          existedEvent.type === 'toolResult' || event.type === 'toolResult'
+            ? 'toolResult'
+            : 'toolCall',
+        role:
+          existedEvent.type === 'toolResult' || event.type === 'toolResult'
+            ? 'toolResult'
+            : 'assistant',
+        text: shouldUseResultText ? event.text : existedEvent.text || event.text,
+        details: {
+          ...(existedEvent.details || {}),
+          ...(event.details || {}),
+          status:
+            existedEvent.type === 'toolResult' || event.type === 'toolResult'
+              ? 'completed'
+              : existedEvent.details?.status || event.details?.status || 'in_progress',
+        },
+      }
+
+      turn.answerEvents[existedEventIndex] = mergedEvent
+
+      const existedTimelineEventIndex = turn.answerTimeline.findIndex(
+        (item) => item.kind === 'event' && item.event.id === existedEvent.id,
+      )
+      if (existedTimelineEventIndex >= 0) {
+        const timelineItem = turn.answerTimeline[existedTimelineEventIndex]
+        if (timelineItem.kind === 'event') {
+          turn.answerTimeline[existedTimelineEventIndex] = {
+            ...timelineItem,
+            event: mergedEvent,
+          }
+        }
+      }
+      return
+    }
+  }
+
   turn.answerEvents.push(event)
   turn.answerTimeline.push({
     id: timelineId,
@@ -270,7 +334,7 @@ export const mapSessionMessagesToTurns = (
   messages.forEach((message, index) => {
     const role = normalizeSessionMessageRole(message.role)
     const content = normalizeSessionMessageContent(message.content).trim()
-    const createdAt = normalizeSessionCreatedAt(message.ts)
+    const createdAt = normalizeSessionCreatedAt(resolveMessageTimestamp(message))
 
     if (role === SYSTEM_ROLE) {
       return
@@ -312,7 +376,13 @@ export const mapSessionMessagesToTurns = (
       appendTurnAnswerEvent(resolvedTurn, event, `session_timeline_event_${index}`)
     }
 
-    if (role !== 'assistant' && role !== SYSTEM_ROLE && content) {
+    if (
+      role !== 'assistant' &&
+      role !== SYSTEM_ROLE &&
+      role !== 'toolresult' &&
+      role !== 'tool' &&
+      content
+    ) {
       appendTurnAnswerText(resolvedTurn, content, `session_timeline_text_non_assistant_${index}`)
     }
   })

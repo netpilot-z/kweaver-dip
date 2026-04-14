@@ -21,7 +21,13 @@ import {
   buildDefaultMessageTurnsFromSubmitPayload,
   getConversationTitle,
   parseAgentIdFromSessionKey,
+  resolveDigitalHumanIconSrc,
 } from './utils'
+
+type DigitalHumanDisplayInfo = {
+  name: string
+  avatarSrc: string
+}
 
 const zhTWX: XProviderProps['locale'] = {
   ...zhCN,
@@ -99,8 +105,11 @@ const DipChatKitInner: React.FC<Omit<DipChatKitProps, 'initialSubmitPayload' | '
     setChatPanelSize,
   } = useDipChatKitStore()
   const [previewFullscreen, setPreviewFullscreen] = useState(false)
-  const [digitalHumanName, setDigitalHumanName] = useState('')
-  const digitalHumanNameCacheRef = useRef<Record<string, string>>({})
+  const [digitalHumanInfo, setDigitalHumanInfo] = useState<DigitalHumanDisplayInfo>({
+    name: '',
+    avatarSrc: '',
+  })
+  const digitalHumanInfoCacheRef = useRef<Record<string, DigitalHumanDisplayInfo>>({})
 
   const conversationTitle = useMemo(() => {
     return getConversationTitle(messageTurns)
@@ -136,13 +145,13 @@ const DipChatKitInner: React.FC<Omit<DipChatKitProps, 'initialSubmitPayload' | '
 
   useEffect(() => {
     if (!digitalHumanAgentId) {
-      setDigitalHumanName('')
+      setDigitalHumanInfo({ name: '', avatarSrc: '' })
       return
     }
 
-    const cachedDigitalHumanName = digitalHumanNameCacheRef.current[digitalHumanAgentId]
-    if (cachedDigitalHumanName !== undefined) {
-      setDigitalHumanName(cachedDigitalHumanName)
+    const cached = digitalHumanInfoCacheRef.current[digitalHumanAgentId]
+    if (cached !== undefined) {
+      setDigitalHumanInfo(cached)
       return
     }
 
@@ -151,14 +160,20 @@ const DipChatKitInner: React.FC<Omit<DipChatKitProps, 'initialSubmitPayload' | '
     getDigitalHumanDetail(digitalHumanAgentId)
       .then((detail) => {
         if (disposed) return
-        const nextDigitalHumanName = detail.name?.trim() || digitalHumanAgentId
-        digitalHumanNameCacheRef.current[digitalHumanAgentId] = nextDigitalHumanName
-        setDigitalHumanName(nextDigitalHumanName)
+        const nextName = detail.name?.trim() || digitalHumanAgentId
+        const nextAvatarSrc = resolveDigitalHumanIconSrc(detail.icon_id)
+        const nextInfo: DigitalHumanDisplayInfo = { name: nextName, avatarSrc: nextAvatarSrc }
+        digitalHumanInfoCacheRef.current[digitalHumanAgentId] = nextInfo
+        setDigitalHumanInfo(nextInfo)
       })
       .catch(() => {
         if (disposed) return
-        digitalHumanNameCacheRef.current[digitalHumanAgentId] = digitalHumanAgentId
-        setDigitalHumanName(digitalHumanAgentId)
+        const fallback: DigitalHumanDisplayInfo = {
+          name: digitalHumanAgentId,
+          avatarSrc: '',
+        }
+        digitalHumanInfoCacheRef.current[digitalHumanAgentId] = fallback
+        setDigitalHumanInfo(fallback)
         message.error(intl.get('dipChatKit.loadDigitalHumanDetailFailed').d('加载数字员工信息失败'))
       })
 
@@ -178,7 +193,11 @@ const DipChatKitInner: React.FC<Omit<DipChatKitProps, 'initialSubmitPayload' | '
       style={style}
     >
       {showHeader && (
-        <DipChatHeader title={conversationTitle} digitalHumanName={digitalHumanName} />
+        <DipChatHeader
+          title={conversationTitle}
+          digitalHumanName={digitalHumanInfo.name}
+          digitalHumanAvatarSrc={digitalHumanInfo.avatarSrc || undefined}
+        />
       )}
       <div className={styles.body}>
         <Splitter

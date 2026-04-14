@@ -61,6 +61,7 @@ export type DipChatKitDigitalHumanList = DipChatKitDigitalHuman[]
 export interface DipChatKitDigitalHumanDetail {
   id: string
   name: string
+  icon_id?: string
 }
 
 export interface DipChatKitResponseSSEOptions {

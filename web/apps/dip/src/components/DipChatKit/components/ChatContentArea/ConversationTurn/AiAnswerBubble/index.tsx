@@ -247,16 +247,34 @@ const extractToolDuplicateCandidates = (events: DipChatKitAnswerEvent[]): string
   return Array.from(candidateSet).sort((left, right) => right.length - left.length)
 }
 
-const stripDuplicatedToolText = (text: string, events: DipChatKitAnswerEvent[]): string => {
-  const candidates = extractToolDuplicateCandidates(events)
-  if (candidates.length === 0) return text
-
+const replaceDuplicateCandidates = (text: string, candidates: string[]): string => {
   let nextText = text
   candidates.forEach((candidate) => {
     if (!candidate) return
     if (!nextText.includes(candidate)) return
     nextText = nextText.split(candidate).join('')
   })
+  return nextText
+}
+
+const stripDuplicatedToolText = (text: string, events: DipChatKitAnswerEvent[]): string => {
+  const candidates = extractToolDuplicateCandidates(events)
+  if (candidates.length === 0) return text
+
+  // Keep fenced code blocks intact; only deduplicate plain text regions.
+  const fencedCodeBlockPattern = /```[\s\S]*?```/g
+  let nextText = ''
+  let cursor = 0
+  let match = fencedCodeBlockPattern.exec(text)
+  while (match) {
+    const blockStart = match.index
+    const blockEnd = blockStart + match[0].length
+    nextText += replaceDuplicateCandidates(text.slice(cursor, blockStart), candidates)
+    nextText += match[0]
+    cursor = blockEnd
+    match = fencedCodeBlockPattern.exec(text)
+  }
+  nextText += replaceDuplicateCandidates(text.slice(cursor), candidates)
 
   return nextText.replace(/\n{3,}/g, '\n\n').trim()
 }
@@ -781,6 +799,15 @@ const AiAnswerBubble: React.FC<AiAnswerBubbleProps> = ({
         ghost
         expandIconPosition="start"
         defaultActiveKey={keepExpandedUntilStreamDone ? [panelKey] : []}
+        onChange={() => {
+          // Panels may mount lazily when opened; re-measure after open animation settles.
+          window.requestAnimationFrame(() => {
+            measureToolCardOverflow()
+          })
+          window.setTimeout(() => {
+            measureToolCardOverflow()
+          }, 200)
+        }}
         items={[
           {
             key: panelKey,
