@@ -33,7 +33,7 @@ DIP Studio 运行依赖 OpenClaw。您可以选择在主机上自行部署 OpenC
 
 #### 使用 KWeaver DIP OpenClaw
 
-请在完成 KWeaver DIP 安装部署后[初始化 KWeaver DIP OpenClaw](#初始化 KWeaver DIP OpenClaw)。
+请在完成 KWeaver DIP 安装部署后[初始化 KWeaver DIP OpenClaw](#kweaver-dip-onboard)。
 
 ### 主机前置条件
 
@@ -74,7 +74,7 @@ openclaw plugins install ./openclaw-extensions/dip
 初始密码：`eisoo.com`
 
 ### 初始化 KWeaver DIP OpenClaw
-
+<a id="kweaver-dip-onboard"></a>
 如果您选择使用 KWeaver DIP 自带的 OpenClaw，请在完成部署后按以下流程配置 OpenClaw：
 
   - 在主机执行 `kubectl get pods -nkweaver | grep dip-studio`，复制 POD ID。

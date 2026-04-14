@@ -33,7 +33,7 @@ DIP Studio depends on OpenClaw. You can either deploy OpenClaw on your own host 
 
 #### Use the OpenClaw bundled with KWeaver DIP
 
-After installing and deploying KWeaver DIP, follow [Initialize KWeaver DIP OpenClaw](#initialize-kweaver-dip-openclaw).
+After installing and deploying KWeaver DIP, follow [Initialize KWeaver DIP OpenClaw](#kweaver-dip-onboard).
 
 ### Host prerequisites
 
@@ -74,7 +74,7 @@ Default username: `admin`
 Initial password: `eisoo.com`
 
 ### Initialize KWeaver DIP OpenClaw
-
+<a id="kweaver-dip-onboard"></a>
 If you choose to use the OpenClaw bundled with KWeaver DIP, complete the following steps after deployment:
 
 - Run `kubectl get pods -nkweaver | grep dip-studio` on the host and copy the POD ID.
