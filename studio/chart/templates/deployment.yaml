@@ -18,11 +18,11 @@ spec:
         {{- toYaml .Values.labels.pod | nindent 8 }}
     spec:
       volumes:
-        - name: OpenClawRootDir
+        - name: openclaw-root-dir
           hostPath:
             path: {{ .Values.studio.OpenClawRootDir }}
             type: DirectoryOrCreate
-        - name: envFilePath
+        - name: env-file-path
           hostPath:
             path: {{ .Values.studio.envFilePath }}
             type: FileOrCreate
@@ -58,9 +58,9 @@ spec:
           resources:
             {{- toYaml .Values.resources.studio | nindent 12 }}
           volumeMounts:
-            - name: OpenClawRootDir
+            - name: openclaw-root-dir
               mountPath: /root/.openclaw
-            - name: envFilePath
+            - name: env-file-path
               mountPath: /app/.env
       {{- with .Values.nodeSelector }}
       nodeSelector:
