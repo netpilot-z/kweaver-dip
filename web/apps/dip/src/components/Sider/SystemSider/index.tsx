@@ -7,6 +7,7 @@ import IconFont from '../../IconFont';
 import { UserMenuItem } from '../components/UserMenuItem';
 import {
   filterSystemMenuItemsByRoles,
+  type SystemMenuIcon,
   type SystemMenuLeafItem,
   type SystemMenuItem,
   getSystemWorkbenchAncestorKeysByPath,
@@ -24,25 +25,19 @@ const SystemSider = ({ collapsed, onCollapse }: SystemSiderProps) => {
   const location = useLocation();
   const { userInfo } = useUserInfoStore();
   const roleFlags = userInfo?.roles ?? {};
-  const renderMenuIcon = (iconType?: string) =>
-    iconType ? (
+  const renderMenuIcon = (Icon?: SystemMenuIcon) =>
+    Icon ? (
       <span className="inline-flex h-4 w-4 items-center justify-center">
-        <IconFont type={iconType} />
+        <Icon />
       </span>
     ) : undefined;
 
-  const visibleSystemMenuItems = useMemo(
-    () => filterSystemMenuItemsByRoles(systemMenuItems, roleFlags),
-    [roleFlags]
-  );
+  const visibleSystemMenuItems = useMemo(() => filterSystemMenuItemsByRoles(systemMenuItems, roleFlags), [roleFlags]);
 
   const flattenLeafItems = (items: SystemMenuItem[]): SystemMenuLeafItem[] =>
     items.flatMap(item => ('children' in item ? flattenLeafItems(item.children) : item));
 
-  const visibleSystemLeafMenuItems = useMemo(
-    () => flattenLeafItems(visibleSystemMenuItems),
-    [visibleSystemMenuItems]
-  );
+  const visibleSystemLeafMenuItems = useMemo(() => flattenLeafItems(visibleSystemMenuItems), [visibleSystemMenuItems]);
 
   const selectedKey = useMemo(() => {
     const matched = visibleSystemLeafMenuItems.find(item => location.pathname.startsWith(item.path));
@@ -62,6 +57,14 @@ const SystemSider = ({ collapsed, onCollapse }: SystemSiderProps) => {
   const menuItems = useMemo<MenuProps['items']>(() => {
     const toAntMenuItem = (item: SystemMenuItem): NonNullable<MenuProps['items']>[number] => {
       if ('children' in item) {
+        if (item.type === 'group') {
+          return {
+            type: 'group',
+            key: item.key,
+            label: item.label,
+            children: item.children.map(toAntMenuItem),
+          };
+        }
         return {
           key: item.key,
           label: item.label,

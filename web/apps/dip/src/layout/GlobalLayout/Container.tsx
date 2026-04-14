@@ -58,13 +58,12 @@ const Container = ({ children }: ContainerProps) => {
 
   // 默认值
   const { hasHeader = false, siderMode = 'none', headerType = 'home', module } = layoutConfig || {}
+  /** 系统工作台无权限页：不展示顶栏与侧栏，内容区全屏 */
+  const hideSystemWorkbenchChrome = module === 'system' && systemWorkbenchNoAccessUi
   const hasSider =
     siderMode !== 'none' &&
     !(module === 'business' && businessSiderHidden) &&
-    !(module === 'system' && systemWorkbenchNoAccessUi)
-
-  /** 系统工作台无权限页：不展示顶栏与侧栏，内容区全屏 */
-  const hideSystemWorkbenchChrome = module === 'system' && systemWorkbenchNoAccessUi
+    !hideSystemWorkbenchChrome
   const showHeader = hasHeader && !hideSystemWorkbenchChrome
 
   return (

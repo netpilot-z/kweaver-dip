@@ -1,8 +1,22 @@
 import type { UserRole } from '@/apis/dip-hub/user';
+import type { FunctionComponent, SVGProps } from 'react';
+
+import authIcon from '@/assets/icons/auth.svg?react';
+import rolePolicyIcon from '@/assets/icons/role-policy.svg?react';
+import auditIcon from '@/assets/icons/audit.svg?react';
+import modelManagerIcon from '@/assets/icons/model-manager.svg?react';
+import modelQuotaIcon from '@/assets/icons/model-quota.svg?react';
+import defaultModelIcon from '@/assets/icons/model-default.svg?react';
+import modelStatisticsIcon from '@/assets/icons/model-statistics.svg?react';
+import mailIcon from '@/assets/icons/mail.svg?react';
+import thirdPartyMessagingPluginIcon from '@/assets/icons/third-party-messaging-plugin.svg?react';
+
+/** 与 `*.svg?react` 默认导出一致，用于侧栏菜单 SVG 图标 */
+export type SystemMenuIcon = FunctionComponent<SVGProps<SVGSVGElement>>;
 
 export interface SystemMenuLeafItem {
   key: string;
-  icon?: string;
+  icon?: SystemMenuIcon;
   label: string;
   path: string;
   page:
@@ -22,8 +36,9 @@ export interface SystemMenuLeafItem {
 
 export interface SystemMenuGroupItem {
   key: string;
-  icon?: string;
+  icon?: SystemMenuIcon;
   label: string;
+  type?: 'group';
   children: SystemMenuItem[];
 }
 
@@ -44,10 +59,12 @@ export const systemMenuItems: SystemMenuItem[] = [
   {
     key: 'information-security',
     label: '信息安全管理',
+    type: 'group',
     children: [
       {
         key: 'auth',
         label: '统一身份认证',
+        icon: authIcon,
         children: [
           {
             key: 'user-org',
@@ -80,6 +97,7 @@ export const systemMenuItems: SystemMenuItem[] = [
       {
         key: 'security',
         label: '角色与访问策略',
+        icon: rolePolicyIcon,
         children: [
           {
             key: 'role-manage',
@@ -99,6 +117,7 @@ export const systemMenuItems: SystemMenuItem[] = [
       {
         key: 'audit',
         label: '日志及审计',
+        icon: auditIcon,
         children: [
           {
             key: 'auditlog',
@@ -120,10 +139,12 @@ export const systemMenuItems: SystemMenuItem[] = [
   {
     key: 'model-authorization',
     label: '模型',
+    type: 'group',
     children: [
       {
         key: 'model-manager',
         label: '模型管理',
+        icon: modelManagerIcon,
         path: buildSystemWorkbenchPath('/model-authorization/mf-model-manager/model/list2'),
         page: {
           type: 'micro-app',
@@ -137,6 +158,7 @@ export const systemMenuItems: SystemMenuItem[] = [
       {
         key: 'model-quota',
         label: '配额管理',
+        icon: modelQuotaIcon,
         path: buildSystemWorkbenchPath('/model-authorization/mf-model-manager/model/quota'),
         page: {
           type: 'micro-app',
@@ -150,6 +172,7 @@ export const systemMenuItems: SystemMenuItem[] = [
       {
         key: 'default-model',
         label: '默认模型',
+        icon: defaultModelIcon,
         path: buildSystemWorkbenchPath('/model-authorization/mf-model-manager/model/default'),
         page: {
           type: 'micro-app',
@@ -163,6 +186,7 @@ export const systemMenuItems: SystemMenuItem[] = [
       {
         key: 'model-statistics',
         label: '模型统计',
+        icon: modelStatisticsIcon,
         path: buildSystemWorkbenchPath('/model-authorization/mf-model-manager/model/statistics'),
         page: {
           type: 'micro-app',
@@ -178,10 +202,12 @@ export const systemMenuItems: SystemMenuItem[] = [
   {
     key: 'public-service',
     label: '公共服务',
+    type: 'group',
     children: [
       {
         key: 'mailconfig',
         label: '邮件服务',
+        icon: mailIcon,
         path: buildSystemWorkbenchPath('/mailconfig'),
         page: {
           type: 'micro-app',
@@ -195,6 +221,7 @@ export const systemMenuItems: SystemMenuItem[] = [
       {
         key: 'third-party-messaging-plugin',
         label: '第三方消息插件',
+        icon: thirdPartyMessagingPluginIcon,
         path: buildSystemWorkbenchPath('/third-party-messaging-plugin'),
         page: {
           type: 'micro-app',
@@ -221,10 +248,7 @@ const hasAnyAllowedRole = (itemRoles: UserRole[] | undefined, roleFlags: SystemR
   return itemRoles.some(role => roleFlags[role]);
 };
 
-export const filterSystemMenuItemsByRoles = (
-  items: SystemMenuItem[],
-  roleFlags: SystemRoleFlags
-): SystemMenuItem[] =>
+export const filterSystemMenuItemsByRoles = (items: SystemMenuItem[], roleFlags: SystemRoleFlags): SystemMenuItem[] =>
   items.reduce<SystemMenuItem[]>((acc, item) => {
     if ('children' in item) {
       const filteredChildren = filterSystemMenuItemsByRoles(item.children, roleFlags);
@@ -243,7 +267,8 @@ export const filterSystemMenuItemsByRoles = (
 const findAncestorKeysByPath = (items: SystemMenuItem[], pathname: string, parentKeys: string[] = []): string[] => {
   for (const item of items) {
     if ('children' in item) {
-      const found = findAncestorKeysByPath(item.children, pathname, [...parentKeys, item.key]);
+      const nextKeys = item.type === 'group' ? parentKeys : [...parentKeys, item.key];
+      const found = findAncestorKeysByPath(item.children, pathname, nextKeys);
       if (found.length > 0) {
         return found;
       }
