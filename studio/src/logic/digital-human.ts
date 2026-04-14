@@ -16,7 +16,7 @@ import type {
   UpdateDigitalHumanRequest,
   UpdateDigitalHumanResult
 } from "../types/digital-human";
-import { mergeCreateDigitalHumanSkills } from "../utils/skills";
+import { normalizeCreateDigitalHumanSkills } from "../utils/skills";
 import type { AgentSkillsLogic } from "./agent-skills";
 import {
   buildTemplate,
@@ -219,7 +219,7 @@ export class DefaultDigitalHumanLogic implements DigitalHumanLogic {
 
     await this.writeTemplateViaOpenClawFilesRpc(id, template);
 
-    const skills = mergeCreateDigitalHumanSkills(request.skills);
+    const skills = normalizeCreateDigitalHumanSkills(request.skills);
     await this.agentSkillsLogic.updateAgentSkills(id, skills);
 
     if (request.channel) {

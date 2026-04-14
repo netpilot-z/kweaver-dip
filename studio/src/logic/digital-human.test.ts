@@ -678,17 +678,9 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
       })
     );
     expect(updateAgentSkills).toHaveBeenCalledWith(result.id, [
-      "archive-protocol",
-      "schedule-plan",
-      "kweaver-core",
       "sk1"
     ]);
-    expect(result.skills).toEqual([
-      "archive-protocol",
-      "schedule-plan",
-      "kweaver-core",
-      "sk1"
-    ]);
+    expect(result.skills).toEqual(["sk1"]);
   });
 
   it("createDigitalHuman uses the provided id instead of generating a uuid", async () => {
@@ -732,7 +724,7 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
     expect(result.id).toBe("__bkn_creator__");
   });
 
-  it("createDigitalHuman applies default skills when request omits skills", async () => {
+  it("createDigitalHuman leaves skills empty when request omits skills", async () => {
     vi.spyOn(globalThis.crypto, "randomUUID").mockReturnValue(
       "dddddddd-dddd-dddd-dddd-dddddddddddd"
     );
@@ -758,19 +750,11 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
 
     const result = await logic.createDigitalHuman({ name: "NoSkills" });
 
-    expect(updateAgentSkills).toHaveBeenCalledWith(result.id, [
-      "archive-protocol",
-      "schedule-plan",
-      "kweaver-core"
-    ]);
-    expect(result.skills).toEqual([
-      "archive-protocol",
-      "schedule-plan",
-      "kweaver-core"
-    ]);
+    expect(updateAgentSkills).toHaveBeenCalledWith(result.id, []);
+    expect(result.skills).toEqual([]);
   });
 
-  it("createDigitalHuman deduplicates when request repeats default skill names", async () => {
+  it("createDigitalHuman deduplicates repeated request skill names", async () => {
     const updateAgentSkills = vi.fn().mockResolvedValue({
       success: true,
       agentId: "",
@@ -792,21 +776,14 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
 
     const result = await logic.createDigitalHuman({
       name: "Dup",
-      skills: ["archive-protocol", "other"]
+      skills: ["other", "other", "archive-protocol"]
     });
 
     expect(updateAgentSkills).toHaveBeenCalledWith(result.id, [
-      "archive-protocol",
-      "schedule-plan",
-      "kweaver-core",
-      "other"
+      "other",
+      "archive-protocol"
     ]);
-    expect(result.skills).toEqual([
-      "archive-protocol",
-      "schedule-plan",
-      "kweaver-core",
-      "other"
-    ]);
+    expect(result.skills).toEqual(["other", "archive-protocol"]);
   });
 
   it("getDigitalHuman returns the full bound skill list in the response", async () => {

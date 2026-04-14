@@ -18,7 +18,7 @@ function isSafeSkillNameSegment(name: string): boolean {
 }
 
 /**
- * Built-in skill slugs merged into every new digital human agent.
+ * Built-in skill slugs recognized by DIP digital-human skill listings.
  */
 export const DEFAULT_DIGITAL_HUMAN_SKILLS: readonly string[] = [
   "archive-protocol",
@@ -37,21 +37,16 @@ export function isDefaultDigitalHumanSkillSlug(slug: string): boolean {
 }
 
 /**
- * Merges {@link DEFAULT_DIGITAL_HUMAN_SKILLS} with optional request skills,
- * preserving default order and deduplicating by first occurrence.
+ * Deduplicates optional request skill ids while preserving first occurrence order.
  *
- * @param requestSkills Optional extra skill names from the create request.
- * @returns The combined skill list to persist on the agent.
+ * @param requestSkills Optional skill names from the create request.
+ * @returns The normalized skill list to persist on the agent.
  */
-export function mergeCreateDigitalHumanSkills(requestSkills?: string[]): string[] {
+export function normalizeCreateDigitalHumanSkills(
+  requestSkills?: string[]
+): string[] {
   const seen = new Set<string>();
   const out: string[] = [];
-  for (const s of DEFAULT_DIGITAL_HUMAN_SKILLS) {
-    if (!seen.has(s)) {
-      seen.add(s);
-      out.push(s);
-    }
-  }
   for (const s of requestSkills ?? []) {
     if (!seen.has(s)) {
       seen.add(s);
