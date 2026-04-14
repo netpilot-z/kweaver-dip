@@ -449,6 +449,7 @@ const ChatContentArea: React.FC<ChatContentAreaProps> = ({
         if (disposed) return
         const resolvedSessionKey = response.key?.trim() || trimmedSessionId
         const turns = mapSessionMessagesToTurns(response.messages, resolvedSessionKey)
+        console.log('turns', turns)
         resetConversationRef.current(turns)
         setAutoScrollEnabledRef.current(true)
         setShowBackToBottomRef.current(false)

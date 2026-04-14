@@ -42,7 +42,9 @@
       "loadFailedTitle": "載入失敗",
       "emptyTitle": "暫無預置數位員工模板",
       "skip": "跳過",
-      "installNow": "立即安裝"
+      "installNow": "立即安裝",
+      "installed": "已安裝",
+      "presetDigitalHuman": "預置數位員工"
     },
     "result": {
       "title": "連接成功",

@@ -26,9 +26,7 @@ function validateKweaverBaseUrl(_: unknown, value: string | undefined) {
     }
     return Promise.resolve()
   } catch {
-    return Promise.reject(
-      new Error(intl.get('initialConfiguration.connect.kweaverBaseUrlInvalid')),
-    )
+    return Promise.reject(new Error(intl.get('initialConfiguration.connect.kweaverBaseUrlInvalid')))
   }
 }
 
@@ -113,7 +111,9 @@ const ConnectOpenClawStep = ({
               validateTrigger="onSubmit"
               rules={[{ validator: validateKweaverBaseUrl }]}
             >
-              <Input placeholder={intl.get('initialConfiguration.connect.kweaverBaseUrlPlaceholder')} />
+              <Input
+                placeholder={intl.get('initialConfiguration.connect.kweaverBaseUrlPlaceholder')}
+              />
             </Form.Item>
 
             <Form.Item

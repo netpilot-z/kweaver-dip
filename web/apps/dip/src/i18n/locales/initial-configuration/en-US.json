@@ -42,7 +42,9 @@
       "loadFailedTitle": "Load failed",
       "emptyTitle": "No preset digital human templates",
       "skip": "Skip",
-      "installNow": "Install now"
+      "installNow": "Install now",
+      "installed": "Installed",
+      "presetDigitalHuman": "Preset digital human"
     },
     "result": {
       "title": "Connected successfully",

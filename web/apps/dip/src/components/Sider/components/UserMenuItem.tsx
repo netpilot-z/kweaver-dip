@@ -1,22 +1,21 @@
 import type { MenuProps } from 'antd'
 import { Dropdown } from 'antd'
 import clsx from 'classnames'
+import { useState } from 'react'
 import intl from 'react-intl-universal'
-import { useNavigate } from 'react-router-dom'
 import AvatarIcon from '@/assets/images/sider/avatar.svg?react'
 import { useUserInfoStore } from '@/stores'
-
+import SystemSettingsModal from '../../../pages/InitialConfiguration/components/SystemSettingsModal'
+import IconFont from '../../IconFont'
 export interface UserMenuItemProps {
   /** 是否折叠 */
   collapsed: boolean
 }
 
 export const UserMenuItem = ({ collapsed }: UserMenuItemProps) => {
-  const navigate = useNavigate()
   const { userInfo, logout } = useUserInfoStore()
-  const showSystemSettings = useUserInfoStore(
-    (s) => s.isAdmin && s.modules.includes('studio'),
-  )
+  const showSystemSettings = useUserInfoStore((s) => s.isAdmin && s.modules.includes('studio'))
+  const [open, setOpen] = useState(false)
 
   const handleLogout = () => {
     logout()
@@ -30,13 +29,17 @@ export const UserMenuItem = ({ collapsed }: UserMenuItemProps) => {
       ? [
           {
             key: 'system-settings',
-            label: intl.get('sider.systemSettings'),
+            label: (
+              <span className="flex items-center justify-between gap-2">
+                {intl.get('sider.systemSettings')}
+                <IconFont type="icon-right" className="text-xs" />
+              </span>
+            ),
             title: '',
             onClick: () => {
-              navigate('/studio/initial-configuration')
+              setOpen(true)
             },
           },
-          { type: 'divider' as const },
         ]
       : []),
     {
@@ -78,6 +81,7 @@ export const UserMenuItem = ({ collapsed }: UserMenuItemProps) => {
       >
         {trigger}
       </Dropdown>
+      <SystemSettingsModal open={open} onClose={() => setOpen(false)} />
     </div>
   )
 }
