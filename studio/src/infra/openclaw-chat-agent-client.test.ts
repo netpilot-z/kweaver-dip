@@ -72,6 +72,7 @@ describe("chat agent helpers", () => {
       params: {
         key: "main",
         verboseLevel: "full",
+        thinkingLevel: "off",
         label: "hello_ab12cd34"
       }
     });
@@ -388,7 +389,8 @@ describe("DefaultOpenClawChatAgentClient", () => {
     expect(patchFrame.method).toBe("sessions.patch");
     expect(patchFrame.params).toEqual({
       key: "agent:agent-1:user:user-1:direct:chat-1",
-      verboseLevel: "full"
+      verboseLevel: "full",
+      thinkingLevel: "off"
     });
 
     socket.emit("message", JSON.stringify({

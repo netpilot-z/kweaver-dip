@@ -77,6 +77,11 @@ export interface OpenClawSessionPatchParams {
   verboseLevel: "full";
 
   /**
+   * Session-level thinking mode for chat agent runs.
+   */
+  thinkingLevel: "off";
+
+  /**
    * Optional session label displayed by OpenClaw.
    */
   label?: string;
@@ -975,6 +980,7 @@ export function createSessionPatchParams(
   return {
     key: sessionKey,
     verboseLevel: "full",
+    thinkingLevel: "off",
     ...(label === undefined ? {} : { label })
   };
 }

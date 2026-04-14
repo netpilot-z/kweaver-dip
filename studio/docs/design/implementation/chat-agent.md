@@ -24,17 +24,17 @@ OC ->> BE: 3. ok
 loop
 
 alt 输出文本
-OC ->> BE: 4.1. envet: "chat"，state: "delta"
+OC ->> BE: 4.1. event: "chat"，state: "delta"
 end
 
 alt 输出工具调用
-OC ->> BE: 4.2. envet: "agent"
+OC ->> BE: 4.2. event: "agent"
 end
 
 end
 
 loop
-OC ->> BE: 5. envet: "chat"，state: "final"
+OC ->> BE: 5. event: "chat"，state: "final"
 end
 
 ```
@@ -43,7 +43,7 @@ end
 
 #### 1. method: "chat.patch"
 
-Express 侧首先向 OpenClaw 发起一个 patch 请求来设定会话级的 verboseLevel 参数以及会话 label，以便后续可以接收 tool 工具调用和结果消息。
+Express 侧首先向 OpenClaw 发起一个 patch 请求来设定会话级的 verboseLevel 参数、关闭 thinking、设定会话 label。
 
 ```yaml
 type: req
@@ -53,6 +53,7 @@ params:
   key: main
   patch:
     verboseLevel: full
+    thinkingLevel: off
     label?: <会话标题>
 ```
 注意：<会话标题> 仅在会话的第一轮发送，内容格式为：<用户消息>_<8位随机数字+字母>。例如 ：`今天天气怎么样？_3f9c2b6a`。
@@ -88,7 +89,7 @@ payload:
 ```
 
 
-#### 4. envet: "chat"，state: "delta"，seq++ 
+#### 4. event: "chat"，state: "delta"，seq++ 
 
 OpenClaw 侧持续向 Express 输出流式结果，此时需要区分文本消息和工具调用两种情况。
 
@@ -150,7 +151,7 @@ payload:
           text: "搜索结果内容"
 ```
 
-#### 5. envet: "chat"，state: "final"
+#### 5. event: "chat"，state: "final"
 
 对话流结束时，OpenClaw 向 Express 输出 state: "state: final"。
 
