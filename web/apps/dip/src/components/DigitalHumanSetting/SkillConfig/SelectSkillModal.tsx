@@ -80,8 +80,9 @@ const SelectSkillModal = ({
 
   const listError = error
 
-  const selectedCount = selectedSkills.length
-  const maxSelectCount = 50
+  const selectableSkillNames = new Set(selectableSkills.map((skill) => skill.name))
+  const selectedCount = selectedSkills.filter((skill) => selectableSkillNames.has(skill.name)).length
+  const maxSelectCount = selectableSkills.length
 
   const toggleSelect = (skill: DigitalHumanSkill) => {
     setSelectedSkills((prev) => {

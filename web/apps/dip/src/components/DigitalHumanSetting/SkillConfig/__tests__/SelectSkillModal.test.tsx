@@ -10,6 +10,7 @@ import type { DigitalHumanSkill } from '@/apis'
 import { getEnabledSkills } from '@/apis'
 import type { GetEnabledSkillsParams } from '@/apis/dip-studio/skills'
 import SelectSkillModal from '../SelectSkillModal'
+import intl from 'react-intl-universal'
 
 const mockOnOk = vi.fn()
 const mockOnCancel = vi.fn()
@@ -118,6 +119,46 @@ describe('DigitalHumanSetting/SkillConfig/SelectSkillModal', () => {
       .filter((btn) => btn.textContent === txt.added || btn.textContent === txt.add)
     expect(skillButtons[0]).toHaveTextContent(txt.added)
     expect(skillButtons[1]).toHaveTextContent(txt.add)
+  })
+
+  it('标题已选数量只统计可添加列表中的技能', async () => {
+    mockedGetEnabledSkills.mockResolvedValue(mockSkills)
+
+    render(
+      <SelectSkillModal
+        open
+        onOk={mockOnOk}
+        onCancel={mockOnCancel}
+        onSubmit={mockOnSubmit}
+        defaultSelectedSkills={[mockSkills[0], mockSkills[1]]}
+      />,
+    )
+
+    await screen.findByText('产品问答')
+    expect(screen.getByText('digitalHuman.skillModal.selectedCount')).toBeInTheDocument()
+    expect(screen.queryByText('内置技能')).not.toBeInTheDocument()
+  })
+
+  it('标题已选总数使用当前列表展示的技能数', async () => {
+    mockedGetEnabledSkills.mockResolvedValue(mockSkills)
+    const intlGetSpy = vi.spyOn(intl, 'get')
+
+    render(
+      <SelectSkillModal
+        open
+        onOk={mockOnOk}
+        onCancel={mockOnCancel}
+        onSubmit={mockOnSubmit}
+        defaultSelectedSkills={[mockSkills[1]]}
+      />,
+    )
+
+    await screen.findByText('产品问答')
+    expect(intl.get).toHaveBeenCalledWith('digitalHuman.skillModal.selectedCount', {
+      selected: 1,
+      max: 2,
+    })
+    intlGetSpy.mockRestore()
   })
 
   it('可以切换选择技能', async () => {
