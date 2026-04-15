@@ -126,6 +126,11 @@ const entryFiles = [
         htmlFilename: 'afPluginFrameworkForAs.html',
     },
     {
+        name: "chatCopilot",
+        template: paths.chatCopilotHtml,
+        htmlFilename: 'chatCopilot.html',
+    },
+    {
         name: "smartDataFind",
         template: paths.smartDataFindHtml,
         htmlFilename: 'smartDataFind.html',
@@ -286,6 +291,7 @@ module.exports = function (webpackEnv) {
             download: paths.downloadIndexJs,
             dmdAudit: paths.dmdAuditIndexJs,
             afPluginFrameworkForAs: paths.afPluginFrameworkForAsIndexJs,
+            chatCopilot: paths.chatCopilotIndexJs,
             smartDataFind: paths.smartDataFindIndexJs,
             semanticGovernance: paths.semanticGovernanceIndexJs,
             smartDataQuery: paths.smartDataQueryIndexJs,

@@ -168,6 +168,10 @@ export default defineConfig(({ mode }) => {
                         __dirname,
                         'config/vite/afPluginFrameworkForAs.html',
                     ),
+                    chatCopilot: path.resolve(
+                        __dirname,
+                        'config/vite/chatCopilot.html',
+                    ),
                 },
                 output: {
                     // 确保每个页面的输出文件名不冲突
