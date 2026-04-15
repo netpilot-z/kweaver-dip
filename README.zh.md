@@ -87,8 +87,8 @@ openclaw plugins install ./openclaw-extensions/dip
 
 **注意**：
 
-- 如果您选择在主机自行部署 OpenClaw，连接地址请填写主机 IP。
-- 如果您选择使用 KWeaver DIP OpenClaw，连接地址请填写 `127.0.0.1`。
+- 如果您选择在主机自行部署 OpenClaw，连接地址请填写：`ws://<主机 IP>:<端口>`。
+- 如果您选择使用 KWeaver DIP OpenClaw，连接地址请填写：`ws://127.0.0.1:<端口>`。
 
 #### 授权
 

@@ -87,8 +87,8 @@ Sign in to KWeaver DIP Studio with the `admin` account first, then follow the UI
 
 **Note**:
 
-- If you deploy OpenClaw on the host yourself, use the host IP address as the connection address.
-- If you use the OpenClaw bundled with KWeaver DIP, use `127.0.0.1` as the connection address.
+- If you deploy OpenClaw on the host yourself, use `ws://<host-ip>:<port>` as the connection address.
+- If you use the OpenClaw bundled with KWeaver DIP, use `ws://127.0.0.1:<port>` as the connection address.
 
 #### Authorization
 
