@@ -5,6 +5,20 @@ import { join } from "node:path";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { HttpError } from "../errors/http-error";
+
+/**
+ * Mutable fake home for `node:os` `homedir` (see hoisted mock below).
+ */
+let fakeHomeForOsMock = process.env.HOME ?? "/tmp";
+
+vi.mock("node:os", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("node:os")>();
+  return {
+    ...actual,
+    homedir: (): string => fakeHomeForOsMock
+  };
+});
+
 import {
   buildGuideEnvFileContent,
   buildOpenClawRootEnvEntries,
@@ -301,6 +315,7 @@ describe("DefaultGuideLogic", () => {
 
   it("initializes env, assets, and init script", async () => {
     const studioRootDir = await mkdtemp(join(tmpdir(), "dip-studio-guide-init-"));
+    fakeHomeForOsMock = studioRootDir;
     const execFile = vi.fn().mockResolvedValue({
       stdout: "ok",
       stderr: ""
@@ -309,10 +324,8 @@ describe("DefaultGuideLogic", () => {
       reconfigureConnection: vi.fn(),
       connect: vi.fn().mockResolvedValue(undefined)
     };
-    const prevRootDir = process.env.OPENCLAW_ROOT_DIR;
     const prevKweaverBaseUrl = process.env.KWEAVER_BASE_URL;
     const prevKweaverToken = process.env.KWEAVER_TOKEN;
-    process.env.OPENCLAW_ROOT_DIR = join(studioRootDir, "openclaw");
     const logic = new DefaultGuideLogic({
       studioRootDir,
       commandRunner: {
@@ -341,7 +354,7 @@ describe("DefaultGuideLogic", () => {
       expect(process.env.OPENCLAW_GATEWAY_TOKEN).toBe("token-1");
       expect(process.env.KWEAVER_BASE_URL).toBe("https://kweaver.example.com");
       expect(process.env.KWEAVER_TOKEN).toBe("kw-token");
-      expect(await readFile(join(studioRootDir, "openclaw", ".env"), "utf8")).toContain(
+      expect(await readFile(join(fakeHomeForOsMock, ".openclaw", ".env"), "utf8")).toContain(
         "KWEAVER_BASE_URL=https://kweaver.example.com"
       );
       expect(execFile).toHaveBeenNthCalledWith(
@@ -356,11 +369,6 @@ describe("DefaultGuideLogic", () => {
       );
       expect(gatewayConnector.connect).toHaveBeenCalledOnce();
     } finally {
-      if (prevRootDir === undefined) {
-        delete process.env.OPENCLAW_ROOT_DIR;
-      } else {
-        process.env.OPENCLAW_ROOT_DIR = prevRootDir;
-      }
       if (prevKweaverBaseUrl === undefined) {
         delete process.env.KWEAVER_BASE_URL;
       } else {
@@ -371,13 +379,14 @@ describe("DefaultGuideLogic", () => {
       } else {
         process.env.KWEAVER_TOKEN = prevKweaverToken;
       }
+      fakeHomeForOsMock = process.env.HOME ?? "/tmp";
       await rm(studioRootDir, { recursive: true, force: true });
     }
   });
 });
 
 describe("OpenClaw root env helpers", () => {
-  it("resolves local OpenClaw paths from injected env vars", () => {
+  it("resolves local OpenClaw paths from the fixed OpenClaw home", () => {
     expect(
       resolveOpenClawLocalPathsFromEnv(
         {
@@ -386,24 +395,9 @@ describe("OpenClaw root env helpers", () => {
         "/tmp/studio"
       )
     ).toEqual({
-      configPath: join(process.env.HOME ?? "", ".openclaw-dev", "openclaw.json"),
-      stateDir: join(process.env.HOME ?? "", ".openclaw-dev"),
-      workspaceDir: join(process.env.HOME ?? "", ".openclaw-dev", "workspace")
-    });
-  });
-
-  it("derives workspace directory from injected root directory", () => {
-    expect(
-      resolveOpenClawLocalPathsFromEnv(
-        {
-          OPENCLAW_ROOT_DIR: "./runtime/openclaw"
-        },
-        "/tmp/studio"
-      )
-    ).toEqual({
-      configPath: "/tmp/studio/runtime/openclaw/openclaw.json",
-      stateDir: "/tmp/studio/runtime/openclaw",
-      workspaceDir: "/tmp/studio/runtime/openclaw/workspace"
+      configPath: join(fakeHomeForOsMock, ".openclaw", "openclaw.json"),
+      stateDir: join(fakeHomeForOsMock, ".openclaw"),
+      workspaceDir: join(fakeHomeForOsMock, ".openclaw", "workspace")
     });
   });
 

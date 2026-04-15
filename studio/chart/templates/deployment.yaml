@@ -18,13 +18,13 @@ spec:
         {{- toYaml .Values.labels.pod | nindent 8 }}
     spec:
       volumes:
-        - name: openclaw-root-dir
+        - name: openclaw-host-path
           hostPath:
-            path: {{ .Values.studio.OpenClawRootDir }}
+            path: {{ .Values.studio.openClawHostPath }}
             type: DirectoryOrCreate
-        - name: env-file-path
+        - name: env-file-host-path
           hostPath:
-            path: {{ .Values.studio.envFilePath }}
+            path: {{ .Values.studio.envFileHostPath }}
             type: FileOrCreate
       containers:
         - name: dip-studio
@@ -40,11 +40,6 @@ spec:
                 configMapKeyRef:
                   name: {{ .Chart.Name }}-config
                   key: NODE_ENV
-            - name: OPENCLAW_ROOT_DIR
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Chart.Name }}-config
-                  key: OPENCLAW_ROOT_DIR
             - name: KWEAVER_BASE_URL
               valueFrom:
                 configMapKeyRef:
@@ -58,9 +53,9 @@ spec:
           resources:
             {{- toYaml .Values.resources.studio | nindent 12 }}
           volumeMounts:
-            - name: openclaw-root-dir
+            - name: openclaw-host-path
               mountPath: /root/.openclaw
-            - name: env-file-path
+            - name: env-file-host-path
               mountPath: /app/.env
       {{- with .Values.nodeSelector }}
       nodeSelector:

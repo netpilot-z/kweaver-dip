@@ -36,8 +36,8 @@ ingress:
 
 studio:
   nodeEnv: production
-  envFilePath: /data/.env
-  OpenClawRootDir: /data/.openclaw
+  envFileHostPath: /root/.env
+  openClawHostPath: /root/.openclaw/
   KWeaverBaseURL: http://bkn-backend-svc:13014
   KWeaverHydraAdminURL: http://hydra-admin:4445
 

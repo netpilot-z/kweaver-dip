@@ -67,10 +67,10 @@ if (fs.existsSync(dotenvFilePath)) {
   console.log(`[配置] 已从 .env 加载: ${dotenvFilePath}`);
 }
 
-const STATE_DIR = process.env.OPENCLAW_ROOT_DIR || path.join(os.homedir(), ".openclaw");
+const STATE_DIR = path.join(os.homedir(), ".openclaw");
 const BUILT_IN_DIR = process.env.OPENCLAW_BUILT_IN_DIR || path.join(__dirname, "../..", "built-in");
 const WORKSPACE_ROOT = path.resolve(
-  process.env.OPENCLAW_WORKSPACE_DIR || STATE_DIR
+  process.env.OPENCLAW_WORKSPACE_DIR || path.join(STATE_DIR, "workspace")
 );
 
 function readJsonFile(filePath) {

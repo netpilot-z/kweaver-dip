@@ -355,7 +355,7 @@ export function normalizeInitializeGuideRequest(
   const stateDir =
     localPaths?.stateDir ??
     readRequiredGuideString(join(process.env.HOME ?? "", ".openclaw"), "stateDir");
-  const workspaceDir = localPaths?.workspaceDir ?? resolveWorkspaceDir(stateDir);
+  const workspaceDir = localPaths?.workspaceDir ?? resolveWorkspaceDir();
   const configPath = localPaths?.configPath ?? join(stateDir, "openclaw.json");
 
   return {
@@ -497,30 +497,26 @@ export function buildOpenClawRootEnvEntries(
 }
 
 /**
- * Resolves OpenClaw local filesystem paths from injected environment variables.
+ * Resolves OpenClaw local filesystem paths using the fixed OpenClaw home directory.
  *
- * @param envSource Environment variable source.
- * @param studioRootDir Base directory used to resolve relative paths.
+ * @param _envSource Environment variable source, ignored for backward compatibility.
+ * @param _studioRootDir Base directory used to resolve relative paths, ignored.
  * @returns The resolved config, state, and workspace paths.
  */
 export function resolveOpenClawLocalPathsFromEnv(
-  envSource: NodeJS.ProcessEnv,
-  studioRootDir: string
+  _envSource: NodeJS.ProcessEnv,
+  _studioRootDir: string
 ): {
   configPath: string;
   stateDir: string;
   workspaceDir: string;
 } {
-  const configuredRootDir = readOptionalString(envSource.OPENCLAW_ROOT_DIR);
-  const stateDir = resolveInjectedPath(
-    configuredRootDir ?? join(homedir(), ".openclaw"),
-    studioRootDir
-  );
+  const stateDir = join(homedir(), ".openclaw");
 
   return {
     configPath: join(stateDir, "openclaw.json"),
     stateDir,
-    workspaceDir: resolveWorkspaceDir(stateDir)
+    workspaceDir: resolveWorkspaceDir()
   };
 }
 

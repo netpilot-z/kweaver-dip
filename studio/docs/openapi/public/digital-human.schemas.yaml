@@ -128,7 +128,7 @@ components:
       summary: 创建数字员工请求
       description: |
         后端通过 OpenClaw `agents.create` 创建 agent：内部注册名优先使用请求中的 `id`，未提供时使用 UUID，展示名写在 `IDENTITY.md`。
-        `channel` 写入本机 `OPENCLAW_ROOT_DIR/openclaw.json`（非 Gateway `config.patch`）。
+        `channel` 写入本机 `~/.openclaw/openclaw.json`（非 Gateway `config.patch`）。
       type: object
       properties:
         id:

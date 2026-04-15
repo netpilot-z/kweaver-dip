@@ -46,8 +46,7 @@ const agentSkillsLogic = new DefaultAgentSkillsLogic(
 );
 const digitalHumanLogic = new DefaultDigitalHumanLogic({
   openClawAgentsAdapter,
-  agentSkillsLogic,
-  openClawRootDir: process.env.OPENCLAW_ROOT_DIR
+  agentSkillsLogic
 });
 const builtInDigitalHumanLogic = new DefaultBuiltInDigitalHumanLogic();
 
