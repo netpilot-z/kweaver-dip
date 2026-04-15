@@ -5,7 +5,7 @@ import {
   formatArchiveResponseOutput,
   type ArchiveCommandKind
 } from "./archive-command.js";
-import { isValidArchiveTimestamp } from "./archives-utils.js";
+import { resolveArchiveRuntimeContext } from "./archive-context.js";
 
 const ARCHIVE_PROTOCOL_TOOL_INPUT_SCHEMA = {
   type: "object",
@@ -299,8 +299,8 @@ function normalizeArchiveProtocolToolInput(
     if (kind === "plan") {
       return { ok: false, error: "timestamp can only be used with file archives" };
     }
-    if (typeof record.timestamp !== "string" || !isValidArchiveTimestamp(record.timestamp)) {
-      return { ok: false, error: "timestamp must match YYYY-MM-DD-HH-MM-SS" };
+    if (typeof record.timestamp !== "string" || record.timestamp.trim().length === 0) {
+      return { ok: false, error: "timestamp must be a non-empty string" };
     }
     normalized.timestamp = record.timestamp;
   }
@@ -344,11 +344,15 @@ async function invokeArchiveProtocol(
   }
 
   try {
+    const archiveContext = await resolveArchiveRuntimeContext(api, {
+      sessionKey,
+      sessionId
+    });
     const result = await executeArchiveCommand({
       kind: input.kind,
       workspaceDir,
-      sessionKey,
-      sessionId,
+      archiveId: archiveContext.archiveId,
+      runId: archiveContext.runId,
       sourcePath: input.sourcePath,
       displayName: input.displayName,
       timestamp: input.timestamp
@@ -358,7 +362,6 @@ async function invokeArchiveProtocol(
     if (err instanceof ArchiveProtocolError) {
       return buildArchiveBlockedResponse(err.message, err.code);
     }
-    api.logger.error?.(`archive invocation failed: ${String(err)}`);
     return buildArchiveBlockedResponse(
       err instanceof Error ? err.message : String(err),
       err instanceof Error ? err.name : "UNKNOWN_ERROR"

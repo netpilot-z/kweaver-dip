@@ -10,12 +10,11 @@ export default defineConfig({
     environment: "node",
     coverage: {
       provider: "v8",
-      include: ["src/**/*.ts", "extensions/dip/src/**/*.ts"],
+      include: ["src/**/*.ts"],
       exclude: [
         "src/**/*.test.ts",
         "src/server.ts",
-        "src/types/**/*.ts",
-        "extensions/dip/src/**/*.test.ts"
+        "src/types/**/*.ts"
       ],
       reporter: ["text", "html"],
       thresholds: {
