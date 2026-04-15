@@ -6,9 +6,6 @@ source:
   helmRepoName: kweaver
   helmRepoUrl: https://kweaver-ai.github.io/helm-repo/
 dependencies:
-- product: isf
-  version: 0.6.0
-  manifest: ../0.6.0/isf.yaml
 - product: kweaver-core
   version: 0.6.0
   manifest: ../0.6.0/kweaver-core.yaml
@@ -76,7 +73,7 @@ releases:
     version: 0.4.0-main.20260403.2
   dip-frontend:
     chart: dip-frontend
-    version: 0.5.0-main.d728b43
+    version: 0.5.0-main.efa6dbb
     dependsOn:
     - studio-web
   auth-service:
@@ -136,4 +133,4 @@ releases:
     values:
       studio:
         envFilePath: /data/.env # Studio 环境变量文件路径
-        OpenClawRootDir: /data/.openclaw # OpenClaw 主目录
+        OpenClawRootDir: /root/.openclaw # OpenClaw 主目录
