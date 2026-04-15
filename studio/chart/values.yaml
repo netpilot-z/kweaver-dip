@@ -40,6 +40,7 @@ studio:
   openClawHostPath: /root/.openclaw/
   KWeaverBaseURL: http://bkn-backend-svc:13014
   KWeaverHydraAdminURL: http://hydra-admin:4445
+  useExternalOpenClaw: false
 
 resources:
   studio:

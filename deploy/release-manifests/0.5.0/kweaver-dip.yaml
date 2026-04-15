@@ -108,3 +108,4 @@ releases:
       studio:
         envFileHostPath: /root/.env         # 环境变量配置主机路径，例如：/root/.env。文件不存在时会自动创建。
         OpenClawHostPath: /root/.openclaw   # .openclaw 目录主机路径，例如：/root/.openclaw
+        useExternalOpenClaw: false          # 是否使用外置 OpenClaw，默认为 false。当设置为 true 时，studio 将不会启动容器内的 OpenClaw 网关。
