@@ -33,27 +33,42 @@ releases:
     version: 0.3.0-1d43acc
   mf-model-manager-nginx:
     chart: mf-model-manager-nginx
-    version: 0.3.1
+    version: 0.5.0
     dependsOn:
     - studio-web
   vega-web:
     chart: vega-web
-    version: 0.5.1
+    version: 0.5.1-main
     dependsOn:
     - studio-web
   operator-web:
     chart: operator-web
-    version: 0.4.1
+    version: 0.5.0-main.git-671eead
     dependsOn:
     - studio-web
   agent-web:
     chart: agent-web
-    version: 0.5.1
+    version: 0.5.1-main.git-671eead
     dependsOn:
     - studio-web
   flow-web:
     chart: flow-web
-    version: 0.5.1
+    version: 0.5.1-main.git+671eead
+    dependsOn:
+    - studio-web
+  doc-audit-client:
+    chart: doc-audit-client
+    version: 0.5.1-main.git-671eead
+    dependsOn:
+    - studio-web
+  workflow-manage-client:
+    chart: workflow-manage-client
+    version: 0.5.0-main.git-84bea21
+    dependsOn:
+    - studio-web
+  workflow-manage-front:
+    chart: workflow-manage-front
+    version: 0.5.0-main.git-84bea21
     dependsOn:
     - studio-web
   anyfabric-frontend:
@@ -61,7 +76,9 @@ releases:
     version: 0.4.0-main.20260403.2
   dip-frontend:
     chart: dip-frontend
-    version: 0.4.0-main.41dfacf
+    version: 0.5.0-main.d728b43
+    dependsOn:
+    - studio-web
   auth-service:
     chart: auth-service
     version: 0.4.0-main.20260402.1
@@ -79,16 +96,16 @@ releases:
     version: 0.4.0-main.20260403.1
   data-catalog:
     chart: data-catalog
-    version: 0.4.0-main.20260403.1
+    version: 0.4.0-main.20260414.1
   data-exploration-service:
     chart: data-exploration-service
     version: 0.4.0-main.20260403.1
   data-semantic:
     chart: data-semantic
-    version: 0.4.0-main.20260403.1
+    version: 0.4.0-main.20260414.1
   data-subject:
     chart: data-subject
-    version: 0.4.0-main.20260403.1
+    version: 0.4.0-main.20260414.1
   data-view:
     chart: data-view
     version: 0.4.0-main.20260403.1
@@ -115,4 +132,8 @@ releases:
     version: 0.4.0
   dip-studio:
     chart: dip-studio
-    version: 0.4.0-4
+    version: 0.5.0-main.b67de8d-20260414.1
+    values:
+      studio:
+        envFilePath: /data/.env # Studio 环境变量文件路径
+        OpenClawRootDir: /data/.openclaw # OpenClaw 主目录

@@ -702,6 +702,113 @@ get_release_manifest_dependency_manifest_optional() {
     echo "$(cd "${manifest_dir}" && cd "$(dirname "${value}")" && pwd)/$(basename "${value}")"
 }
 
+# Extract values from release manifest and convert to --set-string arguments.
+# Appends --set-string arguments to the specified array variable.
+# Args: <manifest_file> <expected_product> <aggregate_version> <release_name> <target_array_name>
+apply_release_manifest_values() {
+    local manifest_file="$1"
+    local expected_product="$2"
+    local aggregate_version="${3:-}"
+    local release_name="$4"
+    local target_array_name="$5"
+
+    _manifest_validate_identity "${manifest_file}" "${expected_product}" "${aggregate_version}" || return 1
+
+    # Extract all key-value pairs from values section
+    # Format: key=value (one per line)
+    local values_output
+    values_output=$(awk -v release="${release_name}" '
+        BEGIN {
+            in_releases = 0
+            in_target = 0
+            in_values = 0
+            path_stack[0] = ""
+            depth = 0
+        }
+        /^releases:/ {
+            in_releases = 1
+            next
+        }
+        in_releases && /^[A-Za-z0-9_-]+:/ {
+            in_releases = 0
+        }
+        !in_releases { next }
+        $0 == "  " release ":" {
+            in_target = 1
+            next
+        }
+        in_target && $0 ~ /^  [^[:space:]][^:]*:/ {
+            if (in_values) {
+                exit
+            }
+            in_target = 0
+        }
+        in_target && $1 == "values:" {
+            in_values = 1
+            next
+        }
+        in_values {
+            # End of values section if we hit a non-indented or less-indented line
+            if ($0 ~ /^  [^[:space:]]/ || $0 ~ /^[^[:space:]]/) {
+                exit
+            }
+            
+            # Skip empty lines and comments
+            if ($0 ~ /^[[:space:]]*$/ || $0 ~ /^[[:space:]]*#/) {
+                next
+            }
+            
+            # Remove the base indentation (4 spaces for values section)
+            line = $0
+            sub(/^    /, "", line)
+            
+            # Count leading spaces to determine depth
+            match(line, /^[[:space:]]*/)
+            indent = RLENGTH
+            current_depth = indent / 2
+            
+            # Extract key and value
+            if (match(line, /^[[:space:]]*([^:]+):[[:space:]]*(.*)/, arr)) {
+                key = arr[1]
+                gsub(/^[[:space:]]+|[[:space:]]+$/, "", key)
+                value = arr[2]
+                # Remove inline comments
+                gsub(/[[:space:]]*#.*$/, "", value)
+                gsub(/^[[:space:]]+|[[:space:]]+$/, "", value)
+                
+                # Update path stack
+                path_stack[current_depth] = key
+                
+                # If value is not empty, print the full path
+                if (value != "") {
+                    full_path = ""
+                    for (i = 0; i <= current_depth; i++) {
+                        if (path_stack[i] != "") {
+                            if (full_path != "") {
+                                full_path = full_path "." path_stack[i]
+                            } else {
+                                full_path = path_stack[i]
+                            }
+                        }
+                    }
+                    print full_path "=" value
+                }
+            }
+        }
+    ' "${manifest_file}")
+
+    # If no values found, return
+    if [[ -z "${values_output}" ]]; then
+        return 0
+    fi
+
+    # Convert to --set-string arguments
+    while IFS='=' read -r key value; do
+        [[ -z "${key}" ]] && continue
+        eval "${target_array_name}+=(\"--set-string\" \"${key}=${value}\")"
+    done <<< "${values_output}"
+}
+
 # Decide whether upgrade can be skipped when installed chart version equals target version.
 # Return 0 => skip upgrade, Return 1 => continue upgrade.
 # Args: <release_name> <namespace> <chart_name> <target_version>
