@@ -439,7 +439,6 @@ export function buildGuideEnvEntries(
   request: NormalizedInitializeGuideRequest
 ): ReadonlyArray<readonly [string, string]> {
   return [
-    ["OPENCLAW_ROOT_DIR", request.stateDir],
     ["OPENCLAW_GATEWAY_PROTOCOL", request.protocol],
     ["OPENCLAW_GATEWAY_HOST", request.host],
     ["OPENCLAW_GATEWAY_PORT", String(request.port)],
@@ -470,8 +469,6 @@ export function buildGuideEnvFileContent(
     `OPENCLAW_GATEWAY_PORT=${encodeEnvValue(String(request.port))}`,
     `OPENCLAW_GATEWAY_TOKEN=${encodeEnvValue(request.token)}`,
     "OPENCLAW_GATEWAY_TIMEOUT_MS=5000",
-    "",
-    `OPENCLAW_ROOT_DIR=${encodeEnvValue(request.stateDir)}`,
     "",
     `KWEAVER_BASE_URL=${encodeEnvValue(request.kweaver_base_url ?? "")}`,
     `KWEAVER_TOKEN=${encodeEnvValue(request.kweaver_token ?? "")}`,

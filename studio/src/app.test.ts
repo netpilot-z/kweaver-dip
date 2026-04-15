@@ -970,7 +970,7 @@ describe("getEnv", () => {
       openClawGatewayHttpUrl: "http://127.0.0.1:19001/",
       openClawGatewayToken: undefined,
       openClawGatewayTimeoutMs: 6000,
-      openClawWorkspaceDir: resolveWorkspaceDir(process.env.OPENCLAW_ROOT_DIR)
+      openClawWorkspaceDir: resolveWorkspaceDir(undefined)
     });
   });
 

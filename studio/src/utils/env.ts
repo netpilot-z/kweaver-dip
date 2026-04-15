@@ -105,6 +105,7 @@ export function loadEnvFile(options: LoadEnvFileOptions = {}): void {
     override: options.override,
     quiet: true
   });
+
   hasLoadedDotEnv = true;
 }
 

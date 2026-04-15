@@ -146,7 +146,6 @@ describe("normalizeInitializeGuideRequest", () => {
         workspaceDir: "/tmp/openclaw/workspace"
       })
     ).toEqual([
-      ["OPENCLAW_ROOT_DIR", "/tmp/openclaw"],
       ["OPENCLAW_GATEWAY_PROTOCOL", "ws"],
       ["OPENCLAW_GATEWAY_HOST", "127.0.0.1"],
       ["OPENCLAW_GATEWAY_PORT", "19001"],
@@ -192,8 +191,8 @@ describe("normalizeInitializeGuideRequest", () => {
       workspaceDir: "/tmp/openclaw/workspace"
     });
 
-    expect(content).toContain("OPENCLAW_ROOT_DIR=/tmp/openclaw");
     expect(content).toContain("OAUTH_MOCK_USER_ID=");
+    expect(content).not.toContain("OPENCLAW_ROOT_DIR=");
     expect(content).not.toContain("OPENCLAW_CONFIG_PATH=");
     expect(content).not.toContain("#");
     expect(content.split("\n").every((line) => line === line.replace(/[ \t]+$/, ""))).toBe(true);
@@ -334,9 +333,7 @@ describe("DefaultGuideLogic", () => {
     try {
       const envContent = await readFile(join(studioRootDir, ".env"), "utf8");
       expect(envContent).toContain("OPENCLAW_GATEWAY_TOKEN=token-1");
-      expect(envContent).toContain(
-        `OPENCLAW_ROOT_DIR=${join(studioRootDir, "openclaw")}`
-      );
+      expect(envContent).not.toContain("OPENCLAW_ROOT_DIR=");
       expect(envContent).not.toContain("OPENCLAW_CONFIG_PATH=");
       expect(envContent).not.toContain("OPENCLAW_WORKSPACE_DIR=");
       expect(envContent).not.toContain("#");
