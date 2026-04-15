@@ -29,7 +29,10 @@ DIP Studio depends on OpenClaw. You can either deploy OpenClaw on your own host 
 3. Update `gateway.bind` in `openclaw.json` to `"lan"`, and keep the value of `gateway.auth.token` for the later OpenClaw connection setup in KWeaver DIP.
 4. Run `openclaw gateway restart` to restart the OpenClaw gateway.
 5. Run `openclaw gateway status` and record the gateway listen address, which is usually `ws://0.0.0.0:18789`.
-6. Make sure the machine running `deploy.sh` can access the OpenClaw config file and workspace directory. If you want to preconfigure them, set `dipStudio.openClaw.configHostPath` and `dipStudio.openClaw.workspaceHostPath` in `deploy/conf/config.yaml` or in your custom config file.
+6. Make sure the machine running `deploy.sh` can access the OpenClaw config file and workspace directory. Edit `deploy/release-manifests/<version>/kweaver-dip.yaml`:
+
+ - `dip-studio.values.studio.envFilePath`: host path of the Studio ENV configuration file
+ - `dip-studio.values.studio.OpenClawRootDir`: host path of the `.openclaw/` root directory
 
 #### Use the OpenClaw bundled with KWeaver DIP
 
