@@ -132,5 +132,6 @@ releases:
     version: 0.5.0-main.b67de8d-20260414.1
     values:
       studio:
-        envFilePath: /data/.env # Studio 环境变量文件路径
-        OpenClawRootDir: /root/.openclaw # OpenClaw 主目录
+        envFileHostPath: /root/.env         # 环境变量配置主机路径，例如：/root/.env。文件不存在时会自动创建。
+        OpenClawHostPath: /root/.openclaw   # .openclaw 目录主机路径，例如：/root/.openclaw
+        useExternalOpenClaw: false          # 是
