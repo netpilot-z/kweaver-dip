@@ -14,7 +14,7 @@ replicaCount: 1
 image:
   registry: swr.cn-east-3.myhuaweicloud.com/kweaver-ai
   repository: dip/dip-studio
-  tag: "0.5.0-main.22fefcd"
+  tag: "0.5.0"
   pullPolicy: IfNotPresent
 
 service:

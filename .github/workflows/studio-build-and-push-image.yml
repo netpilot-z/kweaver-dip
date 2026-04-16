@@ -33,7 +33,90 @@ env:
   IMAGE_NAMESPACE: kweaver-ai
 
 jobs:
+  release-version:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      release_tag: ${{ steps.version.outputs.release_tag }}
+      release_tag_no_sha: ${{ steps.version.outputs.release_tag_no_sha }}
+      push_latest: ${{ steps.version.outputs.push_latest }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Compute release version
+        id: version
+        env:
+          WORKFLOW_PUSH_LATEST: ${{ inputs.push_latest || 'false' }}
+        run: bash studio/ci/compute_release_version.sh
+
+  helm-chart:
+    needs:
+      - release-version
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set Up Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.16.2
+
+      - name: Align chart version and image tag with this build
+        env:
+          RELEASE_TAG: ${{ needs.release-version.outputs.release_tag }}
+        run: |
+          python3 <<'PY'
+          import os
+          import re
+          from pathlib import Path
+
+          tag = os.environ["RELEASE_TAG"]
+          if not tag:
+              raise SystemExit("RELEASE_TAG is empty")
+
+          chart = Path("studio/chart/Chart.yaml")
+          text = chart.read_text(encoding="utf-8")
+          text = re.sub(r"(?m)^version:.*$", f'version: "{tag}"', text)
+          text = re.sub(r"(?m)^appVersion:.*$", f'appVersion: "{tag}"', text)
+          chart.write_text(text, encoding="utf-8")
+
+          values = Path("studio/chart/values.yaml")
+          vt = values.read_text(encoding="utf-8")
+          vt_new = re.sub(r"(?m)^(\s*tag:\s*).*$", rf'\1"{tag}"', vt, count=1)
+          if vt_new == vt:
+              raise SystemExit("failed to update image.tag in studio/chart/values.yaml")
+          values.write_text(vt_new, encoding="utf-8")
+          PY
+
+      - name: Lint Helm Chart
+        run: helm lint studio/chart
+
+      - name: Render Helm Chart (default values)
+        run: helm template dip-studio studio/chart -f studio/chart/values.yaml > /dev/null
+
+      - name: Package Helm Chart
+        run: |
+          mkdir -p dist-chart
+          helm package studio/chart --destination dist-chart
+
+      - name: Upload Chart Package (artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: dip-studio-chart
+          path: dist-chart/*.tgz
+          if-no-files-found: error
+
   docker:
+    needs:
+      - release-version
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -75,44 +158,16 @@ jobs:
 
       - name: Prepare Image Metadata
         id: prepare
+        env:
+          RELEASE_TAG: ${{ needs.release-version.outputs.release_tag }}
+          RELEASE_TAG_NO_SHA: ${{ needs.release-version.outputs.release_tag_no_sha }}
+          PUSH_LATEST: ${{ needs.release-version.outputs.push_latest }}
         run: |
           IMAGE_NAME="${REGISTRY}/${IMAGE_NAMESPACE}/${IMAGE_REPOSITORY}"
-          SHOULD_PUSH_LATEST="false"
-
-          SHORT_SHA="$(git rev-parse --short HEAD)"
-
-          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
-            # Git tag is authoritative, e.g. v0.5.0 -> image tags 0.5.0 and 0.5.0-<sha>
-            RELEASE_VERSION="${GITHUB_REF_NAME#v}"
-            if [ -z "${RELEASE_VERSION}" ]; then
-              echo "ERROR: could not derive version from tag \"${GITHUB_REF_NAME}\"" >&2
-              exit 1
-            fi
-            RELEASE_TAG="${RELEASE_VERSION}-${SHORT_SHA}"
-            RELEASE_TAG_NO_SHA="${RELEASE_VERSION}"
-          else
-            STUDIO_VERSION="$(
-              grep -m 1 -v '^[[:space:]]*$' VERSION \
-                | tr -d '\r' \
-                | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'
-            )"
-            if [ -z "${STUDIO_VERSION}" ]; then
-              echo "ERROR: could not read a non-empty version from studio/VERSION" >&2
-              exit 1
-            fi
-            BRANCH_OR_REF="${GITHUB_REF_NAME//\//-}"
-            RELEASE_TAG="${STUDIO_VERSION}-${BRANCH_OR_REF}-${SHORT_SHA}"
-            RELEASE_TAG_NO_SHA="${STUDIO_VERSION}-${BRANCH_OR_REF}"
-          fi
-
-          if [ "${GITHUB_REF_NAME}" = "main" ] || [ "${GITHUB_REF_NAME}" = "master" ] || [ "${{ inputs.push_latest }}" = "true" ]; then
-            SHOULD_PUSH_LATEST="true"
-          fi
-
           echo "image_name=${IMAGE_NAME}" >> "${GITHUB_OUTPUT}"
           echo "release_tag=${RELEASE_TAG}" >> "${GITHUB_OUTPUT}"
           echo "release_tag_no_sha=${RELEASE_TAG_NO_SHA}" >> "${GITHUB_OUTPUT}"
-          echo "push_latest=${SHOULD_PUSH_LATEST}" >> "${GITHUB_OUTPUT}"
+          echo "push_latest=${PUSH_LATEST}" >> "${GITHUB_OUTPUT}"
 
       - name: Extract Docker Metadata
         id: meta
