@@ -99,7 +99,17 @@ Approved cc8d2143cf8fcd04161ade9e5161006c410a0bee65f835e2629792aa584bb119 (3ef17
 
 ### Docker build
 
-1. 执行 docker build 来构建镜像，`platform` 根据实际需要填写。
+1. 将 monorepo 中的 `dip` OpenClaw 插件同步到本目录（构建上下文需要存在 `extensions/dip`；在仓库根目录执行时路径如下）。
+
+```bash
+mkdir -p studio/extensions
+rm -rf studio/extensions/dip
+cp -R deploy/openclaw-extensions/dip studio/extensions/dip
+```
+
+若当前工作目录已是 `studio/`，可使用：`mkdir -p extensions && cp -R ../deploy/openclaw-extensions/dip extensions/dip`。
+
+2. 进入 `studio/` 目录后执行 docker build 来构建镜像（以下命令末尾的 `.` 表示以当前目录为构建上下文），`platform` 根据实际需要填写。
 
 ```bash
 docker buildx build \
@@ -110,7 +120,7 @@ docker buildx build \
   .                        
 ```
 
-2. 启动容器。
+3. 启动容器。
 
 - 3000 端口是 Studio 服务端口，18789 端口是 OpenClaw 默认端口。
 - `/data/.openclaw/` 用于挂载 OpenClaw 主目录到容器内（请根据实际情况选择本地路径）
@@ -129,21 +139,21 @@ docker run \
 
 注意：在完成 OpenClaw 初始化之前请不要使用 `--restart unless-stopped` 参数.
 
-3. 复制 `container_id`
+4. 复制 `container_id`
 
-4. 进入容器
+5. 进入容器
 
 ```bash
 docker exec -it <container_id> /bin/bash
 ```
 
-5. 初始化 OpenClaw。`openclaw.json` 会持久化到挂在到容器内的 OpenClaw 主目录
+6. 初始化 OpenClaw。`openclaw.json` 会持久化到挂在到容器内的 OpenClaw 主目录
 
 ```bash
 openclaw onboard
 ```
 
-6. 安装 extensions 
+7. 若镜像启动流程未自动安装插件，可手动安装 extensions：
 
 ```bash
 openclaw plugins install /app/extensions/dip

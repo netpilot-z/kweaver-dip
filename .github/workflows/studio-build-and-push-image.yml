@@ -8,12 +8,14 @@ on:
       - "v*"
     paths:
       - "studio/**"
+      - "deploy/openclaw-extensions/**"
       - ".github/workflows/studio-build-and-push-image.yml"
   pull_request:
     branches:
       - "**"
     paths:
       - "studio/**"
+      - "deploy/openclaw-extensions/**"
       - ".github/workflows/studio-build-and-push-image.yml"
   workflow_dispatch:
     inputs:
@@ -64,6 +66,12 @@ jobs:
 
       - name: Set Up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
+      - name: Sync OpenClaw dip extension into Docker build context
+        run: |
+          rm -rf extensions/dip
+          mkdir -p extensions
+          cp -R ../deploy/openclaw-extensions/dip extensions/dip
 
       - name: Prepare Image Metadata
         id: prepare

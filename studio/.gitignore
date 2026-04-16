@@ -16,3 +16,6 @@ __pycache__/
 .env
 .env.*
 .generated-skills/
+
+# Copied from ../deploy/openclaw-extensions/dip before local docker build (see README).
+extensions/dip/
