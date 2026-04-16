@@ -79,13 +79,28 @@ jobs:
           IMAGE_NAME="${REGISTRY}/${IMAGE_NAMESPACE}/${IMAGE_REPOSITORY}"
           SHOULD_PUSH_LATEST="false"
 
+          SHORT_SHA="$(git rev-parse --short HEAD)"
+
           if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
-            VERSION_TAG="${GITHUB_REF_NAME#v}"
-            RELEASE_TAG="${VERSION_TAG}"
+            # Git tag is authoritative, e.g. v0.5.0 -> image tag 0.5.0-<sha>
+            RELEASE_VERSION="${GITHUB_REF_NAME#v}"
+            if [ -z "${RELEASE_VERSION}" ]; then
+              echo "ERROR: could not derive version from tag \"${GITHUB_REF_NAME}\"" >&2
+              exit 1
+            fi
+            RELEASE_TAG="${RELEASE_VERSION}-${SHORT_SHA}"
           else
-            BRANCH_NAME="${GITHUB_REF_NAME//\//-}"
-            SHORT_SHA="$(git rev-parse --short HEAD)"
-            RELEASE_TAG="${BRANCH_NAME}-${SHORT_SHA}"
+            STUDIO_VERSION="$(
+              grep -m 1 -v '^[[:space:]]*$' VERSION \
+                | tr -d '\r' \
+                | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'
+            )"
+            if [ -z "${STUDIO_VERSION}" ]; then
+              echo "ERROR: could not read a non-empty version from studio/VERSION" >&2
+              exit 1
+            fi
+            BRANCH_OR_REF="${GITHUB_REF_NAME//\//-}"
+            RELEASE_TAG="${STUDIO_VERSION}-${BRANCH_OR_REF}-${SHORT_SHA}"
           fi
 
           if [ "${GITHUB_REF_NAME}" = "main" ] || [ "${GITHUB_REF_NAME}" = "master" ] || [ "${{ inputs.push_latest }}" = "true" ]; then
@@ -103,8 +118,6 @@ jobs:
           images: ${{ steps.prepare.outputs.image_name }}
           tags: |
             type=raw,value=${{ steps.prepare.outputs.release_tag }}
-            type=ref,event=branch
-            type=ref,event=tag
             type=raw,value=latest,enable=${{ steps.prepare.outputs.push_latest == 'true' }}
 
       - name: Log In To Huawei SWR
