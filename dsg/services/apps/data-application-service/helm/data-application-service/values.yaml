@@ -60,7 +60,7 @@ depServices:
     port: 3330
     user: anyshare
     password: xxx
-    database: data_application_service
+    database: kweaver
   redis:
     connectInfo:
       masterGroupName: mymaster

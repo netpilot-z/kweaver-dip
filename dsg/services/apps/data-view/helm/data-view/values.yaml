@@ -49,7 +49,7 @@ depServices:
     port: 3330
     user: anyshare
     password: xxx
-    database: af_main
+    database: kweaver
   redis:
     connectInfo:
       masterGroupName: mymaster

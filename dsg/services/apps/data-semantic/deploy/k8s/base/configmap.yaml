@@ -39,7 +39,7 @@ data:
       Default:
         Host: mysql-service
         Port: 3306
-        Database: data-semantic
+        Database: kweaver
         Username: root
         Password: root123456
         Charset: utf8mb4
@@ -113,7 +113,7 @@ data:
       Default:
         Host: mysql-service
         Port: 3306
-        Database: data-semantic
+        Database: kweaver
         Username: root
         Password: root123456
         Charset: utf8mb4

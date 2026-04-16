@@ -69,7 +69,7 @@ depServices:
     type: MariaDB
     user: 'anyshare'
     password: ''
-    database: 'af_main'
+    database: 'kweaver'
   hydra:
     administrativeHost: hydra-admin
     administrativePort: 4445

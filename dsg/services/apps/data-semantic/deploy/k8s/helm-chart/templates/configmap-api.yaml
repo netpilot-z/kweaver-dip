@@ -44,7 +44,7 @@ data:
       Default:
         Host: mariadb-mariadb-master.resource.svc.cluster.local.
         Port: 3330
-        Database: af_main
+        Database: kweaver
         Username: anyshare
         Password: eisoo.com123
         Charset: utf8mb4

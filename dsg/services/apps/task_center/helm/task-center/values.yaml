@@ -84,7 +84,7 @@ depServices:
     port: 3330
     user: anyshare
     password: xxx
-    database: af_tasks
+    database: kweaver
   configuration-center:
     host: configuration-center
     port: 8133
