@@ -48,6 +48,13 @@ studio:
   useExternalOpenClaw: false
 
 resources:
+  init:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 4
+      memory: 4Gi
   studio:
     requests:
       cpu: 100m

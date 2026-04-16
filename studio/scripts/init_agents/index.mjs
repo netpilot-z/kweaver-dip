@@ -158,6 +158,16 @@ function upsertAgentConfig(agentConfigs, newAgent) {
   console.log(`[新增] 在配置文件中注册 ${newAgent.id}`);
 }
 
+function ensureArchiveToolAllowed(cfg) {
+  const tools = cfg.tools && typeof cfg.tools === "object" ? cfg.tools : {};
+  const alsoAllow = Array.isArray(tools.alsoAllow) ? tools.alsoAllow : [];
+
+  cfg.tools = {
+    ...tools,
+    alsoAllow: alsoAllow.includes("archive") ? alsoAllow : [...alsoAllow, "archive"]
+  };
+}
+
 async function initOpenClawConfig(builtInAgents) {
   console.log("🛠️ 开始校准 openclaw.json 中的 Agent 配置...");
   const configPath = path.join(STATE_DIR, "openclaw.json");
@@ -180,6 +190,7 @@ async function initOpenClawConfig(builtInAgents) {
     ...(cfg.cron || {}),
     sessionRetention: false
   };
+  ensureArchiveToolAllowed(cfg);
 
   for (const agent of builtInAgents) {
     upsertAgentConfig(cfg.agents.list, {

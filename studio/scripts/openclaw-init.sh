@@ -1,0 +1,47 @@
+#!/bin/sh
+
+set -eu
+
+resolve_installed_dip_plugin_dir() {
+  PLUGIN_INFO_OUTPUT="$(openclaw plugins info dip --json 2>&1 || true)"
+
+  printf '%s' "$PLUGIN_INFO_OUTPUT" \
+    | node -e '
+        let input = "";
+        process.stdin.on("data", chunk => (input += chunk));
+        process.stdin.on("end", () => {
+          const start = input.indexOf("{");
+          if (start < 0) {
+            process.exit(1);
+          }
+
+          let payload;
+          try {
+            payload = JSON.parse(input.slice(start));
+          } catch {
+            process.exit(1);
+          }
+
+          if (typeof payload.source !== "string" || payload.source.length === 0) {
+            process.exit(1);
+          }
+
+          process.stdout.write(require("node:path").dirname(payload.source));
+        });
+      '
+}
+
+install_dip_plugin() {
+  if PLUGIN_INSTALL_DIR="$(resolve_installed_dip_plugin_dir)"; then
+    echo "dip plugin already installed, replacing existing installation"
+    if [ -n "$PLUGIN_INSTALL_DIR" ]; then
+      rm -rf "$PLUGIN_INSTALL_DIR"
+    fi
+  fi
+
+  echo "installing dip plugin from /app/extensions/dip"
+  openclaw plugins install /app/extensions/dip
+}
+
+install_dip_plugin
+node /app/scripts/init_agents/index.mjs

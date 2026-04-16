@@ -26,6 +26,24 @@ spec:
           hostPath:
             path: {{ .Values.studio.envFileHostPath }}
             type: FileOrCreate
+      initContainers:
+        - name: openclaw-init
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/app/scripts/openclaw-init.sh"]
+          env:
+            - name: USE_EXTERNAL_OPENCLAW
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Chart.Name }}-config
+                  key: USE_EXTERNAL_OPENCLAW
+          resources:
+            {{- toYaml .Values.resources.init | nindent 12 }}
+          volumeMounts:
+            - name: openclaw-host-path
+              mountPath: /root/.openclaw
+            - name: env-file-host-path
+              mountPath: /app/.env
       containers:
         - name: dip-studio
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"

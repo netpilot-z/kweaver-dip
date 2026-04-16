@@ -34,7 +34,7 @@ COPY --from=builder /build/node_modules ./node_modules
 
 RUN ln -sf /app/node_modules/openclaw/openclaw.mjs /usr/local/bin/openclaw \
     && ln -sf /app/node_modules/@kweaver-ai/kweaver-sdk/bin/kweaver.js /usr/local/bin/kweaver \
-    && chmod +x /app/scripts/docker-entrypoint.sh
+    && chmod +x /app/scripts/docker-entrypoint.sh /app/scripts/openclaw-init.sh
 
 EXPOSE 3000
 
