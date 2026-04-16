@@ -55,7 +55,7 @@ class Settings(BaseSettings):
     # 数据库配置
     db_host: str = Field(default="localhost", description="数据库主机")
     db_port: int = Field(default=3306, description="数据库端口")
-    db_name: str = Field(default="dip", description="数据库名称")
+    db_name: str = Field(default="kweaver", description="数据库名称")
     db_user: str = Field(default="root", description="数据库用户名")
     db_password: str = Field(default="", description="数据库密码")
 

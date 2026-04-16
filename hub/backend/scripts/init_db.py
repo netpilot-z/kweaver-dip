@@ -14,7 +14,7 @@ DB_HOST = os.getenv('DIP_HUB_DB_HOST', 'localhost')
 DB_PORT = int(os.getenv('DIP_HUB_DB_PORT', '3306'))
 DB_USER = os.getenv('DIP_HUB_DB_USER', 'root')
 DB_PASSWORD = os.getenv('DIP_HUB_DB_PASSWORD', '123456')
-DB_NAME = os.getenv('DIP_HUB_DB_NAME', 'dip')
+DB_NAME = os.getenv('DIP_HUB_DB_NAME', 'kweaver')
 
 
 def init_database():
