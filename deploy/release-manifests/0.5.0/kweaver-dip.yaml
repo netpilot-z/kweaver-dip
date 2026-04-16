@@ -58,6 +58,9 @@ releases:
     version: 0.5.1-main.git-671eead
     dependsOn:
     - studio-web
+  workflow:
+    chart: workflow
+    version: 0.3.0
   workflow-manage-client:
     chart: workflow-manage-client
     version: 0.5.0-main.git-84bea21
