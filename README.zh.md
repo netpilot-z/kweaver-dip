@@ -69,6 +69,7 @@ sudo ./deploy.sh kweaver-dip install
 npm install -g @kweaver-ai/kweaver-sdk
 
 # 4. 安装 OpenClaw DIP 插件
+# 如果您选择使用 KWeaver DIP 自带的 OpenClaw 可以跳过此步
 openclaw plugins install ./openclaw-extensions/dip
 ```
 
