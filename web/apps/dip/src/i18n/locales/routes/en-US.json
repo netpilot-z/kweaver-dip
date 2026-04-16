@@ -32,7 +32,9 @@
       "allExecutions": "All execution units",
       "autoflow": "Autoflow",
       "dataflow": "Data flow",
-      "workflow": "Workflow"
+      "workflow": "Workflow",
+      "ruleBase": "Rule Base",
+      "dataSemanticGovernance": "Data semantic governance"
     },
     "systemMenu": {
       "information-security": "Information security",

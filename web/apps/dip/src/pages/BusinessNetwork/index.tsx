@@ -87,7 +87,7 @@ const BusinessNetwork = () => {
         sectionBasePath={BUSINESS_NETWORK_BASE_PATH}
         microAppScopeClassName={styles.microAppScope}
         componentRegistry={businessComponentPageRegistry}
-        duplicateLoadGuardBasenameIncludes="/vega/"
+        duplicateLoadGuardBasenameIncludes={['/vega/', '/mdl/']}
       />
     </div>
   )

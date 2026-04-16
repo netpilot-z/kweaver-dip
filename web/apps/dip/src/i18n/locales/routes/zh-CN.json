@@ -32,7 +32,9 @@
       "allExecutions": "全部执行单元",
       "autoflow": "Autoflow",
       "dataflow": "数据流",
-      "workflow": "工作流"
+      "workflow": "工作流",
+      "ruleBase": "规则库",
+      "dataSemanticGovernance": "数据语义治理"
     },
     "systemMenu": {
       "information-security": "信息安全管理",

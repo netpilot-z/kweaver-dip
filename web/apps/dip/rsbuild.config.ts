@@ -55,10 +55,12 @@ export default defineConfig({
     // 配置代理，解决远程微应用 CORS 问题
     proxy: {
       // 子应用代理
+      '/anyfabric': proxyBase,
       '/isfweb': proxyBase,
       '/mf-model-manager': proxyBase,
       '/agent-web': proxyBase,
       '/vega': proxyBase,
+      '/mdl': proxyBase,
       '/flow-web': proxyBase,
       '/operator-web': proxyBase,
       '/doc-audit-client': proxyBase,
