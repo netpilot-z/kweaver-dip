@@ -196,6 +196,26 @@ describe("createDigitalHumanRouter", () => {
     expect(next).not.toHaveBeenCalled();
   });
 
+  it("deduplicates and decodes built-in ids from the path parameter", async () => {
+    const createBuiltInDigitalHumans = vi.fn().mockResolvedValue([]);
+    const { createDigitalHumanRouter } = await importRouterWithLogicMock({
+      createBuiltInDigitalHumans
+    });
+    const router = createDigitalHumanRouter() as Router;
+    const handler = findHandler(router, "put", builtInCreatePath);
+
+    await handler?.(
+      { params: { ids: "a,%20b%20,a" } } as unknown as Request,
+      createResponseDouble(),
+      vi.fn<NextFunction>()
+    );
+
+    expect(createBuiltInDigitalHumans).toHaveBeenCalledWith(
+      ["a", "b"],
+      expect.any(Object)
+    );
+  });
+
   it("registers GET /api/dip-studio/v1/digital-human", async () => {
     const { createDigitalHumanRouter } = await importRouterWithLogicMock({});
     const router = createDigitalHumanRouter() as Router;
@@ -453,6 +473,42 @@ describe("createDigitalHumanRouter", () => {
     expect(response.status).not.toHaveBeenCalled();
   });
 
+  it("wraps unexpected built-in list and built-in create errors", async () => {
+    const { createDigitalHumanRouter } = await importRouterWithLogicMock({
+      listBuiltInDigitalHumans: async () => {
+        throw new Error("boom-builtins");
+      },
+      createBuiltInDigitalHumans: async () => {
+        throw new Error("boom-create-builtins");
+      }
+    });
+    const router = createDigitalHumanRouter() as Router;
+    const listHandler = findHandler(router, "get", builtInListPath);
+    const createHandler = findHandler(router, "put", builtInCreatePath);
+    const listNext = vi.fn<NextFunction>();
+    const createNext = vi.fn<NextFunction>();
+
+    await listHandler?.({} as Request, createResponseDouble(), listNext);
+    await createHandler?.(
+      { params: { ids: "a" } } as unknown as Request,
+      createResponseDouble(),
+      createNext
+    );
+
+    expect(listNext).toHaveBeenCalledWith(
+      expect.objectContaining({
+        statusCode: 502,
+        message: "Failed to query built-in digital humans"
+      })
+    );
+    expect(createNext).toHaveBeenCalledWith(
+      expect.objectContaining({
+        statusCode: 502,
+        message: "boom-create-builtins"
+      })
+    );
+  });
+
   it("POST create forwards HttpError as-is", async () => {
     const { HttpError } = await import("../errors/http-error");
     const err = new HttpError(400, "bad");
@@ -473,6 +529,30 @@ describe("createDigitalHumanRouter", () => {
     );
 
     expect(next).toHaveBeenCalledWith(err);
+  });
+
+  it("POST create wraps unexpected errors using the original message", async () => {
+    const { createDigitalHumanRouter } = await importRouterWithLogicMock({
+      createDigitalHuman: async () => {
+        throw new Error("boom-create");
+      }
+    });
+    const router = createDigitalHumanRouter() as Router;
+    const handler = findHandler(router, "post", listPath);
+    const next = vi.fn<NextFunction>();
+
+    await handler?.(
+      { body: { name: "x" } } as Request,
+      createResponseDouble(),
+      next
+    );
+
+    expect(next).toHaveBeenCalledWith(
+      expect.objectContaining({
+        statusCode: 502,
+        message: "boom-create"
+      })
+    );
   });
 
   it("POST without name returns 400", async () => {
@@ -687,6 +767,42 @@ describe("createDigitalHumanRouter", () => {
     expect(next).not.toHaveBeenCalled();
   });
 
+  it("POST trims optional fields and filters skills/bkn/channel when values are empty", async () => {
+    const createDigitalHuman = vi.fn().mockResolvedValue({ id: "x", name: "n", soul: "s" });
+    const { createDigitalHumanRouter } = await importRouterWithLogicMock({
+      createDigitalHuman
+    });
+    const router = createDigitalHumanRouter() as Router;
+    const handler = findHandler(router, "post", listPath);
+
+    await handler?.(
+      {
+        body: {
+          name: "  n  ",
+          creature: "  c  ",
+          icon_id: "  icon  ",
+          soul: "   ",
+          skills: [" a ", "", 1],
+          bkn: [],
+          channel: { type: "   ", appId: "  app  ", appSecret: "  secret  " }
+        }
+      } as Request,
+      createResponseDouble(),
+      vi.fn<NextFunction>()
+    );
+
+    expect(createDigitalHuman).toHaveBeenCalledWith({
+      id: undefined,
+      name: "n",
+      creature: "c",
+      icon_id: "icon",
+      soul: undefined,
+      skills: ["a"],
+      bkn: undefined,
+      channel: { appId: "app", appSecret: "secret" }
+    });
+  });
+
   it("PUT forwards skills and bkn patches", async () => {
     const updateDigitalHuman = vi.fn().mockResolvedValue({ id: "i", name: "n", soul: "" });
     const { createDigitalHumanRouter } = await importRouterWithLogicMock({
@@ -714,5 +830,93 @@ describe("createDigitalHumanRouter", () => {
       bkn: [{ name: "x", url: "https://y" }]
     });
     expect(next).not.toHaveBeenCalled();
+  });
+
+  it("PUT supports empty bkn arrays and optional trimmed fields", async () => {
+    const updateDigitalHuman = vi.fn().mockResolvedValue({ id: "i", name: "n", soul: "" });
+    const { createDigitalHumanRouter } = await importRouterWithLogicMock({
+      updateDigitalHuman
+    });
+    const router = createDigitalHumanRouter() as Router;
+    const handler = findHandler(router, "put", detailPath);
+
+    await handler?.(
+      {
+        params: { id: [" i ", "ignored"] },
+        body: {
+          creature: "  helper  ",
+          icon_id: "  icon  ",
+          skills: [" a ", "", 1],
+          bkn: [],
+          channel: { type: "   ", appId: " app ", appSecret: " secret " }
+        }
+      } as unknown as Request,
+      createResponseDouble(),
+      vi.fn<NextFunction>()
+    );
+
+    expect(updateDigitalHuman).toHaveBeenCalledWith(" i ", {
+      creature: "helper",
+      icon_id: "icon",
+      skills: ["a"],
+      bkn: [],
+      channel: { appId: "app", appSecret: "secret" }
+    });
+  });
+
+  it("wraps unexpected detail, update, and delete errors", async () => {
+    const { createDigitalHumanRouter } = await importRouterWithLogicMock({
+      getDigitalHuman: async () => {
+        throw new Error("boom-detail");
+      },
+      updateDigitalHuman: async () => {
+        throw new Error("boom-update");
+      },
+      deleteDigitalHuman: async () => {
+        throw new Error("boom-delete");
+      }
+    });
+    const router = createDigitalHumanRouter() as Router;
+    const detailHandler = findHandler(router, "get", detailPath);
+    const updateHandler = findHandler(router, "put", detailPath);
+    const deleteHandler = findHandler(router, "delete", detailPath);
+    const detailNext = vi.fn<NextFunction>();
+    const updateNext = vi.fn<NextFunction>();
+    const deleteNext = vi.fn<NextFunction>();
+
+    await detailHandler?.(
+      { params: { id: "i" } } as unknown as Request,
+      createResponseDouble(),
+      detailNext
+    );
+    await updateHandler?.(
+      { params: { id: "i" }, body: { name: "new" } } as unknown as Request,
+      createResponseDouble(),
+      updateNext
+    );
+    await deleteHandler?.(
+      { params: { id: "i" }, query: {} } as unknown as Request,
+      createResponseDouble(),
+      deleteNext
+    );
+
+    expect(detailNext).toHaveBeenCalledWith(
+      expect.objectContaining({
+        statusCode: 502,
+        message: "Failed to retrieve digital human detail"
+      })
+    );
+    expect(updateNext).toHaveBeenCalledWith(
+      expect.objectContaining({
+        statusCode: 502,
+        message: "boom-update"
+      })
+    );
+    expect(deleteNext).toHaveBeenCalledWith(
+      expect.objectContaining({
+        statusCode: 502,
+        message: "Failed to delete digital human"
+      })
+    );
   });
 });
