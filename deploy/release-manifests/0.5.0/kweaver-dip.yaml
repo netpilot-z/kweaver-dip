@@ -14,9 +14,6 @@ releases:
     chart: dip-data-migrator
     version: 0.5.0-main.20260417.3.2f7545f
     stage: pre
-  deploy-web:
-    chart: deploy-web
-    version: 0.3.0
   business-system-service:
     chart: business-system-service
     version: 0.3.0-1d43acc
