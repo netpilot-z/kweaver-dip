@@ -1,4 +1,4 @@
-SET SCHEMA kweaver;
+SET SCHEMA adp;
 
 CREATE TABLE IF NOT EXISTS "t_wf_activity_info_config"  (
   "activity_def_id" VARCHAR(100 CHAR) NOT NULL,
