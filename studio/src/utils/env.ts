@@ -26,6 +26,31 @@ export interface LoadEnvFileOptions {
 }
 
 /**
+ * Describes the OpenClaw Gateway connection settings used by runtime clients.
+ */
+export interface OpenClawGatewayRuntimeConfig {
+  /**
+   * OpenClaw Gateway WebSocket URL.
+   */
+  url: string;
+
+  /**
+   * OpenClaw Gateway HTTP base URL.
+   */
+  httpUrl: string;
+
+  /**
+   * Optional bearer token used for upstream authentication.
+   */
+  token?: string;
+
+  /**
+   * Upstream timeout in milliseconds.
+   */
+  timeoutMs: number;
+}
+
+/**
  * Resolves the HTTP port from an environment variable.
  *
  * @param value The raw environment variable value.
@@ -87,6 +112,31 @@ export function getEnv(): {
     openClawGatewayToken: readOptionalString(process.env.OPENCLAW_GATEWAY_TOKEN),
     openClawGatewayTimeoutMs: resolveTimeoutMs(process.env.OPENCLAW_GATEWAY_TIMEOUT_MS),
     openClawWorkspaceDir: resolveWorkspaceDir()
+  };
+}
+
+/**
+ * Reloads `.env` and returns the latest OpenClaw Gateway connection settings.
+ *
+ * @param options Optional env-file loading overrides used by tests.
+ * @returns The normalized OpenClaw runtime configuration.
+ */
+export function getOpenClawGatewayRuntimeConfig(
+  options: LoadEnvFileOptions = {}
+): OpenClawGatewayRuntimeConfig {
+  loadEnvFile({
+    ...options,
+    override: options.override ?? true,
+    forceReload: options.forceReload ?? true
+  });
+
+  const env = getEnv();
+
+  return {
+    url: env.openClawGatewayUrl,
+    httpUrl: env.openClawGatewayHttpUrl,
+    token: env.openClawGatewayToken,
+    timeoutMs: env.openClawGatewayTimeoutMs
   };
 }
 

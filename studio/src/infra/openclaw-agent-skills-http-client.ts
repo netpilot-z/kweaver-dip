@@ -8,11 +8,12 @@ import type {
   UninstallSkillResult,
   UpdateAgentSkillsResult
 } from "../types/agent-skills";
+import type { OpenClawGatewayRuntimeConfig } from "../utils/env";
 
 /**
  * Runtime configuration used to call OpenClaw `dip` plugin skills endpoints.
  */
-export interface OpenClawAgentSkillsHttpClientOptions {
+export interface OpenClawAgentSkillsHttpConnectionOptions {
   /**
    * The configured OpenClaw gateway HTTP URL.
    */
@@ -27,6 +28,17 @@ export interface OpenClawAgentSkillsHttpClientOptions {
    * Reserved for compatibility with shared OpenClaw runtime config.
    */
   timeoutMs: number;
+}
+
+/**
+ * Runtime configuration used to call OpenClaw `dip` plugin skills endpoints.
+ */
+export interface OpenClawAgentSkillsHttpClientOptions
+extends OpenClawAgentSkillsHttpConnectionOptions {
+  /**
+   * Reads the latest OpenClaw Gateway settings before each HTTP request.
+   */
+  configReader?: () => OpenClawGatewayRuntimeConfig;
 }
 
 /**
@@ -148,11 +160,12 @@ implements OpenClawAgentSkillsHttpClient {
    * @returns The plugin payload.
    */
   public async listAvailableSkills(): Promise<AgentSkillsCatalog> {
+    const connectionOptions = this.getConnectionOptions();
     const response = await this.fetchImpl(
-      buildOpenClawAgentSkillsUrl(this.options.gatewayUrl),
+      buildOpenClawAgentSkillsUrl(connectionOptions.gatewayUrl),
       {
         method: "GET",
-        headers: createOpenClawAgentSkillsHeaders(this.options.token)
+        headers: createOpenClawAgentSkillsHeaders(connectionOptions.token)
       }
     ).catch((error: unknown) => {
       throw normalizeOpenClawAgentSkillsError(error);
@@ -172,11 +185,12 @@ implements OpenClawAgentSkillsHttpClient {
    * @returns The plugin payload.
    */
   public async getAgentSkills(agentId: string): Promise<AgentSkillsBinding> {
+    const connectionOptions = this.getConnectionOptions();
     const response = await this.fetchImpl(
-      buildOpenClawAgentSkillsUrl(this.options.gatewayUrl, agentId),
+      buildOpenClawAgentSkillsUrl(connectionOptions.gatewayUrl, agentId),
       {
         method: "GET",
-        headers: createOpenClawAgentSkillsHeaders(this.options.token)
+        headers: createOpenClawAgentSkillsHeaders(connectionOptions.token)
       }
     ).catch((error: unknown) => {
       throw normalizeOpenClawAgentSkillsError(error);
@@ -200,11 +214,12 @@ implements OpenClawAgentSkillsHttpClient {
     agentId: string,
     skills: string[]
   ): Promise<UpdateAgentSkillsResult> {
+    const connectionOptions = this.getConnectionOptions();
     const response = await this.fetchImpl(
-      buildOpenClawAgentSkillsUrl(this.options.gatewayUrl),
+      buildOpenClawAgentSkillsUrl(connectionOptions.gatewayUrl),
       {
         method: "POST",
-        headers: createOpenClawAgentSkillsHeaders(this.options.token, true),
+        headers: createOpenClawAgentSkillsHeaders(connectionOptions.token, true),
         body: JSON.stringify({ agentId, skills })
       }
     ).catch((error: unknown) => {
@@ -229,11 +244,12 @@ implements OpenClawAgentSkillsHttpClient {
     zipBody: Buffer | Uint8Array,
     options?: { overwrite?: boolean; name?: string }
   ): Promise<InstallSkillResult> {
+    const connectionOptions = this.getConnectionOptions();
     const response = await this.fetchImpl(
-      buildOpenClawSkillInstallUrl(this.options.gatewayUrl, options),
+      buildOpenClawSkillInstallUrl(connectionOptions.gatewayUrl, options),
       {
         method: "POST",
-        headers: createOpenClawSkillInstallHeaders(this.options.token),
+        headers: createOpenClawSkillInstallHeaders(connectionOptions.token),
         body: createOpenClawSkillInstallFormData(zipBody, options?.name)
       }
     ).catch((error: unknown) => {
@@ -254,11 +270,12 @@ implements OpenClawAgentSkillsHttpClient {
    * @returns Parsed uninstall payload from the plugin.
    */
   public async uninstallSkill(name: string): Promise<UninstallSkillResult> {
+    const connectionOptions = this.getConnectionOptions();
     const response = await this.fetchImpl(
-      buildOpenClawSkillUninstallUrl(this.options.gatewayUrl, name),
+      buildOpenClawSkillUninstallUrl(connectionOptions.gatewayUrl, name),
       {
         method: "DELETE",
-        headers: createOpenClawAgentSkillsHeaders(this.options.token)
+        headers: createOpenClawAgentSkillsHeaders(connectionOptions.token)
       }
     ).catch((error: unknown) => {
       throw normalizeOpenClawSkillUninstallError(error);
@@ -281,11 +298,16 @@ implements OpenClawAgentSkillsHttpClient {
     name: string,
     resolvedSkillPath?: string
   ): Promise<SkillTreeResult> {
+    const connectionOptions = this.getConnectionOptions();
     const response = await this.fetchImpl(
-      buildOpenClawSkillTreeUrl(this.options.gatewayUrl, name, resolvedSkillPath),
+      buildOpenClawSkillTreeUrl(
+        connectionOptions.gatewayUrl,
+        name,
+        resolvedSkillPath
+      ),
       {
         method: "GET",
-        headers: createOpenClawAgentSkillsHeaders(this.options.token)
+        headers: createOpenClawAgentSkillsHeaders(connectionOptions.token)
       }
     ).catch((error: unknown) => {
       throw normalizeOpenClawSkillTreeError(error);
@@ -310,11 +332,17 @@ implements OpenClawAgentSkillsHttpClient {
     filePath: string,
     resolvedSkillPath?: string
   ): Promise<SkillContentResult> {
+    const connectionOptions = this.getConnectionOptions();
     const response = await this.fetchImpl(
-      buildOpenClawSkillContentUrl(this.options.gatewayUrl, name, filePath, resolvedSkillPath),
+      buildOpenClawSkillContentUrl(
+        connectionOptions.gatewayUrl,
+        name,
+        filePath,
+        resolvedSkillPath
+      ),
       {
         method: "GET",
-        headers: createOpenClawAgentSkillsHeaders(this.options.token)
+        headers: createOpenClawAgentSkillsHeaders(connectionOptions.token)
       }
     ).catch((error: unknown) => {
       throw normalizeOpenClawSkillContentError(error);
@@ -339,11 +367,17 @@ implements OpenClawAgentSkillsHttpClient {
     filePath: string,
     resolvedSkillPath?: string
   ): Promise<OpenClawAgentSkillsHttpResult> {
+    const connectionOptions = this.getConnectionOptions();
     const response = await this.fetchImpl(
-      buildOpenClawSkillDownloadUrl(this.options.gatewayUrl, name, filePath, resolvedSkillPath),
+      buildOpenClawSkillDownloadUrl(
+        connectionOptions.gatewayUrl,
+        name,
+        filePath,
+        resolvedSkillPath
+      ),
       {
         method: "GET",
-        headers: createOpenClawAgentSkillsHeaders(this.options.token)
+        headers: createOpenClawAgentSkillsHeaders(connectionOptions.token)
       }
     ).catch((error: unknown) => {
       throw normalizeOpenClawSkillDownloadError(error);
@@ -357,6 +391,25 @@ implements OpenClawAgentSkillsHttpClient {
       status: response.status,
       headers: response.headers,
       body: new Uint8Array(await response.arrayBuffer())
+    };
+  }
+
+  /**
+   * Reads the latest upstream HTTP connection options.
+   *
+   * @returns The effective gateway HTTP settings.
+   */
+  private getConnectionOptions(): OpenClawAgentSkillsHttpConnectionOptions {
+    if (this.options.configReader === undefined) {
+      return this.options;
+    }
+
+    const latestConfig = this.options.configReader();
+
+    return {
+      gatewayUrl: latestConfig.httpUrl,
+      token: latestConfig.token,
+      timeoutMs: latestConfig.timeoutMs
     };
   }
 }

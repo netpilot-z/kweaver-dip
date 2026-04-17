@@ -10,7 +10,7 @@ import {
   readAgentIdFromSessionKey,
   readRequiredSessionKeyHeader
 } from "./chat";
-import { getEnv } from "../utils/env";
+import { getEnv, getOpenClawGatewayRuntimeConfig } from "../utils/env";
 import { normalizeMultipartFilename } from "../utils/upload";
 
 /**
@@ -32,7 +32,8 @@ const env = getEnv();
 const openClawWorkspaceTempClient = new DefaultOpenClawWorkspaceTempHttpClient({
   gatewayUrl: env.openClawGatewayHttpUrl,
   token: env.openClawGatewayToken,
-  timeoutMs: env.openClawGatewayTimeoutMs
+  timeoutMs: env.openClawGatewayTimeoutMs,
+  configReader: getOpenClawGatewayRuntimeConfig
 });
 const MAX_CHAT_UPLOAD_BYTES = 32 * 1024 * 1024;
 const chatUpload = multer({

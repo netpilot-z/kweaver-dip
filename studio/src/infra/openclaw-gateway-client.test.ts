@@ -5,6 +5,33 @@ import {
   createDeviceSignaturePayload,
   createGatewayError
 } from "./openclaw-gateway-client";
+import type { OpenClawWebSocket } from "./openclaw-gateway-client";
+
+class MockOpenClawWebSocket implements OpenClawWebSocket {
+  public readonly sentFrames: string[] = [];
+  private readonly listeners = new Map<string, Array<(...args: unknown[]) => void>>();
+
+  public on(eventName: string, listener: (...args: unknown[]) => void): this {
+    const existing = this.listeners.get(eventName) ?? [];
+    existing.push(listener);
+    this.listeners.set(eventName, existing);
+    return this;
+  }
+
+  public send(data: string): void {
+    this.sentFrames.push(data);
+  }
+
+  public close(): void {
+    return;
+  }
+
+  public emit(eventName: string, ...args: unknown[]): void {
+    for (const listener of this.listeners.get(eventName) ?? []) {
+      listener(...args);
+    }
+  }
+}
 
 afterEach(() => {
   OpenClawGatewayClient.resetInstanceForTests();
@@ -104,5 +131,94 @@ describe("OpenClawGatewayClient singleton", () => {
     });
 
     expect(first).toBe(second);
+  });
+});
+
+describe("OpenClawGatewayClient dynamic config", () => {
+  it("refreshes OpenClaw settings before reconnecting", async () => {
+    const sockets: MockOpenClawWebSocket[] = [];
+    const configReader = vi
+      .fn()
+      .mockReturnValueOnce({
+        url: "ws://gateway-1.example.com",
+        httpUrl: "http://gateway-1.example.com",
+        token: "token-1",
+        timeoutMs: 5_000
+      })
+      .mockReturnValueOnce({
+        url: "ws://gateway-2.example.com",
+        httpUrl: "http://gateway-2.example.com",
+        token: "token-2",
+        timeoutMs: 5_000
+      });
+    const createWebSocket = vi.fn((url: string) => {
+      const socket = new MockOpenClawWebSocket();
+      sockets.push(socket);
+      expect(url).toBe(
+        sockets.length === 1
+          ? "ws://gateway-1.example.com"
+          : "ws://gateway-2.example.com"
+      );
+      return socket;
+    });
+    const client = new OpenClawGatewayClient(
+      {
+        url: "ws://stale.example.com",
+        token: "stale-token",
+        timeoutMs: 5_000,
+        reconnectDelayMs: 0,
+        configReader
+      },
+      createWebSocket
+    );
+
+    const firstConnect = client.connect();
+    const firstSocket = sockets[0];
+    expect(firstSocket).toBeDefined();
+    firstSocket.emit(
+      "message",
+      JSON.stringify({
+        type: "event",
+        event: "connect.challenge",
+        payload: { nonce: "nonce-1" }
+      })
+    );
+
+    const firstConnectFrame = JSON.parse(firstSocket.sentFrames[0] ?? "{}") as {
+      id: string;
+      params?: { auth?: { token?: string } };
+    };
+    expect(firstConnectFrame.params?.auth?.token).toBe("token-1");
+    firstSocket.emit(
+      "message",
+      JSON.stringify({
+        type: "res",
+        id: firstConnectFrame.id,
+        ok: true,
+        payload: {}
+      })
+    );
+    await firstConnect;
+
+    firstSocket.emit("close");
+    await vi.waitFor(() => {
+      expect(createWebSocket).toHaveBeenCalledTimes(2);
+    });
+
+    const secondSocket = sockets[1];
+    secondSocket.emit(
+      "message",
+      JSON.stringify({
+        type: "event",
+        event: "connect.challenge",
+        payload: { nonce: "nonce-2" }
+      })
+    );
+
+    const secondConnectFrame = JSON.parse(secondSocket.sentFrames[0] ?? "{}") as {
+      id: string;
+      params?: { auth?: { token?: string } };
+    };
+    expect(secondConnectFrame.params?.auth?.token).toBe("token-2");
   });
 });

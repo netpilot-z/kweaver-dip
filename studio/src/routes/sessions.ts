@@ -2,7 +2,7 @@ import { Router, type NextFunction, type Request, type Response } from "express"
 import { readAuthenticatedUserId } from "../middleware/hydra-auth";
 
 import { OpenClawSessionsGatewayAdapter } from "../adapters/openclaw-sessions-adapter";
-import { getEnv } from "../utils/env";
+import { getEnv, getOpenClawGatewayRuntimeConfig } from "../utils/env";
 import { HttpError } from "../errors/http-error";
 import {
   DefaultOpenClawArchivesHttpClient,
@@ -74,14 +74,16 @@ const env = getEnv();
 const openClawArchivesHttpClient = new DefaultOpenClawArchivesHttpClient({
   gatewayUrl: env.openClawGatewayHttpUrl,
   token: env.openClawGatewayToken,
-  timeoutMs: env.openClawGatewayTimeoutMs
+  timeoutMs: env.openClawGatewayTimeoutMs,
+  configReader: getOpenClawGatewayRuntimeConfig
 });
 const sessionsLogic = new DefaultSessionsLogic(
   new OpenClawSessionsGatewayAdapter(
     OpenClawGatewayClient.getInstance({
       url: env.openClawGatewayUrl,
       token: env.openClawGatewayToken,
-      timeoutMs: env.openClawGatewayTimeoutMs
+      timeoutMs: env.openClawGatewayTimeoutMs,
+      configReader: getOpenClawGatewayRuntimeConfig
     })
   ),
   openClawArchivesHttpClient

@@ -1597,4 +1597,55 @@ describe("DefaultOpenClawChatAgentClient", () => {
     });
     expect(socket.closed).toBe(true);
   });
+
+  it("reloads websocket connection settings before opening a stream", async () => {
+    const socket = new FakeWebSocket();
+    const createWebSocket = vi.fn(() => socket);
+    const configReader = vi.fn().mockReturnValue({
+      url: "ws://127.0.0.1:29999",
+      httpUrl: "http://127.0.0.1:29999",
+      token: "latest-token",
+      timeoutMs: 5_000
+    });
+    const client = new DefaultOpenClawChatAgentClient(
+      {
+        url: "ws://127.0.0.1:18789",
+        token: "stale-token",
+        timeoutMs: 1_000,
+        deviceIdentity: loadDeviceIdentityFromAssets(),
+        configReader
+      },
+      createWebSocket
+    );
+    const abortController = new AbortController();
+    const pending = client.createResponseStream(
+      {
+        sessionKey: "agent:agent-1:user:user-1:direct:chat-1",
+        message: "hello"
+      },
+      "agent-1",
+      abortController.signal
+    );
+
+    expect(configReader).toHaveBeenCalledOnce();
+    expect(createWebSocket).toHaveBeenCalledWith("ws://127.0.0.1:29999");
+
+    socket.emit("message", JSON.stringify({
+      type: "event",
+      event: "connect.challenge",
+      payload: {
+        nonce: "abc123"
+      }
+    }));
+
+    const connectFrame = JSON.parse(socket.sentMessages[0] ?? "{}") as {
+      params?: { auth?: { token?: string } };
+    };
+    expect(connectFrame.params?.auth?.token).toBe("latest-token");
+
+    abortController.abort();
+    await expect(pending).rejects.toMatchObject({
+      statusCode: 499
+    });
+  });
 });

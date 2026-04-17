@@ -19,6 +19,7 @@ import {
   type OpenClawWebSocketFactory
 } from "./openclaw-gateway-client";
 import { ChatAgentAttachment } from "../types/chat-agent";
+import type { OpenClawGatewayRuntimeConfig } from "../utils/env";
 
 const DEFAULT_TIMEOUT_MS = 5_000;
 const SSE_HEADERS = new Headers({
@@ -115,6 +116,11 @@ export interface OpenClawChatAgentClientOptions {
    * Supplies the current time in milliseconds.
    */
   now?: () => number;
+
+  /**
+   * Reads the latest OpenClaw Gateway connection settings before each stream.
+   */
+  configReader?: () => OpenClawGatewayRuntimeConfig;
 }
 
 /**
@@ -365,7 +371,6 @@ export interface OpenClawTextAgentEventPayload {
  * Default dedicated chat agent client backed by one WebSocket per request.
  */
 export class DefaultOpenClawChatAgentClient implements OpenClawChatAgentClient {
-  private readonly timeoutMs: number;
   private readonly deviceIdentity: OpenClawDeviceIdentity;
   private readonly now: () => number;
 
@@ -379,7 +384,6 @@ export class DefaultOpenClawChatAgentClient implements OpenClawChatAgentClient {
     private readonly options: OpenClawChatAgentClientOptions,
     private readonly createWebSocket: OpenClawWebSocketFactory = createDefaultWebSocket
   ) {
-    this.timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
     this.deviceIdentity = options.deviceIdentity ?? loadDeviceIdentityFromAssets();
     this.now = options.now ?? Date.now;
   }
@@ -397,8 +401,10 @@ export class DefaultOpenClawChatAgentClient implements OpenClawChatAgentClient {
     agentId: string,
     signal?: AbortSignal
   ): Promise<OpenClawChatAgentStreamResult> {
+    const connectionOptions = this.getConnectionOptions();
+
     return new Promise<OpenClawChatAgentStreamResult>((resolve, reject) => {
-      const socket = this.createWebSocket(this.options.url);
+      const socket = this.createWebSocket(connectionOptions.url);
       const encoder = new TextEncoder();
       const queue: Uint8Array[] = [];
       let controller:
@@ -640,7 +646,7 @@ export class DefaultOpenClawChatAgentClient implements OpenClawChatAgentClient {
             const requestFrame = createConnectRequest(
               connectRequestId ?? randomUUID(),
               frame,
-              this.options.token,
+              connectionOptions.token,
               this.deviceIdentity,
               this.now
             );
@@ -939,6 +945,33 @@ export class DefaultOpenClawChatAgentClient implements OpenClawChatAgentClient {
         failAfterResolve("OpenClaw gateway closed the connection unexpectedly");
       });
     });
+  }
+
+  /**
+   * Reads the latest upstream WebSocket connection options.
+   *
+   * @returns The effective gateway WebSocket settings.
+   */
+  private getConnectionOptions(): {
+    url: string;
+    token?: string;
+    timeoutMs: number;
+  } {
+    if (this.options.configReader === undefined) {
+      return {
+        url: this.options.url,
+        token: this.options.token,
+        timeoutMs: this.options.timeoutMs ?? DEFAULT_TIMEOUT_MS
+      };
+    }
+
+    const latestConfig = this.options.configReader();
+
+    return {
+      url: latestConfig.url,
+      token: latestConfig.token,
+      timeoutMs: latestConfig.timeoutMs
+    };
   }
 }
 

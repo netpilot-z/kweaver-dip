@@ -13,6 +13,7 @@ import type {
   OpenClawGatewayPort,
   OpenClawRequestFrame,
 } from "../types/openclaw";
+import type { OpenClawGatewayRuntimeConfig } from "../utils/env";
 
 const OPENCLAW_PROTOCOL_VERSION = 3;
 const DEFAULT_DEVICE_PUBLIC_KEY_PATH = "assets/public.pem";
@@ -206,6 +207,11 @@ export interface OpenClawGatewayClientOptions {
    * Supplies the current time in milliseconds.
    */
   now?: () => number;
+
+  /**
+   * Reads the latest OpenClaw Gateway connection settings before reconnecting.
+   */
+  configReader?: () => OpenClawGatewayRuntimeConfig;
 }
 
 /**
@@ -238,11 +244,12 @@ interface OpenClawPendingRequest<T> {
 export class OpenClawGatewayClient implements OpenClawGatewayPort {
   private static singleton?: OpenClawGatewayClient;
 
-  private readonly timeoutMs: number;
+  private timeoutMs: number;
   private readonly heartbeatIntervalMs: number;
   private readonly reconnectDelayMs: number;
   private readonly deviceIdentity: OpenClawDeviceIdentity;
   private readonly now: () => number;
+  private readonly configReader?: () => OpenClawGatewayRuntimeConfig;
   private readonly pendingRequests = new Map<string, OpenClawPendingRequest<unknown>>();
 
   private socket?: OpenClawWebSocket;
@@ -303,6 +310,7 @@ export class OpenClawGatewayClient implements OpenClawGatewayPort {
     this.deviceIdentity =
       options.deviceIdentity ?? loadDeviceIdentityFromAssets();
     this.now = options.now ?? Date.now;
+    this.configReader = options.configReader;
   }
 
   /**
@@ -419,6 +427,7 @@ export class OpenClawGatewayClient implements OpenClawGatewayPort {
       return this.connectPromise;
     }
 
+    this.refreshConnectionOptions();
     this.clearReconnectTimer();
     this.shouldReconnect = true;
     this.isConnected = false;
@@ -452,6 +461,21 @@ export class OpenClawGatewayClient implements OpenClawGatewayPort {
     });
 
     return this.connectPromise;
+  }
+
+  /**
+   * Refreshes the gateway endpoint from the latest runtime configuration.
+   */
+  private refreshConnectionOptions(): void {
+    if (this.configReader === undefined) {
+      return;
+    }
+
+    const latestConfig = this.configReader();
+
+    this.options.url = latestConfig.url;
+    this.options.token = latestConfig.token;
+    this.timeoutMs = latestConfig.timeoutMs;
   }
 
   /**

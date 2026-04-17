@@ -778,4 +778,41 @@ describe("DefaultOpenClawAgentSkillsHttpClient", () => {
       message: "Failed to communicate with OpenClaw /v1/config/agents/skills/{name}: offline"
     });
   });
+
+  it("reloads HTTP connection settings before each request", async () => {
+    const fetchImpl = vi.fn<typeof fetch>().mockResolvedValue(
+      new Response(JSON.stringify({ entries: [] }), {
+        status: 200,
+        headers: { "content-type": "application/json" }
+      })
+    );
+    const configReader = vi.fn().mockReturnValue({
+      url: "ws://127.0.0.1:19002/ws",
+      httpUrl: "http://127.0.0.1:19002/",
+      token: "latest-token",
+      timeoutMs: 8_000
+    });
+    const client = new DefaultOpenClawAgentSkillsHttpClient(
+      {
+        gatewayUrl: "http://127.0.0.1:19001",
+        token: "stale-token",
+        timeoutMs: 5_000,
+        configReader
+      },
+      fetchImpl
+    );
+
+    await client.listAvailableSkills();
+
+    expect(configReader).toHaveBeenCalledOnce();
+    expect(fetchImpl).toHaveBeenCalledWith(
+      "http://127.0.0.1:19002/v1/config/agents/skills",
+      expect.objectContaining({
+        method: "GET",
+        headers: expect.any(Headers)
+      })
+    );
+    const headers = fetchImpl.mock.calls[0]?.[1]?.headers as Headers;
+    expect(headers.get("authorization")).toBe("Bearer latest-token");
+  });
 });

@@ -1,10 +1,11 @@
 import { HttpError } from "../errors/http-error";
 import type { OpenClawSessionArchivesResult } from "../types/sessions";
+import type { OpenClawGatewayRuntimeConfig } from "../utils/env";
 
 /**
  * Runtime configuration used to call OpenClaw `/v1/archives`.
  */
-export interface OpenClawArchivesHttpClientOptions {
+export interface OpenClawArchivesHttpConnectionOptions {
   /**
    * The configured OpenClaw gateway URL.
    */
@@ -19,6 +20,17 @@ export interface OpenClawArchivesHttpClientOptions {
    * Reserved for compatibility with shared OpenClaw runtime config.
    */
   timeoutMs: number;
+}
+
+/**
+ * Runtime configuration used to call OpenClaw `/v1/archives`.
+ */
+export interface OpenClawArchivesHttpClientOptions
+extends OpenClawArchivesHttpConnectionOptions {
+  /**
+   * Reads the latest OpenClaw Gateway settings before each HTTP request.
+   */
+  configReader?: () => OpenClawGatewayRuntimeConfig;
 }
 
 /**
@@ -104,15 +116,16 @@ implements OpenClawArchivesHttpClient {
     digitalHumanId: string,
     sessionId: string
   ): Promise<OpenClawSessionArchivesResult> {
+    const connectionOptions = this.getConnectionOptions();
     const upstreamResponse = await this.fetchImpl(
       buildOpenClawSessionArchivesUrl(
-        this.options.gatewayUrl,
+        connectionOptions.gatewayUrl,
         digitalHumanId,
         sessionId
       ),
       {
         method: "GET",
-        headers: createOpenClawArchivesHeaders(this.options.token)
+        headers: createOpenClawArchivesHeaders(connectionOptions.token)
       }
     ).catch((error: unknown) => {
       throw normalizeOpenClawArchivesError(error);
@@ -140,16 +153,17 @@ implements OpenClawArchivesHttpClient {
     sessionId: string,
     subpath: string
   ): Promise<OpenClawArchivesHttpResult> {
+    const connectionOptions = this.getConnectionOptions();
     const upstreamResponse = await this.fetchImpl(
       buildOpenClawSessionArchiveSubpathUrl(
-        this.options.gatewayUrl,
+        connectionOptions.gatewayUrl,
         digitalHumanId,
         sessionId,
         subpath
       ),
       {
         method: "GET",
-        headers: createOpenClawArchivesHeaders(this.options.token)
+        headers: createOpenClawArchivesHeaders(connectionOptions.token)
       }
     ).catch((error: unknown) => {
       throw normalizeOpenClawArchivesError(error);
@@ -165,6 +179,25 @@ implements OpenClawArchivesHttpClient {
       status: upstreamResponse.status,
       headers: upstreamResponse.headers,
       body: new Uint8Array(await upstreamResponse.arrayBuffer())
+    };
+  }
+
+  /**
+   * Reads the latest upstream HTTP connection options.
+   *
+   * @returns The effective gateway HTTP settings.
+   */
+  private getConnectionOptions(): OpenClawArchivesHttpConnectionOptions {
+    if (this.options.configReader === undefined) {
+      return this.options;
+    }
+
+    const latestConfig = this.options.configReader();
+
+    return {
+      gatewayUrl: latestConfig.httpUrl,
+      token: latestConfig.token,
+      timeoutMs: latestConfig.timeoutMs
     };
   }
 }

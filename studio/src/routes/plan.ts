@@ -1,7 +1,7 @@
 import { Router, type NextFunction, type Request, type Response } from "express";
 
 import { OpenClawCronGatewayAdapter } from "../adapters/openclaw-cron-adapter";
-import { getEnv } from "../utils/env";
+import { getEnv, getOpenClawGatewayRuntimeConfig } from "../utils/env";
 import { HttpError } from "../errors/http-error";
 import { DefaultOpenClawArchivesHttpClient } from "../infra/openclaw-archives-http-client";
 import { OpenClawGatewayClient } from "../infra/openclaw-gateway-client";
@@ -116,14 +116,16 @@ const env = getEnv();
 const openClawArchivesHttpClient = new DefaultOpenClawArchivesHttpClient({
   gatewayUrl: env.openClawGatewayHttpUrl,
   token: env.openClawGatewayToken,
-  timeoutMs: env.openClawGatewayTimeoutMs
+  timeoutMs: env.openClawGatewayTimeoutMs,
+  configReader: getOpenClawGatewayRuntimeConfig
 });
 const cronLogic = new DefaultCronLogic(
   new OpenClawCronGatewayAdapter(
     OpenClawGatewayClient.getInstance({
       url: env.openClawGatewayUrl,
       token: env.openClawGatewayToken,
-      timeoutMs: env.openClawGatewayTimeoutMs
+      timeoutMs: env.openClawGatewayTimeoutMs,
+      configReader: getOpenClawGatewayRuntimeConfig
     })
   ),
   openClawArchivesHttpClient

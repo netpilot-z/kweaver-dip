@@ -1,7 +1,12 @@
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+
 import { describe, expect, it } from "vitest";
 
 import {
   asMessage,
+  getOpenClawGatewayRuntimeConfig,
   isDevelopmentMode,
   readOptionalString,
   resolveBknBackendUrl,
@@ -36,5 +41,37 @@ describe("env helpers", () => {
     expect(isDevelopmentMode("development")).toBe(true);
     expect(isDevelopmentMode("test")).toBe(false);
     expect(isDevelopmentMode(undefined)).toBe(false);
+  });
+
+  it("reloads the latest OpenClaw gateway config from a specific env file", () => {
+    const tempDir = mkdtempSync(join(tmpdir(), "dip-studio-env-"));
+    const envPath = join(tempDir, ".env");
+
+    writeFileSync(
+      envPath,
+      [
+        "OPENCLAW_GATEWAY_PROTOCOL=wss",
+        "OPENCLAW_GATEWAY_HOST=gateway.example.com",
+        "OPENCLAW_GATEWAY_PORT=29001",
+        "OPENCLAW_GATEWAY_TOKEN=latest-token",
+        "OPENCLAW_GATEWAY_TIMEOUT_MS=9000"
+      ].join("\n"),
+      "utf8"
+    );
+
+    try {
+      const config = getOpenClawGatewayRuntimeConfig({
+        path: envPath
+      });
+
+      expect(config).toEqual({
+        url: "wss://gateway.example.com:29001/",
+        httpUrl: "https://gateway.example.com:29001/",
+        token: "latest-token",
+        timeoutMs: 9000
+      });
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true });
+    }
   });
 });

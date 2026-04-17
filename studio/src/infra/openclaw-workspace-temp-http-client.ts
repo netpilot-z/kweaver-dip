@@ -1,9 +1,10 @@
 import { HttpError } from "../errors/http-error";
+import type { OpenClawGatewayRuntimeConfig } from "../utils/env";
 
 /**
  * Runtime configuration used to call OpenClaw `/v1/workspace/tmp/upload`.
  */
-export interface OpenClawWorkspaceTempHttpClientOptions {
+export interface OpenClawWorkspaceTempHttpConnectionOptions {
   /**
    * The configured OpenClaw gateway URL.
    */
@@ -18,6 +19,17 @@ export interface OpenClawWorkspaceTempHttpClientOptions {
    * Reserved for compatibility with shared OpenClaw runtime config.
    */
   timeoutMs: number;
+}
+
+/**
+ * Runtime configuration used to call OpenClaw `/v1/workspace/tmp/upload`.
+ */
+export interface OpenClawWorkspaceTempHttpClientOptions
+extends OpenClawWorkspaceTempHttpConnectionOptions {
+  /**
+   * Reads the latest OpenClaw Gateway settings before each HTTP request.
+   */
+  configReader?: () => OpenClawGatewayRuntimeConfig;
 }
 
 /**
@@ -116,20 +128,21 @@ implements OpenClawWorkspaceTempHttpClient {
   public async uploadTempFile(
     request: OpenClawWorkspaceTempUploadRequest
   ): Promise<OpenClawWorkspaceTempUploadResult> {
+    const connectionOptions = this.getConnectionOptions();
     const body = createOpenClawWorkspaceTempUploadFormData(
       request.body,
       request.filename
     );
     const response = await this.fetchImpl(
       buildOpenClawWorkspaceTempUploadUrl(
-        this.options.gatewayUrl,
+        connectionOptions.gatewayUrl,
         request.agentId,
         request.sessionKey
       ),
       {
         method: "POST",
         headers: createOpenClawWorkspaceTempUploadHeaders(
-          this.options.token
+          connectionOptions.token
         ),
         body
       }
@@ -142,6 +155,25 @@ implements OpenClawWorkspaceTempHttpClient {
     }
 
     return (await response.json()) as OpenClawWorkspaceTempUploadResult;
+  }
+
+  /**
+   * Reads the latest upstream HTTP connection options.
+   *
+   * @returns The effective gateway HTTP settings.
+   */
+  private getConnectionOptions(): OpenClawWorkspaceTempHttpConnectionOptions {
+    if (this.options.configReader === undefined) {
+      return this.options;
+    }
+
+    const latestConfig = this.options.configReader();
+
+    return {
+      gatewayUrl: latestConfig.httpUrl,
+      token: latestConfig.token,
+      timeoutMs: latestConfig.timeoutMs
+    };
   }
 }
 

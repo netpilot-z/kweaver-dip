@@ -3,7 +3,7 @@ import { Router, type NextFunction, type Request, type Response } from "express"
 import {
   OpenClawAgentsGatewayAdapter,
 } from "../adapters/openclaw-agents-adapter";
-import { getEnv } from "../utils/env";
+import { getEnv, getOpenClawGatewayRuntimeConfig } from "../utils/env";
 import { HttpError } from "../errors/http-error";
 import {
   DefaultOpenClawAgentSkillsHttpClient
@@ -33,14 +33,16 @@ const openClawAgentsAdapter = new OpenClawAgentsGatewayAdapter(
   OpenClawGatewayClient.getInstance({
     url: env.openClawGatewayUrl,
     token: env.openClawGatewayToken,
-    timeoutMs: env.openClawGatewayTimeoutMs
+    timeoutMs: env.openClawGatewayTimeoutMs,
+    configReader: getOpenClawGatewayRuntimeConfig
   })
 );
 const agentSkillsLogic = new DefaultAgentSkillsLogic(
   new DefaultOpenClawAgentSkillsHttpClient({
     gatewayUrl: env.openClawGatewayHttpUrl,
     token: env.openClawGatewayToken,
-    timeoutMs: env.openClawGatewayTimeoutMs
+    timeoutMs: env.openClawGatewayTimeoutMs,
+    configReader: getOpenClawGatewayRuntimeConfig
   }),
   openClawAgentsAdapter
 );
