@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_cognitive_assistant;
 CREATE TABLE  if not exists `t_memory_chunks` (
     `id`                 varchar(64)  not null  COMMENT '主键id',
     `document_id`        varchar(64)  not null  COMMENT '文档id',
