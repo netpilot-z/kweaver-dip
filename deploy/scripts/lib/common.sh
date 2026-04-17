@@ -805,6 +805,16 @@ apply_release_manifest_values() {
     # Convert to --set-string arguments
     while IFS='=' read -r key value; do
         [[ -z "${key}" ]] && continue
+        # Strip surrounding single/double quotes from the value (left over from YAML).
+        if [[ "${value}" =~ ^\"(.*)\"$ ]]; then
+            value="${BASH_REMATCH[1]}"
+        elif [[ "${value}" =~ ^\'(.*)\'$ ]]; then
+            value="${BASH_REMATCH[1]}"
+        fi
+        # Escape commas so helm's --set-string does not split the value into
+        # multiple key=value pairs (e.g. "store,studio" would otherwise be
+        # parsed as two entries and fail with "key \"studio\" has no value").
+        value="${value//,/\\,}"
         eval "${target_array_name}+=(\"--set-string\" \"${key}=${value}\")"
     done <<< "${values_output}"
 }
