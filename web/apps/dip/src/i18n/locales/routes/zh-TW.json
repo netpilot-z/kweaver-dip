@@ -33,7 +33,7 @@
       "autoflow": "Autoflow",
       "dataflow": "資料流",
       "workflow": "工作流程",
-      "ruleBase": "規則庫",
+      "knowledgeItems": "知識條目",
       "dataSemanticGovernance": "數據語義治理"
     },
     "systemMenu": {

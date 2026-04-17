@@ -33,7 +33,7 @@
       "autoflow": "Autoflow",
       "dataflow": "Data flow",
       "workflow": "Workflow",
-      "ruleBase": "Rule Base",
+      "knowledgeItems": "Knowledge Items",
       "dataSemanticGovernance": "Data semantic governance"
     },
     "systemMenu": {

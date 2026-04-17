@@ -115,8 +115,8 @@ export const businessMenuItems: BusinessMenuItem[] = [
         ],
       },
       {
-        key: 'rule-base',
-        labelKey: 'routes.businessMenu.ruleBase',
+        key: 'knowledge-items',
+        labelKey: 'routes.businessMenu.knowledgeItems',
         path: buildBusinessNetworkPath('/mdl/data-dict'),
         page: {
           type: 'micro-app',
