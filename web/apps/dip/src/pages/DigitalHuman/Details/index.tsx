@@ -13,6 +13,7 @@ import { formatTimeSlash } from '@/utils/handle-function/FormatTime'
 import { useDigitalHumanPageLoad } from '../useDigitalHumanPageLoad'
 import Conversation from './Conversation'
 import styles from './index.module.less'
+import { BKN_CREATOR_ID } from '../type'
 
 type DetailsParams = {
   digitalHumanId?: string
@@ -38,11 +39,13 @@ const Details = () => {
   const [, messageContextHolder] = message.useMessage()
 
   const digitalHumanId = params.digitalHumanId
-  const [activeTab, setActiveTab] = useState<DigitalHumanDetailTab>('plan')
+  const [activeTab, setActiveTab] = useState<DigitalHumanDetailTab>('session')
+  const isBknCreator = digitalHumanId === BKN_CREATOR_ID
+  const canEnterDetail = !isAdmin || isBknCreator
 
   /** 管理员走全页配置 */
   useLayoutEffect(() => {
-    if (!isAdmin) return
+    if (canEnterDetail) return
     if (!digitalHumanId) {
       navigate('/studio/digital-human/setting', { replace: true })
       return
@@ -50,7 +53,7 @@ const Details = () => {
     navigate(`/studio/digital-human/${digitalHumanId}/setting${location.search}`, {
       replace: true,
     })
-  }, [isAdmin, digitalHumanId, navigate, location.search])
+  }, [canEnterDetail, digitalHumanId, navigate, location.search])
 
   /** 无 plan|session|config 段时补默认 Tab（路由 Tab 恢复时启用） */
   // useEffect(() => {
@@ -67,7 +70,7 @@ const Details = () => {
     }
   }, [digitalHumanId, navigate])
 
-  const loading = useDigitalHumanPageLoad(digitalHumanId, 'detail', null, !isAdmin)
+  const loading = useDigitalHumanPageLoad(digitalHumanId, 'detail', null, canEnterDetail)
 
   const headerAvatarSrc = useMemo(
     () => resolveDigitalHumanIconSrc(detail?.icon_id),
@@ -84,14 +87,14 @@ const Details = () => {
   const tabItems = useMemo(() => {
     return [
       {
-        key: 'plan',
-        label: intl.get('digitalHuman.detail.tabPlan'),
-        icon: <IconFont type="icon-plan" />,
-      },
-      {
         key: 'session',
         label: intl.get('digitalHuman.detail.tabSession'),
         icon: <IconFont type="icon-dialog" />,
+      },
+      {
+        key: 'plan',
+        label: intl.get('digitalHuman.detail.tabPlan'),
+        icon: <IconFont type="icon-plan" />,
       },
       {
         key: 'config',
@@ -105,7 +108,7 @@ const Details = () => {
     return null
   }
 
-  if (isAdmin) {
+  if (!canEnterDetail) {
     return null
   }
 

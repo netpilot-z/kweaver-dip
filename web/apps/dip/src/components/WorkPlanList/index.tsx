@@ -263,7 +263,6 @@ function PlanListInner({
               <IconFont type="icon-newchat" className="!text-xl" />
             </div>
             {intl.get('workPlan.list.emptyPlanCreateButton')}
-            <IconFont type="icon-arrowup" rotate={90} />
           </Button>
         </Empty>
       )

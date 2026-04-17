@@ -7,6 +7,7 @@ import { resolveDigitalHumanIconSrc } from '@/utils/digital-human/resolveDigital
 import { isPublicChannelVisible } from '@/utils/publicEnv'
 import AppIcon from '../AppIcon'
 import IconFont from '../IconFont'
+import { cardHeight } from './utils'
 
 interface EmployeeCardProps {
   digitalHuman: DigitalHuman
@@ -34,7 +35,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({ digitalHuman, menuItems, on
       className="group w-full cursor-pointer rounded-[20px] transition-all"
       styles={{
         root: {
-          height: 282,
+          height: cardHeight,
           border: '1px solid #E2E8F0',
           boxShadow: hovered
             ? '0 20px 40px -18px rgba(0, 0, 0, 0.1), 0 12px 24px -12px rgba(0, 0, 0, 0.25)'
@@ -56,13 +57,24 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({ digitalHuman, menuItems, on
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <div className="flex items-start justify-between">
+      <div className="flex items-start gap-x-4">
         <div className="w-14 h-14 flex-shrink-0 overflow-hidden rounded-xl">
           {avatarSrc ? (
             <img src={avatarSrc} alt={digitalHuman.name} className="w-14 h-14 object-cover" />
           ) : (
             <AppIcon name={digitalHuman.name} size={56} className="w-14 h-14" shape="square" />
           )}
+        </div>
+        <div className="flex-1 flex flex-col min-w-0">
+          <div className="text-xl font-bold truncate flex-1" title={digitalHuman.name}>
+            {digitalHuman.name}
+          </div>
+          <p
+            className="mt-2 text-sm leading-[22px] text-[rgba(0,0,0,0.5)] line-clamp-2 min-h-[44px]"
+            title={digitalHuman.creature}
+          >
+            {digitalHuman.creature || intl.get('digitalHuman.card.noBio')}
+          </p>
         </div>
         {menuItems && menuItems.length > 0 && (
           <Dropdown
@@ -88,16 +100,6 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({ digitalHuman, menuItems, on
           </Dropdown>
         )}
       </div>
-
-      <div className="mt-6 text-[22px] font-bold truncate" title={digitalHuman.name}>
-        {digitalHuman.name}
-      </div>
-      <p
-        className="mt-8 text-sm leading-[22px] text-[rgba(0,0,0,0.5)] line-clamp-2 min-h-[44px]"
-        title={digitalHuman.creature}
-      >
-        {digitalHuman.creature || intl.get('digitalHuman.card.noBio')}
-      </p>
 
       <div className="mt-auto -mx-6 -mb-6 px-6 h-12 bg-[#F8FAFC] flex items-center gap-7 text-xs leading-6 text-[rgba(0,0,0,0.5)]">
         <div className="flex items-center gap-1">
