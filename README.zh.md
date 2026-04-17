@@ -75,8 +75,7 @@ openclaw plugins install ./openclaw-extensions/dip
 
 3. 部署完成后，可访问：
 
-- `https://<节点IP>/deploy`：部署控制台
-- `https://<节点IP>/studio`：KWeaver DIP Studio
+- `https://<节点IP>/dip-hub`
 
 默认账号：`admin`
 初始密码：`eisoo.com`

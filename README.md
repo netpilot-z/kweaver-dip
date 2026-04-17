@@ -71,8 +71,7 @@ openclaw plugins install ./openclaw-extensions/dip
 
 After deployment, you can access:
 
-- `https://<node-ip>/deploy`: deployment console
-- `https://<node-ip>/studio`: KWeaver DIP Studio
+- `https://<node-ip>/dip-hub`
 
 Default username: `admin`
 Initial password: `eisoo.com`
