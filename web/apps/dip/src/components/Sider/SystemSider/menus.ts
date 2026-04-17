@@ -8,7 +8,7 @@ import modelManagerIcon from '@/assets/icons/model-manager.svg?react'
 import modelQuotaIcon from '@/assets/icons/model-quota.svg?react'
 import modelStatisticsIcon from '@/assets/icons/model-statistics.svg?react'
 import rolePolicyIcon from '@/assets/icons/role-policy.svg?react'
-import thirdPartyMessagingPluginIcon from '@/assets/icons/third-party-messaging-plugin.svg?react'
+// import thirdPartyMessagingPluginIcon from '@/assets/icons/third-party-messaging-plugin.svg?react'
 
 /** 与 `*.svg?react` 默认导出一致，用于侧栏菜单 SVG 图标 */
 export type SystemMenuIcon = FunctionComponent<SVGProps<SVGSVGElement>>
@@ -218,20 +218,20 @@ export const systemMenuItems: SystemMenuItem[] = [
         },
         roles: ['super_admin', 'sys_admin'],
       },
-      {
-        key: 'third-party-messaging-plugin',
-        labelKey: 'routes.systemMenu.third-party-messaging-plugin',
-        icon: thirdPartyMessagingPluginIcon,
-        path: buildSystemWorkbenchPath('/third-party-messaging-plugin'),
-        page: {
-          type: 'micro-app',
-          app: {
-            name: 'third-party-messaging-plugin',
-            entry: '//ip:port/isfweb/third-party-messaging-plugin.html',
-          },
-        },
-        roles: ['super_admin', 'sys_admin'],
-      },
+      // {
+      //   key: 'third-party-messaging-plugin',
+      //   labelKey: 'routes.systemMenu.third-party-messaging-plugin',
+      //   icon: thirdPartyMessagingPluginIcon,
+      //   path: buildSystemWorkbenchPath('/third-party-messaging-plugin'),
+      //   page: {
+      //     type: 'micro-app',
+      //     app: {
+      //       name: 'third-party-messaging-plugin',
+      //       entry: '//ip:port/isfweb/third-party-messaging-plugin.html',
+      //     },
+      //   },
+      //   roles: ['super_admin', 'sys_admin'],
+      // },
     ],
   },
 ]
