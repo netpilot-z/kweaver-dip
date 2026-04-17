@@ -64,7 +64,7 @@ releases:
     version: 0.4.0-main.20260331.1
   configuration-center:
     chart: configuration-center
-    version: 0.4.0-main.20260403.1
+    version: 0.4.0-main.20260417.2
   data-application-gateway:
     chart: data-application-gateway
     version: 0.4.0-main.20260403.1
