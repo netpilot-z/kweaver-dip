@@ -14,71 +14,42 @@ releases:
     chart: dip-data-migrator
     version: 0.4.0-main.20260416.4.9fd9eb7
     stage: pre
-  deploy-web:
-    chart: deploy-web
-    version: 0.3.0
-  studio-web:
-    chart: studio-web
-    version: 0.3.0
-  business-system-frontend:
-    chart: business-system-frontend
-    version: 0.3.0
-    dependsOn:
-    - studio-web
   business-system-service:
     chart: business-system-service
     version: 0.3.0-1d43acc
   mf-model-manager-nginx:
     chart: mf-model-manager-nginx
     version: 0.5.0
-    dependsOn:
-    - studio-web
   vega-web:
     chart: vega-web
     version: 0.5.1-main
-    dependsOn:
-    - studio-web
   operator-web:
     chart: operator-web
     version: 0.5.0-main.git-671eead
-    dependsOn:
-    - studio-web
   agent-web:
     chart: agent-web
     version: 0.5.1-main.git-a89f3eb
-    dependsOn:
-    - studio-web
   flow-web:
     chart: flow-web
     version: 0.5.1-main.git+671eead
-    dependsOn:
-    - studio-web
   doc-audit-client:
     chart: doc-audit-client
     version: 0.5.1-main.git-671eead
-    dependsOn:
-    - studio-web
   workflow:
     chart: workflow
     version: 0.3.0-main.git-git+275d6df.1795340
   workflow-manage-client:
     chart: workflow-manage-client
     version: 0.5.0-main.git-84bea21
-    dependsOn:
-    - studio-web
   workflow-manage-front:
     chart: workflow-manage-front
     version: 0.5.0-main.git-84bea21
-    dependsOn:
-    - studio-web
   anyfabric-frontend:
     chart: anyfabric-frontend
     version: 0.5.0-main.20260417.2
   dip-frontend:
     chart: dip-frontend
     version: 0.5.0-main.a31e1ea
-    dependsOn:
-    - studio-web
   auth-service:
     chart: auth-service
     version: 0.4.0-main.20260417.1
