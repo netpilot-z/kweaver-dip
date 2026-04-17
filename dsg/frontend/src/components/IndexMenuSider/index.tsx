@@ -727,7 +727,7 @@ const IndexMenuSider = ({ resizable = false }: IIndexMenuSider) => {
 
     const handleBackClick = () => {
         // 跳转到宿主根目录
-        window.location.href = '/studio'
+        window.location.href = '/dip-hub/business-network'
         // microAppProps?.toggleSideBarShow?.(true)
     }
 

@@ -171,7 +171,9 @@ const DatasheetView = (props: IDatasheetView) => {
                             // setScanModalType(scanType.init)
                             // setScanDatasourceData(scanDatasourceDataAll)
                             // setScanModalOpen(true)
-                            window.open('/studio/mmdl/data-connect')
+                            window.open(
+                                '/dip-hub/business-network/vega/data-connect',
+                            )
                         }}
                         icon={<ScanOutlined />}
                     >
@@ -475,7 +477,9 @@ const DatasheetView = (props: IDatasheetView) => {
                         <div className={styles.leftBottom}>
                             <Button
                                 onClick={() => {
-                                    window.open('/studio/mmdl/data-connect')
+                                    window.open(
+                                        '/dip-hub/business-network/vega/data-connect',
+                                    )
                                     // setScanModalType(scanType.init)
                                     // setScanModalOpen(true)
                                 }}

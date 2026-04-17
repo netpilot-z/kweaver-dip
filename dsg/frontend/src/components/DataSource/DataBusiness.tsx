@@ -348,7 +348,9 @@ const DataBusiness: React.FC<ICoreBusiness> = ({
                         <Button
                             type="link"
                             onClick={() =>
-                                window.open('/studio/mmdl/data-connect')
+                                window.open(
+                                    '/dip-hub/business-network/vega/data-connect',
+                                )
                             }
                         >
                             {__('添加/管理数据源')}

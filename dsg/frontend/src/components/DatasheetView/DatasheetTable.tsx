@@ -1932,7 +1932,7 @@ const DatasheetTable = forwardRef((props: IDatasheetTable, ref) => {
                                                 type="link"
                                                 onClick={() => {
                                                     window.open(
-                                                        '/studio/semantic-governance/data-semantic-governance/datasheet-view',
+                                                        '/dip-hub/business-network/data-semantic-governance/datasheet-view',
                                                     )
                                                 }}
                                             >
