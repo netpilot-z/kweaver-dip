@@ -12,7 +12,7 @@ dependencies:
 releases:
   dip-data-migrator:
     chart: dip-data-migrator
-    version: 0.4.0-main.20260417.2.9fd9eb7
+    version: 0.5.0-main.20260417.2.9fd9eb7
     stage: pre
   business-system-service:
     chart: business-system-service
@@ -85,7 +85,7 @@ releases:
     version: 0.4.0-main.20260416.2
   sailor-agent:
     chart: sailor-agent
-    version: 0.4.0-main.20260417.3
+    version: 0.4.0-main.20260417.1
   sailor-service:
     chart: sailor-service
     version: 0.4.0-main.20260417.1
