@@ -360,6 +360,85 @@ _dip_show_access_hints() {
     log_info "Access KWeaver dip-hub: ${base_url}/dip-hub"
 }
 
+_dip_extract_release_manifest_values() {
+    local release_name="$1"
+    local output_file="$2"
+
+    if [[ -z "${DIP_VERSION_MANIFEST_FILE:-}" || ! -f "${DIP_VERSION_MANIFEST_FILE}" ]]; then
+        return 1
+    fi
+
+    awk -v release="${release_name}" '
+        BEGIN {
+            in_releases = 0
+            in_target = 0
+            in_values = 0
+            found = 0
+        }
+        /^releases:/ {
+            in_releases = 1
+            next
+        }
+        in_releases && /^[A-Za-z0-9_-]+:/ {
+            in_releases = 0
+        }
+        !in_releases { next }
+        /^  [^[:space:]][^:]*:/ {
+            name = $0
+            sub(/^  /, "", name)
+            sub(/:.*/, "", name)
+            in_target = (name == release)
+            in_values = 0
+            next
+        }
+        !in_target { next }
+        /^    values:[[:space:]]*$/ {
+            in_values = 1
+            next
+        }
+        in_values {
+            if (/^    [^[:space:]][^:]*:/ || /^  [^[:space:]][^:]*:/) {
+                in_values = 0
+                in_target = ($0 ~ /^    [^[:space:]][^:]*:/)
+                if (!in_target) {
+                    next
+                }
+            } else if ($0 ~ /^      /) {
+                line = $0
+                sub(/^      /, "", line)
+                print line
+                found = 1
+                next
+            } else if ($0 ~ /^[[:space:]]*$/) {
+                print ""
+                next
+            } else {
+                in_values = 0
+                next
+            }
+        }
+    ' "${DIP_VERSION_MANIFEST_FILE}" > "${output_file}"
+
+    if [[ ! -s "${output_file}" ]]; then
+        rm -f "${output_file}"
+        return 1
+    fi
+}
+
+_dip_prepare_release_manifest_values_file() {
+    local release_name="$1"
+    local tmp_values_file
+
+    tmp_values_file="$(mktemp)"
+    if _dip_extract_release_manifest_values "${release_name}" "${tmp_values_file}"; then
+        echo "${tmp_values_file}"
+        return 0
+    fi
+
+    rm -f "${tmp_values_file}"
+    return 1
+}
+
 _dip_append_release_extra_helm_args() {
     local release_name="$1"
     local target_array_name="$2"
@@ -557,12 +636,18 @@ _install_dip_release_local() {
         "-f" "${CONFIG_YAML_PATH}"
         "--wait" "--timeout=600s"
     )
+    local release_manifest_values_file=""
+    if release_manifest_values_file="$(_dip_prepare_release_manifest_values_file "${release_name}")"; then
+        helm_args+=("-f" "${release_manifest_values_file}")
+    fi
 
     _dip_append_release_extra_helm_args "${release_name}" helm_args || return 1
 
     if helm "${helm_args[@]}"; then
         log_info "✓ ${release_name} installed successfully"
+        [[ -n "${release_manifest_values_file}" ]] && rm -f "${release_manifest_values_file}"
     else
+        [[ -n "${release_manifest_values_file}" ]] && rm -f "${release_manifest_values_file}"
         log_error "✗ Failed to install ${release_name}"
         return 1
     fi
@@ -603,6 +688,10 @@ _install_dip_release_repo() {
         "--namespace" "${namespace}"
         "-f" "${CONFIG_YAML_PATH}"
     )
+    local release_manifest_values_file=""
+    if release_manifest_values_file="$(_dip_prepare_release_manifest_values_file "${release_name}")"; then
+        helm_args+=("-f" "${release_manifest_values_file}")
+    fi
 
     _dip_append_release_extra_helm_args "${release_name}" helm_args || return 1
 
@@ -614,7 +703,9 @@ _install_dip_release_repo() {
 
     if helm "${helm_args[@]}"; then
         log_info "✓ ${release_name} installed successfully"
+        [[ -n "${release_manifest_values_file}" ]] && rm -f "${release_manifest_values_file}"
     else
+        [[ -n "${release_manifest_values_file}" ]] && rm -f "${release_manifest_values_file}"
         log_error "✗ Failed to install ${release_name}"
         return 1
     fi
