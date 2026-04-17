@@ -1,10 +1,12 @@
 import { Form } from 'antd'
 import { memo, useEffect } from 'react'
 import intl from 'react-intl-universal'
+import MarkdownRenderer from '@/components/DipChatKit/components/MarkdownRenderer'
 import ScrollBarContainer from '@/components/ScrollBarContainer'
 import { useLanguageStore } from '@/stores/languageStore'
 import AdPromptInput from '../AdPromptInput'
 import { useDigitalHumanStore } from '../digitalHumanStore'
+import styles from './index.module.less'
 import NameDescriptionFields from './NameDescriptionFields'
 
 /** 基本设置：名称、简介、角色设定（创建 / 编辑 / 只读详情共用） */
@@ -87,20 +89,15 @@ Skill 3 the role needs to meet its goals (invoke skills with @)
             <span className="text-base font-medium">
               {intl.get('digitalHuman.basic.fieldSoul')}
             </span>
-            <AdPromptInput
-              bordered={false}
-              transparent
-              disabled
-              value={basic.soul || '--'}
-              style={{ minHeight: '200px' }}
-              placeholder={''}
-              trigger={[
-                {
-                  character: '@',
-                  options: skillOptions,
-                },
-              ]}
-            />
+            {basic.soul ? (
+              <MarkdownRenderer
+                content={basic.soul}
+                variant="preview"
+                className={styles.readonlyMarkdown}
+              />
+            ) : (
+              <span className="text-sm break-words">--</span>
+            )}
           </div>
         </div>
       </ScrollBarContainer>
