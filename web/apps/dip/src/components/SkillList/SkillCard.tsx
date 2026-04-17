@@ -56,7 +56,7 @@ const SkillCard: React.FC<SkillCardProps> = ({ skill, menuItems, onCardClick }) 
           <span className="text-white text-[8px]">{intl.get('skillList.badgeLabel')}</span>
         </div>
         <div className="flex-1 min-w-0">
-          <div className="text-[22px] leading-[22px] font-bold truncate" title={skill.name}>
+          <div className="text-[22px] font-bold truncate" title={skill.name}>
             {skill.name}
           </div>
         </div>
