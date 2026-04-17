@@ -11,7 +11,7 @@ from app.errors import ToolFatalError
 from app.tools.base import AFTool, api_tool_decorator
 from app.service.adp_service import ADPService
 from app.utils.common import run_blocking
-from app.utils.lightweight_search_engine import LightweightSearchEngine
+from app.utils.lightweight import LightweightSearchEngine
 from app.utils.password import get_authorization
 from config import get_settings
 
