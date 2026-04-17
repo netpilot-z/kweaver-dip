@@ -12,7 +12,7 @@ dependencies:
 releases:
   dip-data-migrator:
     chart: dip-data-migrator
-    version: 0.5.0-main.20260417.2.9fd9eb7
+    version: 0.5.0-main.20260417.3.2f7545f
     stage: pre
   business-system-service:
     chart: business-system-service
@@ -58,7 +58,7 @@ releases:
         publicEnabledModules: "store,studio"  # 允许值：store,studio（多个用英文逗号分隔）
   auth-service:
     chart: auth-service
-    version: 0.4.0-main.20260417.1
+    version: 0.4.0-main.20260417.3
   basic-search:
     chart: basic-search
     version: 0.4.0-main.20260331.1
