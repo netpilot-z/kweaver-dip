@@ -58,11 +58,6 @@ spec:
                 configMapKeyRef:
                   name: {{ .Chart.Name }}-config
                   key: NODE_ENV
-            - name: KWEAVER_BASE_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Chart.Name }}-config
-                  key: KWEAVER_BASE_URL
             - name: KWEAVER_HYDRA_ADMIN_URL
               valueFrom:
                 configMapKeyRef:
