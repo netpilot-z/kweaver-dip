@@ -186,7 +186,9 @@ describe("normalizeInitializeGuideRequest", () => {
       })
     ).toEqual([
       ["KWEAVER_BASE_URL", "https://kweaver.example.com"],
-      ["KWEAVER_TOKEN", "kw-token"]
+      ["KWEAVER_TOKEN", "kw-token"],
+      ["KWEAVER_BUSINESS_DOMAIN", "bd_public"],
+      ["KWEAVER_TLS_INSECURE", "1"]
     ]);
   });
 
@@ -354,9 +356,13 @@ describe("DefaultGuideLogic", () => {
       expect(process.env.OPENCLAW_GATEWAY_TOKEN).toBe("token-1");
       expect(process.env.KWEAVER_BASE_URL).toBe("https://kweaver.example.com");
       expect(process.env.KWEAVER_TOKEN).toBe("kw-token");
-      expect(await readFile(join(fakeHomeForOsMock, ".openclaw", ".env"), "utf8")).toContain(
-        "KWEAVER_BASE_URL=https://kweaver.example.com"
+      const openclawEnv = await readFile(
+        join(fakeHomeForOsMock, ".openclaw", ".env"),
+        "utf8"
       );
+      expect(openclawEnv).toContain("KWEAVER_BASE_URL=https://kweaver.example.com");
+      expect(openclawEnv).toContain("KWEAVER_BUSINESS_DOMAIN=bd_public");
+      expect(openclawEnv).toContain("KWEAVER_TLS_INSECURE=1");
       expect(execFile).toHaveBeenNthCalledWith(
         1,
         "npm",

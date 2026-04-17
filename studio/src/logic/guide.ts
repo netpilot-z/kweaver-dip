@@ -485,14 +485,16 @@ export function buildGuideEnvFileContent(
  * Builds the env entries written to the OpenClaw root `.env` file.
  *
  * @param request Normalized initialization payload.
- * @returns The KWeaver-related env key/value pairs.
+ * @returns The KWeaver-related env key/value pairs for OpenClaw processes.
  */
 export function buildOpenClawRootEnvEntries(
   request: NormalizedInitializeGuideRequest
 ): ReadonlyArray<readonly [string, string]> {
   return [
     ["KWEAVER_BASE_URL", request.kweaver_base_url ?? ""],
-    ["KWEAVER_TOKEN", request.kweaver_token ?? ""]
+    ["KWEAVER_TOKEN", request.kweaver_token ?? ""],
+    ["KWEAVER_BUSINESS_DOMAIN", "bd_public"],
+    ["KWEAVER_TLS_INSECURE", "1"]
   ];
 }
 
