@@ -41,8 +41,9 @@ const MicroAppComponent = ({ appBasicInfo, homeRoute, customProps }: MicroAppCom
   const microAppPropsRef = useRef<MicroAppProps | null>(null)
   const customPropsObj = customProps ?? {}
   const hasCustomToken = Object.hasOwn(customPropsObj, 'token')
-  const hasCustomRoute = Object.hasOwn(customPropsObj, 'route')
+  const hasCustomRoute = Object.hasOwn(customPropsObj, 'history')
   const hasCustomUserid = Object.hasOwn(customPropsObj, 'userid')
+  console.log('customPropsObj:', customPropsObj)
 
   // 构建标准化的微应用 props（所有微应用统一使用此结构）
   const microAppProps: MicroAppProps = useMemo<any>(
