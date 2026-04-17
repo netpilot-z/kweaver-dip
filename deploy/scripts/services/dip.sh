@@ -357,8 +357,6 @@ _dip_show_access_hints() {
         return 0
     fi
 
-    log_info "Access KWeaver deploy console: ${base_url}/deploy"
-    log_info "Access KWeaver studio: ${base_url}/studio"
     log_info "Access KWeaver dip-hub: ${base_url}/dip-hub"
 }
 
