@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_tasks;
 
 CREATE TABLE IF NOT EXISTS  `t_quality_audit_form_view_relation` (
     `id` BIGINT(20) NOT NULL COMMENT '雪花id',

@@ -4,9 +4,9 @@ import (
 	"context"
 	"time"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/gorm/scan_record"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/gorm/scan_record"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/db/model"
 	"gorm.io/gorm"
 )
 

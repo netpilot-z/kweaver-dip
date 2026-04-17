@@ -9,8 +9,8 @@ import (
 	"unicode/utf8"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/common/util"
 	"github.com/kweaver-ai/idrm-go-frame/core/enum"
 	log "github.com/kweaver-ai/idrm-go-frame/core/logx/zapx"
 )

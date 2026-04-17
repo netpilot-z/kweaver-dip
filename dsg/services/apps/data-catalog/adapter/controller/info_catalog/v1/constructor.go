@@ -1,8 +1,8 @@
 package v1
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/info_catalog"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/info_resource_catalog"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/info_catalog"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/info_resource_catalog"
 )
 
 type Controller struct {

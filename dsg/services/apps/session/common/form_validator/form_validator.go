@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/jinzhu/copier"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/common/units"
+	"github.com/kweaver-ai/dsg/services/apps/session/common/units"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"

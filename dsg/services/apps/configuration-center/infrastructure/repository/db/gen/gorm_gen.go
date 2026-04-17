@@ -12,7 +12,7 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/repository/db/gen/custom_method"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/repository/db/gen/custom_method"
 	"gorm.io/driver/mysql"
 	"gorm.io/gen"
 	"gorm.io/gorm"
@@ -53,7 +53,7 @@ func main() {
 	flag.Parse()
 
 	if len(dsn) == 0 {
-		dsn = "root:***@(10.4.110.50:3330)/kweaver?charset=utf8mb4&parseTime=True&loc=Local"
+		dsn = "root:***@(10.4.110.50:3330)/af_configuration?charset=utf8mb4&parseTime=True&loc=Local"
 	}
 
 	if len(dsn) == 0 {

@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/adapter/driven/http_client/hydra"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/adapter/driven/http_client/user_management"
-	redis_driver "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/domain/d_session"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/domain/user_info"
+	"github.com/kweaver-ai/dsg/services/apps/session/adapter/driven/http_client/hydra"
+	"github.com/kweaver-ai/dsg/services/apps/session/adapter/driven/http_client/user_management"
+	redis_driver "github.com/kweaver-ai/dsg/services/apps/session/domain/d_session"
+	domain "github.com/kweaver-ai/dsg/services/apps/session/domain/user_info"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"go.uber.org/zap"
 )

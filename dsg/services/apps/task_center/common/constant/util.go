@@ -5,7 +5,7 @@ import (
 
 	"github.com/kweaver-ai/idrm-go-frame/core/enum"
 
-	domain_work_order "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/work_order"
+	domain_work_order "github.com/kweaver-ai/dsg/services/apps/task_center/domain/work_order"
 )
 
 // ValidTaskType 校验是否时合法的任务类型

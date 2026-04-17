@@ -9,7 +9,7 @@ import (
 
 	"github.com/imroc/req/v2"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/common/settings"
 	"github.com/kweaver-ai/idrm-go-common/interception"
 	"github.com/kweaver-ai/idrm-go-frame/core/logx/zapx"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry"

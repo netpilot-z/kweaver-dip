@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/adapter/driven/gorm/standard_info"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/infrastructure/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/adapter/driven/gorm/standard_info"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/infrastructure/db/model"
 	"github.com/kweaver-ai/idrm-go-common/errorcode"
 	"github.com/kweaver-ai/idrm-go-common/util/iter"
 	"gorm.io/gorm"

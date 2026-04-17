@@ -3,7 +3,7 @@ package impl
 import (
 	"context"
 
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/code_generation_rule"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/code_generation_rule"
 )
 
 // Patch implements domain.UseCase.

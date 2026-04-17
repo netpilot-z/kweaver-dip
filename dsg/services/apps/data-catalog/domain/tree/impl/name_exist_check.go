@@ -3,9 +3,9 @@ package impl
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/models"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/models/response"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/tree"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/models"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/models/response"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/tree"
 )
 
 func (u *useCase) NameExistCheck(ctx context.Context, req *domain.NameExistReqParam) (*domain.NameExistRespParam, error) {

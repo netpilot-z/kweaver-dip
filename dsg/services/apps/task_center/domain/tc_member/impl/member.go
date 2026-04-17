@@ -1,8 +1,8 @@
 package impl
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/gorm/tc_member"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/tc_member"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/gorm/tc_member"
+	domain "github.com/kweaver-ai/dsg/services/apps/task_center/domain/tc_member"
 )
 
 type MemberUserCase struct {

@@ -6,9 +6,9 @@ import (
 
 	"github.com/samber/lo"
 
-	all "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/adapter/driven/data_search_all"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/adapter/driven/es_common"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/models/response"
+	all "github.com/kweaver-ai/dsg/services/apps/basic-search/adapter/driven/data_search_all"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/adapter/driven/es_common"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/common/models/response"
 )
 
 type UseCase interface {

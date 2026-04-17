@@ -1,4 +1,4 @@
-module github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center
+module github.com/kweaver-ai/dsg/services/apps/configuration-center
 
 go 1.24.0
 

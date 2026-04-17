@@ -6,10 +6,10 @@ package data_semantic
 import (
 	"net/http"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/api/internal/logic/data_semantic"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/api/internal/svc"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/api/internal/types"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/internal/pkg/httpxutil"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/api/internal/logic/data_semantic"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/api/internal/svc"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/api/internal/types"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/internal/pkg/httpxutil"
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 

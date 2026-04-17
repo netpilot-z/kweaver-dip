@@ -5,12 +5,12 @@ import (
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest"
 
-	//"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/cmd/server/docs"
+	//"github.com/kweaver-ai/dsg/services/apps/session/cmd/server/docs"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/session/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/session/common/settings"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/zeromicro/go-zero/core/logx"

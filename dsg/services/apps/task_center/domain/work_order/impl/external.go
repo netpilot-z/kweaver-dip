@@ -3,8 +3,8 @@ package impl
 import (
 	"context"
 
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/work_order"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db/model"
+	domain "github.com/kweaver-ai/dsg/services/apps/task_center/domain/work_order"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db/model"
 )
 
 // 其他模块想要的

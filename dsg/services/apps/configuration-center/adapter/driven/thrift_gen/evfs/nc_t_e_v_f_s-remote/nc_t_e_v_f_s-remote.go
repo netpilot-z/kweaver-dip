@@ -14,8 +14,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/thrift_gen/ethriftexception"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/thrift_gen/evfs"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/thrift_gen/ethriftexception"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/thrift_gen/evfs"
 	"github.com/kweaver-ai/idrm-go-common/thrift"
 )
 

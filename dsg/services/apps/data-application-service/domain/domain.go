@@ -2,7 +2,7 @@ package domain
 
 import (
 	"github.com/google/wire"
-	sub_service "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/domain/sub_service/impl"
+	sub_service "github.com/kweaver-ai/dsg/services/apps/data-application-service/domain/sub_service/impl"
 )
 
 // ProviderSet is biz providers.

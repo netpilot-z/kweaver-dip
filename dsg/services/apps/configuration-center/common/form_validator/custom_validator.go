@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/constant"
 
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"

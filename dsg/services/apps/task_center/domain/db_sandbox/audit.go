@@ -3,8 +3,8 @@ package db_sandbox
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/models/request"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/models/response"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/models/request"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/models/response"
 )
 
 // SandboxApplyAudit 申请审核

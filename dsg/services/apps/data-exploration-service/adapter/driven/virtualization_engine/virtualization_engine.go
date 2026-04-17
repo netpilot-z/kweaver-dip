@@ -15,8 +15,8 @@ import (
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.uber.org/zap"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/settings"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 )
 

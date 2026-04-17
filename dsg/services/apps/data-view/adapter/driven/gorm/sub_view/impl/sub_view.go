@@ -3,7 +3,7 @@ package impl
 import (
 	"gorm.io/gorm"
 
-	gorm_sub_view "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/gorm/sub_view"
+	gorm_sub_view "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/gorm/sub_view"
 )
 
 type subViewRepo struct {

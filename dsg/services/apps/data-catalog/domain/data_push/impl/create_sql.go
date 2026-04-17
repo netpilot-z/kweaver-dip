@@ -6,7 +6,7 @@ import (
 	_ "embed"
 	"html/template"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/errorcode"
 )
 
 //go:embed create_table_statement.gtpl

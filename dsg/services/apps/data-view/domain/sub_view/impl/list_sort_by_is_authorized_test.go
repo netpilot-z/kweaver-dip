@@ -6,9 +6,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/rest/auth_service"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/util/slices"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/sub_view"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/rest/auth_service"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/util/slices"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/domain/sub_view"
 )
 
 func Test_orderByIsAuthorized(t *testing.T) {

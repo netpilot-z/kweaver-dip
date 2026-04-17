@@ -9,9 +9,9 @@ import (
 
 	"github.com/agiledragon/gomonkey/v2"
 	"github.com/gin-gonic/gin"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/adapter/driven/hydra"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/adapter/driven/user_management"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/models/request"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/adapter/driven/hydra"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/adapter/driven/user_management"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/common/models/request"
 	"github.com/stretchr/testify/assert"
 )
 

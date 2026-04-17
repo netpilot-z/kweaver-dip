@@ -9,9 +9,9 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	response "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/models/response"
-	tc_project "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/tc_project"
-	model "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db/model"
+	response "github.com/kweaver-ai/dsg/services/apps/task_center/common/models/response"
+	tc_project "github.com/kweaver-ai/dsg/services/apps/task_center/domain/tc_project"
+	model "github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db/model"
 )
 
 // MockUserCase is a mock of UserCase interface.

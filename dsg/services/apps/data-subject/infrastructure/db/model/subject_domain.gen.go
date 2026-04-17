@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/common/models"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/common/models"
 	"github.com/kweaver-ai/idrm-go-frame/core/utils"
 	"gorm.io/gorm"
 	"gorm.io/plugin/soft_delete"

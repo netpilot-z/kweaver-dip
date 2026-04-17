@@ -6,9 +6,9 @@ import (
 	"reflect"
 
 	jsoniter "github.com/json-iterator/go"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/util"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/user"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/domain/user"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	af_trace "github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/mq/kafkax"

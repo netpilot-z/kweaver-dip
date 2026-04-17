@@ -8,9 +8,9 @@ import (
 	"github.com/google/uuid"
 	"go.uber.org/zap"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/form_validator"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/work_order_task"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/form_validator"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/domain/work_order_task"
 	meta_v1 "github.com/kweaver-ai/idrm-go-common/api/meta/v1"
 	task_center_v1 "github.com/kweaver-ai/idrm-go-common/api/task_center/v1"
 	"github.com/kweaver-ai/idrm-go-common/util/clock"

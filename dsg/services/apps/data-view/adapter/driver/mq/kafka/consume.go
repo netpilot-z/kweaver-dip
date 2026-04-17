@@ -2,8 +2,8 @@ package kafka
 
 import (
 	"context"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driver/mq"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/mq/kafka"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driver/mq"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/mq/kafka"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 )
 

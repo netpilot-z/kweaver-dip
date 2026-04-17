@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/api/internal/config"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/api/internal/handler"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/api/internal/middleware"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/api/internal/svc"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/api/internal/config"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/api/internal/handler"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/api/internal/middleware"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/api/internal/svc"
 
 	base_middleware "github.com/jinguoxing/idrm-go-base/middleware"
 	"github.com/jinguoxing/idrm-go-base/telemetry"

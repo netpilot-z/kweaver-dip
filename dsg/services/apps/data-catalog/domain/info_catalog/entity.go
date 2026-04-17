@@ -1,6 +1,6 @@
 package info_catalog
 
-import "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/models"
+import "github.com/kweaver-ai/dsg/services/apps/data-catalog/common/models"
 
 type ExportInfoCatalogReq struct {
 	CatalogIDs []string `json:"catalog_ids"  form:"catalog_ids" binding:"required,min=1"`

@@ -3,7 +3,7 @@ package explore_task
 import (
 	"context"
 	"encoding/json"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/explore_task"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/domain/explore_task"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 )
 

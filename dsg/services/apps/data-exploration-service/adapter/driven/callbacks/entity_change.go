@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/mq"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/mq/kafka"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/mq"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/mq/kafka"
 	"github.com/kweaver-ai/idrm-go-common/database_callback/callback"
 )
 

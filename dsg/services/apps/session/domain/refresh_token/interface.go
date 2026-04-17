@@ -3,7 +3,7 @@ package refresh_token
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/common/cookie_util"
+	"github.com/kweaver-ai/dsg/services/apps/session/common/cookie_util"
 )
 
 type RefreshService interface {

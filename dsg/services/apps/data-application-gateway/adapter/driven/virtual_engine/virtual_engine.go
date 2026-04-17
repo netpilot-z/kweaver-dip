@@ -14,10 +14,10 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/ar_trace"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/common/settings"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/common/util"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	goframetrace "github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 )

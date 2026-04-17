@@ -1,6 +1,6 @@
 package views
 
-import "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/auth-service/infrastructure/repository/db/model"
+import "github.com/kweaver-ai/dsg/services/apps/auth-service/infrastructure/repository/db/model"
 
 type ObjectType string
 

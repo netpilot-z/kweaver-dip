@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/domain/info_system"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/domain/info_system"
 	basic_search_v1 "github.com/kweaver-ai/idrm-go-common/api/basic_search/v1"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"
 )

@@ -5,10 +5,10 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/models/request"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/models/response"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/models/request"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/models/response"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-frame/core/enum"
 	"github.com/kweaver-ai/idrm-go-frame/core/models"
 )

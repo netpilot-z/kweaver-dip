@@ -3,12 +3,12 @@ package v1
 import (
 	"context"
 
-	gradeRuleRepo "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/gorm/grade_rule"
-	repo "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/gorm/grade_rule_group"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/errorcode"
-	gradeRuleDomain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/grade_rule"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/grade_rule_group"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/db/model"
+	gradeRuleRepo "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/gorm/grade_rule"
+	repo "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/gorm/grade_rule_group"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/errorcode"
+	gradeRuleDomain "github.com/kweaver-ai/dsg/services/apps/data-view/domain/grade_rule"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-view/domain/grade_rule_group"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/db/model"
 )
 
 type gradeRuleGroupUseCase struct {

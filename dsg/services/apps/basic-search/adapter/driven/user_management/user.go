@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/models"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/models/request"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/settings"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/common/models"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/common/models/request"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/common/util"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"go.uber.org/zap"
 )

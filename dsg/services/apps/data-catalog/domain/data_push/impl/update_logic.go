@@ -3,9 +3,9 @@ package impl
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/errorcode"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/data_push"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/errorcode"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/data_push"
 )
 
 type updateCollectingModel struct {

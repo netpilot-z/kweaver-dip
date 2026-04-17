@@ -3,11 +3,11 @@ package task_config
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/errorcode/mariadb"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/models/request"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/infrastructure/repository/db"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/errorcode/mariadb"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/models/request"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/infrastructure/repository/db"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/pkg/errors"
 	"gorm.io/gorm"

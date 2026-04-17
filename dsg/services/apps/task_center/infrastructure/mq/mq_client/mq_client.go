@@ -3,7 +3,7 @@ package mq_client
 import (
 	"strconv"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/settings"
 	msqclient "github.com/kweaver-ai/proton-mq-sdk-go"
 )
 

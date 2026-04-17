@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
 )
 
 // mockgen  -source "adapter/driven/mq/datasource/handle.go"  -destination="interface/mock/datasource_mq_mock.go" -package=mock

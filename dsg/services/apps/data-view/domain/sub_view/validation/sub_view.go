@@ -6,9 +6,9 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/util/sets"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/util/validation/field"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/sub_view"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/util/sets"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/util/validation/field"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/domain/sub_view"
 )
 
 // ValidateSubViewCreate 在创建子视图时检查

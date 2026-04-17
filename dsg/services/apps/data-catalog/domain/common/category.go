@@ -3,9 +3,9 @@ package common
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/category"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/category"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
 	"github.com/samber/lo"
 )
 

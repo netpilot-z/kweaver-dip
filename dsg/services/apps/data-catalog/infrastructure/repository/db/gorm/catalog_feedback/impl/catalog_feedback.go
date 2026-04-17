@@ -4,14 +4,14 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/constant"
-	data_resource_catalog_domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/data_resource_catalog"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/data_resource_catalog"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/constant"
+	data_resource_catalog_domain "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/data_resource_catalog"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/data_resource_catalog"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/util"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/catalog_feedback"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/catalog_feedback"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
 	"gorm.io/gorm"
 )
 

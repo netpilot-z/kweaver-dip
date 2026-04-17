@@ -3,8 +3,8 @@ package impl
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/adapter/driven/es_indicator"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/domain/indicator"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/adapter/driven/es_indicator"
+	domain "github.com/kweaver-ai/dsg/services/apps/basic-search/domain/indicator"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 )
 

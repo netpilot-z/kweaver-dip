@@ -7,10 +7,10 @@ import (
 	"github.com/Shopify/sarama"
 	"go.uber.org/zap"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/mq/datasource"
-	kafka_pub "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/mq/kafka"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/constant"
-	config "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/config"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/mq/datasource"
+	kafka_pub "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/mq/kafka"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/constant"
+	config "github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/config"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 )
 

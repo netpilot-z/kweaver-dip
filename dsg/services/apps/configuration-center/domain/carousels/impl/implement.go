@@ -14,9 +14,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	repo "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/gorm/carousels"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/carousels"
+	repo "github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/gorm/carousels"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/carousels"
 	cept "github.com/kweaver-ai/idrm-go-common/go-ceph-client"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"

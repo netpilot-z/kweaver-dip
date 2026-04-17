@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/gorm/user"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/gorm/user"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"gorm.io/gorm"
 )

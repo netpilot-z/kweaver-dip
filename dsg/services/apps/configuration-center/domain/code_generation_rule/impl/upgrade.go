@@ -6,8 +6,8 @@ import (
 
 	"go.uber.org/zap"
 
-	driven "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/gorm/code_generation_rule"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/code_generation_rule"
+	driven "github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/gorm/code_generation_rule"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/code_generation_rule"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 )
 

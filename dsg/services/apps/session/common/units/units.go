@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/session/common/constant"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 )
 

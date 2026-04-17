@@ -35,7 +35,7 @@ DB:
   Default:
     Host: localhost
     Port: 3306
-    Database: kweaver
+    Database: data-semantic
     Username: root
     Password: root123456
     Charset: utf8mb4

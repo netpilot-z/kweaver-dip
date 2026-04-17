@@ -3,7 +3,7 @@ package db
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/common/util"
 	"gorm.io/gorm"
 )
 

@@ -14,7 +14,7 @@ import (
 
 	"github.com/samber/lo"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/gen/custom_method"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/gen/custom_method"
 	"gorm.io/driver/mysql"
 	"gorm.io/gen"
 	"gorm.io/gorm"
@@ -83,7 +83,7 @@ func main() {
 		// dsn = "user:pwd@(10.4.x.x:3306)/data_catalog?charset=utf8mb4&parseTime=True&loc=Local"
 		//dsn = "standardization:***@(10.4.132.224:3306)/af_data_catalog?charset=utf8mb4&parseTime=True&loc=Local"
 		//dsn = "root:***@(10.4.109.185:1998)/af_data_catalog?charset=utf8mb4&parseTime=True&loc=Local"
-		dsn = "root:***@(10.4.108.86:3330)/kweaver?charset=utf8mb4&parseTime=True&loc=Local"
+		dsn = "root:***@(10.4.108.86:3330)/af_data_catalog?charset=utf8mb4&parseTime=True&loc=Local"
 	}
 
 	if len(dsn) == 0 {

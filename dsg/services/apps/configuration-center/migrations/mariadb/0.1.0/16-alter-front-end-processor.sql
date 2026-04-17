@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_configuration;
 -- ALTER TABLE af_configuration.front_end_library MODIFY COLUMN `name` varchar(256)   COMMENT '前置库名称';
 -- ALTER TABLE af_configuration.front_end_library MODIFY COLUMN `username` varchar(256)    COMMENT '前置库用户名';
 -- ALTER TABLE af_configuration.front_end_library MODIFY COLUMN `password` varchar(256)   COMMENT '前置库密码';

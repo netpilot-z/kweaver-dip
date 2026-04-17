@@ -4,9 +4,9 @@ import (
 	"context"
 	"time"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/models"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/models/response"
-	c_feedback "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/catalog_feedback"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/models"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/models/response"
+	c_feedback "github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/catalog_feedback"
 )
 
 type UseCase interface {

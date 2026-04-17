@@ -3,8 +3,8 @@ package data_privacy_policy
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/data_privacy_policy"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/domain/data_privacy_policy"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/db/model"
 	"gorm.io/gorm"
 )
 

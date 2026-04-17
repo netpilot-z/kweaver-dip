@@ -8,8 +8,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/rest/user_management"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/user"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/rest/user_management"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/user"
 	"github.com/kweaver-ai/idrm-go-frame/core/logx/zapx"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/common"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"

@@ -13,7 +13,7 @@ import (
 	"github.com/biocrosscoder/flex/typed/collections/sortedcontainers"
 	"github.com/biocrosscoder/flex/typed/collections/sortedcontainers/sortedlist"
 	"github.com/biocrosscoder/flex/typed/functools"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/info_resource_catalog"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/info_resource_catalog"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"go.uber.org/zap"
 	"gorm.io/gorm"

@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_configuration;
 
 -- ALTER TABLE `info_system` add COLUMN IF NOT EXISTS `js_department_id` varchar(36)  NULL COMMENT '建设部门ID';
 -- ALTER TABLE `info_system` add COLUMN IF NOT EXISTS  `status` tinyint(2) NULL DEFAULT 0 COMMENT '状态1已建、2拟建、3在建';

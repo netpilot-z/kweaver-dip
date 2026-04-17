@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 
-	engine "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/virtualization_engine"
+	engine "github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/virtualization_engine"
 	log "github.com/kweaver-ai/idrm-go-frame/core/logx/zapx"
 	"go.uber.org/zap"
 )

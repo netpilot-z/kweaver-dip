@@ -7,10 +7,10 @@ import (
 	"github.com/samber/lo"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/workflow"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/constant"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/work_order"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/workflow"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/constant"
+	domain "github.com/kweaver-ai/dsg/services/apps/task_center/domain/work_order"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-common/util/ptr"
 )
 

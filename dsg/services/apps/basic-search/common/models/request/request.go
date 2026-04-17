@@ -3,9 +3,9 @@ package request
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/models"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/common/models"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/common/constant"
 )
 
 type PageInfo struct {

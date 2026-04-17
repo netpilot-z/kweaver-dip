@@ -11,7 +11,7 @@ import (
 	universal_translator "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/ar_trace"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/common/util"
 	"go.opentelemetry.io/otel/trace"
 )
 

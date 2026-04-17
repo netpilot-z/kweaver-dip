@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 
-	proErrorcode "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/infrastructure/db/model"
+	proErrorcode "github.com/kweaver-ai/dsg/services/apps/data-subject/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/infrastructure/db/model"
 	"github.com/kweaver-ai/idrm-go-common/errorcode"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/samber/lo"

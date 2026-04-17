@@ -1,7 +1,7 @@
 package impl
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/menu"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/menu"
 )
 
 const (

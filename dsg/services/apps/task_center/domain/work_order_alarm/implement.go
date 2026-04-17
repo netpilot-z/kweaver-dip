@@ -6,9 +6,9 @@ import (
 	"github.com/google/uuid"
 	"go.uber.org/zap"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/gorm/alarm_rule"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/gorm/work_order_alarm"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/gorm/alarm_rule"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/gorm/work_order_alarm"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db/model"
 	meta_v1 "github.com/kweaver-ai/idrm-go-common/api/meta/v1"
 	task_v1 "github.com/kweaver-ai/idrm-go-common/api/task_center/v1"
 	"github.com/kweaver-ai/idrm-go-common/reconcile"

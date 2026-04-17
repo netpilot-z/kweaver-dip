@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_tasks;
 
 CREATE TABLE IF NOT EXISTS `operation_log` (
     `id` char(36) NOT NULL COMMENT '主键，uuid',

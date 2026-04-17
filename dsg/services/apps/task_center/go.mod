@@ -1,4 +1,4 @@
-module github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center
+module github.com/kweaver-ai/dsg/services/apps/task_center
 
 go 1.24.0
 

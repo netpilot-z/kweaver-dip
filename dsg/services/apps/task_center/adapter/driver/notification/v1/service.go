@@ -6,9 +6,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/user_util"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/notification"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/user_util"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/domain/notification"
 	asset_portal_v1 "github.com/kweaver-ai/idrm-go-common/api/asset_portal/v1"
 	asset_portal_v1_frontend "github.com/kweaver-ai/idrm-go-common/api/asset_portal/v1/frontend"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"

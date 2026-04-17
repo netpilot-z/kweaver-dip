@@ -3,7 +3,7 @@ package impl
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/rest/metadata"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/rest/metadata"
 )
 
 type MetadataMock struct {

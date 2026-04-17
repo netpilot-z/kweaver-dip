@@ -4,9 +4,9 @@ import (
 	"context"
 	"time"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/models/request"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/models/response"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/models/request"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/models/response"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db/model"
 )
 
 type SandboxSpace interface {

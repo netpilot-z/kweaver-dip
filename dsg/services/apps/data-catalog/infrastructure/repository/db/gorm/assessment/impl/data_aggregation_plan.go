@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/assessment"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/assessment"
 	"gorm.io/gorm"
 )
 
@@ -35,7 +35,7 @@ type DataAggregationPlan struct {
 }
 
 func (DataAggregationPlan) TableName() string {
-	return "kweaver.data_aggregation_plan"
+	return "af_tasks.data_aggregation_plan"
 }
 
 // 根据ID列表批量获取数据归集计划信息

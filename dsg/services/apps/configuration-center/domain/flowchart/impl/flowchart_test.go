@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"testing"
 
-	impl3 "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/gorm/flowchart_node_task/impl"
-	impl4 "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/gorm/flowchart_version/impl"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/settings"
+	impl3 "github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/gorm/flowchart_node_task/impl"
+	impl4 "github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/gorm/flowchart_version/impl"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/settings"
 	"github.com/kweaver-ai/idrm-go-frame/core/logx/zapx"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"gorm.io/driver/mysql"

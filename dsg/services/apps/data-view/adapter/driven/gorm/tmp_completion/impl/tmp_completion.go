@@ -2,15 +2,15 @@ package impl
 
 import (
 	"context"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/gorm/tmp_completion"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/form_view"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/gorm/tmp_completion"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/domain/form_view"
 	"errors"
 	"gorm.io/gorm/logger"
 	"time"
 
 	"github.com/kweaver-ai/idrm-go-common/errorcode"
-	my_errorcode "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/db/model"
+	my_errorcode "github.com/kweaver-ai/dsg/services/apps/data-view/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/db/model"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"go.uber.org/zap"
 	"gorm.io/gorm"

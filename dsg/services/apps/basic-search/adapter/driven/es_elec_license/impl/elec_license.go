@@ -11,12 +11,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/adapter/driven/es_common"
-	es "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/adapter/driven/es_elec_license"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/adapter/driven/opensearch"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/errorcode"
-	es_common_object "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/es"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/adapter/driven/es_common"
+	es "github.com/kweaver-ai/dsg/services/apps/basic-search/adapter/driven/es_elec_license"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/adapter/driven/opensearch"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/common/errorcode"
+	es_common_object "github.com/kweaver-ai/dsg/services/apps/basic-search/common/es"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/common/settings"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 	"github.com/olivere/elastic/v7"
@@ -48,7 +48,7 @@ var (
 	mapping = mappingVersionMap[IndicesName]
 )
 
-// 公共代码已迁移到es_common_object "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/es"
+// 公共代码已迁移到es_common_object "github.com/kweaver-ai/dsg/services/apps/basic-search/common/es"
 // const (
 //
 //	indicesAlreadyExistsErrType = "resource_already_exists_exception"
@@ -75,7 +75,7 @@ func NewSearcher(ctx context.Context, esClient *opensearch.SearchClient) (es.Sea
 	return &searcher{searchCli: esClient}, nil
 }
 
-// 公共代码已迁移到es_common_object "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/es"
+// 公共代码已迁移到es_common_object "github.com/kweaver-ai/dsg/services/apps/basic-search/common/es"
 //func initIndices(ctx context.Context, searchCli *opensearch.SearchClient) error {
 //	// 检测别名 alias 是否存在
 //	notFound := false

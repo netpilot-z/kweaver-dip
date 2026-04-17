@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/common/util"
 )
 
 // getOrmJsonBody get request body content json struct

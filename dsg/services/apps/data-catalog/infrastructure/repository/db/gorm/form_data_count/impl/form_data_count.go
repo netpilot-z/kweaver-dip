@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/form_data_count"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/form_data_count"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
 	"gorm.io/gorm"
 )
 

@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"runtime"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/adapter/driver"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/adapter/driver"
 
 	"github.com/spf13/cobra"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/cmd/server/docs"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/form_validator"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/cmd/server/docs"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/common/form_validator"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/common/settings"
 	goframe "github.com/kweaver-ai/idrm-go-frame"
 	cf "github.com/kweaver-ai/idrm-go-frame/core/config"
 	"github.com/kweaver-ai/idrm-go-frame/core/config/sources/env"

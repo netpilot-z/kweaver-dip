@@ -1,6 +1,6 @@
-USE kweaver;
+USE af_std;
 
--- kweaver.t_data_element_his definition
+-- af_std.t_data_element_his definition
 CREATE TABLE IF NOT EXISTS `t_data_element_his` (
   `f_de_id` bigint(20) NOT NULL DEFAULT 0 COMMENT '唯一标识、雪花算法',
   `f_de_code` bigint(20) NOT NULL DEFAULT 0 COMMENT '关联标识、雪花算法',
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `t_data_element_his` (
   PRIMARY KEY (`f_de_id`) USING BTREE
 ) COMMENT='数据元历史信息表';
 
--- kweaver.t_data_element_info definition
+-- af_std.t_data_element_info definition
 CREATE TABLE IF NOT EXISTS `t_data_element_info` (
   `f_de_id` bigint(20) NOT NULL DEFAULT 0 COMMENT '唯一标识、雪花算法',
   `f_de_code` bigint(20) NOT NULL DEFAULT 0 COMMENT '关联标识、雪花算法',
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `t_data_element_info` (
 ) COMMENT='数据元基本信息表';
 
 
--- kweaver.t_de_catalog_info definition
+-- af_std.t_de_catalog_info definition
 CREATE TABLE IF NOT EXISTS `t_de_catalog_info` (
   `f_id` bigint(20) NOT NULL DEFAULT 0 COMMENT '目录唯一标识',
   `f_catalog_name` varchar(20) NOT NULL DEFAULT '' COMMENT '目录名称',
@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS `t_de_catalog_info` (
   PRIMARY KEY (`f_id`)
 ) COMMENT='数据元目录基本信息表';
 
--- kweaver.t_de_dict definition
+-- af_std.t_de_dict definition
 CREATE TABLE IF NOT EXISTS `t_de_dict` (
   `f_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `f_code` bigint(20) NOT NULL COMMENT '码表编码，同一码表不同状态或版本编码相同',
@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS `t_de_dict` (
   PRIMARY KEY (`f_id`)
 ) COMMENT='码表';
 
--- kweaver.t_de_dict_enum definition
+-- af_std.t_de_dict_enum definition
 CREATE TABLE IF NOT EXISTS `t_de_dict_enum` (
   `f_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `f_code` varchar(100) NOT NULL COMMENT '编码',
@@ -116,7 +116,7 @@ CREATE TABLE IF NOT EXISTS `t_de_dict_enum` (
   PRIMARY KEY (`f_id`)
 ) COMMENT='码表枚举表';
 
--- kweaver.t_de_dict_enum_his definition
+-- af_std.t_de_dict_enum_his definition
 CREATE TABLE IF NOT EXISTS `t_de_dict_enum_his` (
   `f_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `f_code` varchar(100) NOT NULL COMMENT '码值',
@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS `t_de_dict_enum_his` (
   PRIMARY KEY (`f_id`)
 ) COMMENT='码表枚举表';
 
--- kweaver.t_de_dict_his definition
+-- af_std.t_de_dict_his definition
 CREATE TABLE IF NOT EXISTS `t_de_dict_his` (
   `f_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `f_code` bigint(20) NOT NULL COMMENT '码表编码，同一码表不同状态或版本编码相同',
@@ -152,7 +152,7 @@ CREATE TABLE IF NOT EXISTS `t_de_dict_his` (
 ) COMMENT='码表历史记录表';
 
 
--- kweaver.t_de_task_std_create definition
+-- af_std.t_de_task_std_create definition
 CREATE TABLE IF NOT EXISTS `t_de_task_std_create` (
   `f_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `f_task_no` varchar(100) NOT NULL COMMENT '任务编号',
@@ -169,7 +169,7 @@ CREATE TABLE IF NOT EXISTS `t_de_task_std_create` (
   PRIMARY KEY (`f_id`)
 ) COMMENT='标准创建任务表';
 
--- kweaver.t_de_task_std_create_result definition
+-- af_std.t_de_task_std_create_result definition
 CREATE TABLE IF NOT EXISTS `t_de_task_std_create_result` (
   `f_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `f_task_id` bigint(20) NOT NULL COMMENT '标准推荐任务id',

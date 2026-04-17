@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	sharemanagement "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/thrift/sharemgnt"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/thrift_gen/sharemgnt"
+	sharemanagement "github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/thrift/sharemgnt"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/thrift_gen/sharemgnt"
 )
 
 func main() {

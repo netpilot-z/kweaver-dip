@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/news_policy"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/news_policy"
 )
 
 type CmsContent struct {

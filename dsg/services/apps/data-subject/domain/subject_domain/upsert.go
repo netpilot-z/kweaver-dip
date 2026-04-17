@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/infrastructure/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/infrastructure/db/model"
 	"github.com/kweaver-ai/idrm-go-common/util/iter"
 	"github.com/kweaver-ai/idrm-go-frame/core/enum"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"

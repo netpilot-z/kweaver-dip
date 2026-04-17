@@ -3,7 +3,7 @@ package v1
 import (
 	"errors"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/info_resource_catalog"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/info_resource_catalog"
 )
 
 func verifyBusinessResponsibility(entry *info_resource_catalog.BelongInfoVO) (err error) {

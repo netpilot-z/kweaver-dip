@@ -3,9 +3,9 @@ package data_resource
 import (
 	"context"
 
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/data_resource"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/data_resource_catalog"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/data_resource"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/data_resource_catalog"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
 )
 
 type DataResourceRepo interface {

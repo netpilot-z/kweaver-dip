@@ -3,8 +3,8 @@ package task_relations_data
 import (
 	"context"
 
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/relation_data"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db/model"
+	domain "github.com/kweaver-ai/dsg/services/apps/task_center/domain/relation_data"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db/model"
 	"gorm.io/gorm"
 )
 

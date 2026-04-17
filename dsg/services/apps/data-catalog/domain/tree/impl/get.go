@@ -3,7 +3,7 @@ package impl
 import (
 	"context"
 
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/tree"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/tree"
 )
 
 func (u *useCase) Get(ctx context.Context, req *domain.IDPathParam) (*domain.GetRespParam, error) {

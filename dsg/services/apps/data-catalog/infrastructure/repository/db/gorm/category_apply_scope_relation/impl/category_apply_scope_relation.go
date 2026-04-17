@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db"
-	relation "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/category_apply_scope_relation"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db"
+	relation "github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/category_apply_scope_relation"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
 	"gorm.io/gorm"
 )
 

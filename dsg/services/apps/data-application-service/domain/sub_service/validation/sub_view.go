@@ -8,8 +8,8 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/util/validation/field"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/domain/sub_service"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/common/util/validation/field"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/domain/sub_service"
 )
 
 // ValidateSubServiceCreate 在创建子视图时检查

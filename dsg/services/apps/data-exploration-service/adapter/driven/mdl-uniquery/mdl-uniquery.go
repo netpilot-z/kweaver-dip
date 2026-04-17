@@ -12,8 +12,8 @@ import (
 	"time"
 
 	jsoniter "github.com/json-iterator/go"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/settings"
 	"github.com/kweaver-ai/idrm-go-common/interception"
 	"github.com/kweaver-ai/idrm-go-common/util"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"

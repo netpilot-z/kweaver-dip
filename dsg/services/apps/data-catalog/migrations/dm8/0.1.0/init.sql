@@ -1,4 +1,4 @@
-SET SCHEMA kweaver;
+SET SCHEMA af_data_catalog;
 
 CREATE TABLE IF NOT EXISTS "t_business_logic_entity_by_business_domain" (
      "id" BIGINT  NOT NULL IDENTITY(1,1),

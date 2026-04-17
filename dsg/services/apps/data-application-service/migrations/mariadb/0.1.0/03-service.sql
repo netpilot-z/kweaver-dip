@@ -1,4 +1,4 @@
-USE kweaver;
+use data_application_service;
 
 -- 为接口服务表(service)添加字段
 -- 添加信息系统ID字段

@@ -4,9 +4,9 @@ import (
 	"context"
 	"time"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/adapter/driven/es_common"
-	es "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/adapter/driven/es_elec_license" //电子证照目录
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/models/response"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/adapter/driven/es_common"
+	es "github.com/kweaver-ai/dsg/services/apps/basic-search/adapter/driven/es_elec_license" //电子证照目录
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/common/models/response"
 	"github.com/samber/lo"
 )
 

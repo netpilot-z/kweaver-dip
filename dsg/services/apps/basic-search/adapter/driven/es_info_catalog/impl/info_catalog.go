@@ -15,12 +15,12 @@ import (
 	"github.com/samber/lo"
 	"go.uber.org/zap"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/adapter/driven/es_common"
-	es "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/adapter/driven/es_info_catalog"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/adapter/driven/opensearch"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/errorcode"
-	es_common_object "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/es"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/adapter/driven/es_common"
+	es "github.com/kweaver-ai/dsg/services/apps/basic-search/adapter/driven/es_info_catalog"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/adapter/driven/opensearch"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/common/errorcode"
+	es_common_object "github.com/kweaver-ai/dsg/services/apps/basic-search/common/es"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/common/settings"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 )

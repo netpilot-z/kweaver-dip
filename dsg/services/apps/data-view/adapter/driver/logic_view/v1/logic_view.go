@@ -2,12 +2,12 @@ package v1
 
 import (
 	"github.com/gin-gonic/gin"
-	_ "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/rest/virtualization_engine"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/form_validator"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/models/response"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/util"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/form_view"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/logic_view"
+	_ "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/rest/virtualization_engine"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/form_validator"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/models/response"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/domain/form_view"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/domain/logic_view"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"
 )
 

@@ -31,7 +31,7 @@ func (c *AFConfigurationClient) Users() UserInterface {
 }
 
 func New(db *gorm.DB) *AFConfigurationClient {
-	return NewWithDBName(db, "kweaver")
+	return NewWithDBName(db, "af_configuration")
 }
 
 func NewWithDBName(db *gorm.DB, dbName string) *AFConfigurationClient {

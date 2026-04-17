@@ -3,10 +3,10 @@ package impl
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/gorm/tc_member"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/gorm/tc_member"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db/model"
 	"github.com/samber/lo"
 )
 

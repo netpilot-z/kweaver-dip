@@ -2,9 +2,9 @@ package infrastructure
 
 import (
 	"github.com/google/wire"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/mq/kafka"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/mq/mq_client"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/mq/kafka"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/mq/mq_client"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db"
 )
 
 var Set = wire.NewSet(

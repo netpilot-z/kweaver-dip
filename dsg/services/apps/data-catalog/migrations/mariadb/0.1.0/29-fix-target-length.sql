@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_data_catalog;
 -- ALTER TABLE `t_target` MODIFY COLUMN IF EXISTS `target_name` varchar(128) NULL COMMENT '目标名称';
 -- ALTER TABLE `t_target_plan` MODIFY COLUMN IF EXISTS `plan_name` varchar(128) NULL COMMENT '计划名称';
 -- ALTER TABLE `t_target` MODIFY COLUMN IF EXISTS `employee_id` text NULL COMMENT '协助成员ID,多个用逗号分隔';

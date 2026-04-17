@@ -3,16 +3,16 @@ package user
 import (
 	"net/http"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/user_util"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/user_util"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/form_validator"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/user"
-	_ "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/user/impl"
-	_ "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/form_validator"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/user"
+	_ "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/user/impl"
+	_ "github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-common/access_control"
 	configuration_center_v1 "github.com/kweaver-ai/idrm-go-common/api/configuration-center/v1"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"

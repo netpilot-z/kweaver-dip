@@ -1,7 +1,7 @@
 package kafka
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/settings"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/mq/kafkax"
 	"go.uber.org/zap"

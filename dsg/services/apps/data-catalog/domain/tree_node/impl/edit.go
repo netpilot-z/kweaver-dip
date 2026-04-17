@@ -3,10 +3,10 @@ package impl
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/models"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/models/request"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/models/response"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/tree_node"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/models"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/models/request"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/models/response"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/tree_node"
 )
 
 func (u *useCase) Edit(ctx context.Context, req *domain.EditReqParam) (*domain.EditRespParam, error) {

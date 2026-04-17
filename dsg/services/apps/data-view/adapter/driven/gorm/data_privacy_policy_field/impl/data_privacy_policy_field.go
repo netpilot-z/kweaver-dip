@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/gorm/data_privacy_policy_field"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/gorm/data_privacy_policy_field"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/db/model"
 	"gorm.io/gorm"
 )
 

@@ -5,7 +5,7 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/kweaver-ai/idrm-go-common/errorcode"
-	_ "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/sub_view"
+	_ "github.com/kweaver-ai/dsg/services/apps/data-view/domain/sub_view"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"
 )

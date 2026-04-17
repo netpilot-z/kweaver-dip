@@ -5,17 +5,17 @@ import (
 	"errors"
 	"fmt"
 
-	my_errorcode "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/errorcode"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/form_view"
+	my_errorcode "github.com/kweaver-ai/dsg/services/apps/data-view/common/errorcode"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-view/domain/form_view"
 	"github.com/kweaver-ai/idrm-go-common/errorcode"
 	"github.com/kweaver-ai/idrm-go-frame/core/enum"
 
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/gorm/datasource"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/gorm/datasource"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/db/model"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 )
 

@@ -17,7 +17,7 @@ import (
 	"github.com/jung-kurt/gofpdf"
 	"go.uber.org/zap"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/dto"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/common/dto"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 )
 

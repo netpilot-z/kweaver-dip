@@ -11,14 +11,14 @@ import (
 
 	"go.uber.org/zap"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/business_grooming"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/data_catalog"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/user_util"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/business_grooming"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/data_catalog"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/user_util"
 	"github.com/kweaver-ai/idrm-go-common/access_control"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-frame/core/enum"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 )

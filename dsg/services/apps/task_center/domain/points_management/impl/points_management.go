@@ -10,10 +10,10 @@ import (
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
-	pmr_driven "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/gorm/points_management"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/errorcode"
-	pmr_domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/points_management"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db/model"
+	pmr_driven "github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/gorm/points_management"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/errorcode"
+	pmr_domain "github.com/kweaver-ai/dsg/services/apps/task_center/domain/points_management"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db/model"
 	configRest "github.com/kweaver-ai/idrm-go-common/rest/configuration_center"
 	"github.com/xuri/excelize/v2"
 )

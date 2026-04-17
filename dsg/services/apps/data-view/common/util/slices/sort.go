@@ -9,7 +9,7 @@ package slices
 import (
 	"math/bits"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/util/constraints"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/util/constraints"
 )
 
 // Sort sorts a slice of any ordered type in ascending order.

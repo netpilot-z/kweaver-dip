@@ -3,12 +3,12 @@ package domain
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/adapter/driven/gorm"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/adapter/driven/microservice"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/dto"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/util"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/adapter/driven/gorm"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/adapter/driven/microservice"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/common/dto"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/infrastructure/repository/db/model"
 )
 
 type AuditProcessBindDomain struct {

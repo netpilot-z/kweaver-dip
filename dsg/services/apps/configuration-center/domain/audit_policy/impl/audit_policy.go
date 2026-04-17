@@ -9,13 +9,13 @@ import (
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 
-	audit_policy_repo "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/gorm/audit_policy"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/models/response"
+	audit_policy_repo "github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/gorm/audit_policy"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/models/response"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/audit_policy"
-	user_domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/user"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/audit_policy"
+	user_domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/user"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
 )
 
 type appsUseCase struct {

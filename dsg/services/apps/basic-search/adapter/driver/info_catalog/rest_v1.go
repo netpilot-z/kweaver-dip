@@ -6,9 +6,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/middleware"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/trace_util"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/domain/info_catalog" //信息资源目录
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/common/middleware"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/common/trace_util"
+	domain "github.com/kweaver-ai/dsg/services/apps/basic-search/domain/info_catalog" //信息资源目录
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"
 	"github.com/samber/lo"

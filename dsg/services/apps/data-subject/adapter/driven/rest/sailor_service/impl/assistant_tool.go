@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	//"github.com/kweaver-ai/dip-for-datasource/sailor-service/client"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/adapter/driven/rest/sailor_service"
-	pconfig "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/infrastructure/config"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/adapter/driven/rest/sailor_service"
+	pconfig "github.com/kweaver-ai/dsg/services/apps/data-subject/infrastructure/config"
 )
 
 type SailorServiceCall struct {

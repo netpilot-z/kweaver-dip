@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin/binding"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/errorcode"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"
 
 	"github.com/gin-gonic/gin"

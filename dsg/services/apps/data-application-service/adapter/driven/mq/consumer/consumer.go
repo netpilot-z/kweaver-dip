@@ -1,8 +1,8 @@
 package consumer
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/adapter/driven/mq"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/adapter/driven/mq/consumer/service"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/adapter/driven/mq"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/adapter/driven/mq/consumer/service"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"go.uber.org/zap"
 )

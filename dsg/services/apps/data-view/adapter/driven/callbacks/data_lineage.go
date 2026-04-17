@@ -2,7 +2,7 @@ package callbacks
 
 import (
 	"context"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/data_lineage/processor"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/domain/data_lineage/processor"
 	"github.com/kweaver-ai/idrm-go-common/database_callback/callback"
 	"github.com/kweaver-ai/idrm-go-common/rest/metadata_manage"
 )

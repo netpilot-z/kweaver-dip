@@ -6,7 +6,7 @@ import (
 	_ "mime/multipart"
 
 	//导入D:\go_workplace\configuration-center\domain\carousels\interface.go这个类
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/carousels"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/carousels"
 )
 
 type CarouselCase struct {

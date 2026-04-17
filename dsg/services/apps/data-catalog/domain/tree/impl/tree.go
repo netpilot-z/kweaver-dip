@@ -3,9 +3,9 @@ package impl
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/models"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/tree"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/tree"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/models"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/tree"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/tree"
 )
 
 type useCase struct {

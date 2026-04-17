@@ -4,9 +4,9 @@ import (
 	"context"
 	"time"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/models/response"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/mq/kafka"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/models/response"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/mq/kafka"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
 	configuration_center_v1 "github.com/kweaver-ai/idrm-go-common/api/configuration-center/v1"
 	configuration_center_v1_frontend "github.com/kweaver-ai/idrm-go-common/api/configuration-center/v1/frontend"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/mq/kafkax"

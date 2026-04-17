@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/Shopify/sarama"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/settings"
 )
 
 type KafkaProducer struct {

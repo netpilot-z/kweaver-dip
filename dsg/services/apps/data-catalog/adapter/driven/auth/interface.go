@@ -3,7 +3,7 @@ package auth
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/models/response"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/models/response"
 )
 
 type Repo interface {

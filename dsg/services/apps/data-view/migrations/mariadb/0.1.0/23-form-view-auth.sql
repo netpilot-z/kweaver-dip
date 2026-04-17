@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_main;
 
 -- ALTER TABLE `sub_views`  ADD COLUMN if not exists auth_scope_id char(36) DEFAULT NULL COMMENT '行列规则限定范围，可以能是行列规则ID，可能是视图ID';
 

@@ -1,4 +1,4 @@
-USE kweaver;
+use af_main;
 
 CREATE TABLE IF NOT EXISTS data_privacy_policy_field (
 	data_privacy_policy_field_id BIGINT(20) NOT NULL COMMENT '隐私策略字段雪花id',

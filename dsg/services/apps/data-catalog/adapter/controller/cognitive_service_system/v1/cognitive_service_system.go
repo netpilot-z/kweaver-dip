@@ -1,8 +1,8 @@
 package v1
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/models/response"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/cognitive_service_system"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/models/response"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/cognitive_service_system"
 )
 
 var _ response.PageResult[string]

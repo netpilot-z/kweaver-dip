@@ -2,11 +2,11 @@ package user
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/form_validator"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/data_grade"
-	_ "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/user/impl"
-	_ "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/form_validator"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/data_grade"
+	_ "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/user/impl"
+	_ "github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
 	af_trace "github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 	_ "github.com/kweaver-ai/idrm-go-frame/core/transport/rest"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"

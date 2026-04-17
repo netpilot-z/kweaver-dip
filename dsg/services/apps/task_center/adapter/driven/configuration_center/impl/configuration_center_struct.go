@@ -10,8 +10,8 @@ import (
 	"strings"
 
 	jsoniter "github.com/json-iterator/go"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/configuration_center"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/configuration_center"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/errorcode"
 	"github.com/kweaver-ai/idrm-go-common/access_control"
 	"github.com/kweaver-ai/idrm-go-common/interception"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"

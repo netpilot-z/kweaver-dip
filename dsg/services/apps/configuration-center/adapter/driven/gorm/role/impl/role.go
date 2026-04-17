@@ -11,13 +11,13 @@ import (
 	configuration_center_v1 "github.com/kweaver-ai/idrm-go-common/api/configuration-center/v1"
 	"github.com/kweaver-ai/idrm-go-common/util/sets"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/common"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/gorm/role"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/errorcode"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/role"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/repository/db/model/query"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/common"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/gorm/role"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/errorcode"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/role"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/repository/db/model/query"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 )
 

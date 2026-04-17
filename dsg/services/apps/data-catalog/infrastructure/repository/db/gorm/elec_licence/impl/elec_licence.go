@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/errorcode"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/elec_licence"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/elec_licence"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/errorcode"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/elec_licence"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/elec_licence"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
 	"gorm.io/gorm"
 )
 

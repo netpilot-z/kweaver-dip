@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/util"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/res_feedback"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/res_feedback"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/util"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/res_feedback"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/res_feedback"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
 	"gorm.io/gorm"
 )
 
@@ -76,7 +76,7 @@ const (
 					 WHERE %s) AS a 
 				INNER JOIN 
 					(SELECT id, uniform_catalog_code , business_name, department_id,online_status 
-					 FROM kweaver.form_view 
+					 FROM af_main.form_view 
 					 WHERE id COLLATE utf8mb4_unicode_ci IN (SELECT DISTINCT res_id COLLATE utf8mb4_unicode_ci
 								  FROM t_res_feedback 
 								  WHERE %s) AND %s) AS b 
@@ -143,7 +143,7 @@ const (
 		(SELECT id, res_id, feedback_type, feedback_desc, status, created_at, created_by, replied_at, res_type
 		 FROM t_res_feedback 
 		 WHERE %s) AS a 
-	LEFT JOIN kweaver.form_view AS dv ON a.res_id COLLATE utf8mb4_unicode_ci = dv.id COLLATE utf8mb4_unicode_ci
+	LEFT JOIN af_main.form_view AS dv ON a.res_id COLLATE utf8mb4_unicode_ci = dv.id COLLATE utf8mb4_unicode_ci
 	LEFT JOIN data_application_service.service AS svc ON a.res_id = svc.service_id
 	WHERE (dv.id IS NOT NULL OR svc.service_id IS NOT NULL)%s
 	%s 
@@ -161,7 +161,7 @@ const (
 		(SELECT id, res_id, feedback_type, feedback_desc, status, created_at, created_by, replied_at, res_type
 		 FROM t_res_feedback 
 		 WHERE %s) AS a 
-	LEFT JOIN kweaver.form_view AS dv ON a.res_id COLLATE utf8mb4_unicode_ci = dv.id COLLATE utf8mb4_unicode_ci
+	LEFT JOIN af_main.form_view AS dv ON a.res_id COLLATE utf8mb4_unicode_ci = dv.id COLLATE utf8mb4_unicode_ci
 	LEFT JOIN (
 		SELECT service_id, service_code, service_name, department_id
 		FROM data_application_service.service group by service_id
@@ -241,7 +241,7 @@ func (r *repo) GetList(tx *gorm.DB, ctx context.Context, uid string, id uint64, 
 				// 根据资源类型使用不同的字段名进行关键字查询
 				switch currentResType {
 				case S_RES_TYPE_DATA_VIEW:
-					// kweaver.form_view 表: uniform_catalog_code, business_name
+					// af_main.form_view 表: uniform_catalog_code, business_name
 					cOption += fmt.Sprintf(" AND (uniform_catalog_code LIKE '%s' or business_name LIKE '%s')", kw, kw)
 				case S_RES_TYPE_INTERFACE_SVC:
 					// data_application_service.service 表: service_code, service_name

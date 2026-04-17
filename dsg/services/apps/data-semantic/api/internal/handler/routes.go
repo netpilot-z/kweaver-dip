@@ -6,8 +6,8 @@ package handler
 import (
 	"net/http"
 
-	data_semantic "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/api/internal/handler/data_semantic"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/api/internal/svc"
+	data_semantic "github.com/kweaver-ai/dsg/services/apps/data-semantic/api/internal/handler/data_semantic"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
 )

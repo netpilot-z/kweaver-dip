@@ -2,10 +2,10 @@ package app
 
 import (
 	"github.com/kweaver-ai/idrm-go-common/workflow"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/callbacks"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driver/mq"
-	formView "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/form_view/v1"
-	my_config "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/config"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/callbacks"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driver/mq"
+	formView "github.com/kweaver-ai/dsg/services/apps/data-view/domain/form_view/v1"
+	my_config "github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/config"
 	go_frame "github.com/kweaver-ai/idrm-go-frame"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest"

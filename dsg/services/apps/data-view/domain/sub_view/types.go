@@ -6,9 +6,9 @@ import (
 	authServiceV1 "github.com/kweaver-ai/idrm-go-common/api/auth-service/v1"
 	"github.com/samber/lo"
 
-	repo "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/gorm/sub_view"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/util/sets"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/db/model"
+	repo "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/gorm/sub_view"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/util/sets"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/db/model"
 )
 
 // Create 选项

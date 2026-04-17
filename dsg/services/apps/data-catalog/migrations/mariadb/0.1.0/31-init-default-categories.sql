@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_data_catalog;
 -- ALTER TABLE `t_category_apply_scope_relation`
 --     ADD COLUMN if not exists `required` tinyint(4) NOT NULL DEFAULT 0 COMMENT '是否必填，0否 1是' AFTER `apply_scope_id`;
 --

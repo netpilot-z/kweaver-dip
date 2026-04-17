@@ -5,10 +5,10 @@ import (
 
 	"github.com/biocrosscoder/flex/typed/collections/dict"
 	"github.com/biocrosscoder/flex/typed/functools"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/common_model"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/info_resource_catalog"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/common_model"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/info_resource_catalog"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-common/rest/configuration_center"
 )
 

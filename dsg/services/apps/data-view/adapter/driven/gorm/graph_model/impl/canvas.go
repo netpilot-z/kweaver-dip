@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	errorcode2 "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/db/model"
+	errorcode2 "github.com/kweaver-ai/dsg/services/apps/data-view/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/db/model"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )

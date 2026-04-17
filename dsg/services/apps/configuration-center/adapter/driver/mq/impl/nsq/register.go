@@ -2,10 +2,10 @@ package nsq
 
 /*
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driver/mq"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driver/mq/department"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driver/mq/user_mgm"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/mq/kafka"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driver/mq"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driver/mq/department"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driver/mq/user_mgm"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/mq/kafka"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/mq/kafkax"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/mq/nsqx"
 	"github.com/nsqio/go-nsq"

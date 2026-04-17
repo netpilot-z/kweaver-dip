@@ -15,8 +15,8 @@ import (
 	"github.com/mitchellh/mapstructure"
 	"go.uber.org/zap"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/settings"
 	"github.com/kweaver-ai/idrm-go-common/interception"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"

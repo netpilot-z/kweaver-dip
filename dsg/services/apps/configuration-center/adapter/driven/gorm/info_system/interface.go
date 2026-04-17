@@ -5,9 +5,9 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/models/request"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/info_system"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/models/request"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/info_system"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
 )
 
 type Repo interface {

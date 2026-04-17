@@ -1,4 +1,4 @@
-USE kweaver;
+USE data_application_service;
 
 CREATE TABLE  IF NOT EXISTS  `service_daily_record` (
   `f_id` BIGINT(20) NOT NULL COMMENT '主键，雪花算法',

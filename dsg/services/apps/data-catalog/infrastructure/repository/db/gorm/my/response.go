@@ -1,8 +1,8 @@
 package my
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/models/response"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/models/response"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/util"
 	"github.com/kweaver-ai/idrm-go-common/rest/user_management"
 )
 

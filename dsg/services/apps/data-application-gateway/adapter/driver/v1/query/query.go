@@ -12,12 +12,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/adapter/driven/gorm"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/common/dto"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/common/form_validator"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/common/util"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/domain"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/adapter/driven/gorm"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/common/dto"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/common/form_validator"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/domain"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"
 )

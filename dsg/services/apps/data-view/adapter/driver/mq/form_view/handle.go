@@ -3,8 +3,8 @@ package form_view
 import (
 	"context"
 	"encoding/json"
-	repo "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/gorm/form_view"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/form_view"
+	repo "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/gorm/form_view"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/domain/form_view"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 )
 

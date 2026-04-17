@@ -3,10 +3,10 @@ package impl
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/common"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/gorm/resource"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/repository/db/model/query"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/common"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/gorm/resource"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/repository/db/model/query"
 	"github.com/kweaver-ai/idrm-go-common/access_control"
 	"gorm.io/gorm"
 )

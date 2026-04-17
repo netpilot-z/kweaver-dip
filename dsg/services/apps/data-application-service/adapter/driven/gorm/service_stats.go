@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/dto"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/enum"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/util"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/infrastructure/repository"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/infrastructure/repository/db"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/common/dto"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/common/enum"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/infrastructure/repository"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/infrastructure/repository/db"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"go.uber.org/zap"
 )

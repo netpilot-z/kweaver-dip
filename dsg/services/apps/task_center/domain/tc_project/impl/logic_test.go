@@ -7,9 +7,9 @@ import (
 	"testing"
 
 	"github.com/jarcoal/httpmock"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/util"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/tc_project"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/domain/tc_project"
 	"github.com/stretchr/testify/assert"
 )
 

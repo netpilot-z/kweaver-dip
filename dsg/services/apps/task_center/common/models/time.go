@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/constant"
 )
 
 type CommonTime struct {

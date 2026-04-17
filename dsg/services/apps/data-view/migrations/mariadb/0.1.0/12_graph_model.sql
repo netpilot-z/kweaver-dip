@@ -1,4 +1,4 @@
-USE kweaver;
+use af_main;
 
 create table if not EXISTS `t_graph_model`(
     `model_id`   bigint(20) unsigned NOT NULL COMMENT '自增雪花ID',

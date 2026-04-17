@@ -1,7 +1,7 @@
 package db
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/settings"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/uptrace/opentelemetry-go-extra/otelgorm"
 	"gorm.io/gorm"
@@ -39,7 +39,7 @@ func NewData(config *settings.Config) (*Data, func(), error) {
 	// af_configuration
 	{
 		opts := config.Database
-		opts.Database = "kweaver"
+		opts.Database = "af_configuration"
 		db, err := opts.NewClient()
 		if err != nil {
 			return nil, func() {}, err
@@ -50,7 +50,7 @@ func NewData(config *settings.Config) (*Data, func(), error) {
 	// af_main
 	{
 		opts := config.Database
-		opts.Database = "kweaver"
+		opts.Database = "af_main"
 		db, err := opts.NewClient()
 		if err != nil {
 			return nil, func() {}, err

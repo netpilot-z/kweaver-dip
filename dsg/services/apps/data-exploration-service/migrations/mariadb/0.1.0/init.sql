@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_data_exploration;
 
 create table if not exists `t_task_config` (
     `f_id` BIGINT(20) NOT NULL COMMENT '主键id',

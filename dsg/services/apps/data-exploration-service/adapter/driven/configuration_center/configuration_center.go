@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/jinzhu/copier"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/settings"
 	"github.com/kweaver-ai/idrm-go-common/access_control"
 	"github.com/kweaver-ai/idrm-go-common/interception"
 	log "github.com/kweaver-ai/idrm-go-frame/core/logx/zapx"

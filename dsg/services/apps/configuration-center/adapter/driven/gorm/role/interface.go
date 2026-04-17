@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/role"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/role"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
 	configuration_center_v1 "github.com/kweaver-ai/idrm-go-common/api/configuration-center/v1"
 )
 

@@ -12,16 +12,16 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	mdl_uniquery "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/mdl-uniquery"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/mq"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/models"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/settings"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/util"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/domain/exploration"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/domain/exploration/impl/nsql"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/infrastructure/repository/db/model"
+	mdl_uniquery "github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/mdl-uniquery"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/mq"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/models"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/domain/exploration"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/domain/exploration/impl/nsql"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-frame/core/errorx/agerrors"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/utils"
@@ -552,7 +552,7 @@ func (e *ExplorationDomainImpl) SyncExecExplore(ctx context.Context, task *model
 		tableInfo.Columns = res
 	}
 
-	if err = e.data.DB.WithContext(ctx).Table("kweaver.form_view").Select("mdl_id").Where("id = ?", exploreReq.TableId).Take(&exploreReq.MdlId).Error; err != nil {
+	if err = e.data.DB.WithContext(ctx).Table("af_main.form_view").Select("mdl_id").Where("id = ?", exploreReq.TableId).Take(&exploreReq.MdlId).Error; err != nil {
 		return "mdl_id not found", err
 	}
 

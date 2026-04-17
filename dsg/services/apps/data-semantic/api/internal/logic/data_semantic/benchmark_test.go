@@ -7,8 +7,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/api/internal/svc"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/api/internal/types"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/api/internal/svc"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/api/internal/types"
 )
 
 // BenchmarkGetStatus 查询状态接口性能基准测试

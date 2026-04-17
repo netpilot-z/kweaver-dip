@@ -3,10 +3,10 @@ package login
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/adapter/driven/http_client/authentication"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/adapter/driven/http_client/oauth2"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/adapter/driven/http_client/user_management"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/domain/d_session"
+	"github.com/kweaver-ai/dsg/services/apps/session/adapter/driven/http_client/authentication"
+	"github.com/kweaver-ai/dsg/services/apps/session/adapter/driven/http_client/oauth2"
+	"github.com/kweaver-ai/dsg/services/apps/session/adapter/driven/http_client/user_management"
+	"github.com/kweaver-ai/dsg/services/apps/session/domain/d_session"
 )
 
 type LoginService interface {

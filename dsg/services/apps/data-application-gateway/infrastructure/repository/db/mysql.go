@@ -5,7 +5,7 @@ import (
 
 	_ "github.com/golang-migrate/migrate/v4/database/mysql"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/common/settings"
 	"github.com/kweaver-ai/idrm-go-frame/core/store/gormx"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/uptrace/opentelemetry-go-extra/otelgorm"

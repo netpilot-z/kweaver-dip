@@ -4,10 +4,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/util"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/user_data_catalog_rel"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/user_data_catalog_rel"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -67,7 +67,7 @@ func (r *repo) GetByCodes(tx *gorm.DB, ctx context.Context, codes []string, uid 
 		Select 
 			id, code, expired_at 
 		From 
-			kweaver.t_user_data_catalog_rel 
+			af_data_catalog.t_user_data_catalog_rel 
 		Where
 			code in (?)
 		And

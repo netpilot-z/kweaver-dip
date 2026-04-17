@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/adapter/driven/gorm"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/adapter/driven/gorm"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 )
 

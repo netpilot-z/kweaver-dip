@@ -3,8 +3,8 @@ package db_sandbox
 import (
 	"context"
 
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/db_sandbox"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db/model"
+	domain "github.com/kweaver-ai/dsg/services/apps/task_center/domain/db_sandbox"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db/model"
 )
 
 type Repo interface {

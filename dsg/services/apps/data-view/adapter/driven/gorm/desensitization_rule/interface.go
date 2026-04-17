@@ -3,8 +3,8 @@ package desensitization_rule
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/form_view"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/domain/form_view"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/db/model"
 )
 
 type DesensitizationRuleRepo interface {

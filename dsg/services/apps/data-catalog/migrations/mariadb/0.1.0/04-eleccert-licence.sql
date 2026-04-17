@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_data_catalog;
 
 
 CREATE TABLE IF NOT EXISTS `elec_licence`

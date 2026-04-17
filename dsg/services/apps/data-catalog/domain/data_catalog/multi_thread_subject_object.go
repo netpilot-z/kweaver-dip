@@ -5,8 +5,8 @@ import (
 	"math"
 	"time"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/promise"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/common"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/promise"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/common"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/panjf2000/ants/v2"
 )

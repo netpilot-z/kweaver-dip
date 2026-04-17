@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_configuration;
 
 -- 是否数字员工菜单1是、0否
 INSERT INTO `configuration` (`key`,`value`,`type`)

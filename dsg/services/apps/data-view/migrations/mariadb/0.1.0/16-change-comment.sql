@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_main;
 -- ALTER TABLE `form_view` MODIFY COLUMN `comment` text NULL COMMENT '逻辑视图注释';
 -- ALTER TABLE `form_view_field` MODIFY COLUMN `comment` text NULL COMMENT '列注释';
 

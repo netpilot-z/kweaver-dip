@@ -7,7 +7,7 @@ package model
 import (
 	"time"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/common/util"
 	"gorm.io/gorm"
 )
 

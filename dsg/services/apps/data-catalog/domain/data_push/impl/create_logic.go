@@ -3,7 +3,7 @@ package impl
 import (
 	"context"
 
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/data_push"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/data_push"
 
 	_ "embed"
 )

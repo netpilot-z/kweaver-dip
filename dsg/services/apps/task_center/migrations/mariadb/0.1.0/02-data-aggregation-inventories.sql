@@ -1,4 +1,4 @@
-USE kweaver;
+USE `af_tasks`;
 
 -- 数据归集清单
 CREATE TABLE IF NOT EXISTS `data_aggregation_inventories` (

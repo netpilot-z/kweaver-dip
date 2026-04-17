@@ -1,4 +1,4 @@
-USE kweaver;
+USE `af_tasks`;
 
 
 CREATE TABLE IF NOT EXISTS `tc_tenant_app_db_data_resource` (

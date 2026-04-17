@@ -2,7 +2,7 @@ package form_validator
 
 import (
 	"fmt"
-	explore_task2 "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/explore_task"
+	explore_task2 "github.com/kweaver-ai/dsg/services/apps/data-view/domain/explore_task"
 	"reflect"
 	"regexp"
 	"strconv"
@@ -10,8 +10,8 @@ import (
 	"unicode/utf8"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/util"
 	"github.com/kweaver-ai/idrm-go-frame/core/enum"
 	log "github.com/kweaver-ai/idrm-go-frame/core/logx/zapx"
 )

@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/settings"
 	"github.com/kweaver-ai/idrm-go-common/interception"
 )
 

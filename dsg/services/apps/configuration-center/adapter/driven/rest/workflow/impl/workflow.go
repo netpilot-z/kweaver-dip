@@ -10,9 +10,9 @@ import (
 	"net/url"
 
 	"github.com/imroc/req/v2"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/rest/workflow"
-	my_errorcode "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/rest/workflow"
+	my_errorcode "github.com/kweaver-ai/dsg/services/apps/configuration-center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/settings"
 	"github.com/kweaver-ai/idrm-go-common/errorcode"
 	"github.com/kweaver-ai/idrm-go-common/interception"
 	"github.com/kweaver-ai/idrm-go-common/util"

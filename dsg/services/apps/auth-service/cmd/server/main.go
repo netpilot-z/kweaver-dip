@@ -3,11 +3,11 @@ package main
 import (
 	"context"
 	"flag"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/auth-service/adapter/driven/resources"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/auth-service/adapter/driven/workflow/custom"
+	"github.com/kweaver-ai/dsg/services/apps/auth-service/adapter/driven/resources"
+	"github.com/kweaver-ai/dsg/services/apps/auth-service/adapter/driven/workflow/custom"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/auth-service/common/form_validator"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/auth-service/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/auth-service/common/form_validator"
+	"github.com/kweaver-ai/dsg/services/apps/auth-service/common/settings"
 	af_go_frame "github.com/kweaver-ai/idrm-go-frame"
 	"github.com/kweaver-ai/idrm-go-frame/core/config"
 	"github.com/kweaver-ai/idrm-go-frame/core/config/sources/env"

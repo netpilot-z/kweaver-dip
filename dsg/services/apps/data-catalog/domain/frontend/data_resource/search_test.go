@@ -7,8 +7,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driven/auth_service"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driven/auth_service/mock"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driven/auth_service"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driven/auth_service/mock"
 	"github.com/kweaver-ai/idrm-go-common/interception"
 	"github.com/kweaver-ai/idrm-go-common/middleware"
 )

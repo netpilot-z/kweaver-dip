@@ -7,12 +7,12 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/errorcode/mariadb"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/models"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/category"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/errorcode/mariadb"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/models"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/category"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"gorm.io/gorm"
 )

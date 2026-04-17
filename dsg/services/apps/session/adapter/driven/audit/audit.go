@@ -6,8 +6,8 @@ import (
 
 	"github.com/IBM/sarama"
 	"github.com/gin-gonic/gin"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/adapter/driven/http_client/hydra"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/domain/d_session"
+	"github.com/kweaver-ai/dsg/services/apps/session/adapter/driven/http_client/hydra"
+	"github.com/kweaver-ai/dsg/services/apps/session/domain/d_session"
 	v1 "github.com/kweaver-ai/idrm-go-common/api/audit/v1"
 	"github.com/kweaver-ai/idrm-go-common/audit"
 	middleware_v1 "github.com/kweaver-ai/idrm-go-common/middleware/v1"

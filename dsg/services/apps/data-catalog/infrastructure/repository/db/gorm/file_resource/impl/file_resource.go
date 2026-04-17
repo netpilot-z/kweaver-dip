@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/util"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/file_resource"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/file_resource"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/util"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/file_resource"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/file_resource"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
 	"gorm.io/gorm"
 )
 

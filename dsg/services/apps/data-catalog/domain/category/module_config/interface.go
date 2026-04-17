@@ -3,8 +3,8 @@ package module_config
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/models/response"
-	repoModel "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/models/response"
+	repoModel "github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-common/middleware"
 )
 

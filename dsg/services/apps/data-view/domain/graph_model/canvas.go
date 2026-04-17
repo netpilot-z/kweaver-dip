@@ -3,8 +3,8 @@ package graph_model
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/models/request"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/models/response"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/models/request"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/models/response"
 )
 
 type Canvas interface {

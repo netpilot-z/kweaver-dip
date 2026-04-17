@@ -5,9 +5,9 @@ import (
 
 	"go.uber.org/zap"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/infrastructure/repository/db/model"
 	callback_register "github.com/kweaver-ai/idrm-go-common/callback/data_application_service/register"
 	"github.com/kweaver-ai/idrm-go-frame/core/errorx/agcodes"
 	"github.com/kweaver-ai/idrm-go-frame/core/errorx/agerrors"

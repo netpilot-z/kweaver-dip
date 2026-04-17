@@ -1,6 +1,6 @@
 package collection
 
-import "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/util"
+import "github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/util"
 
 type TimeRange struct {
 	Start int64 `json:"start"`

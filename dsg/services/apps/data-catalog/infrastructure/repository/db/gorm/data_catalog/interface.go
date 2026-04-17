@@ -3,9 +3,9 @@ package data_catalog
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/models/request"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/util"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/models/request"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-common/middleware"
 	"gorm.io/gorm"
 )

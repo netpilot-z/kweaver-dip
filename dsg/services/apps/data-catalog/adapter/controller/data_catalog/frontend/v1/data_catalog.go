@@ -3,14 +3,14 @@ package v1
 import (
 	"net/http"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/data_resource_catalog"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/data_resource_catalog"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/form_validator"
-	data_catalog_backend "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/data_catalog"
-	_ "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/frontend/common"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/frontend/data_catalog"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/form_validator"
+	data_catalog_backend "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/data_catalog"
+	_ "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/frontend/common"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/frontend/data_catalog"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"
 	"go.uber.org/zap"

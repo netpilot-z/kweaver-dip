@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 
 	"github.com/google/uuid"
-	repo "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/adapter/driven/gorm"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/infrastructure/repository/db/model"
+	repo "github.com/kweaver-ai/dsg/services/apps/data-application-service/adapter/driven/gorm"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/infrastructure/repository/db/model"
 	authServiceV1 "github.com/kweaver-ai/idrm-go-common/api/auth-service/v1"
 	"github.com/kweaver-ai/idrm-go-common/util/sets"
 )

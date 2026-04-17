@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/cmd/migrate"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/cmd/migrate"
 	"github.com/spf13/cobra"
 )
 

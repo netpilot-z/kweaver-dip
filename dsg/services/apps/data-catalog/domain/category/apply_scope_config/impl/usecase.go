@@ -4,11 +4,11 @@ import (
 	"context"
 	"errors"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/constant"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/category/apply_scope_config"
-	catRepo "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/category"
-	relRepo "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/category_apply_scope_relation"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/constant"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/category/apply_scope_config"
+	catRepo "github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/category"
+	relRepo "github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/category_apply_scope_relation"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-common/rest/configuration_center"
 )
 

@@ -1,7 +1,7 @@
 package v1
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/frontend/data_resource"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/frontend/data_resource"
 )
 
 type Controller struct {

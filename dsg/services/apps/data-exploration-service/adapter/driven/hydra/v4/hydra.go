@@ -10,8 +10,8 @@ import (
 
 	jsoniter "github.com/json-iterator/go"
 	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/ar_trace"
-	hydra2 "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/hydra"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/settings"
+	hydra2 "github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/hydra"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/settings"
 	log "github.com/kweaver-ai/idrm-go-frame/core/logx/zapx"
 	"go.uber.org/zap"
 )

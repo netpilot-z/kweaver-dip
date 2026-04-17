@@ -1,7 +1,7 @@
 package code_generation_rule
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
 )
 
 // 编码生成规则的列表

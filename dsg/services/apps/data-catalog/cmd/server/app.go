@@ -1,10 +1,10 @@
 package main
 
 import (
-	assessmentv1 "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/controller/assessment/v1"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driven/callbacks"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driver/mq/kafka"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/statistics/impl"
+	assessmentv1 "github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/controller/assessment/v1"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driven/callbacks"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driver/mq/kafka"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/statistics/impl"
 	"github.com/kweaver-ai/idrm-go-common/workflow"
 	af_go_frame "github.com/kweaver-ai/idrm-go-frame"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest"

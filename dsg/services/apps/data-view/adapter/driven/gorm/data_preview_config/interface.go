@@ -3,7 +3,7 @@ package data_preview_config
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/db/model"
 )
 
 type DataPreviewConfigRepo interface {

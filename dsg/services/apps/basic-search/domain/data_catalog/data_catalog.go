@@ -3,7 +3,7 @@ package data_catalog
 import (
 	"context"
 
-	es "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/adapter/driven/es_data_datalog"
+	es "github.com/kweaver-ai/dsg/services/apps/basic-search/adapter/driven/es_data_datalog"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 )
 

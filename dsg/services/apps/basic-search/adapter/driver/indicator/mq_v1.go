@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/adapter/driven/es_common"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/form_validator"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/domain/indicator"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/adapter/driven/es_common"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/common/form_validator"
+	domain "github.com/kweaver-ai/dsg/services/apps/basic-search/domain/indicator"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/mq/kafkax"

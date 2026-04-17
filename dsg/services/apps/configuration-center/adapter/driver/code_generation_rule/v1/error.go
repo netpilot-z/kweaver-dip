@@ -6,9 +6,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/util/validation/field"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/code_generation_rule"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/util/validation/field"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/code_generation_rule"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"
 )
 

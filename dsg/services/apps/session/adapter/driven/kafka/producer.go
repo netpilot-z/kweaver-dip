@@ -4,7 +4,7 @@ import (
 	"net"
 
 	"github.com/IBM/sarama"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/session/common/settings"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/mq/kafkax"
 )
 

@@ -66,7 +66,7 @@ depServices:
     port: 3330
     user: anyshare
     password: password
-    database: kweaver
+    database: af_configuration
   mq:
     mqHost: kafka-external-31000.resource
     mqPort: 9098

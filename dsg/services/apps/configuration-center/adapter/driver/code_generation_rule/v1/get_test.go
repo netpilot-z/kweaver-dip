@@ -13,10 +13,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/errorcode"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/code_generation_rule"
-	domain_mock "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/code_generation_rule/mock"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/errorcode"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/code_generation_rule"
+	domain_mock "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/code_generation_rule/mock"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
 )
 
 func TestService_GetCodeGenerationRule(t *testing.T) {

@@ -2,10 +2,10 @@ package menu
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/form_validator"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/util"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/menu"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/form_validator"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/menu"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"
 )
 

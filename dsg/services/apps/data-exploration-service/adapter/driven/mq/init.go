@@ -1,7 +1,7 @@
 package mq
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/mq/data_exploration_handler"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/mq/data_exploration_handler"
 )
 
 // MQHandler 消息队列处理接口

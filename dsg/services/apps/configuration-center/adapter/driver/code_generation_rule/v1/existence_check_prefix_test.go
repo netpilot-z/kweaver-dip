@@ -11,9 +11,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/form_validator"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/util/ptr"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/form_validator"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/util/ptr"
 )
 
 func TestService_ExistenceCheckPrefix(t *testing.T) {

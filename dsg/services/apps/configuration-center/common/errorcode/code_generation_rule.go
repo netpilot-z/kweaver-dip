@@ -4,7 +4,7 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/constant"
 	"github.com/kweaver-ai/idrm-go-frame/core/errorx/agerrors"
 )
 

@@ -6,10 +6,10 @@ import (
 	"strings"
 	"time"
 
-	address_book "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/gorm/address_book"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/constant"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/address_book"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
+	address_book "github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/gorm/address_book"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/constant"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/address_book"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-frame/core/store/gormx"
 	"gorm.io/gorm"
 )

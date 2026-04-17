@@ -3,8 +3,8 @@ package impl
 import (
 	"context"
 
-	repo "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/gorm/db_sandbox"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db"
+	repo "github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/gorm/db_sandbox"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db"
 	"gorm.io/gorm"
 )
 

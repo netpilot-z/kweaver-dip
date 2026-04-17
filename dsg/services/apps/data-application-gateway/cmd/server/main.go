@@ -6,8 +6,8 @@ import (
 
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/common/form_validator"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/common/form_validator"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/common/settings"
 	af_go_frame "github.com/kweaver-ai/idrm-go-frame"
 	"github.com/kweaver-ai/idrm-go-frame/core/config"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"

@@ -8,12 +8,12 @@ package main
 import (
 	"github.com/google/wire"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/auth-service/adapter/driven"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/auth-service/adapter/driven/mq"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/auth-service/adapter/driver"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/auth-service/common/settings"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/auth-service/domain"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/auth-service/infrastructure"
+	"github.com/kweaver-ai/dsg/services/apps/auth-service/adapter/driven"
+	"github.com/kweaver-ai/dsg/services/apps/auth-service/adapter/driven/mq"
+	"github.com/kweaver-ai/dsg/services/apps/auth-service/adapter/driver"
+	"github.com/kweaver-ai/dsg/services/apps/auth-service/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/auth-service/domain"
+	"github.com/kweaver-ai/dsg/services/apps/auth-service/infrastructure"
 	af_go_frame "github.com/kweaver-ai/idrm-go-frame"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest"
 )

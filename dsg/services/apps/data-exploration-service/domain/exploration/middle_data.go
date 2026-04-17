@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/jinzhu/copier"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/util"
 	log "github.com/kweaver-ai/idrm-go-frame/core/logx/zapx"
 )
 

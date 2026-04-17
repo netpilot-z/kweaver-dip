@@ -3,8 +3,8 @@ package client_info
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/infrastructure/repository/db"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/infrastructure/repository/db"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/infrastructure/repository/db/model"
 )
 
 type Repo interface {

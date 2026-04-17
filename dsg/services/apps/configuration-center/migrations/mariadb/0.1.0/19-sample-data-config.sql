@@ -1,4 +1,4 @@
-USE kweaver;
+use af_configuration;
 
 INSERT  INTO `configuration`(`key`,`value`,`type`)
 SELECT 'sample_data_count', '5', '0'

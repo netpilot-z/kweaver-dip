@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/sailor_service"
-	pconfig "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/config"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/sailor_service"
+	pconfig "github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/config"
 	//"github.com/kweaver-ai/dip-for-datasource/sailor-service/client"
 )
 

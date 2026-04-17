@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/constant"
 )
 
 // IsValidSize check valid size

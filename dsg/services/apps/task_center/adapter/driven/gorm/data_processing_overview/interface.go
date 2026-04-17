@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/data_processing_overview"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db/model"
+	domain "github.com/kweaver-ai/dsg/services/apps/task_center/domain/data_processing_overview"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db/model"
 )
 
 type DataProcessingOverviewRepo interface {

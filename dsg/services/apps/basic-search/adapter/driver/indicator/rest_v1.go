@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/middleware"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/domain/data_view"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/common/middleware"
+	domain "github.com/kweaver-ai/dsg/services/apps/basic-search/domain/data_view"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"
 	"github.com/samber/lo"

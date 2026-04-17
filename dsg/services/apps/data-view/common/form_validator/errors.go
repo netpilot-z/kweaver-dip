@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	val "github.com/go-playground/validator/v10"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/util/validation/field"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/util/validation/field"
 )
 
 type ValidError struct {

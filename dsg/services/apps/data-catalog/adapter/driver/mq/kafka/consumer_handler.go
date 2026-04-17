@@ -1,10 +1,10 @@
 package kafka
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driver/mq/apply_num"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driver/mq/entity_change"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driver/mq/interface_catalog"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/mq/kafka"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driver/mq/apply_num"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driver/mq/entity_change"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driver/mq/interface_catalog"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/mq/kafka"
 )
 
 type MqHandler struct {

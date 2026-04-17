@@ -3,7 +3,7 @@ package data_catalog
 import (
 	"context"
 
-	fcommon "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/frontend/common"
+	fcommon "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/frontend/common"
 )
 
 type DataResourceCatalogDomain interface {

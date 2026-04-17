@@ -3,7 +3,7 @@ package scope
 import (
 	"gorm.io/gorm"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db/model"
 )
 
 // WorkOrderID 限制所属工单 ID

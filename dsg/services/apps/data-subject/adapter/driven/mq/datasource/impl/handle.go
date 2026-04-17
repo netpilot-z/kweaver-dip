@@ -5,8 +5,8 @@ import (
 
 	"github.com/Shopify/sarama"
 	jsoniter "github.com/json-iterator/go"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/adapter/driven/mq/datasource"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/adapter/driven/mq/datasource"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/common/util"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	af_trace "github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 	"go.uber.org/zap"

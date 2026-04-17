@@ -7,8 +7,8 @@ import (
 	"github.com/google/wire"
 	"go.uber.org/zap"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/adapter/driver/v1/query"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/adapter/driver/v1/query"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/common/settings"
 	"github.com/kweaver-ai/idrm-go-common/middleware"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/common"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"

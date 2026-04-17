@@ -3,7 +3,7 @@ package middleware
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/internal/pkg/usermgm"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/internal/pkg/usermgm"
 )
 
 // UserInfo 用户信息

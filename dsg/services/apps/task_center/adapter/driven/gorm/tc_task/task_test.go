@@ -2,8 +2,8 @@ package tc_task
 
 //import (
 //	"context"
-//	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/gorm/tc_task/impl"
-//	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db"
+//	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/gorm/tc_task/impl"
+//	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db"
 //	"fmt"
 //	"gorm.io/driver/mysql"
 //	"gorm.io/gorm"

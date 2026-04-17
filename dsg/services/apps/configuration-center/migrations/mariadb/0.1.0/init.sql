@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_configuration;
 
 CREATE TABLE IF NOT EXISTS `configuration` (
     `key` varchar(255) NOT NULL,

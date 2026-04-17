@@ -5,9 +5,9 @@ import (
 	"net/url"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/common/cookie_util"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/common/errorcode"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/domain/refresh_token"
+	"github.com/kweaver-ai/dsg/services/apps/session/common/cookie_util"
+	"github.com/kweaver-ai/dsg/services/apps/session/common/errorcode"
+	domain "github.com/kweaver-ai/dsg/services/apps/session/domain/refresh_token"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"

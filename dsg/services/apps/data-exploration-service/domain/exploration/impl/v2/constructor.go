@@ -5,17 +5,17 @@ import (
 	"strconv"
 	"time"
 
-	repo "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/gorm/report"
-	item_repo "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/gorm/report_item"
-	task_repo "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/gorm/task_config"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/gorm/third_party_report"
-	mdl_uniquery "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/mdl-uniquery"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/mq/kafka"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/redis_lock"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/settings"
-	commonService "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/domain/common"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/domain/exploration/impl/tools"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/infrastructure/repository/db"
+	repo "github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/gorm/report"
+	item_repo "github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/gorm/report_item"
+	task_repo "github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/gorm/task_config"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/gorm/third_party_report"
+	mdl_uniquery "github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/mdl-uniquery"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/mq/kafka"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/redis_lock"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/settings"
+	commonService "github.com/kweaver-ai/dsg/services/apps/data-exploration-service/domain/common"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/domain/exploration/impl/tools"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/infrastructure/repository/db"
 )
 
 type ExplorationDomainImplV2 struct {

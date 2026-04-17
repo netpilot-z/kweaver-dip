@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/form_validator"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/models/request"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/assessment"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/form_validator"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/models/request"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/assessment"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"
 )
 

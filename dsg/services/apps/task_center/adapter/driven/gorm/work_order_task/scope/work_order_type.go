@@ -3,7 +3,7 @@ package scope
 import (
 	"gorm.io/gorm"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/work_order"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/domain/work_order"
 	task_center_v1 "github.com/kweaver-ai/idrm-go-common/api/task_center/v1"
 )
 

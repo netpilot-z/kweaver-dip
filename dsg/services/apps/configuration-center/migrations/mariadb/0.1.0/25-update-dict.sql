@@ -1,4 +1,4 @@
-USE kweaver;
+USE `af_configuration`;
 
 
 insert into `t_dict` (`id`,`f_type`,`name`,`f_description`,`created_at`,`updated_at`,`sszd_flag`)

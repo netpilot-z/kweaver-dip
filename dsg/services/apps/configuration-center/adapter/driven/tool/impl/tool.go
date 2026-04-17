@@ -3,8 +3,8 @@ package impl
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/tool"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/tool"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/errorcode"
 )
 
 var tools = []*tool.Tool{

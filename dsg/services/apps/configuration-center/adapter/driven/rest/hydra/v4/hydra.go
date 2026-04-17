@@ -3,7 +3,7 @@ package v4
 import (
 	"bytes"
 
-	Ihydra "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/rest/hydra"
+	Ihydra "github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/rest/hydra"
 	af_trace "github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 
 	"context"
@@ -13,7 +13,7 @@ import (
 	"net/http"
 
 	jsoniter "github.com/json-iterator/go"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/settings"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"go.uber.org/zap"
 )

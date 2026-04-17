@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_configuration;
 INSERT  INTO `configuration`(`key`,`value`,`type`)
 SELECT 'sailor_agent_llm_input_len', '8000', '9'
 FROM DUAL WHERE NOT EXISTS(SELECT `key` FROM `configuration` WHERE `key` = 'sailor_agent_llm_input_len' );
@@ -152,17 +152,17 @@ INSERT  INTO `configuration`(`key`,`value`,`type`)
 SELECT 'sailor_search_qa_llm_output_len', '4000', '9'
 FROM DUAL WHERE NOT EXISTS(SELECT `key` FROM `configuration` WHERE `key` = 'sailor_search_qa_llm_output_len' and `type`='9');
 
-USE kweaver;
+USE af_configuration;
 INSERT  INTO `configuration`(`key`,`value`,`type`)
 SELECT 'sailor_search_qa_cites_num_limit', '50', '9'
 FROM DUAL WHERE NOT EXISTS(SELECT `key` FROM `configuration` WHERE `key` = 'sailor_search_qa_cites_num_limit' and `type`='9');
 
-USE kweaver;
+USE af_configuration;
 INSERT  INTO `configuration`(`key`,`value`,`type`)
 SELECT 'kn_id_catalog', 'cognitive_search_data_catalog', '9'
 FROM DUAL WHERE NOT EXISTS(SELECT `key` FROM `configuration` WHERE `key` = 'kn_id_catalog' and `type`='9');
 
-USE kweaver;
+USE af_configuration;
 INSERT  INTO `configuration`(`key`,`value`,`type`)
 SELECT 'kn_id_resource', 'cognitive_search_data_resource', '9'
 FROM DUAL WHERE NOT EXISTS(SELECT `key` FROM `configuration` WHERE `key` = 'kn_id_catalog' and `type`='9');

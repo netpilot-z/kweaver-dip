@@ -1,6 +1,6 @@
 package form_validator
 
-import "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/util/validation/field"
+import "github.com/kweaver-ai/dsg/services/apps/data-application-service/common/util/validation/field"
 
 // CreateValidErrorsFromFieldErrorList 根据
 // common/util/validation/field.ErrorList 创建 ValidErrors

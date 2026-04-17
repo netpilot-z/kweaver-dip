@@ -3,12 +3,12 @@ package impl
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/gorm/operation_log"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/models/response"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/operation_log"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/user"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/gorm/operation_log"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/models/response"
+	domain "github.com/kweaver-ai/dsg/services/apps/task_center/domain/operation_log"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/domain/user"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db/model"
 )
 
 type OperationLogUserCase struct {

@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/biocrosscoder/flex/typed/collections/arraylist"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/info_resource_catalog"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/info_resource_catalog"
 	"github.com/kweaver-ai/idrm-go-common/util"
 	"github.com/kweaver-ai/idrm-go-frame/core/enum"
 )

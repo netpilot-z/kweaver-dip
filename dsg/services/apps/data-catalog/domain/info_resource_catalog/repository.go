@@ -5,7 +5,7 @@ import (
 
 	"github.com/biocrosscoder/flex/typed/collections/arraylist"
 	"github.com/biocrosscoder/flex/typed/collections/dict"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
 	"gorm.io/gorm"
 )
 

@@ -4,7 +4,7 @@ import (
 	"context"
 	"mime/multipart"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/models"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/models"
 )
 
 type UseCase interface {

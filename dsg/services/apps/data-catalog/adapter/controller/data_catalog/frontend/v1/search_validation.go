@@ -5,10 +5,10 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/util/sets"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/util/validation/field"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/common"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/frontend/data_catalog"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/util/sets"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/util/validation/field"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/common"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/frontend/data_catalog"
 )
 
 // 验证搜索请求

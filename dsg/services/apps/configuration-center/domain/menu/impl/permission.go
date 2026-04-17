@@ -4,9 +4,9 @@ import (
 	"context"
 
 	jsoniter "github.com/json-iterator/go"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/models/response"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/menu"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/models/response"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/menu"
 	"github.com/samber/lo"
 )
 

@@ -6,11 +6,11 @@ import (
 	"errors"
 	"fmt"
 
-	app_register "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/spt/register"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/models/response"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/apps"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
+	app_register "github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/spt/register"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/models/response"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/apps"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 
 	"go.uber.org/zap"

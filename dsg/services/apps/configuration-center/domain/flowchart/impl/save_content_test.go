@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/constant"
 )
 
 func Test_contentResolver_bindTaskTypes(t *testing.T) {

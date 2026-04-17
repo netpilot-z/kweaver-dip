@@ -10,12 +10,12 @@ import (
 	CommonRest "github.com/kweaver-ai/idrm-go-common/rest/data_subject"
 	"github.com/kweaver-ai/idrm-go-common/rest/data_view"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/adapter/driven/gorm/subject_domain"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/common/constant"
-	my_errorcode "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/common/models/request"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/common/util"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/infrastructure/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/adapter/driven/gorm/subject_domain"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/common/constant"
+	my_errorcode "github.com/kweaver-ai/dsg/services/apps/data-subject/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/common/models/request"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/infrastructure/db/model"
 	"github.com/kweaver-ai/idrm-go-common/errorcode"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"go.uber.org/zap"
@@ -124,7 +124,7 @@ func (s *subjectDomainRepo) List(ctx context.Context, parentID string, isAll boo
 func (s *subjectDomainRepo) GroupHasChild(ctx context.Context) (models map[string]bool, err error) {
 	db := s.db.WithContext(ctx).Table(model.TableNameSubjectDomain)
 	raw := `select ss.root_id, ss.plen from (select SUBSTRING(sd.path_id,1,36) as root_id, LENGTH(sd.path_id) as 
-    	plen from kweaver.subject_domain sd  where sd.deleted_at=0 having plen>36 ) ss  group by ss.root_id`
+    	plen from af_main.subject_domain sd  where sd.deleted_at=0 having plen>36 ) ss  group by ss.root_id`
 	datas := make([]model.HasChildModel, 0)
 	err = db.Raw(raw).Scan(&datas).Error
 	if err != nil {
@@ -167,7 +167,7 @@ func (s *subjectDomainRepo) ListChild(ctx context.Context, parentID string, seco
 }
 
 func (s *subjectDomainRepo) GetObjectAndChildByIDSlice(ctx context.Context, ids ...string) (objects []*model.SubjectDomainWithRelation, err error) {
-	rawSQL := "select sd.*, substring(sd.path_id, 75,36) as `related_object_id` from kweaver.subject_domain sd  " +
+	rawSQL := "select sd.*, substring(sd.path_id, 75,36) as `related_object_id` from af_main.subject_domain sd  " +
 		" having `related_object_id` in (?)"
 	err = s.db.WithContext(ctx).Table(model.TableNameSubjectDomain).Raw(rawSQL, ids).Scan(&objects).Error
 	return objects, nil
@@ -676,7 +676,7 @@ func (s *subjectDomainRepo) GetRootRelation(ctx context.Context) (map[string]str
 	objects := make([]*model.SubjectDomainSimple, 0)
 	results := make(map[string]string)
 	db := s.db.WithContext(ctx)
-	raw := "select sd.id, sd.path_id, substring(sd.path_id, 1, 36) as root_id from kweaver.subject_domain sd where sd.deleted_at=0"
+	raw := "select sd.id, sd.path_id, substring(sd.path_id, 1, 36) as root_id from af_main.subject_domain sd where sd.deleted_at=0"
 	if err := db.Raw(raw).Scan(&objects).Error; err != nil {
 		log.WithContext(ctx).Errorf("failed to access database, err info: %v", err.Error())
 		return results, errorcode.Detail(errorcode.PublicDatabaseError, err.Error())

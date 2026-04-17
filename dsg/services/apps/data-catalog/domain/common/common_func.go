@@ -3,7 +3,7 @@ package common
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/util"
 	"github.com/kweaver-ai/idrm-go-common/rest/configuration_center"
 	"github.com/kweaver-ai/idrm-go-common/rest/user_management"
 	common_util "github.com/kweaver-ai/idrm-go-common/util"

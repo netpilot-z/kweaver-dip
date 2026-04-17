@@ -6,7 +6,7 @@ import (
 	log "github.com/kweaver-ai/idrm-go-frame/core/logx/zapx"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/common"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/models/request"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/common/models/request"
 )
 
 var (

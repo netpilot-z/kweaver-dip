@@ -4,10 +4,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/settings"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/domain/exploration/impl/nsql"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/domain/exploration/impl/nsql"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/domain/exploration"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/domain/exploration"
 )
 
 func getSql(sql string, table string) string {

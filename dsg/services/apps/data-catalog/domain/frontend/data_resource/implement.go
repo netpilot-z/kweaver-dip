@@ -1,13 +1,13 @@
 package data_resource
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driven/auth_service"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driven/basic_search"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driven/configuration_center"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driven/data_view"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driven/databases"
-	indicator_management "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driven/indicator-management"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/my_favorite"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driven/auth_service"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driven/basic_search"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driven/configuration_center"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driven/data_view"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driven/databases"
+	indicator_management "github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driven/indicator-management"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/my_favorite"
 )
 
 // DataResourceDomain 的实现

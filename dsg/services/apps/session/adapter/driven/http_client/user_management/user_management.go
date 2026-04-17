@@ -12,8 +12,8 @@ import (
 	"sync"
 
 	jsoniter "github.com/json-iterator/go"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/adapter/driven/http_client"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/session/adapter/driven/http_client"
+	"github.com/kweaver-ai/dsg/services/apps/session/common/settings"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/mitchellh/mapstructure"
 	"go.uber.org/zap"

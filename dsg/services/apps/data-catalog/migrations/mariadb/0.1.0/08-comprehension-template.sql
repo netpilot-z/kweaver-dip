@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_data_catalog;
 
 CREATE TABLE if NOT EXISTS  `t_data_comprehension_template`
 (

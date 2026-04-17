@@ -10,7 +10,7 @@ import (
 
 	jsoniter "github.com/json-iterator/go"
 	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/ar_trace"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/common/settings"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"go.uber.org/zap"
 )

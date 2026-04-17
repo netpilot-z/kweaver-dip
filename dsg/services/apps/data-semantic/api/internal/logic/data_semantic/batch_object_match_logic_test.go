@@ -6,8 +6,8 @@ package data_semantic
 import (
 	"testing"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/api/internal/types"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/internal/pkg/agentretrieval"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/api/internal/types"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/internal/pkg/agentretrieval"
 
 	"github.com/stretchr/testify/assert"
 )

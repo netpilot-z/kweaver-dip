@@ -3,8 +3,8 @@ package driver
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
-	exploration "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driver/exploration/v1"
-	task_config "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driver/task_config/v1"
+	exploration "github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driver/exploration/v1"
+	task_config "github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driver/task_config/v1"
 	"github.com/kweaver-ai/idrm-go-common/middleware"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 )

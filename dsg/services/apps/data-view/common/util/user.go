@@ -5,7 +5,7 @@ import (
 	"github.com/kweaver-ai/idrm-go-common/errorcode"
 	"github.com/kweaver-ai/idrm-go-common/interception"
 	"github.com/kweaver-ai/idrm-go-common/middleware"
-	my_errorcode "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/errorcode"
+	my_errorcode "github.com/kweaver-ai/dsg/services/apps/data-view/common/errorcode"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"runtime"
 	"strconv"

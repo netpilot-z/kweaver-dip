@@ -4,9 +4,9 @@ import (
 	"context"
 	"flag"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/form_validator"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/settings"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/conf"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/form_validator"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/conf"
 	"github.com/kweaver-ai/idrm-go-frame/core/config"
 	"github.com/kweaver-ai/idrm-go-frame/core/logx/zapx"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"

@@ -1,4 +1,4 @@
-USE kweaver;
+USE `af_configuration`;
 -- ALTER TABLE `data_grade` ADD COLUMN IF NOT EXISTS `sensitive_attri` VARCHAR(20) DEFAULT NULL COMMENT '敏感属性预设';
 -- ALTER TABLE `data_grade` ADD COLUMN IF NOT EXISTS `secret_attri` VARCHAR(20) DEFAULT NULL COMMENT '涉密属性预设';
 -- ALTER TABLE `data_grade` ADD COLUMN IF NOT EXISTS `share_condition` VARCHAR(30) DEFAULT NULL COMMENT '共享条件：不共享，有条件共享，无条件共享';

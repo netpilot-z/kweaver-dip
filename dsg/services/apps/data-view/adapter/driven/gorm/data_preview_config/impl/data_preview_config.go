@@ -3,8 +3,8 @@ package impl
 import (
 	"context"
 	"errors"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/gorm/data_preview_config"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/gorm/data_preview_config"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/db/model"
 	"github.com/kweaver-ai/idrm-go-common/errorcode"
 	"gorm.io/gorm"
 )

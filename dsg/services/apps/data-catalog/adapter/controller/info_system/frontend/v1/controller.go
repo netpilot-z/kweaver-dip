@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/frontend/info_system"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/frontend/info_system"
 	data_catalog_frontend_v1 "github.com/kweaver-ai/idrm-go-common/api/data_catalog/frontend/v1"
 	meta_v1 "github.com/kweaver-ai/idrm-go-common/api/meta/v1"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"

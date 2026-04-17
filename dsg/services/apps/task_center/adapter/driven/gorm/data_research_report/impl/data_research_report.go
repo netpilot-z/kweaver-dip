@@ -8,12 +8,12 @@ import (
 
 	"github.com/kweaver-ai/idrm-go-frame/core/store/gormx"
 
-	data_research_report "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/gorm/data_research_report"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/util"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/data_research_report"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db/model"
+	data_research_report "github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/gorm/data_research_report"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/util"
+	domain "github.com/kweaver-ai/dsg/services/apps/task_center/domain/data_research_report"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"gorm.io/gorm"
 )

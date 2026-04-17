@@ -7,7 +7,7 @@ import (
 
 	"gorm.io/gorm"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common"
 	"github.com/kweaver-ai/idrm-go-frame/core/errorx/agcodes"
 	"github.com/kweaver-ai/idrm-go-frame/core/errorx/agerrors"
 )

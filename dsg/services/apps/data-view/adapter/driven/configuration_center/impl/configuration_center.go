@@ -8,9 +8,9 @@ import (
 	"strings"
 
 	jsoniter "github.com/json-iterator/go"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/configuration_center"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/errorcode"
-	pconfig "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/config"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/configuration_center"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/errorcode"
+	pconfig "github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/config"
 	code "github.com/kweaver-ai/idrm-go-common/errorcode"
 	"github.com/kweaver-ai/idrm-go-common/interception"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"

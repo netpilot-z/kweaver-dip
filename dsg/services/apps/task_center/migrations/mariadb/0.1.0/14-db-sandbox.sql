@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_tasks;
 
 -- alter table af_tasks.`tc_member` add column if not exists `created_at` datetime(3) NOT NULL DEFAULT current_timestamp(3) COMMENT '创建时间';
 

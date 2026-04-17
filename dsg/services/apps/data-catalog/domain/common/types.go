@@ -1,7 +1,7 @@
 package common
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/util/sets"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/util/sets"
 )
 
 // 数据资源类型

@@ -3,7 +3,7 @@ package data_quality
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/work_order"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/domain/work_order"
 	"github.com/kweaver-ai/idrm-go-frame/core/enum"
 )
 

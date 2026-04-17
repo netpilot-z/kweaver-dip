@@ -4,11 +4,11 @@ import (
 	"context"
 	_ "embed"
 
-	es "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/adapter/driven/es_interface_svc"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/adapter/driven/opensearch"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/errorcode"
-	es_common "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/es"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/settings"
+	es "github.com/kweaver-ai/dsg/services/apps/basic-search/adapter/driven/es_interface_svc"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/adapter/driven/opensearch"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/common/errorcode"
+	es_common "github.com/kweaver-ai/dsg/services/apps/basic-search/common/es"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/common/settings"
 
 	"encoding/json"
 	"errors"

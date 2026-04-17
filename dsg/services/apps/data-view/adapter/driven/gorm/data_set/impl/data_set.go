@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/gorm/data_set"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/gorm/data_set"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/db/model"
 	"gorm.io/gorm"
 )
 

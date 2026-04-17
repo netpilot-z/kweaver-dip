@@ -4,13 +4,13 @@ import (
 	"bytes"
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driver"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driver/flowchart/v1"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driver"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driver/flowchart/v1"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/errorcode"
 
-	// "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/models/response"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/util"
+	// "github.com/kweaver-ai/dsg/services/apps/configuration-center/common/models/response"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/util"
 	// "github.com/kweaver-ai/idrm-go-frame/core/transport/rest"
 	json2 "encoding/json"
 	"fmt"
@@ -25,9 +25,9 @@ import (
 
 	"github.com/agiledragon/gomonkey/v2"
 	"github.com/gin-gonic/gin"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/form_validator"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/models/response"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/flowchart"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/form_validator"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/models/response"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/flowchart"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest"
 
 	. "github.com/smartystreets/goconvey/convey"

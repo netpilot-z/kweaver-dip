@@ -10,8 +10,8 @@ import (
 	"testing"
 	"text/tabwriter"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driven/basic_search"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driven/basic_search"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/settings"
 	"github.com/kweaver-ai/idrm-go-frame/core/utils/httpclient"
 )
 

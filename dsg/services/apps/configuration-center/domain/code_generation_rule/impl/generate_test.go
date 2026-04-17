@@ -11,8 +11,8 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 
-	driven "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/gorm/code_generation_rule/impl"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/code_generation_rule"
+	driven "github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/gorm/code_generation_rule/impl"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/code_generation_rule"
 	"github.com/kweaver-ai/idrm-go-frame/core/logx/zapx"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/common"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"

@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/common/settings"
 	"github.com/kweaver-ai/idrm-go-common/interception"
 )
 

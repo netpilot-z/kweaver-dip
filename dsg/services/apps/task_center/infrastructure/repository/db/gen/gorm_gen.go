@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db/gen/custom_method"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db/gen/custom_method"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gen"

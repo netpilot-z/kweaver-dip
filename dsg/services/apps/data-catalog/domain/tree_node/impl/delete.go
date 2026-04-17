@@ -3,7 +3,7 @@ package impl
 import (
 	"context"
 
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/tree_node"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/tree_node"
 )
 
 func (u *useCase) Delete(ctx context.Context, req *domain.DeleteReqParam) (*domain.DeleteRespParam, error) {

@@ -16,12 +16,12 @@ import (
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/common/dto"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/common/form_validator"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/common/util"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/infrastructure/repository/db"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/common/dto"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/common/form_validator"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/infrastructure/repository/db"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 )
 

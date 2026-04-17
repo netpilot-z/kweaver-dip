@@ -6,13 +6,13 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/errorcode"
 
 	ut "github.com/go-playground/universal-translator"
 	"go.opentelemetry.io/otel/trace"
 
 	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/ar_trace"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/util"
 	"github.com/kweaver-ai/idrm-go-common/util/validation/field"
 
 	"github.com/gin-gonic/gin"

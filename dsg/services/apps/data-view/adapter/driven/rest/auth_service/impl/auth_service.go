@@ -16,10 +16,10 @@ import (
 
 	"github.com/kweaver-ai/idrm-go-common/errorcode"
 	"github.com/kweaver-ai/idrm-go-common/interception"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/rest/auth_service"
-	my_errorcode "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/util"
-	my_config "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/config"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/rest/auth_service"
+	my_errorcode "github.com/kweaver-ai/dsg/services/apps/data-view/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/util"
+	my_config "github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/config"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest"
 )

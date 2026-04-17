@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	jsoniter "github.com/json-iterator/go"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/datasource"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/datasource"
 	"github.com/kweaver-ai/idrm-go-common/rest/base"
 	"github.com/kweaver-ai/idrm-go-frame/core/logx/zapx"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry"

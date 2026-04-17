@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driven/task_center"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driven/task_center"
 	"github.com/kweaver-ai/idrm-go-common/rest/base"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 )

@@ -1,4 +1,4 @@
-SET SCHEMA kweaver;
+SET SCHEMA af_main;
 
 CREATE TABLE IF NOT EXISTS  "cdc_task" (
     "database" VARCHAR(255 char) NOT NULL,
@@ -12,5 +12,5 @@ CREATE TABLE IF NOT EXISTS  "cdc_task" (
 );
 
 
-UPDATE kweaver.cdc_task set group_id='kweaver.auth-service' where  group_id='auth-service'
+UPDATE af_main.cdc_task set group_id='af.auth-service' where  group_id='auth-service'
 

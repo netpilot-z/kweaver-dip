@@ -7,10 +7,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/workflow"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/errorcode"
-	data_research_report_domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/data_research_report"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/workflow"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/errorcode"
+	data_research_report_domain "github.com/kweaver-ai/dsg/services/apps/task_center/domain/data_research_report"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db/model"
 	wf_common "github.com/kweaver-ai/idrm-go-common/workflow/common"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 )

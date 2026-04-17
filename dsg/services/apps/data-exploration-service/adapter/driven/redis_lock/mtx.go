@@ -8,7 +8,7 @@ import (
 
 	"github.com/avast/retry-go/v4"
 	"github.com/bsm/redislock"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/infrastructure/repository/db"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/infrastructure/repository/db"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 	"github.com/redis/go-redis/v9"

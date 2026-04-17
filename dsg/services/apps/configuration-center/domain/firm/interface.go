@@ -6,9 +6,9 @@ import (
 	"strconv"
 	"strings"
 
-	gorm_firm "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/gorm/firm"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/models"
+	gorm_firm "github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/gorm/firm"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/models"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 )
 

@@ -1,7 +1,7 @@
 package info_resource_catalog
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/models"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/models"
 	"github.com/kweaver-ai/idrm-go-common/rest/label"
 	"github.com/kweaver-ai/idrm-go-common/util/sets"
 )

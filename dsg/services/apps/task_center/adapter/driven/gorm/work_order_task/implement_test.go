@@ -9,7 +9,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/gorm/work_order_task/scope"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/gorm/work_order_task/scope"
 	task_center_v1 "github.com/kweaver-ai/idrm-go-common/api/task_center/v1"
 )
 

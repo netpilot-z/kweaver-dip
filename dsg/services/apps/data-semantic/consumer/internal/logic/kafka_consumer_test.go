@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/IBM/sarama"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/consumer/internal/handler"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/consumer/internal/handler"
 	"github.com/stretchr/testify/mock"
 )
 

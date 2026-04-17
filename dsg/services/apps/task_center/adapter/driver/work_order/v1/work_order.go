@@ -5,11 +5,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driver/data_aggregation_inventory/v1/validation"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/form_validator"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/user_util"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/work_order"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driver/data_aggregation_inventory/v1/validation"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/form_validator"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/user_util"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/domain/work_order"
 	"github.com/kweaver-ai/idrm-go-common/util/validation/field"
 	"github.com/kweaver-ai/idrm-go-frame/core/errorx/agerrors"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"

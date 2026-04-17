@@ -3,9 +3,9 @@ package impl
 import (
 	"context"
 
-	domain_apply_scope "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/apply-scope"
-	repo_apply_scope "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/apply-scope"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
+	domain_apply_scope "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/apply-scope"
+	repo_apply_scope "github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/apply-scope"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
 )
 
 type ApplyScopeUseCaseImpl struct {

@@ -15,9 +15,9 @@ import (
 	enTranslations "github.com/go-playground/validator/v10/translations/en"
 	zhTranslations "github.com/go-playground/validator/v10/translations/zh"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/models"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/models"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/util"
 	"github.com/kweaver-ai/idrm-go-frame/core/enum"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 )

@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_data_catalog;
 -- ALTER TABLE `t_data_resource`
 --     ADD COLUMN IF NOT EXISTS `view_id` char(36)   COMMENT '数据资源类型 为 2：接口 时候类型为接口生成方式来源视图id',
 --     ADD COLUMN IF NOT EXISTS `interface_count` int  COMMENT '生成接口数量';

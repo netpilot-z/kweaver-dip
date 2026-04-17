@@ -1,4 +1,4 @@
-USE kweaver;
+USE `af_tasks`;
 
 -- 工单任务
 CREATE TABLE IF NOT EXISTS `work_order_tasks` (

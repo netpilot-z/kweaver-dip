@@ -3,8 +3,8 @@ package audit_process_bind
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/models/request"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/models/response"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/models/request"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/models/response"
 )
 
 type AuditProcessBindUseCase interface {

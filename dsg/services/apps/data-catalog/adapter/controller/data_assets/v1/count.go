@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/data_assets"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/data_assets"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"
 )
 

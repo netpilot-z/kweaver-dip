@@ -4,8 +4,8 @@ import (
 	"context"
 	"sync"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/thrift_gen/sharemgnt"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/thrift_gen/sharemgnt"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/settings"
 	"github.com/kweaver-ai/idrm-go-common/tclient"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 )

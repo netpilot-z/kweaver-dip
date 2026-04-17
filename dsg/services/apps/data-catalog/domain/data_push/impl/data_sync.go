@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/errorcode"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/data_push"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/errorcode"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/data_push"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-common/rest/data_sync"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 )

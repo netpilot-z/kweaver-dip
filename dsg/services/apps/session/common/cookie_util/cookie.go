@@ -6,8 +6,8 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	deploy_management "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/adapter/driven/http_client/deploy_manager"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/common/settings"
+	deploy_management "github.com/kweaver-ai/dsg/services/apps/session/adapter/driven/http_client/deploy_manager"
+	"github.com/kweaver-ai/dsg/services/apps/session/common/settings"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"go.uber.org/zap"
 )

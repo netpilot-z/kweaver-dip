@@ -1,6 +1,6 @@
 package errorcode
 
-import "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/constant"
+import "github.com/kweaver-ai/dsg/services/apps/data-application-service/common/constant"
 
 func init() {
 	registerErrorCode(auditProcessBindErrorMap)

@@ -3,7 +3,7 @@ package front_end_processor
 import (
 	"database/sql"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
 	configuration_center_v1 "github.com/kweaver-ai/idrm-go-common/api/configuration-center/v1"
 	"github.com/kweaver-ai/idrm-go-common/util/ptr"
 )

@@ -7,10 +7,10 @@ import (
 	"strconv"
 	"strings"
 
-	taskRepo "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/gorm/tc_task"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/settings"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db/model"
+	taskRepo "github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/gorm/tc_task"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-common/rest/configuration_center"
 	"github.com/kweaver-ai/idrm-go-common/rest/data_catalog"
 	"github.com/kweaver-ai/idrm-go-common/rest/data_view"
@@ -18,12 +18,12 @@ import (
 
 	"github.com/IBM/sarama"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/gorm/database"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/gorm/database/af_configuration"
-	gorm_work_order "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/gorm/work_order"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/gorm/work_order_task"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/work_order"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/gorm/database"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/gorm/database/af_configuration"
+	gorm_work_order "github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/gorm/work_order"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/gorm/work_order_task"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/domain/work_order"
 	task_center_v1 "github.com/kweaver-ai/idrm-go-common/api/task_center/v1"
 )
 

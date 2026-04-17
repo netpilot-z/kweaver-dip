@@ -1,7 +1,7 @@
 package nsq
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driver/mq/impl"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driver/mq/impl"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/mq/nsqx"
 	"github.com/nsqio/go-nsq"
 )

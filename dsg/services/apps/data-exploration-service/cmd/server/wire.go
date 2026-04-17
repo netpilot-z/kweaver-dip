@@ -5,11 +5,11 @@ package server
 
 import (
 	"github.com/google/wire"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driver"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/settings"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/domain"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/infrastructure"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driver"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/domain"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/infrastructure"
 )
 
 var appRunnerSet = wire.NewSet(wire.Struct(new(AppRunner), "*"))

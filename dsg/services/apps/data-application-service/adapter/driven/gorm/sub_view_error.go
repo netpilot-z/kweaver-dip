@@ -10,7 +10,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/common/errorcode"
 )
 
 // newErrSubServiceAlreadyExists 返回错误码 DataView.SubService.AlreadyExists

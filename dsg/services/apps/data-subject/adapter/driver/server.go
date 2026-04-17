@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/cmd/server/docs"
-	my_config "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/infrastructure/config"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/cmd/server/docs"
+	my_config "github.com/kweaver-ai/dsg/services/apps/data-subject/infrastructure/config"
 	"github.com/kweaver-ai/idrm-go-frame/core/middleware/ginMiddleWare"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest"

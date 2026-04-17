@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/infrastructure/repository/db/gen/custom_method"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/infrastructure/repository/db/gen/custom_method"
 	"github.com/samber/lo"
 	"gorm.io/driver/mysql"
 	"gorm.io/gen"
@@ -56,7 +56,7 @@ var (
 )
 
 func init() {
-	dsn = "root:123456@(10.4.71.216:3306)/kweaver?charset=utf8mb4&parseTime=True&loc=Local" //os.Getenv("GEN_DSN")
+	dsn = "root:123456@(10.4.71.216:3306)/af_data_exploration?charset=utf8mb4&parseTime=True&loc=Local" //os.Getenv("GEN_DSN")
 	outPath = "/home/tim/af/data-exploration-service/infrastructure/repository/db/model"                //os.Getenv("GEN_OUT_PATH")
 	outDao = false
 	tables = os.Getenv("GEN_TABLES")

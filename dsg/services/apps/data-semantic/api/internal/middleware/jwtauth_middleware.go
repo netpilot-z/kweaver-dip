@@ -7,11 +7,11 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/internal/pkg/hydra"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/internal/pkg/usermgm"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/internal/pkg/hydra"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/internal/pkg/usermgm"
 	"github.com/zeromicro/go-zero/core/logx"
 
-	errcode "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/api/internal/errorx"
+	errcode "github.com/kweaver-ai/dsg/services/apps/data-semantic/api/internal/errorx"
 )
 
 type JWTAuthMiddleware struct {

@@ -10,8 +10,8 @@ import (
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"go.uber.org/zap"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/domain/sub_service"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/domain/sub_service"
 )
 
 func genWhereClause(subView *sub_service.SubService) (clause string) {

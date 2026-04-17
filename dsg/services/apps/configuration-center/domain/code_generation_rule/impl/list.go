@@ -6,8 +6,8 @@ import (
 	"github.com/google/uuid"
 	"go.uber.org/zap"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/util/sets"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/code_generation_rule"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/util/sets"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/code_generation_rule"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 )
 

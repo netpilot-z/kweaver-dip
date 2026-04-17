@@ -6,10 +6,10 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	entity "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/statistics"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/statistics"
-	usecase "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/statistics"
+	entity "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/statistics"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/statistics"
+	usecase "github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/statistics"
 	_ "gorm.io/gorm"
 )
 

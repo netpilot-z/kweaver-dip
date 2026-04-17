@@ -1,4 +1,4 @@
-USE kweaver;
+USE data_application_service;
 
 CREATE TABLE IF NOT EXISTS gateway_collection_log (
     id INT AUTO_INCREMENT,

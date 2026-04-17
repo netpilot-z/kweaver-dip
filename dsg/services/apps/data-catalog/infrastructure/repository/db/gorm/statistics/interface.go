@@ -3,7 +3,7 @@ package statistics
 import (
 	"context"
 
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/statistics"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/statistics"
 )
 
 type Repo interface {

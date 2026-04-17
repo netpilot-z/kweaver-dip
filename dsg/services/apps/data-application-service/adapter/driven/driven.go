@@ -2,16 +2,16 @@ package driven
 
 import (
 	"github.com/google/wire"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/adapter/driven/mq/consumer"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/adapter/driven/mq/consumer/service"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/adapter/driven/mq/consumer"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/adapter/driven/mq/consumer/service"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/adapter/driven/callbacks"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/adapter/driven/gorm"
-	hydra "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/adapter/driven/hydra/v6"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/adapter/driven/microservice"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/adapter/driven/mq"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/adapter/driven/workflow"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/adapter/driven/callbacks"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/adapter/driven/gorm"
+	hydra "github.com/kweaver-ai/dsg/services/apps/data-application-service/adapter/driven/hydra/v6"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/adapter/driven/microservice"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/adapter/driven/mq"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/adapter/driven/workflow"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/common/util"
 )
 
 var Set = wire.NewSet(

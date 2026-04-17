@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/workflow"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/constant"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/db_sandbox"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/workflow"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/constant"
+	domain "github.com/kweaver-ai/dsg/services/apps/task_center/domain/db_sandbox"
 	wf_go "github.com/kweaver-ai/idrm-go-common/workflow"
 	wf_common "github.com/kweaver-ai/idrm-go-common/workflow/common"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"

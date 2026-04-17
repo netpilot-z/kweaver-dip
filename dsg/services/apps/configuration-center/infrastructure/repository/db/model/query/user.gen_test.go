@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 	"gorm.io/gorm/clause"

@@ -3,8 +3,8 @@ package data_comprehension_plan
 import (
 	"context"
 
-	domain_comprehension_plan "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/data_comprehension_plan"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db/model"
+	domain_comprehension_plan "github.com/kweaver-ai/dsg/services/apps/task_center/domain/data_comprehension_plan"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db/model"
 )
 
 type DataComprehensionPlanRepo interface {

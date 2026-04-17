@@ -3,7 +3,7 @@ package impl
 import (
 	"context"
 
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/role_v2"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/role_v2"
 	"github.com/kweaver-ai/idrm-go-common/rest/authorization"
 	"github.com/kweaver-ai/idrm-go-common/rest/base"
 	af_trace "github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"

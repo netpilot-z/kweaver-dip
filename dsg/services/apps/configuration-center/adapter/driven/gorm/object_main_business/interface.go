@@ -3,8 +3,8 @@ package business_structure
 import (
 	"context"
 
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/object_main_business"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/object_main_business"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
 )
 
 type Repo interface {

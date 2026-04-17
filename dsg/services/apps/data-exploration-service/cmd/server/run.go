@@ -3,8 +3,8 @@ package server
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/form_validator"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/form_validator"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/settings"
 	"github.com/kweaver-ai/idrm-go-frame/core/config"
 	log "github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"

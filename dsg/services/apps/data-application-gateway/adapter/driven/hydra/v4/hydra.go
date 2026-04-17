@@ -10,8 +10,8 @@ import (
 	"net/http"
 
 	jsoniter "github.com/json-iterator/go"
-	Ihydra "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/adapter/driven/hydra"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/common/settings"
+	Ihydra "github.com/kweaver-ai/dsg/services/apps/data-application-gateway/adapter/driven/hydra"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/common/settings"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"go.uber.org/zap"
 )

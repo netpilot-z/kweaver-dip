@@ -5,7 +5,7 @@ import (
 
 	"go.uber.org/zap"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/gorm/database/af_business"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/gorm/database/af_business"
 	doc_audit_rest_v1 "github.com/kweaver-ai/idrm-go-common/api/doc_audit_rest/v1"
 	meta_v1 "github.com/kweaver-ai/idrm-go-common/api/meta/v1"
 	task_center_v1 "github.com/kweaver-ai/idrm-go-common/api/task_center/v1"

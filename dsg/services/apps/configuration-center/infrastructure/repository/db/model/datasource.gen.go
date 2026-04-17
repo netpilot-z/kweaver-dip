@@ -8,8 +8,8 @@ import (
 	"database/sql"
 
 	"github.com/kweaver-ai/idrm-go-frame/core/utils"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/util"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"gorm.io/gorm"
 	"time"

@@ -1,4 +1,4 @@
-USE kweaver;
+USE `af_tasks`;
 
 -- ALTER TABLE `tc_member`  MODIFY COLUMN `role_id`  VARCHAR(36) DEFAULT NULL COMMENT '用户角色ID';
 --

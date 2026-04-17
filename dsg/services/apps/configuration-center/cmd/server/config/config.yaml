@@ -163,7 +163,7 @@ database:
 #    host: 10.4.68.64
 #    username: root
 #    password: "123456"
-#    database: kweaver
+#    database: af_configuration
 #    maxa: 10
 #    maxb: 10
 #    maxc: 60

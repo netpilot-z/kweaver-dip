@@ -1,24 +1,24 @@
 package driven
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/callbacks"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/gorm/third_party_report"
-	mdl_uniquery "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/mdl-uniquery"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/callbacks"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/gorm/third_party_report"
+	mdl_uniquery "github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/mdl-uniquery"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/configuration_center"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/gorm/client_info"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/gorm/report"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/gorm/report_item"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/gorm/task_config"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/mq"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/mq/data_exploration_handler"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/mq/kafka"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/redis_lock"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/configuration_center"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/gorm/client_info"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/gorm/report"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/gorm/report_item"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/gorm/task_config"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/mq"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/mq/data_exploration_handler"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/mq/kafka"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/redis_lock"
 
-	hydra "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/hydra/v6"
+	hydra "github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/hydra/v6"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/user_management"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/virtualization_engine"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/user_management"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/virtualization_engine"
 
 	"github.com/google/wire"
 )

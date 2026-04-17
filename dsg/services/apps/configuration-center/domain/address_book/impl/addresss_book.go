@@ -9,16 +9,16 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/firm/excel"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/firm/excel"
 	"github.com/samber/lo"
 	"gopkg.in/fatih/set.v0"
 	"gorm.io/gorm"
 
-	address_book "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/gorm/address_book"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/errorcode"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/address_book"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
+	address_book "github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/gorm/address_book"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/errorcode"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/address_book"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 )

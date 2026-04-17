@@ -1,23 +1,23 @@
 package driver
 
 import (
-	data_set "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driver/data_set/v1"
-	explore_rule "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driver/explore_rule/v1"
-	graph_model "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driver/graph_model/v1"
+	data_set "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driver/data_set/v1"
+	explore_rule "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driver/explore_rule/v1"
+	graph_model "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driver/graph_model/v1"
 	"github.com/gin-gonic/gin"
 
 	"github.com/kweaver-ai/idrm-go-common/middleware"
 	common_form_view "github.com/kweaver-ai/idrm-go-common/rest/data_view"
-	classification_rule "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driver/classification_rule/v1"
-	data_lineage "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driver/data_lineage/v1"
-	data_privacy_policy "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driver/data_privacy_policy/v1"
-	explore_task "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driver/explore_task/v1"
-	form_view "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driver/form_view/v1"
-	grade_rule "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driver/grade_rule/v1"
-	grade_rule_group "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driver/grade_rule_group/v1"
-	logic_view "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driver/logic_view/v1"
-	recognition_algorithm "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driver/recognition_algorithm/v1"
-	sub_view "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driver/sub_view/v1"
+	classification_rule "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driver/classification_rule/v1"
+	data_lineage "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driver/data_lineage/v1"
+	data_privacy_policy "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driver/data_privacy_policy/v1"
+	explore_task "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driver/explore_task/v1"
+	form_view "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driver/form_view/v1"
+	grade_rule "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driver/grade_rule/v1"
+	grade_rule_group "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driver/grade_rule_group/v1"
+	logic_view "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driver/logic_view/v1"
+	recognition_algorithm "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driver/recognition_algorithm/v1"
+	sub_view "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driver/sub_view/v1"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 )
 

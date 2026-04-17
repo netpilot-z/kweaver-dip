@@ -1,4 +1,4 @@
-SET SCHEMA kweaver;
+SET SCHEMA data_application_service;
 
 CREATE TABLE IF NOT EXISTS  "service_daily_record" (
   "f_id" BIGINT NOT NULL,

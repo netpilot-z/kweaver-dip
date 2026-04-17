@@ -2,8 +2,8 @@ package v1
 
 import (
 	"github.com/kweaver-ai/idrm-go-common/util"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/form_validator"
-	domainDataSet "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/data_set"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/form_validator"
+	domainDataSet "github.com/kweaver-ai/dsg/services/apps/data-view/domain/data_set"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"
 	"github.com/gin-gonic/gin"
 	"strconv"

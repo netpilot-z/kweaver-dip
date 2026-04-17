@@ -2,9 +2,9 @@ package graph_model
 
 import (
 	"context"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/models/request"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/models/response"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/models/request"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/models/response"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/db/model"
 	"github.com/kweaver-ai/idrm-go-common/workflow/common"
 	"github.com/samber/lo"
 )

@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/settings"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/conf"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/conf"
 	"github.com/kweaver-ai/idrm-go-frame/core/middleware/ginMiddleWare"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest"
@@ -19,7 +19,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.uber.org/zap"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/cmd/server/docs"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/cmd/server/docs"
 )
 
 func handleReDoc(ctx *gin.Context) {

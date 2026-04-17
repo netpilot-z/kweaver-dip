@@ -5,7 +5,7 @@ import (
 	"runtime"
 	"strconv"
 
-	my_errorcode "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/common/errorcode"
+	my_errorcode "github.com/kweaver-ai/dsg/services/apps/data-subject/common/errorcode"
 	"github.com/kweaver-ai/idrm-go-common/errorcode"
 	"github.com/kweaver-ai/idrm-go-common/interception"
 	"github.com/kweaver-ai/idrm-go-common/middleware"

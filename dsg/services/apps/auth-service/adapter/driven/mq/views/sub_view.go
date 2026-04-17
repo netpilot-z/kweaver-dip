@@ -3,7 +3,7 @@ package views
 import (
 	"context"
 	"encoding/json"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/auth-service/adapter/driven/gorm"
+	"github.com/kweaver-ai/dsg/services/apps/auth-service/adapter/driven/gorm"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/mq/kafkax"
 
 	"go.uber.org/zap"

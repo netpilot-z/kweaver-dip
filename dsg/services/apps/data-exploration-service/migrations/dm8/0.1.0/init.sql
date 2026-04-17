@@ -1,4 +1,4 @@
-SET SCHEMA kweaver;
+SET SCHEMA af_data_exploration;
 
 CREATE TABLE if not exists "t_task_config" (
                                                "f_id" BIGINT  NOT NULL,

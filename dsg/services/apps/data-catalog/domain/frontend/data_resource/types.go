@@ -1,9 +1,9 @@
 package data_resource
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driven/auth_service"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driven/basic_search"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/util/sets"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driven/auth_service"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driven/basic_search"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/util/sets"
 )
 
 // 搜索的过滤器

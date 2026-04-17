@@ -7,8 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/samber/lo"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/form_validator"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/info_resource_catalog"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/form_validator"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/info_resource_catalog"
 	"github.com/kweaver-ai/idrm-go-common/util/sets"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"
 )

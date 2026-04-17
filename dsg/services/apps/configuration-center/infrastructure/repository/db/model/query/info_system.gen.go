@@ -6,7 +6,7 @@ package query
 
 import (
 	"context"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"

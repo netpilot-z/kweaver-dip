@@ -9,10 +9,10 @@ import (
 	"github.com/Shopify/sarama"
 	"go.uber.org/zap"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/gorm/datasource"
-	form_view_repo "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/gorm/form_view"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/gorm/scan_record"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/form_view"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/gorm/datasource"
+	form_view_repo "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/gorm/form_view"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/gorm/scan_record"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/domain/form_view"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/ar_trace"
 )

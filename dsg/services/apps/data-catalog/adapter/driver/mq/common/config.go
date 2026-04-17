@@ -3,7 +3,7 @@ package common
 import (
 	"strings"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/settings"
 )
 
 // type producerConfig struct {

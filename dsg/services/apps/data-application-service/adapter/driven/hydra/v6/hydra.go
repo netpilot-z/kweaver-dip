@@ -9,8 +9,8 @@ import (
 	"net/http"
 	"sync"
 
-	Ihydra "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/adapter/driven/hydra"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/settings"
+	Ihydra "github.com/kweaver-ai/dsg/services/apps/data-application-service/adapter/driven/hydra"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/common/settings"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"go.uber.org/zap"
 

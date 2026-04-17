@@ -1,8 +1,8 @@
 package app
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/adapter/driven/callbacks"
-	my_config "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/infrastructure/config"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/adapter/driven/callbacks"
+	my_config "github.com/kweaver-ai/dsg/services/apps/data-subject/infrastructure/config"
 	go_frame "github.com/kweaver-ai/idrm-go-frame"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest"
 )

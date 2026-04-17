@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_tasks;
 
 CREATE TABLE IF NOT EXISTS `t_work_order_extend` (
     `id` BIGINT(20) NOT NULL COMMENT '雪花ID',

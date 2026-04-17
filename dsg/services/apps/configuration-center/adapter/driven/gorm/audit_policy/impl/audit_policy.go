@@ -5,14 +5,14 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/gorm/audit_policy"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/util"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/gorm/audit_policy"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-frame/core/store/gormx"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 
-	domain_audit_policy "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/audit_policy"
+	domain_audit_policy "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/audit_policy"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
@@ -177,18 +177,18 @@ func (r *auditPolicyRepo) CheckNameRepeatWithId(ctx context.Context, name, id st
 
 func (r *auditPolicyRepo) GetIndicatorByIds(ctx context.Context, ids []string) ([]*audit_policy.TTechnicalIndicator, error) {
 	models := make([]*audit_policy.TTechnicalIndicator, 0)
-	err := r.db.WithContext(ctx).Table("kweaver.t_technical_indicator m").Debug().Select("m.id, m.name, m.code, m.indicator_type, b.path as path, c.name as subject_domain_name").
-		Joins("left join kweaver.object b on b.id = m.mgnt_dep_id").
-		Joins("left join kweaver.subject_domain c on c.id = m.subject_domain_id").
+	err := r.db.WithContext(ctx).Table("af_data_model.t_technical_indicator m").Debug().Select("m.id, m.name, m.code, m.indicator_type, b.path as path, c.name as subject_domain_name").
+		Joins("left join af_configuration.object b on b.id = m.mgnt_dep_id").
+		Joins("left join af_main.subject_domain c on c.id = m.subject_domain_id").
 		Where("m.deleted_at = 0 or m.deleted_at IS NULL").
 		Where("m.id in ? ", ids).Find(&models).Error
 	return models, err
 }
 func (r *auditPolicyRepo) GetFormViewByIds(ctx context.Context, ids []string) ([]*audit_policy.FormView, error) {
 	models := make([]*audit_policy.FormView, 0)
-	err := r.db.WithContext(ctx).Table("kweaver.form_view m").Debug().Select("m.id, m.business_name, m.uniform_catalog_code, m.technical_name, m.online_status, b.path as path, c.name as subject_domain_name").
-		Joins("left join kweaver.object b on b.id = m.department_id").
-		Joins("left join kweaver.subject_domain c on c.id = m.subject_id").
+	err := r.db.WithContext(ctx).Table("af_main.form_view m").Debug().Select("m.id, m.business_name, m.uniform_catalog_code, m.technical_name, m.online_status, b.path as path, c.name as subject_domain_name").
+		Joins("left join af_configuration.object b on b.id = m.department_id").
+		Joins("left join af_main.subject_domain c on c.id = m.subject_id").
 		Where("m.deleted_at = 0").
 		Where("m.id in ? ", ids).Find(&models).Error
 	return models, err
@@ -197,8 +197,8 @@ func (r *auditPolicyRepo) GetFormViewByIds(ctx context.Context, ids []string) ([
 func (r *auditPolicyRepo) GetServiceByIds(ctx context.Context, ids []string) ([]*audit_policy.Service, error) {
 	models := make([]*audit_policy.Service, 0)
 	err := r.db.WithContext(ctx).Table("data_application_service.service m").Debug().Select("m.service_id, m.service_name, m.service_code, m.status, b.path as path, c.name as subject_domain_name").
-		Joins("left join kweaver.object b on b.id = m.department_id").
-		Joins("left join kweaver.subject_domain c on c.id = m.subject_domain_id").
+		Joins("left join af_configuration.object b on b.id = m.department_id").
+		Joins("left join af_main.subject_domain c on c.id = m.subject_domain_id").
 		Where("m.delete_time = 0").
 		Where("m.service_id in ? ", ids).Find(&models).Error
 	return models, err

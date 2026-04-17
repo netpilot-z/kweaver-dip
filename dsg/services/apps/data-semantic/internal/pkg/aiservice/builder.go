@@ -3,8 +3,8 @@ package aiservice
 import (
 	"fmt"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/model/form_view"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/model/form_view_field"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/model/form_view"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/model/form_view_field"
 )
 
 // BuildFormView builds FormView for AI service from model data

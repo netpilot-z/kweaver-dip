@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	_ "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/models/response"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/tool"
+	_ "github.com/kweaver-ai/dsg/services/apps/configuration-center/common/models/response"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/tool"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	af_trace "github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 	_ "github.com/kweaver-ai/idrm-go-frame/core/transport/rest"

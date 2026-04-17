@@ -5,7 +5,7 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/settings"
 	"github.com/kweaver-ai/idrm-go-common/workflow"
 	"github.com/kweaver-ai/idrm-go-common/workflow/common"
 )

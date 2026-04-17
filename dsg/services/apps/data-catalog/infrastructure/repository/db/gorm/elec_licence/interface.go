@@ -3,9 +3,9 @@ package elec_licence
 import (
 	"context"
 
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/elec_licence"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/elec_licence"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
 )
 
 type ElecLicenceRepo interface {

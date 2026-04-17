@@ -3,20 +3,20 @@ package v1
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/util"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/classification_rule"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/util"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-view/domain/classification_rule"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/db/model"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"go.uber.org/zap"
 
-	repo "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/gorm/classification_rule"
-	classification_rule_algorithm_relation "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/gorm/classification_rule_algorithm_relation"
-	form_view_field "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/gorm/form_view_field"
-	recognition_algorithm "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/gorm/recognition_algorithm"
-	user "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/gorm/user"
-	data_subject_local "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/rest/data-subject"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/errorcode"
+	repo "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/gorm/classification_rule"
+	classification_rule_algorithm_relation "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/gorm/classification_rule_algorithm_relation"
+	form_view_field "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/gorm/form_view_field"
+	recognition_algorithm "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/gorm/recognition_algorithm"
+	user "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/gorm/user"
+	data_subject_local "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/rest/data-subject"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/errorcode"
 )
 
 type classificationRuleUseCase struct {

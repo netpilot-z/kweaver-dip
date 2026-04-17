@@ -2,9 +2,9 @@ package v1
 
 import (
 	"github.com/kweaver-ai/idrm-go-common/rest/data_view"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/form_validator"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/util"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/form_view"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/form_validator"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/domain/form_view"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"
 	"github.com/gin-gonic/gin"
 )

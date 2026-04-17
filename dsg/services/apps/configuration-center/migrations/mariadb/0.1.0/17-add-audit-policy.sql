@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_configuration;
 
 CREATE TABLE IF NOT EXISTS `audit_policy` (
   `sid` bigint(20) unsigned NOT NULL COMMENT '雪花id',

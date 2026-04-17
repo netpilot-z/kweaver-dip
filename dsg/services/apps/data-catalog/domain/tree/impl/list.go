@@ -3,8 +3,8 @@ package impl
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/util"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/tree"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/util"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/tree"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 )
 

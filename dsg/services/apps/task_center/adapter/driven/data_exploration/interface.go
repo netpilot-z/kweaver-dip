@@ -3,7 +3,7 @@ package data_exploration
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/models/response"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/models/response"
 )
 
 type ReportListReq struct {

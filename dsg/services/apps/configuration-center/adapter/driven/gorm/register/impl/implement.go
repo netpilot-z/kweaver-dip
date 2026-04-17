@@ -3,12 +3,12 @@ package impl
 import (
 	"context"
 
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/register"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/register"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 
-	register "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/gorm/register"
+	register "github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/gorm/register"
 )
 
 type Repo struct {

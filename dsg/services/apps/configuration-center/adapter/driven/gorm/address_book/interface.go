@@ -3,8 +3,8 @@ package firm
 import (
 	"context"
 
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/address_book"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/address_book"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
 	"gorm.io/gorm"
 )
 

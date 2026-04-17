@@ -6,7 +6,7 @@ import (
 
 	"github.com/samber/lo"
 
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/info_resource_catalog"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/info_resource_catalog"
 	"github.com/kweaver-ai/idrm-go-common/rest/business_grooming"
 	"github.com/kweaver-ai/idrm-go-common/util"
 )

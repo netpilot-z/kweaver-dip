@@ -1,4 +1,4 @@
-USE kweaver;
+use af_main;
 
 CREATE TABLE IF NOT EXISTS `data_set` (
     data_set_id BIGINT(20) NOT NULL COMMENT '数据集雪花id',

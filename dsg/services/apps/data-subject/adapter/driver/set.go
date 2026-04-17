@@ -2,7 +2,7 @@ package driver
 
 import (
 	"github.com/google/wire"
-	subject_domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/adapter/driver/subject_domain/v1"
+	subject_domain "github.com/kweaver-ai/dsg/services/apps/data-subject/adapter/driver/subject_domain/v1"
 	middleware "github.com/kweaver-ai/idrm-go-common/middleware/v1"
 )
 

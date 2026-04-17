@@ -4,8 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/errorcode"
-	_ "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/code_generation_rule"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/errorcode"
+	_ "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/code_generation_rule"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"
 )

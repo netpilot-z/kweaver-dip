@@ -6,8 +6,8 @@ import (
 	"github.com/biocrosscoder/flex/typed/collections/arraylist"
 	"github.com/biocrosscoder/flex/typed/functools"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/info_resource_catalog"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/info_resource_catalog"
 	"github.com/kweaver-ai/idrm-go-common/rest/business_grooming"
 	"github.com/kweaver-ai/idrm-go-frame/core/enum"
 )

@@ -1,8 +1,8 @@
 package spt
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/spt/register"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/spt/register"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/settings"
 	"google.golang.org/grpc"
 )
 

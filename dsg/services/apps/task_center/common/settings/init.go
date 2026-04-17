@@ -1,7 +1,7 @@
 package settings
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/cmd/server/docs"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/cmd/server/docs"
 )
 
 func Init() {

@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	my_errorcode "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/common/errorcode"
+	my_errorcode "github.com/kweaver-ai/dsg/services/apps/data-subject/common/errorcode"
 	"github.com/kweaver-ai/idrm-go-common/errorcode"
 	uuid "github.com/satori/go.uuid"
 )

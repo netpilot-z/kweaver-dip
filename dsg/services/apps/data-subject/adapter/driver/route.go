@@ -2,7 +2,7 @@ package driver
 
 import (
 	"github.com/gin-gonic/gin"
-	subject_domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/adapter/driver/subject_domain/v1"
+	subject_domain "github.com/kweaver-ai/dsg/services/apps/data-subject/adapter/driver/subject_domain/v1"
 	"github.com/kweaver-ai/idrm-go-common/access_control"
 	"github.com/kweaver-ai/idrm-go-common/audit"
 	"github.com/kweaver-ai/idrm-go-common/middleware"

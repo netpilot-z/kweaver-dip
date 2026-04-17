@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_data_catalog;
 
 CREATE TABLE IF NOT EXISTS `t_category_apply_scope_relation` (
     `id` BIGINT(20) NOT NULL COMMENT '唯一id，雪花算法',

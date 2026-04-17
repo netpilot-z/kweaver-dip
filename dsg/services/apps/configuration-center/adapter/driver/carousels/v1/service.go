@@ -12,9 +12,9 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/form_validator"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/carousels"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/form_validator"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/carousels"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	_ "github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 	af_trace "github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"

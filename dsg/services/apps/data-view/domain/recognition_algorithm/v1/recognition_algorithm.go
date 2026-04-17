@@ -7,19 +7,19 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/util"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/recognition_algorithm"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/util"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-view/domain/recognition_algorithm"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/db/model"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"go.uber.org/zap"
 
-	classification_rule_repo "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/gorm/classification_rule"
-	classification_rule_algorithm_relation_repo "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/gorm/classification_rule_algorithm_relation"
-	repo "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/gorm/recognition_algorithm"
-	user "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/gorm/user"
-	data_subject_local "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/rest/data-subject"
+	classification_rule_repo "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/gorm/classification_rule"
+	classification_rule_algorithm_relation_repo "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/gorm/classification_rule_algorithm_relation"
+	repo "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/gorm/recognition_algorithm"
+	user "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/gorm/user"
+	data_subject_local "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/rest/data-subject"
 )
 
 type recognitionAlgorithmUseCase struct {

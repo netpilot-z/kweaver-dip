@@ -7,9 +7,9 @@ import (
 	"context"
 
 	"github.com/jinguoxing/idrm-go-base/telemetry"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/api/internal/config"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/internal/pkg/aiservice"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/model/form_view"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/api/internal/config"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/internal/pkg/aiservice"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/model/form_view"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )

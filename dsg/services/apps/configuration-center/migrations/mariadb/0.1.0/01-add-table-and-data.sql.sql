@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_configuration;
 
 CREATE TABLE IF NOT EXISTS `t_address_book` (
     `id` BIGINT NOT NULL COMMENT '唯一id，雪花算法',

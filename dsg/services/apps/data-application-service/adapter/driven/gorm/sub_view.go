@@ -5,8 +5,8 @@ import (
 	"errors"
 
 	"github.com/google/uuid"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 	"github.com/samber/lo"
 	"gorm.io/gorm"

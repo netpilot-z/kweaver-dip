@@ -5,7 +5,7 @@ import (
 
 	"github.com/IBM/sarama"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/settings"
 )
 
 func NewSaramaClient() (sarama.Client, error) {

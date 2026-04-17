@@ -1,7 +1,7 @@
 package info_resource_catalog
 
 import (
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/info_resource_catalog"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/info_resource_catalog"
 	"gorm.io/gorm"
 )
 

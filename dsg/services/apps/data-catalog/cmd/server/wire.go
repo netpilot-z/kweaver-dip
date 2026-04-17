@@ -7,15 +7,15 @@ package main
 
 import (
 	"github.com/google/wire"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/controller"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driven"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driver"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/settings"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/util"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/statistics/impl"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/controller"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driven"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driver"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/statistics/impl"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm"
 )
 
 // ProviderSet is server providers.

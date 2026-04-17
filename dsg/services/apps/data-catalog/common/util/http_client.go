@@ -13,7 +13,7 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/settings"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 

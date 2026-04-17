@@ -3,10 +3,10 @@ package impl
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/form_validator"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/domain/sub_service"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/domain/sub_service/validation"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/common/form_validator"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/domain/sub_service"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/domain/sub_service/validation"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 )
 

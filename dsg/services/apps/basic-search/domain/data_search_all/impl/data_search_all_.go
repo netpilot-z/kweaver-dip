@@ -3,8 +3,8 @@ package data_search_all
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/adapter/driven/data_search_all"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/domain/data_search_all"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/adapter/driven/data_search_all"
+	domain "github.com/kweaver-ai/dsg/services/apps/basic-search/domain/data_search_all"
 )
 
 type useCase struct {

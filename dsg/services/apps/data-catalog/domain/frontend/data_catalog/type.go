@@ -1,6 +1,6 @@
 package data_catalog
 
-import "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/frontend/common"
+import "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/frontend/common"
 
 type dataCatalogSearch struct {
 	UpdateCycle      []int    `json:"update_cycle,omitempty" binding:"omitempty,unique,dive,min=1,max=8" example:"7"` // 更新频率 1实时 2每日 3每周 4每月 5每季度 6每半年 7每年 8其他

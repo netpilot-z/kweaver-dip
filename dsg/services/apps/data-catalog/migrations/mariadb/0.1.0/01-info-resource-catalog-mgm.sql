@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_data_catalog;
 
 -- [信息资源目录]
 CREATE TABLE IF NOT EXISTS `t_info_resource_catalog` (

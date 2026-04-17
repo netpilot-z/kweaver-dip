@@ -1,4 +1,4 @@
-SET SCHEMA kweaver;
+SET SCHEMA data_application_service;
 -- ALTER TABLE "service" ADD COLUMN IF NOT EXISTS "info_system_id" VARCHAR(36 char) DEFAULT NULL;
 -- ALTER TABLE "service" ADD COLUMN IF NOT EXISTS "apps_id" VARCHAR(36 char) DEFAULT NULL  ;
 -- ALTER TABLE "service" ADD COLUMN IF NOT EXISTS "sync_flag" VARCHAR(64 char) DEFAULT NULL ;

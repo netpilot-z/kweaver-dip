@@ -9,16 +9,16 @@ import (
 	"github.com/kweaver-ai/idrm-go-common/middleware"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driven/auth_service"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driven/basic_search"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/common_model"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/models"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/models/response"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/common"
-	fcommon "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/frontend/common"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/my_favorite"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driven/auth_service"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driven/basic_search"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/common_model"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/models"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/models/response"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/common"
+	fcommon "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/frontend/common"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/my_favorite"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
 )
 
 type CatalogDetailResp struct {

@@ -6,7 +6,7 @@ import (
 
 	"github.com/IBM/sarama"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/common/settings"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 )
 

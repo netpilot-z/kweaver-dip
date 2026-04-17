@@ -6,7 +6,7 @@ import (
 
 	"github.com/kweaver-ai/idrm-go-common/rest/label"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/adapter/driven/es_common"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/adapter/driven/es_common"
 )
 
 const (

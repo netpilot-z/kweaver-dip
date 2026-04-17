@@ -8,9 +8,9 @@ import (
 
 	"github.com/samber/lo"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/adapter/driven/es_common"
-	es "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/adapter/driven/es_info_catalog" //信息资源目录
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/models/response"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/adapter/driven/es_common"
+	es "github.com/kweaver-ai/dsg/services/apps/basic-search/adapter/driven/es_info_catalog" //信息资源目录
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/common/models/response"
 )
 
 type UseCase interface {

@@ -9,9 +9,9 @@ import (
 	"strconv"
 
 	"github.com/imroc/req/v2"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/common/settings"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/common/util"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"go.uber.org/zap"
 )

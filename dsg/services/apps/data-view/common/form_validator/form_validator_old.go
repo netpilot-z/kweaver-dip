@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	val "github.com/go-playground/validator/v10"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/util"
 )
 
 // BindJsonAndValid 请换一种方法 => BindJsonAndValidV2

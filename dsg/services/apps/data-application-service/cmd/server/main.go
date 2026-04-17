@@ -8,15 +8,15 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/adapter/driven/mq/consumer"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/adapter/driven/mq/consumer"
 
 	"go.uber.org/zap"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/adapter/driven/callbacks"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/adapter/driven/workflow"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/form_validator"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/settings"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/domain"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/adapter/driven/callbacks"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/adapter/driven/workflow"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/common/form_validator"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/domain"
 	af_go_frame "github.com/kweaver-ai/idrm-go-frame"
 	"github.com/kweaver-ai/idrm-go-frame/core/config"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"

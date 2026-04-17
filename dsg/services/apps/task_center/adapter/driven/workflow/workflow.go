@@ -7,7 +7,7 @@ import (
 	"github.com/kweaver-ai/idrm-go-common/workflow"
 	"github.com/kweaver-ai/idrm-go-common/workflow/common"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/settings"
 )
 
 func NewWFStarter(wf workflow.WorkflowInterface, _ *http.Client) workflow.WFStarter {

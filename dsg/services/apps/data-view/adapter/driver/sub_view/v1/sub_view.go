@@ -1,7 +1,7 @@
 package v1
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/sub_view"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/domain/sub_view"
 )
 
 type SubViewService struct {

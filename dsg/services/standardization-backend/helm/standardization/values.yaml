@@ -45,7 +45,7 @@ depServices:
     port: 5236
     user: "SYSDBA"
     password: "HUN_SYSDBA2023"
-    database: kweaver
+    database: af_std
     type: DM8
   mq:
     mqHost: 'kafka.resource.svc.cluster.local'

@@ -9,15 +9,15 @@ import (
 	"time"
 
 	"github.com/jinzhu/copier"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/models"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/models"
 
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/data_push"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/data_push"
 
-	localDataView "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driven/data_view"
+	localDataView "github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driven/data_view"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-common/rest/business_grooming"
 	"github.com/kweaver-ai/idrm-go-common/rest/data_sync"
 	"github.com/kweaver-ai/idrm-go-common/rest/data_view"

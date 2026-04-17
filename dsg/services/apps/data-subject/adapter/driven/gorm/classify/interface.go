@@ -3,8 +3,8 @@ package classify
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/common/models/request"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/common/models/request"
 )
 
 type Repo interface {

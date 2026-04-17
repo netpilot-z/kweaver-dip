@@ -3,9 +3,9 @@ package v1
 import (
 	"github.com/gin-gonic/gin"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/util/ptr"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/util/validation/field"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/util/ptr"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/util/validation/field"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"
 )

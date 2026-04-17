@@ -1,7 +1,7 @@
 package opensearch
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/common/settings"
 	log "github.com/kweaver-ai/idrm-go-frame/core/logx/zapx"
 	"github.com/olivere/elastic/v7"
 )

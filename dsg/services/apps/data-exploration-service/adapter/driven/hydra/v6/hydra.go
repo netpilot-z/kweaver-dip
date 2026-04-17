@@ -10,8 +10,8 @@ import (
 	"sync"
 
 	jsoniter "github.com/json-iterator/go"
-	Ihydra "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/hydra"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/settings"
+	Ihydra "github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/hydra"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/settings"
 	log "github.com/kweaver-ai/idrm-go-frame/core/logx/zapx"
 	"go.uber.org/zap"
 )

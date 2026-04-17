@@ -9,7 +9,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	enTranslations "github.com/go-playground/validator/v10/translations/en"
 	zhTranslations "github.com/go-playground/validator/v10/translations/zh"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/util"
 	log "github.com/kweaver-ai/idrm-go-frame/core/logx/zapx"
 	"reflect"
 	"strings"

@@ -3,10 +3,10 @@ package tc_task
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/constant"
-	relationData "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/relation_data"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/tc_task"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/constant"
+	relationData "github.com/kweaver-ai/dsg/services/apps/task_center/domain/relation_data"
+	domain "github.com/kweaver-ai/dsg/services/apps/task_center/domain/tc_task"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db/model"
 )
 
 type Repo interface {

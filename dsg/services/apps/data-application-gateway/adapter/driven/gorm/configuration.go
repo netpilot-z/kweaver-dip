@@ -5,7 +5,7 @@ import (
 	"errors"
 	"strconv"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/infrastructure/repository/db"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/infrastructure/repository/db"
 	"gorm.io/gorm"
 )
 
@@ -32,7 +32,7 @@ func (r *configurationRepo) do(tx *gorm.DB, ctx context.Context) *gorm.DB {
 
 func (r *configurationRepo) GetUsingMode(tx *gorm.DB, ctx context.Context) (mode int, err error) {
 	var vals []string
-	err = r.do(tx, ctx).Table("kweaver.configuration").Select("value").Where("`key` = 'using'").Find(&vals).Error
+	err = r.do(tx, ctx).Table("af_configuration.configuration").Select("value").Where("`key` = 'using'").Find(&vals).Error
 	if err != nil {
 		return 0, err
 	}
@@ -44,7 +44,7 @@ func (r *configurationRepo) GetUsingMode(tx *gorm.DB, ctx context.Context) (mode
 
 func (r *configurationRepo) GetFirmName(tx *gorm.DB, ctx context.Context, firmID uint64) (firmName string, err error) {
 	var vals []string
-	err = r.do(tx, ctx).Table("kweaver.t_firm").Select("name").Where("`id` = ?", firmID).Find(&vals).Error
+	err = r.do(tx, ctx).Table("af_configuration.t_firm").Select("name").Where("`id` = ?", firmID).Find(&vals).Error
 	if err != nil {
 		return "", err
 	}
@@ -56,7 +56,7 @@ func (r *configurationRepo) GetFirmName(tx *gorm.DB, ctx context.Context, firmID
 
 func (r *configurationRepo) GetConf(tx *gorm.DB, ctx context.Context, key string) (val string, err error) {
 	var vals []string
-	err = r.do(tx, ctx).Table("kweaver.configuration").Select("value").Where("`key` = ?", key).Find(&vals).Error
+	err = r.do(tx, ctx).Table("af_configuration.configuration").Select("value").Where("`key` = ?", key).Find(&vals).Error
 	if err != nil {
 		return "", err
 	}

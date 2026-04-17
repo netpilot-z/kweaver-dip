@@ -1,8 +1,8 @@
 package data_catalog
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/models/response"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/common"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/models/response"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/common"
 )
 
 type NameIDResp struct {

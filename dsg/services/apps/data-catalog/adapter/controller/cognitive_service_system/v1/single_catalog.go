@@ -1,14 +1,14 @@
 package v1
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/form_validator"
-	_ "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/data_push"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/form_validator"
+	_ "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/data_push"
 
-	//"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/models/response"
+	//"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/models/response"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/cognitive_service_system"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/cognitive_service_system"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"
 )

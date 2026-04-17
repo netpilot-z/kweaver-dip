@@ -6,7 +6,7 @@ import (
 	"log"
 	"testing"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-common/access_control"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

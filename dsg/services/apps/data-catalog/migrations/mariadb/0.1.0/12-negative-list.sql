@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_data_catalog;
 -- ALTER TABLE `t_data_catalog` ADD COLUMN IF NOT EXISTS `column_unshared` tinyint(2) NOT NULL COMMENT '信息项不予共享';
 -- ALTER TABLE `t_data_catalog_history` ADD COLUMN IF NOT EXISTS `column_unshared` tinyint(2) NOT NULL COMMENT '信息项不予共享';
 

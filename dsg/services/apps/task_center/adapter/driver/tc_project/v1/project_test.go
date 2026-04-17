@@ -11,9 +11,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/form_validator"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/tc_project"
-	projectImpl "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/tc_project/impl"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/form_validator"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/domain/tc_project"
+	projectImpl "github.com/kweaver-ai/dsg/services/apps/task_center/domain/tc_project/impl"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_tasks;
 
 CREATE TABLE IF NOT EXISTS `data_quality_improvement` (
     `id` char(36) NOT NULL COMMENT '整改项id',

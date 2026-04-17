@@ -1,4 +1,4 @@
-SET SCHEMA kweaver;
+SET SCHEMA af_main;
 
 CREATE TABLE IF NOT EXISTS "subject_domain" (
     "domain_id" BIGINT  NOT NULL IDENTITY(1, 1),

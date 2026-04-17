@@ -1,13 +1,13 @@
 package mq
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driver/mq/data_catalog"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driver/mq/domain"
-	points "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driver/mq/points"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driver/mq/role"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driver/mq/user_mgm"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/work_order_alarm"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driver/mq/data_catalog"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driver/mq/domain"
+	points "github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driver/mq/points"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driver/mq/role"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driver/mq/user_mgm"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/domain/work_order_alarm"
 	"github.com/kweaver-ai/idrm-go-common/reconcile"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/mq/kafkax"
 )

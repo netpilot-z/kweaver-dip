@@ -5,12 +5,12 @@ import (
 
 	"github.com/samber/lo"
 
-	gorm "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/gorm/sub_view"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/rest/auth_service"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/util"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/util/slices"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/sub_view"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/sub_view"
+	gorm "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/gorm/sub_view"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/rest/auth_service"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/util/slices"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/domain/sub_view"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-view/domain/sub_view"
 )
 
 // listSortByIsAuthorized 获取列表并根据是否被授权排序

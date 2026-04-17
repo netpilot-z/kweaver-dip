@@ -3,7 +3,7 @@ package apply_scope_config
 import (
 	"context"
 
-	_ "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/models/response"
+	_ "github.com/kweaver-ai/dsg/services/apps/data-catalog/common/models/response"
 )
 
 type UseCase interface {

@@ -1,4 +1,4 @@
-USE kweaver;
+USE data_application_service;
 
 CREATE TABLE IF NOT EXISTS `service_call_record` (
     `id` BIGINT(20) NOT NULL COMMENT '唯一id，雪花算法',

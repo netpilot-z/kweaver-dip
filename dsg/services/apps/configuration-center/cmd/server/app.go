@@ -3,15 +3,15 @@ package main
 import (
 	"context"
 	"strconv"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/callbacks"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driver/mq/impl"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/callbacks"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driver/mq/impl"
 	"github.com/kweaver-ai/idrm-go-common/workflow"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/configuration"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/configuration"
 	wf_go "github.com/kweaver-ai/idrm-go-common/workflow"
 	goFrame "github.com/kweaver-ai/idrm-go-frame"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/settings"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"go.uber.org/zap"
 )

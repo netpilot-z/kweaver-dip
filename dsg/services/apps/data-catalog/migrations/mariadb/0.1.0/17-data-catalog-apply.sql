@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_data_catalog;
 
 CREATE TABLE IF NOT EXISTS `t_data_catalog_apply` (
     `id` bigint(20) NOT NULL COMMENT '主键',

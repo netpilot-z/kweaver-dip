@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	my_config "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/infrastructure/config"
+	my_config "github.com/kweaver-ai/dsg/services/apps/data-subject/infrastructure/config"
 	"github.com/kweaver-ai/idrm-go-frame/core/cdc"
 	"github.com/kweaver-ai/idrm-go-frame/core/options"
 	"github.com/kweaver-ai/idrm-go-frame/core/store/redis"

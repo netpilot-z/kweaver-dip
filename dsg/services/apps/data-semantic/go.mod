@@ -1,4 +1,4 @@
-module github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic
+module github.com/kweaver-ai/dsg/services/apps/data-semantic
 
 go 1.25.0
 

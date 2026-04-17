@@ -5,7 +5,7 @@
 package model
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/util"
 	"gorm.io/gorm"
 )
 

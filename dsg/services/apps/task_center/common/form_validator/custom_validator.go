@@ -9,9 +9,9 @@ import (
 	"unicode/utf8"
 
 	validator "github.com/go-playground/validator/v10"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/util"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/tenant_application"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/domain/tenant_application"
 	"github.com/kweaver-ai/idrm-go-frame/core/enum"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 )

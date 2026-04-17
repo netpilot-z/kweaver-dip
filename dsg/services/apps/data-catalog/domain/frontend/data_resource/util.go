@@ -5,8 +5,8 @@ import (
 
 	"go.uber.org/zap"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driven/auth_service"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/util/sets"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driven/auth_service"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/util/sets"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 )
 

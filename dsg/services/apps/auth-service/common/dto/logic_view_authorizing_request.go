@@ -2,10 +2,10 @@ package dto
 
 import (
 	"encoding/json"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/auth-service/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/auth-service/infrastructure/repository/db/model"
 	"time"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/auth-service/common/util/sets"
+	"github.com/kweaver-ai/dsg/services/apps/auth-service/common/util/sets"
 	meta_v1 "github.com/kweaver-ai/idrm-go-common/api/meta/v1"
 )
 

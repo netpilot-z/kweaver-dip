@@ -6,9 +6,9 @@ import (
 
 	"github.com/kweaver-ai/idrm-go-common/rest/configuration_center"
 
-	bg "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/adapter/driven/business-grooming"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/common/constant"
-	proErrorcode "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/common/errorcode"
+	bg "github.com/kweaver-ai/dsg/services/apps/data-subject/adapter/driven/business-grooming"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/common/constant"
+	proErrorcode "github.com/kweaver-ai/dsg/services/apps/data-subject/common/errorcode"
 	"github.com/kweaver-ai/idrm-go-common/errorcode"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/samber/lo"

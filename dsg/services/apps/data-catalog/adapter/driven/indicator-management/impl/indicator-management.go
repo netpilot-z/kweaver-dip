@@ -9,9 +9,9 @@ import (
 
 	"go.uber.org/zap"
 
-	indicator_management "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driven/indicator-management"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/settings"
+	indicator_management "github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driven/indicator-management"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/settings"
 	"github.com/kweaver-ai/idrm-go-common/interception"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"

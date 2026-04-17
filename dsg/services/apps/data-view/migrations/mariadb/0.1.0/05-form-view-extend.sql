@@ -1,4 +1,4 @@
-USE kweaver;
+use af_main;
 
 CREATE TABLE IF NOT EXISTS `t_form_view_extend` (
     `id` char(36) NOT NULL COMMENT '逻辑视图uuid',

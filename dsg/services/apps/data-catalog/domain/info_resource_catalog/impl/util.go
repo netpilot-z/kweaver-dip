@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"github.com/biocrosscoder/flex/typed/functools"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/info_resource_catalog"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/info_resource_catalog"
 )
 
 func buildOrderByParams(sortBy *info_resource_catalog.SortParams) []*info_resource_catalog.OrderParamItem {

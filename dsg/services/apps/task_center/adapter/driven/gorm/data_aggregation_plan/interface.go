@@ -3,8 +3,8 @@ package data_aggregation_plan
 import (
 	"context"
 
-	data_aggregation_plan "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/data_aggregation_plan"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db/model"
+	data_aggregation_plan "github.com/kweaver-ai/dsg/services/apps/task_center/domain/data_aggregation_plan"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db/model"
 )
 
 type DataAggregatioPlanRepo interface {

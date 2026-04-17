@@ -4,8 +4,8 @@ import (
 	"context"
 	"sort"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/dto"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/common/dto"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/common/errorcode"
 	auth_service_v1 "github.com/kweaver-ai/idrm-go-common/api/auth-service/v1"
 	"github.com/kweaver-ai/idrm-go-common/util/sets"
 	"github.com/samber/lo"

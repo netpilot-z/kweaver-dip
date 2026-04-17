@@ -3,7 +3,7 @@ package menu
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/models/response"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/models/response"
 	"github.com/kweaver-ai/idrm-go-common/rest/authorization"
 	"github.com/samber/lo"
 )

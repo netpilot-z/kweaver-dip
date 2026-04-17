@@ -7,16 +7,16 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/rest/sszd_service"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/rest/sszd_service"
 	"github.com/kweaver-ai/idrm-go-frame/core/utils"
 
 	wf_common "github.com/kweaver-ai/idrm-go-common/workflow/common"
 
-	// domain_nsq "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driver/mq/nsq"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/util"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
+	// domain_nsq "github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driver/mq/nsq"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	af_trace "github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 	"go.uber.org/zap"

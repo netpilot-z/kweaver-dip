@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/common/dto"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/common/enum"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/common/dto"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/common/enum"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"go.uber.org/zap"
 )

@@ -6,7 +6,7 @@ import (
 	"path"
 	"testing"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/domain/excel_process/rule"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/domain/excel_process/rule"
 	"github.com/xuri/excelize/v2"
 	"gopkg.in/yaml.v2"
 )

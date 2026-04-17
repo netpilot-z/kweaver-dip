@@ -7,13 +7,13 @@ package main
 
 import (
 	"github.com/google/wire"
-	driven "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/adapter/driven"
-	driver "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/adapter/driver"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/common/app"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/common/initialization"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/domain"
-	infrastructure "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/infrastructure"
-	my_config "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/infrastructure/config"
+	driven "github.com/kweaver-ai/dsg/services/apps/data-subject/adapter/driven"
+	driver "github.com/kweaver-ai/dsg/services/apps/data-subject/adapter/driver"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/common/app"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/common/initialization"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-subject/domain"
+	infrastructure "github.com/kweaver-ai/dsg/services/apps/data-subject/infrastructure"
+	my_config "github.com/kweaver-ai/dsg/services/apps/data-subject/infrastructure/config"
 )
 
 // var appRunnerSet = wire.NewSet(wire.Struct(new(go_frame.App), "*"))

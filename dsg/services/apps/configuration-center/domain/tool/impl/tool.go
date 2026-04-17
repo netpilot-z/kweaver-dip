@@ -3,8 +3,8 @@ package impl
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/tool"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/tool"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/tool"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/tool"
 )
 
 type toolUsecase struct {

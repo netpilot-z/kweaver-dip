@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/business_structure"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/business_structure"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	af_trace "github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 	"go.uber.org/zap"

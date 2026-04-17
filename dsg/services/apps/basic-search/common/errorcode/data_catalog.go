@@ -1,6 +1,6 @@
 package errorcode
 
-import "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/constant"
+import "github.com/kweaver-ai/dsg/services/apps/basic-search/common/constant"
 
 func init() {
 	registerErrorCode(dataCatalogErrorMap)

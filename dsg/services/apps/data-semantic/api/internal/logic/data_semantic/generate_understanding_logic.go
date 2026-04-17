@@ -8,12 +8,12 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/api/internal/middleware"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/api/internal/svc"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/api/internal/types"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/internal/pkg/aiservice"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/model/form_view"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/model/form_view_field"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/api/internal/middleware"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/api/internal/svc"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/api/internal/types"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/internal/pkg/aiservice"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/model/form_view"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/model/form_view_field"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

@@ -1,7 +1,7 @@
 package dto
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/auth-service/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/auth-service/infrastructure/repository/db/model"
 	meta_v1 "github.com/kweaver-ai/idrm-go-common/api/meta/v1"
 	"time"
 )

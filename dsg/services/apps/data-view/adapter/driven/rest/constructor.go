@@ -1,7 +1,7 @@
 package rest
 
 import (
-	my_config "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/config"
+	my_config "github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/config"
 	common_scene_analysis "github.com/kweaver-ai/idrm-go-common/rest/scene_analysis"
 	common_scene_analysis_impl "github.com/kweaver-ai/idrm-go-common/rest/scene_analysis/impl"
 	"net/http"

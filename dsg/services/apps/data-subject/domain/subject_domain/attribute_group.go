@@ -8,10 +8,10 @@ import (
 
 	"github.com/kweaver-ai/idrm-go-common/rest/configuration_center"
 
-	bg "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/adapter/driven/business-grooming"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/adapter/driven/gorm/standard_info"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/infrastructure/db/model"
+	bg "github.com/kweaver-ai/dsg/services/apps/data-subject/adapter/driven/business-grooming"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/adapter/driven/gorm/standard_info"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/infrastructure/db/model"
 )
 
 // AttributeGrouper 逻辑实体属性分组工具

@@ -16,7 +16,7 @@ func (c *AFTasksClient) WorkOrders() WorkOrderInterface {
 var _ AFTasksInterface = &AFTasksClient{}
 
 func New(db *gorm.DB) *AFTasksClient {
-	return NewWithDBName(db, "kweaver")
+	return NewWithDBName(db, "af_tasks")
 }
 
 func NewWithDBName(db *gorm.DB, dbName string) *AFTasksClient {

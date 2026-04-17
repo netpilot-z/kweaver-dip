@@ -1,4 +1,4 @@
-USE kweaver;
+use af_main;
 
 CREATE TABLE IF NOT EXISTS classification_rule (
 	classification_rule_id BIGINT(20) NOT NULL COMMENT '分类规则雪花id',

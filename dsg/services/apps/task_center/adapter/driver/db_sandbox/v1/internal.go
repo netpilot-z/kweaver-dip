@@ -2,8 +2,8 @@ package v1
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/form_validator"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/models/request"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/form_validator"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/models/request"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"
 )

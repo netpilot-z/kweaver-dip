@@ -5,10 +5,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/errorcode"
 	meta_v1 "github.com/kweaver-ai/idrm-go-common/api/meta/v1"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/role_group"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/role_group"
 	configuration_center_v1 "github.com/kweaver-ai/idrm-go-common/api/configuration-center/v1"
 	"github.com/kweaver-ai/idrm-go-common/util/clock"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"

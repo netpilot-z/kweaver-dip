@@ -4,11 +4,11 @@ import (
 	"context"
 	"errors"
 
-	repo "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/gorm/task_relation_data"
-	taskRepo "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/gorm/tc_task"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/errorcode"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/relation_data"
+	repo "github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/gorm/task_relation_data"
+	taskRepo "github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/gorm/tc_task"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/errorcode"
+	domain "github.com/kweaver-ai/dsg/services/apps/task_center/domain/relation_data"
 	"github.com/kweaver-ai/idrm-go-frame/core/enum"
 	"gorm.io/gorm"
 )

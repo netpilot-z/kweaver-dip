@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/adapter/driven/http_client"
-	deploy_management "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/adapter/driven/http_client/deploy_manager"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/session/adapter/driven/http_client"
+	deploy_management "github.com/kweaver-ai/dsg/services/apps/session/adapter/driven/http_client/deploy_manager"
+	"github.com/kweaver-ai/dsg/services/apps/session/common/constant"
 )
 
 func Init() error {

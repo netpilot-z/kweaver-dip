@@ -9,12 +9,12 @@ import (
 
 	// audit_v1 "github.com/kweaver-ai/idrm-go-common/api/audit/v1"
 	// "github.com/kweaver-ai/idrm-go-common/rest/data_view"
-	// "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/mq/es"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/rest/virtualization_engine"
-	// "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/constant"
+	// "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/mq/es"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/rest/virtualization_engine"
+	// "github.com/kweaver-ai/dsg/services/apps/data-view/common/constant"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/models/request"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/models/request"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/db/model"
 	// "github.com/kweaver-ai/idrm-go-frame/core/enum"
 	// "github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"
 )

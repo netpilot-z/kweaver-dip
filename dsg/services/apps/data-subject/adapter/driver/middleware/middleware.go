@@ -3,7 +3,7 @@ package middleware
 import (
 	"net/http"
 
-	my_config "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/infrastructure/config"
+	my_config "github.com/kweaver-ai/dsg/services/apps/data-subject/infrastructure/config"
 	"github.com/kweaver-ai/idrm-go-common/rest/configuration_center"
 	configuration_center_impl "github.com/kweaver-ai/idrm-go-common/rest/configuration_center/impl"
 	"github.com/kweaver-ai/idrm-go-common/rest/hydra"

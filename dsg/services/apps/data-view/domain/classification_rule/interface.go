@@ -3,7 +3,7 @@ package classification_rule
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/models/request"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/models/request"
 )
 
 // ClassificationRuleUseCase 是分类规则用例接口

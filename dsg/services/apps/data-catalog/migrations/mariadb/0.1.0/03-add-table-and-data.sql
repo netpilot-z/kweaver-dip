@@ -1,4 +1,4 @@
-USE kweaver;
+use af_data_catalog;
 
 CREATE TABLE IF NOT EXISTS `t_open_catalog` (
     `id` bigint(20) NOT NULL COMMENT '唯一id，雪花算法',

@@ -2,10 +2,10 @@ package v1
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/form_validator"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/models/response"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/util"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/explore_rule"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/form_validator"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/models/response"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/domain/explore_rule"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"
 )
 

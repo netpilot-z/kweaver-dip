@@ -5,8 +5,8 @@ import (
 
 	"go.uber.org/zap"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/gorm/work_order_task"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/gorm/work_order_task"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/errorcode"
 	task_center_v1 "github.com/kweaver-ai/idrm-go-common/api/task_center/v1"
 	task_center_v1_frontend "github.com/kweaver-ai/idrm-go-common/api/task_center/v1/frontend"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"

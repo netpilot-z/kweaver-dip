@@ -6,7 +6,7 @@ import (
 
 	"gorm.io/gorm"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/auth-service/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/auth-service/common/settings"
 )
 
 func NewMariaDB(s *settings.Settings) (*gorm.DB, error) {
@@ -19,7 +19,7 @@ type DatabaseAFDataModel gorm.DB
 func NewDatabaseAFDataModel(s *settings.Settings) (*DatabaseAFDataModel, error) {
 	opt := &options.DBOptions{}
 	copier.Copy(opt, s.Database)
-	opt.Database = "kweaver"
+	opt.Database = "af_data_model"
 	db, err := opt.NewClient()
 	return (*DatabaseAFDataModel)(db), err
 }
@@ -43,7 +43,7 @@ func (db *GormDBConfigurationCenter) DB() *gorm.DB {
 func NewConfigurationCenterDB(s *settings.Settings) (*GormDBConfigurationCenter, error) {
 	opt := &options.DBOptions{}
 	copier.Copy(opt, s.Database)
-	opt.Database = "kweaver"
+	opt.Database = "af_configuration"
 	db, err := opt.NewClient()
 	return (*GormDBConfigurationCenter)(db), err
 }

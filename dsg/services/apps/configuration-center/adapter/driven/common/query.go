@@ -6,7 +6,7 @@ import (
 	"github.com/kweaver-ai/idrm-go-frame/core/store/gormx"
 	"gorm.io/gorm"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/repository/db/model/query"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/repository/db/model/query"
 )
 
 var (

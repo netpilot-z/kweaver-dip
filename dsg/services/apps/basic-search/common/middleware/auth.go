@@ -6,11 +6,11 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/adapter/driven/hydra"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/adapter/driven/user_management"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/trace_util"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/adapter/driven/hydra"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/adapter/driven/user_management"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/common/trace_util"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"go.opentelemetry.io/otel/attribute"
 )

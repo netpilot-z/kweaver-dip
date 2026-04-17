@@ -4,15 +4,15 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driver/mq/datasource"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driver/mq/department"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driver/mq/impl"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driver/mq/impl/kafka"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driver/mq/impl/nsq"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driver/mq/user_mgm"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/settings"
-	kafka_infra "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/mq/kafka"
-	nsq_infra "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/mq/nsq"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driver/mq/datasource"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driver/mq/department"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driver/mq/impl"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driver/mq/impl/kafka"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driver/mq/impl/nsq"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driver/mq/user_mgm"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/settings"
+	kafka_infra "github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/mq/kafka"
+	nsq_infra "github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/mq/nsq"
 )
 
 func NewMQ(

@@ -4,7 +4,7 @@ package tc_oss
 //import (
 //	"bytes"
 //	"context"
-//	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/tc_oss/impl"
+//	"github.com/kweaver-ai/dsg/services/apps/task_center/domain/tc_oss/impl"
 //	"github.com/fogleman/gg"
 //	"github.com/golang/mock/gomock"
 //	"github.com/stretchr/testify/assert"

@@ -3,7 +3,7 @@ package kafka
 import (
 	"github.com/IBM/sarama"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/settings"
 )
 
 func NewSaramaClient() (sarama.Client, error) {

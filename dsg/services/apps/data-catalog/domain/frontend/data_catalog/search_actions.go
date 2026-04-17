@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/common"
-	frontend_common "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/frontend/common"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/common"
+	frontend_common "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/frontend/common"
 	auth_service_v1 "github.com/kweaver-ai/idrm-go-common/api/auth-service/v1"
 )
 

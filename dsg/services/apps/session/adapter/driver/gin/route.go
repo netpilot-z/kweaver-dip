@@ -3,11 +3,11 @@ package gin
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/adapter/driven/audit"
-	login "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/adapter/driver/gin/login/v1"
-	logout "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/adapter/driver/gin/logout/v1"
-	refresh_token "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/adapter/driver/gin/refresh_token/v1"
-	user_info "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/adapter/driver/gin/user_info/v1"
+	"github.com/kweaver-ai/dsg/services/apps/session/adapter/driven/audit"
+	login "github.com/kweaver-ai/dsg/services/apps/session/adapter/driver/gin/login/v1"
+	logout "github.com/kweaver-ai/dsg/services/apps/session/adapter/driver/gin/logout/v1"
+	refresh_token "github.com/kweaver-ai/dsg/services/apps/session/adapter/driver/gin/refresh_token/v1"
+	user_info "github.com/kweaver-ai/dsg/services/apps/session/adapter/driver/gin/user_info/v1"
 	af_trace "github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 )
 

@@ -6,7 +6,7 @@
 
 package slices
 
-import "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/util/constraints"
+import "github.com/kweaver-ai/dsg/services/apps/data-view/common/util/constraints"
 
 // insertionSortOrdered sorts data[a:b] using insertion sort.
 func insertionSortOrdered[E constraints.Ordered](data []E, a, b int) {

@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_configuration;
 
 CREATE TABLE IF NOT EXISTS `t_carousel_case`
 (

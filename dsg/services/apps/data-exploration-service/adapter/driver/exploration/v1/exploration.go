@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/form_validator"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/models/response"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/domain/exploration"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/form_validator"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/models/response"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/domain/exploration"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"
 )

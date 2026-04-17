@@ -3,8 +3,8 @@ package info_catalog
 import (
 	"context"
 
-	es "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/adapter/driven/es_info_catalog"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/domain/info_catalog"
+	es "github.com/kweaver-ai/dsg/services/apps/basic-search/adapter/driven/es_info_catalog"
+	domain "github.com/kweaver-ai/dsg/services/apps/basic-search/domain/info_catalog"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 )
 

@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/adapter/driven/hydra"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/adapter/driven/hydra"
 	"github.com/kweaver-ai/idrm-go-frame/core/errorx/agcodes"
 	"github.com/kweaver-ai/idrm-go-frame/core/errorx/agerrors"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"

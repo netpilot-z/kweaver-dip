@@ -3,8 +3,8 @@ package gorm
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/infrastructure/repository/db"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/infrastructure/repository/db"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/infrastructure/repository/db/model"
 )
 
 type ServiceCallRecordRepo interface {

@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_data_catalog;
 
 -- ALTER TABLE `t_data_catalog_resource` ADD COLUMN IF NOT EXISTS `request_format` varchar(100) COMMENT '请求报文格式';
 -- ALTER TABLE `t_data_catalog_resource` ADD COLUMN IF NOT EXISTS `response_format` varchar(100) COMMENT '响应报文格式';

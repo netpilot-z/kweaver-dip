@@ -4,7 +4,7 @@
 
 package slices
 
-import "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/util/constraints"
+import "github.com/kweaver-ai/dsg/services/apps/data-view/common/util/constraints"
 
 // min is a version of the predeclared function from the Go 1.21 release.
 func min[T constraints.Ordered](a, b T) T {

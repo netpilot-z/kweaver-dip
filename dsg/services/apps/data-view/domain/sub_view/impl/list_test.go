@@ -6,8 +6,8 @@ import (
 
 	"github.com/google/uuid"
 
-	gorm_sub_view "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/gorm/sub_view/impl"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/sub_view"
+	gorm_sub_view "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/gorm/sub_view/impl"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/domain/sub_view"
 )
 
 func TestList(t *testing.T) {

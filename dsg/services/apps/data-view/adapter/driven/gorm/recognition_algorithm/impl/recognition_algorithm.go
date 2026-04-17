@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/gorm/recognition_algorithm"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/recognition_algorithm"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/gorm/recognition_algorithm"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-view/domain/recognition_algorithm"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/db/model"
 	"gorm.io/gorm"
 )
 

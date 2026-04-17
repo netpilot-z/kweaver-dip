@@ -4,9 +4,9 @@ import (
 	"context"
 	"mime/multipart"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/models/request"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/frontend/common"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/frontend/data_resource"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/models/request"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/frontend/common"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/frontend/data_resource"
 	"github.com/xuri/excelize/v2"
 )
 

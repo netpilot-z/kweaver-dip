@@ -5,7 +5,7 @@ import (
 	"net/url"
 	"path"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/settings"
 	demand_management_v1 "github.com/kweaver-ai/idrm-go-common/rest/demand_management/v1"
 )
 

@@ -7,12 +7,12 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/api/internal/errorx"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/api/internal/middleware"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/api/internal/svc"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/api/internal/types"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/model/data_understanding/business_object_attributes_temp"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/model/data_understanding/business_object_temp"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/api/internal/errorx"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/api/internal/middleware"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/api/internal/svc"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/api/internal/types"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/model/data_understanding/business_object_attributes_temp"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/model/data_understanding/business_object_temp"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

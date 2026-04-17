@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/common/enum"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/common/enum"
 )
 
 func TestHttpSignGenerate(t *testing.T) {

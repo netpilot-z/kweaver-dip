@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/mq/datasource"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/settings"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/mq/kafka"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/mq/datasource"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/mq/kafka"
 )
 
 func Test_mQHandleInstance_CreateDataSource(t *testing.T) {

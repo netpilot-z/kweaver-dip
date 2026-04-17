@@ -16,9 +16,9 @@ import (
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest"
 	"go.uber.org/zap"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/settings"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/user_util"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/user_util"
 )
 
 type DataConnection struct {

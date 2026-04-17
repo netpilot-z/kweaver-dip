@@ -5,7 +5,7 @@ import (
 	"time"
 
 	godisson "github.com/cheerego/go-redisson"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/cache"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/cache"
 )
 
 const (

@@ -3,7 +3,7 @@ package d_session
 import (
 	"encoding/json"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/adapter/driven/http_client/hydra"
+	"github.com/kweaver-ai/dsg/services/apps/session/adapter/driven/http_client/hydra"
 )
 
 type SessionInfo struct {

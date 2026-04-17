@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/gorm/carousels"
-	_ "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/carousels"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/carousels"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/gorm/carousels"
+	_ "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/carousels"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/carousels"
 	"gorm.io/gorm"
 )
 

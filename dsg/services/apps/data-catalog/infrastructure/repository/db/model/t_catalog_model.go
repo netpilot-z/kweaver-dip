@@ -1,6 +1,6 @@
 package model
 
-import "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/util"
+import "github.com/kweaver-ai/dsg/services/apps/data-catalog/common/util"
 
 type ComprehensionCatalogListItem struct {
 	TDataCatalog

@@ -9,10 +9,10 @@ import (
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 
-	alarm_rule "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/gorm/alarm_rule"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/errorcode"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/alarm_rule"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
+	alarm_rule "github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/gorm/alarm_rule"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/errorcode"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/alarm_rule"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 )

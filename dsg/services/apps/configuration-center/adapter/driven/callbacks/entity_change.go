@@ -4,7 +4,7 @@ import (
 	"context"
 
 	jsoniter "github.com/json-iterator/go"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/mq/kafka"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/mq/kafka"
 	"github.com/kweaver-ai/idrm-go-common/database_callback/callback"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/mq/kafkax"

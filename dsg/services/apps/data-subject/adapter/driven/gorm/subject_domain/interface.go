@@ -3,8 +3,8 @@ package subject_domain
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/common/models/request"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/infrastructure/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/common/models/request"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/infrastructure/db/model"
 	CommonRest "github.com/kweaver-ai/idrm-go-common/rest/data_subject"
 	"github.com/kweaver-ai/idrm-go-common/rest/data_view"
 )

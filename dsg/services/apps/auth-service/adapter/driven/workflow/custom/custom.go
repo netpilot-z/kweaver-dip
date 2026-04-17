@@ -1,8 +1,8 @@
 package custom
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/auth-service/adapter/driven/gorm"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/auth-service/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/auth-service/adapter/driven/gorm"
+	"github.com/kweaver-ai/dsg/services/apps/auth-service/common/constant"
 	"github.com/kweaver-ai/idrm-go-common/workflow"
 )
 

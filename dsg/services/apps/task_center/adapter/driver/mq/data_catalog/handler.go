@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/db_sandbox"
+	domain "github.com/kweaver-ai/dsg/services/apps/task_center/domain/db_sandbox"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/mq/kafkax"
 	"go.uber.org/zap"

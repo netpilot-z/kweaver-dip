@@ -9,8 +9,8 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/common/enum"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/common/enum"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/common/errorcode"
 )
 
 type Authorization struct {

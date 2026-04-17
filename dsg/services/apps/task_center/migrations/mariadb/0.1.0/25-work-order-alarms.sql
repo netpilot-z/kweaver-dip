@@ -1,4 +1,4 @@
-USE kweaver;
+USE `af_tasks`;
 
 CREATE TABLE  IF NOT EXISTS `work_order_alarms` (
     `id`                    CHAR(36)    NOT NULL,

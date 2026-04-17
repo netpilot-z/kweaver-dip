@@ -1,4 +1,4 @@
-USE kweaver;
+use af_main;
 
 CREATE TABLE IF NOT EXISTS `desensitization_rule` (
     `desensitization_rule_id` bigint(20) NOT NULL COMMENT '脱敏规则id, 雪花id',

@@ -3,7 +3,7 @@ package work_order_task
 import (
 	"github.com/google/uuid"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db/model"
 	meta_v1 "github.com/kweaver-ai/idrm-go-common/api/meta/v1"
 	task_center_v1 "github.com/kweaver-ai/idrm-go-common/api/task_center/v1"
 )

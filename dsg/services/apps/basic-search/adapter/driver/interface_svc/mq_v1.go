@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/adapter/driven/es_common"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/common/form_validator"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/domain/interface_svc"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/adapter/driven/es_common"
+	"github.com/kweaver-ai/dsg/services/apps/basic-search/common/form_validator"
+	domain "github.com/kweaver-ai/dsg/services/apps/basic-search/domain/interface_svc"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/mq/kafkax"

@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/info_resource_catalog"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/mq/kafka"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/info_resource_catalog"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/mq/kafka"
 	"github.com/kweaver-ai/idrm-go-common/rest/business_grooming"
 	"github.com/kweaver-ai/idrm-go-common/util"
 	"gorm.io/gorm"

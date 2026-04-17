@@ -6,11 +6,11 @@ import (
 
 	"go.uber.org/zap"
 
-	work_order "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/gorm/work_order"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/workflow"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/errorcode"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/work_order"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db/model"
+	work_order "github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/gorm/work_order"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/workflow"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/errorcode"
+	domain "github.com/kweaver-ai/dsg/services/apps/task_center/domain/work_order"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-common/util/sets"
 	wf_common "github.com/kweaver-ai/idrm-go-common/workflow/common"
 	"github.com/kweaver-ai/idrm-go-frame/core/enum"

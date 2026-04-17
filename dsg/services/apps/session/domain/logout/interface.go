@@ -3,8 +3,8 @@ package logout
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/common/cookie_util"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/domain/d_session"
+	"github.com/kweaver-ai/dsg/services/apps/session/common/cookie_util"
+	"github.com/kweaver-ai/dsg/services/apps/session/domain/d_session"
 )
 
 type LogOutService interface {

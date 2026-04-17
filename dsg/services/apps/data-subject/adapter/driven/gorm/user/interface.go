@@ -3,7 +3,7 @@ package user
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/domain/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/domain/model"
 )
 
 //notic user表结构不一致

@@ -4,9 +4,9 @@ import (
 	"errors"
 	"os"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driver/mq/common"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driver/mq/kafka"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driver/mq/nsq"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driver/mq/common"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driver/mq/kafka"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driver/mq/nsq"
 )
 
 type MQAsyncProducer struct {

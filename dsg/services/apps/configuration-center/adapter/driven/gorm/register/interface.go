@@ -3,7 +3,7 @@ package register
 import (
 	"context"
 
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/register"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/register"
 )
 
 type UseCase interface {

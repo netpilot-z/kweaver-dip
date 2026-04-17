@@ -3,7 +3,7 @@ package user_info
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/adapter/driven/http_client/user_management"
+	"github.com/kweaver-ai/dsg/services/apps/session/adapter/driven/http_client/user_management"
 )
 
 type UserInfoService interface {

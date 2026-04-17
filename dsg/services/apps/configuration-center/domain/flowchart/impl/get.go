@@ -3,8 +3,8 @@ package impl
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/common"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/flowchart"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/common"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/flowchart"
 )
 
 func (f *flowchartUseCase) Get(ctx context.Context, fId string) (*domain.GetResp, error) {

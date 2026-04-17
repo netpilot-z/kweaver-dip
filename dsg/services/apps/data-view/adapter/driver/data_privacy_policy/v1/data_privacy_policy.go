@@ -5,13 +5,13 @@ import (
 	"regexp"
 
 	"github.com/kweaver-ai/idrm-go-common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/form_validator"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/data_privacy_policy"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/form_validator"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/domain/data_privacy_policy"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 
-	// my_errorcode "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/util"
+	// my_errorcode "github.com/kweaver-ai/dsg/services/apps/data-view/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/util"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"
 	"github.com/gin-gonic/gin"
 )

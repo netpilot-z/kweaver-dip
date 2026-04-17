@@ -3,11 +3,11 @@ package logic_view
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/rest/virtualization_engine"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/rest/virtualization_engine"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/db/model"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/models/request"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/form_view"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/models/request"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/domain/form_view"
 )
 
 type LogicViewUseCase interface {

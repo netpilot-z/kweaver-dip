@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/controller/middleware"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/category/apply_scope_config"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/controller/middleware"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/category/apply_scope_config"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"
 )
 

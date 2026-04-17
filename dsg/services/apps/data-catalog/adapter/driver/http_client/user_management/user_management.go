@@ -7,8 +7,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driver/http_client"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driver/http_client"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/settings"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/mitchellh/mapstructure"
 	"go.uber.org/zap"

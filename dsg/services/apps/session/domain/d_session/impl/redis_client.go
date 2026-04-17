@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/domain/d_session"
+	"github.com/kweaver-ai/dsg/services/apps/session/domain/d_session"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/session/common/settings"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 	"github.com/redis/go-redis/v9"

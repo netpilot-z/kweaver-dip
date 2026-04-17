@@ -1,11 +1,11 @@
 package mq
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driver/mq/datasource"
-	data_explore "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driver/mq/explore"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driver/mq/explore_task"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driver/mq/form_view"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driver/mq/standardization"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driver/mq/datasource"
+	data_explore "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driver/mq/explore"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driver/mq/explore_task"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driver/mq/form_view"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driver/mq/standardization"
 )
 
 // MQHandler 消息队列处理接口

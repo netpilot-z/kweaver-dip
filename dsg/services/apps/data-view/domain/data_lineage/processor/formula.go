@@ -3,7 +3,7 @@ package processor
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/data_lineage/processor/formulas"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/domain/data_lineage/processor/formulas"
 	"github.com/kweaver-ai/idrm-go-frame/core/enum"
 	"github.com/samber/lo"
 	"strings"

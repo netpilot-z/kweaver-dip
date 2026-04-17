@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"regexp"
 
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/dict"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/dict"
 )
 
 // 不是整数类型的类型和正则表达式

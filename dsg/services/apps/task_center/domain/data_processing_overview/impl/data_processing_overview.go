@@ -7,16 +7,16 @@ import (
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
-	model_overview "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/gorm/data_processing_overview"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/workflow"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/user_util"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db/model"
+	model_overview "github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/gorm/data_processing_overview"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/workflow"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/user_util"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-common/rest/configuration_center"
 	wf_go "github.com/kweaver-ai/idrm-go-common/workflow"
 	"gorm.io/gorm"
 
-	domain_overview "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/data_processing_overview"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/user"
+	domain_overview "github.com/kweaver-ai/dsg/services/apps/task_center/domain/data_processing_overview"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/domain/user"
 )
 
 type DataProcessingOverview struct {

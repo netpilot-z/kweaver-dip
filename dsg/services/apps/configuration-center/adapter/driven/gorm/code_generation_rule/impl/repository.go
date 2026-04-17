@@ -3,7 +3,7 @@ package impl
 import (
 	"gorm.io/gorm"
 
-	repository "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/gorm/code_generation_rule"
+	repository "github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/gorm/code_generation_rule"
 )
 
 type CodeGenerationRuleRepo struct {

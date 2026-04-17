@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_configuration;
 
 
 insert into `permissions` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `category`, `description`) SELECT '0077a70c-37c9-46fd-a805-3a4265fb2898','2025-09-05 11:03:44.807','2025-09-05 11:03:44.807',NULL,'查看部门数据考核概览','Operation',NULL  FROM DUAL WHERE NOT EXISTS(SELECT `id` FROM `permissions` WHERE `id` = '0077a70c-37c9-46fd-a805-3a4265fb2898' );

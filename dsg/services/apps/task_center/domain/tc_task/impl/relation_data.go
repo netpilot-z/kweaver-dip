@@ -4,9 +4,9 @@ import (
 	"context"
 	"strconv"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/business_grooming"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/constant"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/tc_task"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/business_grooming"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/constant"
+	domain "github.com/kweaver-ai/dsg/services/apps/task_center/domain/tc_task"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 )
 

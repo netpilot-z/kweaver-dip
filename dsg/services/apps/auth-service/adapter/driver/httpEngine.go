@@ -3,8 +3,8 @@ package driver
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/auth-service/cmd/server/docs"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/auth-service/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/auth-service/cmd/server/docs"
+	"github.com/kweaver-ai/dsg/services/apps/auth-service/common/settings"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest"
 	"go.uber.org/zap"

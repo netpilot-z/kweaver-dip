@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/gorm/news_policy"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/news_policy"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/gorm/news_policy"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/news_policy"
 	"gorm.io/gorm"
 )
 

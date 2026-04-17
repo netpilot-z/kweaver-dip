@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/Shopify/sarama"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/mq/datasource"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/mq/datasource"
 )
 
 type datasourcHandleMock struct {

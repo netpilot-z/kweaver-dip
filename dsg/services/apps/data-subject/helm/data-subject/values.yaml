@@ -46,7 +46,7 @@ depServices:
     port: 3330
     user: anyshare
     password: xxx
-    database: kweaver
+    database: af_main
   hydra:
     publicHost: hydra-public
     publicPort: 4444

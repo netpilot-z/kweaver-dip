@@ -1,9 +1,9 @@
 package server
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/callbacks"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/mq"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/domain/exploration"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/callbacks"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/mq"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/domain/exploration"
 	goFrame "github.com/kweaver-ai/idrm-go-frame"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest"

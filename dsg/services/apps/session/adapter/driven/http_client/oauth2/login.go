@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/adapter/driven/http_client"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/session/adapter/driven/http_client"
+	"github.com/kweaver-ai/dsg/services/apps/session/common/settings"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"go.uber.org/zap"
 )

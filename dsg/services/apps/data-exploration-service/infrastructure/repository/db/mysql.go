@@ -6,7 +6,7 @@ import (
 
 	_ "github.com/golang-migrate/migrate/v4/database/mysql"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/settings"
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 

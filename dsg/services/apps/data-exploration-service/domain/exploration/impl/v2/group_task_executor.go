@@ -10,14 +10,14 @@ import (
 	"time"
 
 	"github.com/bsm/redislock"
-	mdl_uniquery "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/mdl-uniquery"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/adapter/driven/mq"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/settings"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/common/util"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/domain/exploration"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-exploration-service/infrastructure/repository/db/model"
+	mdl_uniquery "github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/mdl-uniquery"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/adapter/driven/mq"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/domain/exploration"
+	"github.com/kweaver-ai/dsg/services/apps/data-exploration-service/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/samber/lo"
 )
@@ -164,7 +164,7 @@ func (g *groupManager) start() error {
 		return err
 	}
 
-	if err = g.e.data.DB.WithContext(g.ctx).Table("kweaver.form_view").Select("mdl_id").Where("id = ?", g.group.TableID).Take(&mdlID).Error; err != nil {
+	if err = g.e.data.DB.WithContext(g.ctx).Table("af_main.form_view").Select("mdl_id").Where("id = ?", g.group.TableID).Take(&mdlID).Error; err != nil {
 		close(g.tChan)
 		<-g.groupTaskExecutor.gChan
 		g.e.mtx.Release(g.ctx, g.l)

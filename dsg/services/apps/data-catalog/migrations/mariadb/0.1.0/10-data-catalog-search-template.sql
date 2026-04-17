@@ -1,4 +1,4 @@
-USE kweaver;
+use af_data_catalog;
 
 CREATE TABLE IF NOT EXISTS `t_data_catalog_search_template` (
       `catalog_search_template_id` bigint(20) NOT NULL COMMENT '单目录搜索模板id 雪花id',

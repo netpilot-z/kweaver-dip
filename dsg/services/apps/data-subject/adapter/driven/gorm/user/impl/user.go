@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/adapter/driven/gorm/user"
-	my_errorcode "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/domain/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/adapter/driven/gorm/user"
+	my_errorcode "github.com/kweaver-ai/dsg/services/apps/data-subject/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/domain/model"
 	"github.com/kweaver-ai/idrm-go-common/errorcode"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"gorm.io/gorm"

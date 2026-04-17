@@ -12,16 +12,16 @@ import (
 
 	"github.com/kweaver-ai/idrm-go-common/util/iter"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/adapter/driven/gorm/classify"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/adapter/driven/gorm/classify"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/common/util"
 	audit_v1 "github.com/kweaver-ai/idrm-go-common/api/audit/v1"
 	CommonRest "github.com/kweaver-ai/idrm-go-common/rest/data_subject"
 
-	bg "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/adapter/driven/business-grooming"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/adapter/driven/gorm/subject_domain"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/common/models/request"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/infrastructure/db/model"
+	bg "github.com/kweaver-ai/dsg/services/apps/data-subject/adapter/driven/business-grooming"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/adapter/driven/gorm/subject_domain"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/common/models/request"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/infrastructure/db/model"
 	"github.com/kweaver-ai/idrm-go-common/middleware"
 
 	"github.com/google/uuid"

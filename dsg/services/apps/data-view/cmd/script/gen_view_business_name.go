@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	virtualization_engine "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/rest/virtualization_engine/impl"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/db/model"
+	virtualization_engine "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/rest/virtualization_engine/impl"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/db/model"
 	"github.com/kweaver-ai/idrm-go-frame/core/logx/zapx"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
@@ -89,7 +89,7 @@ func gen(ctx context.Context, querySql string, page int) {
 		log.Infof("【All Finish】 ：%d", page*1000)
 		return
 	}
-	db, err := gorm.Open(mysql.Open(fmt.Sprintf("%s@(%s)/kweaver?charset=utf8mb4&parseTime=true",
+	db, err := gorm.Open(mysql.Open(fmt.Sprintf("%s@(%s)/af_main?charset=utf8mb4&parseTime=true",
 		dbAuth,
 		dbHost)))
 	if err != nil {

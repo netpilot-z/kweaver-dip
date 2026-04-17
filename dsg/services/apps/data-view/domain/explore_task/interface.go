@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/constant"
 	"github.com/kweaver-ai/idrm-go-frame/core/enum"
 )
 

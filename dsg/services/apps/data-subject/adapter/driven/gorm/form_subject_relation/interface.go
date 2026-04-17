@@ -3,7 +3,7 @@ package form_subject_relation
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/infrastructure/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/infrastructure/db/model"
 )
 
 type Repo interface {

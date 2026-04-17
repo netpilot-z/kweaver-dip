@@ -4,11 +4,11 @@ import (
 	"flag"
 	"strings"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/common/form_validator"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/common/initialization"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/domain/excel_process/rule"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/domain/excel_process/template"
-	my_config "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-subject/infrastructure/config"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/common/form_validator"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/common/initialization"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/domain/excel_process/rule"
+	"github.com/kweaver-ai/dsg/services/apps/data-subject/domain/excel_process/template"
+	my_config "github.com/kweaver-ai/dsg/services/apps/data-subject/infrastructure/config"
 	"github.com/kweaver-ai/idrm-go-frame/core/config"
 )
 

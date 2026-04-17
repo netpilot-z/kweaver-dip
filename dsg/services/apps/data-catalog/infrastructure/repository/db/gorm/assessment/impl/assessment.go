@@ -6,10 +6,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/util"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/assessment"
-	iface "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/assessment"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/assessment"
+	iface "github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/assessment"
 	"gorm.io/gorm"
 )
 
@@ -1811,7 +1811,7 @@ func (r *AssessmentRepoImpl) GetDataProcessPlansByIDs(ctx context.Context, planI
 
 	// 查询 af_tasks 数据库下的 data_processing_plan 表
 	// 注意：这里需要跨库查询，实际使用时可能需要调整数据库连接
-	err := r.db.Table("kweaver.data_processing_plan").
+	err := r.db.Table("af_tasks.data_processing_plan").
 		Select("id, name").
 		Where("id IN ? AND deleted_at = 0", planIDs).
 		Find(&plans).Error
@@ -1848,7 +1848,7 @@ func (r *AssessmentRepoImpl) GetDataUnderstandingPlansByIDs(ctx context.Context,
 
 	// 查询 af_tasks 数据库下的 data_comprehension_plan 表
 	// 注意：这里需要跨库查询，实际使用时可能需要调整数据库连接
-	err := r.db.Table("kweaver.data_comprehension_plan").
+	err := r.db.Table("af_tasks.data_comprehension_plan").
 		Select("id, name").
 		Where("id IN ? AND deleted_at = 0", planIDs).
 		Find(&plans).Error

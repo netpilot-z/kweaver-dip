@@ -7,13 +7,13 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/adapter/driven/gorm"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/adapter/driven/gorm"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/common/errorcode"
 	auth_service_v1 "github.com/kweaver-ai/idrm-go-common/api/auth-service/v1"
 	"github.com/kweaver-ai/idrm-go-common/util"
 	"github.com/samber/lo"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/domain/sub_service"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/domain/sub_service"
 )
 
 // List implements sub_service.SubServiceUseCase.

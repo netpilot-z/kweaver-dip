@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_data_catalog;
 -- ALTER TABLE `t_data_catalog` ADD COLUMN IF NOT EXISTS  `draft_id` bigint(20) NOT NULL DEFAULT 0  COMMENT '草稿id' ;
 -- ALTER TABLE `t_data_catalog_history` ADD COLUMN IF NOT EXISTS  `draft_id` bigint(20) NOT NULL DEFAULT 0  COMMENT '草稿id' ;
 --

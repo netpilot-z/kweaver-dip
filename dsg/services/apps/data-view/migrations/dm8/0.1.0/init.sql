@@ -1,4 +1,4 @@
-SET SCHEMA kweaver;
+SET SCHEMA af_main;
 
 CREATE TABLE IF NOT EXISTS  "form_view" (
     "form_view_id" BIGINT NOT NULL IDENTITY(1, 1),

@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-gateway/common/settings"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-gateway/common/settings"
 	"github.com/redis/go-redis/v9"
 
 	"sync"

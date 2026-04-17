@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-semantic/consumer/internal/config"
+	"github.com/kweaver-ai/dsg/services/apps/data-semantic/consumer/internal/config"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 

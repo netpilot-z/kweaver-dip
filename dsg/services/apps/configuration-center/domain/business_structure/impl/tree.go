@@ -5,9 +5,9 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/util"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/business_structure"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/util"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/business_structure"
 )
 
 type treeNodeList []*domain.SummaryInfoTreeNode

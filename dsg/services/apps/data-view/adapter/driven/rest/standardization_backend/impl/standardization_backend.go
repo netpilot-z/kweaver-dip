@@ -10,9 +10,9 @@ import (
 
 	"github.com/kweaver-ai/idrm-go-common/errorcode"
 	"github.com/kweaver-ai/idrm-go-common/interception"
-	standardizationbackend "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/rest/standardization_backend"
-	my_errorcode "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/errorcode"
-	my_config "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/config"
+	standardizationbackend "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/rest/standardization_backend"
+	my_errorcode "github.com/kweaver-ai/dsg/services/apps/data-view/common/errorcode"
+	my_config "github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/config"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	jsoniter "github.com/json-iterator/go"
 	"go.uber.org/zap"

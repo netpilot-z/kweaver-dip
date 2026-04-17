@@ -6,10 +6,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/form_validator"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/user_util"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/work_order_manage"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/form_validator"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/user_util"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/domain/work_order_manage"
 	"github.com/kweaver-ai/idrm-go-common/util/clock"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"
 )

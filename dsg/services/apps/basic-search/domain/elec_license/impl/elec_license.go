@@ -3,8 +3,8 @@ package elec_license
 import (
 	"context"
 
-	es "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/adapter/driven/es_elec_license"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/basic-search/domain/elec_license"
+	es "github.com/kweaver-ai/dsg/services/apps/basic-search/adapter/driven/es_elec_license"
+	domain "github.com/kweaver-ai/dsg/services/apps/basic-search/domain/elec_license"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 )
 

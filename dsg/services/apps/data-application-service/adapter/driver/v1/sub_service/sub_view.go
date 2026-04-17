@@ -1,7 +1,7 @@
 package sub_service
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/domain/sub_service"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/domain/sub_service"
 )
 
 type SubServiceService struct {

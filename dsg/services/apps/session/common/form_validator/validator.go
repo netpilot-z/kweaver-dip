@@ -3,7 +3,7 @@ package form_validator
 import (
 	"fmt"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/common/units"
+	"github.com/kweaver-ai/dsg/services/apps/session/common/units"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 
 	"reflect"

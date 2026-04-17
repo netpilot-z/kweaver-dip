@@ -1,6 +1,6 @@
 package model
 
-import "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/dto"
+import "github.com/kweaver-ai/dsg/services/apps/data-application-service/common/dto"
 
 // ServiceAssociations 接口表的多表关联关系
 type ServiceAssociations struct {

@@ -10,7 +10,7 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/kweaver-ai/idrm-go-common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/sub_view"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/domain/sub_view"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"
 )
 

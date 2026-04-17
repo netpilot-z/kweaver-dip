@@ -15,7 +15,7 @@ func Test_objects_Get(t *testing.T) {
 	db, err := gorm.Open(mysql.Open(dsn))
 	require.NoError(t, err)
 
-	c := newObjects(db.Debug(), "kweaver")
+	c := newObjects(db.Debug(), "af_configuration")
 
 	for i := 0; i < 8; i++ {
 		got, err := c.Get(context.Background(), "cc14441a-b6b4-11ef-a383-a624066a8dd7")

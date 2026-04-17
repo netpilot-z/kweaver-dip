@@ -14,8 +14,8 @@ import (
 	"sync"
 
 	jsoniter "github.com/json-iterator/go"
-	Ihydra "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/adapter/driven/http_client/hydra"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/session/common/settings"
+	Ihydra "github.com/kweaver-ai/dsg/services/apps/session/adapter/driven/http_client/hydra"
+	"github.com/kweaver-ai/dsg/services/apps/session/common/settings"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 	af_trace "github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"

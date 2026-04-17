@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driver"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/controller"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driver"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/controller"
 	wf_go "github.com/kweaver-ai/idrm-go-common/workflow"
 	goFrame "github.com/kweaver-ai/idrm-go-frame"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport"

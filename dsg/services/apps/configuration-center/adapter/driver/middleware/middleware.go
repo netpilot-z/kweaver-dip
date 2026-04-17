@@ -2,10 +2,10 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/rest/hydra"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/rest/user_management"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/apps"
-	IUser "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/user"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/rest/hydra"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/rest/user_management"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/apps"
+	IUser "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/user"
 	"github.com/kweaver-ai/idrm-go-common/access_control"
 )
 

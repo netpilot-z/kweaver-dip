@@ -5,7 +5,7 @@ import (
 
 	"github.com/google/uuid"
 
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/code_generation_rule"
+	domain "github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/code_generation_rule"
 )
 
 func (c *UseCase) Generate(ctx context.Context, id uuid.UUID, opts domain.GenerateOptions) (*domain.CodeList, error) {

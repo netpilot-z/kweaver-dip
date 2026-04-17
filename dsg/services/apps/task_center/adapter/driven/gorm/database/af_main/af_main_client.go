@@ -16,7 +16,7 @@ func (c *AFMainClient) FormViews() FormViewInterface {
 }
 
 func New(db *gorm.DB) *AFMainClient {
-	return NewWithDBName(db, "kweaver")
+	return NewWithDBName(db, "af_main")
 }
 
 func NewWithDBName(db *gorm.DB, dbName string) *AFMainClient {

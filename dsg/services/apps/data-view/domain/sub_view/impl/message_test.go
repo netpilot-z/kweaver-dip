@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	datasourceRepo "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/gorm/datasource"
-	kafka_pub "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/mq/kafka"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/db/model"
+	datasourceRepo "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/gorm/datasource"
+	kafka_pub "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/mq/kafka"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/db/model"
 )
 
 type fakeDatasourceRepo struct{}

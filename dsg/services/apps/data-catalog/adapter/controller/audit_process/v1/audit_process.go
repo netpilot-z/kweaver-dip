@@ -1,7 +1,7 @@
 package v1
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/audit_process"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/audit_process"
 )
 
 type Controller struct {

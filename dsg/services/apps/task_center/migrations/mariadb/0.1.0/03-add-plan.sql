@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_tasks;
 
 CREATE TABLE IF NOT EXISTS `data_comprehension_plan` (
    `data_comprehension_plan_id` bigint(20) unsigned NOT NULL COMMENT '雪花id',

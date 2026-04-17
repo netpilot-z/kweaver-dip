@@ -3,9 +3,9 @@ package graph_model
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/models/request"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/graph_model"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/models/request"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-view/domain/graph_model"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/db/model"
 )
 
 type Repo interface {

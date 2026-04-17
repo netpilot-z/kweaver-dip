@@ -3,9 +3,9 @@ package data_grade
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/models"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/data_grade"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/models"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/data_grade"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/infrastructure/repository/db/model"
 )
 
 type IDataGradeRepo interface {

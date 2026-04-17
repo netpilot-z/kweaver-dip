@@ -6,11 +6,11 @@ import (
 	"fmt"
 
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/gorm/data_processing_overview"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/util"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain/data_processing_overview"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/gorm/data_processing_overview"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/util"
+	domain "github.com/kweaver-ai/dsg/services/apps/task_center/domain/data_processing_overview"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db/model"
 	"gorm.io/gorm"
 )
 
@@ -25,16 +25,16 @@ func NewProcessinOverviewRepo(data *db.Data) data_processing_overview.DataProces
 func (d *ProcessingOverviewRepo) GetOverview(ctx context.Context, req *domain.GetOverviewReq) (*domain.ProcessingGetOverviewRes, error) {
 	var err error
 	res := &domain.ProcessingGetOverviewRes{}
-	// todo 工单合并成一条语句（select type, status, count(1) from kweaver.work_order where type in (4, 6) and   deleted_at =0 group by type, status;）
+	// todo 工单合并成一条语句（select type, status, count(1) from af_tasks.work_order where type in (4, 6) and   deleted_at =0 group by type, status;）
 	// 质量检测工单数量:
 	sql := `
-		select count(1) from kweaver.work_order where type = 6 and deleted_at =0 %s;
+		select count(1) from af_tasks.work_order where type = 6 and deleted_at =0 %s;
 	`
 	myDepartment := `and department_id in ?`
 	d.RawScan(ctx, &res.Errors, req.MD, sql, myDepartment, "DataQualityAuditWorkOrderCount ", &res.DataQualityAuditWorkOrderCount)
 	// 数据融合工单数量
 	sql = `
-		select count(1) from kweaver.work_order where type = 4 and deleted_at =0 %s;
+		select count(1) from af_tasks.work_order where type = 4 and deleted_at =0 %s;
 	`
 	myDepartment = `and department_id in ?`
 	d.RawScan(ctx, &res.Errors, req.MD, sql, myDepartment, "DataFusionWorkOrderCount ", &res.DataFusionWorkOrderCount)
@@ -43,13 +43,13 @@ func (d *ProcessingOverviewRepo) GetOverview(ctx context.Context, req *domain.Ge
 
 	// 已完成质量检测工单
 	sql = `
-		select count(1) from kweaver.work_order where type = 6 and status = 4 and deleted_at =0 %s;
+		select count(1) from af_tasks.work_order where type = 6 and status = 4 and deleted_at =0 %s;
 	`
 	myDepartment = `and department_id in ?`
 	d.RawScan(ctx, &res.Errors, req.MD, sql, myDepartment, "FinishedDataQualityAuditWorkOrderCount ", &res.FinishedDataQualityAuditWorkOrderCount)
 	// 已完成数据融合工单
 	sql = `
-		select count(1) from kweaver.work_order where type = 4 and status = 4 and deleted_at =0 %s;
+		select count(1) from af_tasks.work_order where type = 4 and status = 4 and deleted_at =0 %s;
 	`
 	myDepartment = `and department_id in ?`
 	d.RawScan(ctx, &res.Errors, req.MD, sql, myDepartment, "FinishedDataFusionWorkOrderCount ", &res.FinishedDataFusionWorkOrderCount)
@@ -58,13 +58,13 @@ func (d *ProcessingOverviewRepo) GetOverview(ctx context.Context, req *domain.Ge
 
 	// 进行中质量检测工单数量
 	sql = `
-		select count(1) from kweaver.work_order where type = 6 and status = 3 and deleted_at =0 %s;
+		select count(1) from af_tasks.work_order where type = 6 and status = 3 and deleted_at =0 %s;
 	`
 	myDepartment = `and department_id in ?`
 	d.RawScan(ctx, &res.Errors, req.MD, sql, myDepartment, "OngoingDataQualityAuditWorkOrderCount ", &res.OngoingDataQualityAuditWorkOrderCount)
 	// 进行中数据融合工单数量
 	sql = `
-		select count(1) from kweaver.work_order where type = 4 and status = 3 and deleted_at =0 %s;
+		select count(1) from af_tasks.work_order where type = 4 and status = 3 and deleted_at =0 %s;
 	`
 	myDepartment = `and department_id in ?`
 	d.RawScan(ctx, &res.Errors, req.MD, sql, myDepartment, "FinishedDataFusionWorkOrderCount ", &res.OngoingdDataFusionWorkOrderCount)
@@ -73,13 +73,13 @@ func (d *ProcessingOverviewRepo) GetOverview(ctx context.Context, req *domain.Ge
 
 	// 未派发融合工单数量
 	sql = `
-		select count(1) from kweaver.work_order where type = 6 and (status = 1 or status = 2 ) and deleted_at =0 %s;
+		select count(1) from af_tasks.work_order where type = 6 and (status = 1 or status = 2 ) and deleted_at =0 %s;
 	`
 	myDepartment = `and department_id in ?`
 	d.RawScan(ctx, &res.Errors, req.MD, sql, myDepartment, "UnassignedDataQualityAuditWorkOrderCount ", &res.UnassignedDataQualityAuditWorkOrderCount)
 	// 未派发质量检测工单数量
 	sql = `
-		select count(1) from kweaver.work_order where type = 4 and (status = 1 or status = 2 ) and deleted_at =0 %s;
+		select count(1) from af_tasks.work_order where type = 4 and (status = 1 or status = 2 ) and deleted_at =0 %s;
 	`
 	myDepartment = `and department_id in ?`
 	d.RawScan(ctx, &res.Errors, req.MD, sql, myDepartment, "UnassignedDataFusionWorkOrderCount ", &res.UnassignedDataFusionWorkOrderCount)
@@ -88,8 +88,8 @@ func (d *ProcessingOverviewRepo) GetOverview(ctx context.Context, req *domain.Ge
 
 	// 来源表部门数量
 	sql = `
-		select  count(distinct(c.department_id)) from kweaver.t_fusion_field a 
-		inner join kweaver.work_order b on a.work_order_id = b.work_order_id
+		select  count(distinct(c.department_id)) from af_tasks.t_fusion_field a 
+		inner join af_tasks.work_order b on a.work_order_id = b.work_order_id
 		inner join af_data_catalog.t_data_catalog  c on a.catalog_id = c.id
 		where a.deleted_at is NULL and a.id != "" and b.deleted_at =0 and b.type = 4 %s;
 	`
@@ -97,8 +97,8 @@ func (d *ProcessingOverviewRepo) GetOverview(ctx context.Context, req *domain.Ge
 	d.RawScan(ctx, &res.Errors, req.MD, sql, myDepartment, "SourceTableDepartmentCount ", &res.SourceTableDepartmentCount)
 	// 来源表数量
 	sql = `
-		select count(distinct(c.id)) from kweaver.t_fusion_field a 
-		inner join kweaver.work_order b on a.work_order_id = b.work_order_id
+		select count(distinct(c.id)) from af_tasks.t_fusion_field a 
+		inner join af_tasks.work_order b on a.work_order_id = b.work_order_id
 		inner join af_data_catalog.t_data_catalog  c on a.catalog_id = c.id
 		where a.deleted_at is NULL and a.id != "" and b.deleted_at =0 and b.type = 4 %s;
 	`
@@ -107,8 +107,8 @@ func (d *ProcessingOverviewRepo) GetOverview(ctx context.Context, req *domain.Ge
 
 	// 加工任务数量
 	sql = `
-		select count(b.id)  from  kweaver.work_order_tasks a 
-		inner join kweaver.work_order b on a.work_order_id = b.work_order_id
+		select count(b.id)  from  af_tasks.work_order_tasks a 
+		inner join af_tasks.work_order b on a.work_order_id = b.work_order_id
 		where b.type = 4 and b.deleted_at =0 %s
 	`
 	myDepartment = `and b.department_id in ?`
@@ -116,11 +116,11 @@ func (d *ProcessingOverviewRepo) GetOverview(ctx context.Context, req *domain.Ge
 
 	// 成果表部门数量
 	sql = `
-		select count(distinct(a.department_id)) from kweaver.form_view a
-		inner join kweaver.work_order_data_fusion_details b on a.original_name = b.data_table
-		inner join kweaver.datasource c on b.datasource_id = c.hua_ao_id and a.datasource_id = c.id
-		inner join kweaver.work_order_tasks d on b.id = d.id
-		inner join kweaver.work_order e on d.work_order_id = e.work_order_id
+		select count(distinct(a.department_id)) from af_main.form_view a
+		inner join af_tasks.work_order_data_fusion_details b on a.original_name = b.data_table
+		inner join af_configuration.datasource c on b.datasource_id = c.hua_ao_id and a.datasource_id = c.id
+		inner join af_tasks.work_order_tasks d on b.id = d.id
+		inner join af_tasks.work_order e on d.work_order_id = e.work_order_id
 		where a.deleted_at = 0 
 		and d.status = "Completed" and e.type = 4 %s;
 	`
@@ -129,11 +129,11 @@ func (d *ProcessingOverviewRepo) GetOverview(ctx context.Context, req *domain.Ge
 
 	// 成果表数量数量
 	sql = `
-		select count(distinct(a.id)) from kweaver.form_view a
-		inner join kweaver.work_order_data_fusion_details b on a.original_name = b.data_table
-		inner join kweaver.datasource c on b.datasource_id = c.hua_ao_id and a.datasource_id = c.id
-		inner join kweaver.work_order_tasks d on b.id = d.id
-		inner join kweaver.work_order e on d.work_order_id = e.work_order_id
+		select count(distinct(a.id)) from af_main.form_view a
+		inner join af_tasks.work_order_data_fusion_details b on a.original_name = b.data_table
+		inner join af_configuration.datasource c on b.datasource_id = c.hua_ao_id and a.datasource_id = c.id
+		inner join af_tasks.work_order_tasks d on b.id = d.id
+		inner join af_tasks.work_order e on d.work_order_id = e.work_order_id
 		where a.deleted_at = 0 
 		and d.status = "Completed" and e.type = 4 %s;
 	`
@@ -142,14 +142,14 @@ func (d *ProcessingOverviewRepo) GetOverview(ctx context.Context, req *domain.Ge
 
 	// 应检测部门：
 	sql = `
-		select count(distinct(department_id)) from kweaver.form_view  
+		select count(distinct(department_id)) from af_main.form_view  
 		where department_id is not null and department_id != '' and deleted_at = 0 %s;
 	`
 	myDepartment = `and department_id in ?`
 	d.RawScan(ctx, &res.Errors, req.MD, sql, myDepartment, "TableDepartmentCount ", &res.TableDepartmentCount)
 	// 应检测表数量:
 	sql = `
-		select count(distinct(id)) from kweaver.form_view  
+		select count(distinct(id)) from af_main.form_view  
 		where deleted_at = 0 %s;
 	`
 	myDepartment = `and department_id in ?`
@@ -157,8 +157,8 @@ func (d *ProcessingOverviewRepo) GetOverview(ctx context.Context, req *domain.Ge
 
 	// 已检测表：
 	sql = `
-		select count(distinct(id)) from kweaver.form_view a
-		inner join kweaver.t_third_party_report c on a.id = c.f_table_id and c.f_status = 3 
+		select count(distinct(id)) from af_main.form_view a
+		inner join af_data_exploration.t_third_party_report c on a.id = c.f_table_id and c.f_status = 3 
 		where deleted_at = 0 %s;
 	`
 	myDepartment = `and department_id in ?`
@@ -166,9 +166,9 @@ func (d *ProcessingOverviewRepo) GetOverview(ctx context.Context, req *domain.Ge
 
 	// 已整改表：
 	sql = `
-		select count(distinct(a.id)) from kweaver.form_view a
-		inner join kweaver.t_third_party_report b on a.id = b.f_table_id
-		inner join kweaver.work_order c on a.id = c.source_id
+		select count(distinct(a.id)) from af_main.form_view a
+		inner join af_data_exploration.t_third_party_report b on a.id = b.f_table_id
+		inner join af_tasks.work_order c on a.id = c.source_id
 		where a.deleted_at = 0
 		and b.f_status = 3
 		and b.f_latest =1
@@ -184,8 +184,8 @@ func (d *ProcessingOverviewRepo) GetOverview(ctx context.Context, req *domain.Ge
 
 	// 问题表数量:
 	sql = `
-		select count(distinct(a.id)) as count from kweaver.form_view a
-		inner join kweaver.t_third_party_report b on a.id = b.f_table_id
+		select count(distinct(a.id)) as count from af_main.form_view a
+		inner join af_data_exploration.t_third_party_report b on a.id = b.f_table_id
 		where b.f_status = 3
 		and b.f_latest = 1
 		and ((b.f_total_completeness is NOT NUll AND b.f_total_completeness != 1) 
@@ -200,8 +200,8 @@ func (d *ProcessingOverviewRepo) GetOverview(ctx context.Context, req *domain.Ge
 
 	// 已响应表：
 	sql = `
-		select count(distinct(a.id)) as count from kweaver.form_view a
-		inner join kweaver.work_order c on a.id = c.source_id
+		select count(distinct(a.id)) as count from af_main.form_view a
+		inner join af_tasks.work_order c on a.id = c.source_id
 		where a.deleted_at = 0 
 		and c.type = 5 and c.status = 2 and c.deleted_at =0 %s;
 	`
@@ -210,8 +210,8 @@ func (d *ProcessingOverviewRepo) GetOverview(ctx context.Context, req *domain.Ge
 
 	// 整改中的表：
 	sql = `
-		select  count(distinct(a.id)) as count from kweaver.form_view a
-		inner join kweaver.work_order c on a.id = c.source_id
+		select  count(distinct(a.id)) as count from af_main.form_view a
+		inner join af_tasks.work_order c on a.id = c.source_id
 		where a.deleted_at = 0  
 		and c.type = 5 and c.status = 3 and c.deleted_at =0 %s;
 	`
@@ -220,9 +220,9 @@ func (d *ProcessingOverviewRepo) GetOverview(ctx context.Context, req *domain.Ge
 
 	// 未整改表：
 	sql = `
-		select count(distinct(a.id)) as count from kweaver.form_view a
-		inner join kweaver.t_third_party_report b on a.id = b.f_table_id
-		inner join kweaver.work_order c on a.id = c.source_id 
+		select count(distinct(a.id)) as count from af_main.form_view a
+		inner join af_data_exploration.t_third_party_report b on a.id = b.f_table_id
+		inner join af_tasks.work_order c on a.id = c.source_id 
 		where b.f_status = 3
 		and b.f_latest = 1
 		and ((b.f_total_completeness is NOT NUll AND b.f_total_completeness !=1) 
@@ -242,11 +242,11 @@ func (d *ProcessingOverviewRepo) GetOverview(ctx context.Context, req *domain.Ge
 func (d *ProcessingOverviewRepo) GetResultsTableCatalog(ctx context.Context, req *domain.GetCatalogListsReq) (list []*data_processing_overview.TDataCatalog, total int64, err error) {
 	db := d.data.DB.WithContext(ctx)
 	viewSql := `
-		select distinct(a.id) from kweaver.form_view a
-		inner join kweaver.work_order_data_fusion_details b on a.original_name = b.data_table
-		inner join kweaver.datasource c on b.datasource_id = c.hua_ao_id and a.datasource_id = c.id
-		inner join kweaver.work_order_tasks d on b.id = d.id
-		inner join kweaver.work_order e on d.work_order_id = e.work_order_id
+		select distinct(a.id) from af_main.form_view a
+		inner join af_tasks.work_order_data_fusion_details b on a.original_name = b.data_table
+		inner join af_configuration.datasource c on b.datasource_id = c.hua_ao_id and a.datasource_id = c.id
+		inner join af_tasks.work_order_tasks d on b.id = d.id
+		inner join af_tasks.work_order e on d.work_order_id = e.work_order_id
 		where a.deleted_at = 0 
 		and d.status = "Completed" and e.type = 4 %s
 	`
@@ -260,7 +260,7 @@ func (d *ProcessingOverviewRepo) GetResultsTableCatalog(ctx context.Context, req
 	sql := "select a.id, a.title as name ,a.department_id,a.sync_mechanism,a.updated_at, b.name as department, " +
 		"d.resource_id as view_id  " +
 		"from af_data_catalog.t_data_catalog a " +
-		"left join kweaver.object b on a.department_id=b.id " +
+		"left join af_configuration.object b on a.department_id=b.id " +
 		"left join af_data_catalog.t_data_resource d on a.id=d.catalog_id " +
 		"inner join (%s) as resutltViewIds on resutltViewIds.id = d.resource_id "
 
@@ -311,8 +311,8 @@ func (d *ProcessingOverviewRepo) GetTargetTable(ctx context.Context, req *domain
 	res := &domain.TargetTableDetail{}
 	// 任务总数:
 	sql := `
-		select count(b.id)  from  kweaver.work_order_tasks a 
-		inner join kweaver.work_order b on a.work_order_id = b.work_order_id
+		select count(b.id)  from  af_tasks.work_order_tasks a 
+		inner join af_tasks.work_order b on a.work_order_id = b.work_order_id
 		where b.type = 4 and b.deleted_at =0 %s
 	`
 	myDepartment := `and b.department_id in ?`
@@ -320,8 +320,8 @@ func (d *ProcessingOverviewRepo) GetTargetTable(ctx context.Context, req *domain
 
 	// 数据分析任务总数
 	sql = `
-		select count(b.id)  from  kweaver.work_order_tasks a 
-		inner join kweaver.work_order b on a.work_order_id = b.work_order_id
+		select count(b.id)  from  af_tasks.work_order_tasks a 
+		inner join af_tasks.work_order b on a.work_order_id = b.work_order_id
 		where b.type = 4 and b.source_type=7  and b.deleted_at =0 %s
 	`
 	myDepartment = `and b.department_id in ?`
@@ -329,8 +329,8 @@ func (d *ProcessingOverviewRepo) GetTargetTable(ctx context.Context, req *domain
 
 	// 处理计划任务总数
 	sql = `
-		select count(b.id)  from  kweaver.work_order_tasks a 
-		inner join kweaver.work_order b on a.work_order_id = b.work_order_id
+		select count(b.id)  from  af_tasks.work_order_tasks a 
+		inner join af_tasks.work_order b on a.work_order_id = b.work_order_id
 		where b.type = 4 and b.source_type=1 and b.deleted_at =0 %s
 	`
 	myDepartment = `and b.department_id in ?`
@@ -338,8 +338,8 @@ func (d *ProcessingOverviewRepo) GetTargetTable(ctx context.Context, req *domain
 
 	// 日常任务总数
 	sql = `
-		select count(b.id)  from  kweaver.work_order_tasks a 
-		inner join kweaver.work_order b on a.work_order_id = b.work_order_id
+		select count(b.id)  from  af_tasks.work_order_tasks a 
+		inner join af_tasks.work_order b on a.work_order_id = b.work_order_id
 		where b.type = 4 and b.source_type=3 and b.deleted_at =0 %s
 	`
 	myDepartment = `and b.department_id in ?`
@@ -353,32 +353,32 @@ func (d *ProcessingOverviewRepo) GetProcessTask(ctx context.Context, req *domain
 	res := &domain.ProcessTaskDetail{}
 	// 任务总数
 	sql := `
-		select count(a.id)  from  kweaver.work_order_tasks a 
-		inner join kweaver.work_order b on a.work_order_id = b.work_order_id
+		select count(a.id)  from  af_tasks.work_order_tasks a 
+		inner join af_tasks.work_order b on a.work_order_id = b.work_order_id
 		where b.type = 4 and b.deleted_at =0 %s
 	`
 	myDepartment := `and b.department_id in ?`
 	d.RawScan(ctx, &res.Errors, req.MD, sql, myDepartment, "WorkOrderTaskCount ", &res.WorkOrderTaskCount)
 	// 已完成任务总数
 	sql = `
-		select count(a.id)  from  kweaver.work_order_tasks a 
-		inner join kweaver.work_order b on a.work_order_id = b.work_order_id
+		select count(a.id)  from  af_tasks.work_order_tasks a 
+		inner join af_tasks.work_order b on a.work_order_id = b.work_order_id
 		where b.type = 4 and b.deleted_at =0 and a.status = "Completed" %s
 	`
 	myDepartment = `and b.department_id in ?`
 	d.RawScan(ctx, &res.Errors, req.MD, sql, myDepartment, "CompletedCount ", &res.CompletedCount)
 	// 进行中任务总数
 	sql = `
-		select count(a.id)  from  kweaver.work_order_tasks a 
-		inner join kweaver.work_order b on a.work_order_id = b.work_order_id
+		select count(a.id)  from  af_tasks.work_order_tasks a 
+		inner join af_tasks.work_order b on a.work_order_id = b.work_order_id
 		where b.type = 4 and b.deleted_at =0 and a.status = "Running" %s
 	`
 	myDepartment = `and b.department_id in ?`
 	d.RawScan(ctx, &res.Errors, req.MD, sql, myDepartment, "RunningTaskCount ", &res.RunningTaskCount)
 	// 异常总数
 	sql = `
-		select count(a.id)  from  kweaver.work_order_tasks a 
-		inner join kweaver.work_order b on a.work_order_id = b.work_order_id
+		select count(a.id)  from  af_tasks.work_order_tasks a 
+		inner join af_tasks.work_order b on a.work_order_id = b.work_order_id
 		where b.type = 4 and b.deleted_at =0 and a.status = "Failed" %s
 	`
 	myDepartment = `and b.department_id in ?`
@@ -386,8 +386,8 @@ func (d *ProcessingOverviewRepo) GetProcessTask(ctx context.Context, req *domain
 
 	// 数据分析任务总数
 	sql = `
-		select count(a.id)  from  kweaver.work_order_tasks a 
-		inner join kweaver.work_order b on a.work_order_id = b.work_order_id
+		select count(a.id)  from  af_tasks.work_order_tasks a 
+		inner join af_tasks.work_order b on a.work_order_id = b.work_order_id
 		where b.type = 4 and b.source_type=4  and b.deleted_at =0 %s
 	`
 	myDepartment = `and b.department_id in ?`
@@ -395,8 +395,8 @@ func (d *ProcessingOverviewRepo) GetProcessTask(ctx context.Context, req *domain
 
 	// 处理计划任务总数
 	sql = `
-		select count(a.id)  from  kweaver.work_order_tasks a 
-		inner join kweaver.work_order b on a.work_order_id = b.work_order_id
+		select count(a.id)  from  af_tasks.work_order_tasks a 
+		inner join af_tasks.work_order b on a.work_order_id = b.work_order_id
 		where b.type = 4 and b.source_type=1 and b.deleted_at =0 %s
 	`
 	myDepartment = `and b.department_id in ?`
@@ -404,8 +404,8 @@ func (d *ProcessingOverviewRepo) GetProcessTask(ctx context.Context, req *domain
 
 	// 日常任务总数
 	sql = `
-		select count(a.id)  from  kweaver.work_order_tasks a 
-		inner join kweaver.work_order b on a.work_order_id = b.work_order_id
+		select count(a.id)  from  af_tasks.work_order_tasks a 
+		inner join af_tasks.work_order b on a.work_order_id = b.work_order_id
 		where b.type = 4 and b.source_type=3 and b.deleted_at =0 %s
 	`
 	myDepartment = `and b.department_id in ?`
@@ -415,12 +415,12 @@ func (d *ProcessingOverviewRepo) GetProcessTask(ctx context.Context, req *domain
 }
 
 func (d *ProcessingOverviewRepo) GetByCatalogIds(ctx context.Context, catalogId ...uint64) (dataResource []*data_processing_overview.TDataResource, err error) {
-	err = d.data.DB.WithContext(ctx).Table("kweaver.t_data_resource").Where("catalog_id in ?", catalogId).Find(&dataResource).Error
+	err = d.data.DB.WithContext(ctx).Table("af_data_catalog.t_data_resource").Where("catalog_id in ?", catalogId).Find(&dataResource).Error
 	return
 }
 
 func (d *ProcessingOverviewRepo) GetReportByviewIds(ctx context.Context, viewId ...string) (report []*data_processing_overview.Report, err error) {
-	err = d.data.DB.WithContext(ctx).Table("kweaver.t_report").Where("f_table_id in ? and f_latest =1 and f_status = 3", viewId).Find(&report).Error
+	err = d.data.DB.WithContext(ctx).Table("af_data_exploration.t_report").Where("f_table_id in ? and f_latest =1 and f_status = 3", viewId).Find(&report).Error
 	return
 }
 
@@ -434,8 +434,8 @@ func (d *ProcessingOverviewRepo) GetQualityTableDepartment(ctx context.Context, 
 	// 应检测表:
 	tables := make([]*domain.DCount, 0)
 	sql := `
-		select department_id, count(distinct(id)) as count from kweaver.form_view  
-		where datasource_id in (select id from kweaver.datasource where (source_type in (1,2))) 
+		select department_id, count(distinct(id)) as count from af_main.form_view  
+		where datasource_id in (select id from af_configuration.datasource where (source_type in (1,2))) 
 		and department_id is not null and department_id != '' and deleted_at = 0 %s
 		group by department_id;
 	`
@@ -451,8 +451,8 @@ func (d *ProcessingOverviewRepo) GetQualityTableDepartment(ctx context.Context, 
 	// 已检测表:
 	qualitiedTables := make([]*domain.DCount, 0)
 	sql = `
-		select department_id, count(distinct(id)) as count from kweaver.form_view a
-		inner join kweaver.t_third_party_report c on a.id = c.f_table_id and c.f_status = 3 
+		select department_id, count(distinct(id)) as count from af_main.form_view a
+		inner join af_data_exploration.t_third_party_report c on a.id = c.f_table_id and c.f_status = 3 
 		where a.department_id is not null and a.department_id != '' and a.deleted_at = 0 %s
 		group by a.department_id;
 	`
@@ -468,9 +468,9 @@ func (d *ProcessingOverviewRepo) GetQualityTableDepartment(ctx context.Context, 
 	// 已整改表:
 	processedTables := make([]*domain.DCount, 0)
 	sql = `
-		select a.department_id, count(distinct(a.id)) as count from kweaver.form_view a
-		inner join kweaver.t_third_party_report b on a.id = b.f_table_id
-		inner join kweaver.work_order c on a.id = c.source_id
+		select a.department_id, count(distinct(a.id)) as count from af_main.form_view a
+		inner join af_data_exploration.t_third_party_report b on a.id = b.f_table_id
+		inner join af_tasks.work_order c on a.id = c.source_id
 		where a.deleted_at = 0 and a.department_id is not null and a.department_id != ''
 		and b.f_status = 3
 		and b.f_latest =1
@@ -494,8 +494,8 @@ func (d *ProcessingOverviewRepo) GetQualityTableDepartment(ctx context.Context, 
 	// 问题表数量:
 	questionTables := make([]*domain.DCount, 0)
 	sql = `
-		select a.department_id, count(distinct(a.id)) as count from kweaver.form_view a
-		inner join kweaver.t_third_party_report b on a.id = b.f_table_id
+		select a.department_id, count(distinct(a.id)) as count from af_main.form_view a
+		inner join af_data_exploration.t_third_party_report b on a.id = b.f_table_id
 		where b.f_status = 3
 		and b.f_latest = 1
 		and ((b.f_total_completeness is NOT NUll AND b.f_total_completeness != 1)
@@ -518,8 +518,8 @@ func (d *ProcessingOverviewRepo) GetQualityTableDepartment(ctx context.Context, 
 	// 已响应表：
 	startProcessTables := make([]*domain.DCount, 0)
 	sql = `
-		select a.department_id, count(distinct(a.id)) as count from kweaver.form_view a
-		inner join kweaver.work_order c on a.id = c.source_id
+		select a.department_id, count(distinct(a.id)) as count from af_main.form_view a
+		inner join af_tasks.work_order c on a.id = c.source_id
 		where a.deleted_at = 0 and a.department_id is not null and a.department_id != ''
 		and c.type = 5 and c.status = 2 and c.deleted_at =0 %s
 		group by a.department_id;
@@ -536,8 +536,8 @@ func (d *ProcessingOverviewRepo) GetQualityTableDepartment(ctx context.Context, 
 	// 整改中的表：
 	processingTables := make([]*domain.DCount, 0)
 	sql = `
-		select a.department_id, count(distinct(a.id)) as count from kweaver.form_view a
-		inner join kweaver.work_order c on a.id = c.source_id
+		select a.department_id, count(distinct(a.id)) as count from af_main.form_view a
+		inner join af_tasks.work_order c on a.id = c.source_id
 		where a.deleted_at = 0 and a.department_id is not null and a.department_id != ''
 		and c.type = 5 and c.status = 3 and c.deleted_at =0 %s
 		group by a.department_id;
@@ -554,9 +554,9 @@ func (d *ProcessingOverviewRepo) GetQualityTableDepartment(ctx context.Context, 
 	// 未整改表：
 	notProcessTables := make([]*domain.DCount, 0)
 	sql = `
-		select  a.department_id, count(distinct(a.id)) as count from kweaver.form_view a
-		inner join kweaver.t_third_party_report b on a.id = b.f_table_id
-		inner join kweaver.work_order c on a.id = c.source_id
+		select  a.department_id, count(distinct(a.id)) as count from af_main.form_view a
+		inner join af_data_exploration.t_third_party_report b on a.id = b.f_table_id
+		inner join af_tasks.work_order c on a.id = c.source_id
 		where b.f_status = 3
 		and b.f_latest = 1 
 		and ((b.f_total_completeness is NOT NUll AND b.f_total_completeness != 1)
@@ -603,9 +603,9 @@ func (d *ProcessingOverviewRepo) GetDepartmentQualityProcess(ctx context.Context
 	// 已整改表:
 	processedTables := make([]*domain.DCount, 0)
 	sql := `
-		select a.department_id, count(distinct(a.id)) as count from kweaver.form_view a
-		inner join kweaver.t_third_party_report b on a.id = b.f_table_id
-		inner join kweaver.work_order c on a.id = c.source_id
+		select a.department_id, count(distinct(a.id)) as count from af_main.form_view a
+		inner join af_data_exploration.t_third_party_report b on a.id = b.f_table_id
+		inner join af_tasks.work_order c on a.id = c.source_id
 		where a.deleted_at = 0 and a.department_id is not null and a.department_id != ''
 		and b.f_status = 3
 		and b.f_latest =1
@@ -629,8 +629,8 @@ func (d *ProcessingOverviewRepo) GetDepartmentQualityProcess(ctx context.Context
 	// 待整改表(问题表):
 	questionTables := make([]*domain.DCount, 0)
 	sql = `
-		select a.department_id, count(distinct(a.id)) as count from kweaver.form_view a
-		inner join kweaver.t_third_party_report b on a.id = b.f_table_id
+		select a.department_id, count(distinct(a.id)) as count from af_main.form_view a
+		inner join af_data_exploration.t_third_party_report b on a.id = b.f_table_id
 		where b.f_status = 3
 		and b.f_latest = 1
 		and ((b.f_total_completeness is NOT NUll AND b.f_total_completeness != 1)
@@ -688,12 +688,12 @@ func (d *ProcessingOverviewRepo) RawScan(ctx context.Context, errs *[]string, md
 }
 
 func (d *ProcessingOverviewRepo) GetDepartmentByIds(ctx context.Context, departmentIds ...string) (departments []*data_processing_overview.Object, err error) {
-	err = d.data.DB.WithContext(ctx).Table("kweaver.object").Where("id in ?", departmentIds).Find(&departments).Error
+	err = d.data.DB.WithContext(ctx).Table("af_configuration.object").Where("id in ?", departmentIds).Find(&departments).Error
 	return
 }
 
 func (d *ProcessingOverviewRepo) GetAllDepartmentIds(ctx context.Context) (departmentIds []string, err error) {
-	err = d.data.DB.WithContext(ctx).Select("id").Table("kweaver.object").Find(&departmentIds).Error
+	err = d.data.DB.WithContext(ctx).Select("id").Table("af_configuration.object").Find(&departmentIds).Error
 	return
 }
 
@@ -750,8 +750,8 @@ func (d *ProcessingOverviewRepo) CetQualityOverviewList(ctx context.Context, par
 	limit := params.Limit
 	offset := limit * (params.Offset - 1)
 
-	Db := d.data.DB.Debug().WithContext(ctx).Table("kweaver.work_order_quality_overview a").Select("a.*, b.name as department_name").
-		Joins("join kweaver.object b on a.department_id = b.id")
+	Db := d.data.DB.Debug().WithContext(ctx).Table("af_tasks.work_order_quality_overview a").Select("a.*, b.name as department_name").
+		Joins("join af_configuration.object b on a.department_id = b.id")
 	if params.Keyword != "" {
 		Db = Db.Where("b.name like ?", "%"+util.KeywordEscape(util.XssEscape(params.Keyword))+"%")
 	}
@@ -782,8 +782,8 @@ func (d *ProcessingOverviewRepo) GetDepartmentQualityProcessList(ctx context.Con
 	limit := params.Limit
 	offset := limit * (params.Offset - 1)
 
-	Db := d.data.DB.Debug().WithContext(ctx).Table("kweaver.work_order_quality_overview a").Select("a.*, b.name as department_name").
-		Joins("join kweaver.object b on a.department_id = b.id")
+	Db := d.data.DB.Debug().WithContext(ctx).Table("af_tasks.work_order_quality_overview a").Select("a.*, b.name as department_name").
+		Joins("join af_configuration.object b on a.department_id = b.id")
 	Db = Db.Where(" a.processed_table_count != 0 or a.question_table_count !=0")
 	if params.Keyword != "" {
 		Db = Db.Where("b.name like ?", "%"+util.KeywordEscape(util.XssEscape(params.Keyword))+"%")

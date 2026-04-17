@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/gorm/configuration"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/common/util"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/gorm/configuration"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/common/util"
 	"github.com/kweaver-ai/idrm-go-common/rest/configuration_center"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	msqclient "github.com/kweaver-ai/proton-mq-sdk-go"

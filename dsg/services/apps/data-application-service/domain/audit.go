@@ -7,9 +7,9 @@ import (
 
 	"go.uber.org/zap"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/adapter/driven/microservice"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/dto"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/enum"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/adapter/driven/microservice"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/common/dto"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/common/enum"
 	v1 "github.com/kweaver-ai/idrm-go-common/api/audit/v1"
 	configuration_center "github.com/kweaver-ai/idrm-go-common/api/configuration-center/v1"
 	"github.com/kweaver-ai/idrm-go-common/audit"

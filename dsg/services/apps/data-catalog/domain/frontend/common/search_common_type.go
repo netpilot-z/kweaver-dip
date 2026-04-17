@@ -1,8 +1,8 @@
 package common
 
 import (
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driven/basic_search"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/common"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driven/basic_search"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/common"
 	authServiceV1 "github.com/kweaver-ai/idrm-go-common/api/auth-service/v1"
 	demand_management_v1 "github.com/kweaver-ai/idrm-go-common/api/demand_management/v1"
 )

@@ -5,10 +5,10 @@ package impl
 // 	"net/http"
 
 // 	"devops.KweaverAI.cn/KweaverAIDevOps/AnyFabric/_git/af-sailor-service.git/client"
-// 	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driven/anydata_search"
-// 	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/errorcode"
-// 	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/settings"
-// 	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/util"
+// 	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driven/anydata_search"
+// 	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/errorcode"
+// 	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/settings"
+// 	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/util"
 // 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 // )
 

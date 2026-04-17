@@ -3,7 +3,7 @@ package impl
 import (
 	"context"
 	"github.com/google/uuid"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/rest/auth_service"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/rest/auth_service"
 	"github.com/kweaver-ai/idrm-go-common/interception"
 	"github.com/kweaver-ai/idrm-go-common/util/sets"
 	"github.com/samber/lo"

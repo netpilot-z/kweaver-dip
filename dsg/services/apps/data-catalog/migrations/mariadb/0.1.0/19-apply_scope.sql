@@ -1,4 +1,4 @@
-USE kweaver;
+USE af_data_catalog;
 
 CREATE TABLE IF NOT EXISTS `t_apply_scope` (
      `id` CHAR(36) NOT NULL COMMENT '应用范围uuid',

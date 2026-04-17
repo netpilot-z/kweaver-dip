@@ -56,7 +56,7 @@ depServices:
     port: 3330
     user: anyshare
     password: password
-    database: kweaver
+    database: af_data_catalog
     migrationPath: /usr/local/bin/af/infrastructure/repository/db/gen/migration
   redis:
     connectInfo:

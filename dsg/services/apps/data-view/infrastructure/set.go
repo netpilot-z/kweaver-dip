@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/cache"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/db"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/mq/kafka"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/cache"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/db"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/mq/kafka"
 
 	// "github.com/kweaver-ai/idrm-go-frame/core/redis_tool"
 	"github.com/go-redis/redis/v8"

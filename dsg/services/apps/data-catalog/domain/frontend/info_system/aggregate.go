@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 	"go.uber.org/zap"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driven/databases/af_configuration"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driven/databases/af_configuration"
 	api_basic_search_v1 "github.com/kweaver-ai/idrm-go-common/api/basic_search/v1"
 	api_data_catalog_frontend_v1 "github.com/kweaver-ai/idrm-go-common/api/data_catalog/frontend/v1"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"

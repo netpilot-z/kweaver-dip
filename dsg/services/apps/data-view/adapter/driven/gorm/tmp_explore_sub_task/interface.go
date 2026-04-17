@@ -3,7 +3,7 @@ package tmp_explore_sub_task
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/infrastructure/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/infrastructure/db/model"
 )
 
 type TmpExploreSubTaskRepo interface {

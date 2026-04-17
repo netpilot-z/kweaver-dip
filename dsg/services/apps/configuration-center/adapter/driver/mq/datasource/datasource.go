@@ -6,10 +6,10 @@ import (
 	"errors"
 
 	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/ar_trace"
-	datasourceRepo "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/gorm/datasource"
-	datasourcemq "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/adapter/driven/mq/datasource"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/configuration-center/domain/datasource"
+	datasourceRepo "github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/gorm/datasource"
+	datasourcemq "github.com/kweaver-ai/dsg/services/apps/configuration-center/adapter/driven/mq/datasource"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/configuration-center/domain/datasource"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"gorm.io/gorm"
 )

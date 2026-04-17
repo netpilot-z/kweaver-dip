@@ -3,7 +3,7 @@ package data_explore
 import (
 	"context"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/domain/form_view"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/domain/form_view"
 )
 
 type MsgExploreFinished struct {

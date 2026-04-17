@@ -8,7 +8,7 @@ package slices
 import (
 	"unsafe"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/util/constraints"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/util/constraints"
 )
 
 // Equal reports whether two slices are equal: the same length and all

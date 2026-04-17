@@ -3,10 +3,10 @@ package impl
 import (
 	"context"
 
-	repo "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/adapter/driven/gorm"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/adapter/driven/mq"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-application-service/domain/sub_service"
+	repo "github.com/kweaver-ai/dsg/services/apps/data-application-service/adapter/driven/gorm"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/adapter/driven/mq"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-application-service/domain/sub_service"
 	authServiceV1 "github.com/kweaver-ai/idrm-go-common/api/auth-service/v1"
 	auth_service "github.com/kweaver-ai/idrm-go-common/rest/auth-service"
 	"github.com/kweaver-ai/idrm-go-common/util"

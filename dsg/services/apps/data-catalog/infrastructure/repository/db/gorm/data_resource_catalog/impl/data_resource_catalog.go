@@ -10,19 +10,19 @@ import (
 
 	"github.com/kweaver-ai/idrm-go-frame/core/store/gormx"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/data_comprehension"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/data_comprehension"
 
 	"github.com/samber/lo"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/constant"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/models/request"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/util"
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/data_resource_catalog"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/data_resource_catalog"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/models/request"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/util"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/data_resource_catalog"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/gorm/data_resource_catalog"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 )
 
@@ -2477,12 +2477,12 @@ func (d *catalogRepo) DataUnderstandDepartDetailOverview(ctx context.Context, re
 
 }
 func (d *catalogRepo) GetReportByViewIds(ctx context.Context, viewId ...string) (report []*data_resource_catalog.Report, err error) {
-	err = d.db.WithContext(ctx).Table("kweaver.t_report").Where("f_table_id in ? and f_latest =1 and f_status = 3", viewId).Find(&report).Error
+	err = d.db.WithContext(ctx).Table("af_data_exploration.t_report").Where("f_table_id in ? and f_latest =1 and f_status = 3", viewId).Find(&report).Error
 	return
 }
 func (d *catalogRepo) GetApplyDepartmentNum(ctx context.Context, catalogIDS []uint64) (count []*data_resource_catalog.GetApplyDepartmentNumRes, err error) {
 	sql := `
-		SELECT i.res_id id ,count(distinct apply_org_code) count from kweaver.t_share_apply_res_item  i inner join kweaver.t_share_apply a on i.share_apply_id =a.id where i.res_type=1 and a.status =12 and analysed_flag =true and implemented_flag =true and i.analysis_id is null and i.res_id in ? group by i.res_id  
+		SELECT i.res_id id ,count(distinct apply_org_code) count from af_demand_management.t_share_apply_res_item  i inner join af_demand_management.t_share_apply a on i.share_apply_id =a.id where i.res_type=1 and a.status =12 and analysed_flag =true and implemented_flag =true and i.analysis_id is null and i.res_id in ? group by i.res_id  
 	`
 	if err = d.db.WithContext(ctx).Raw(sql, catalogIDS).Scan(&count).Error; err != nil {
 		return

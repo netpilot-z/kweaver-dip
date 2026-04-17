@@ -12,19 +12,19 @@ import (
 
 	"github.com/kweaver-ai/idrm-go-common/rest/virtual_engine"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/adapter/driven/mq/es"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/adapter/driven/mq/es"
 	"github.com/kweaver-ai/idrm-go-frame/core/enum"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
 	"github.com/kweaver-ai/idrm-go-common/rest/task_center"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/data_resource"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/data_resource"
 	"github.com/kweaver-ai/idrm-go-frame/core/transport/rest/ginx"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/common_model"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/errorcode"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/models"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/models/request"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/common_model"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/errorcode"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/models"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/models/request"
 	wf_common "github.com/kweaver-ai/idrm-go-common/workflow/common"
 )
 

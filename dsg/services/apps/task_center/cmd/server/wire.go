@@ -7,14 +7,14 @@ package main
 
 import (
 	"github.com/google/wire"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driven/gorm"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/adapter/driver"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/controller"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/domain"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/conf"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/task_center/infrastructure/repository/db"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driven/gorm"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/adapter/driver"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/controller"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/domain"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/conf"
+	"github.com/kweaver-ai/dsg/services/apps/task_center/infrastructure/repository/db"
 )
 
 var appRunnerSet = wire.NewSet(wire.Struct(new(AppRunner), "*"))

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/common/constant"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/common/constant"
 	"github.com/kweaver-ai/idrm-go-frame/core/errorx/agcodes"
 	"github.com/kweaver-ai/idrm-go-frame/core/errorx/agerrors"
 )

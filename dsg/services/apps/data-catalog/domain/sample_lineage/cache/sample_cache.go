@@ -3,9 +3,9 @@ package cache
 import (
 	"context"
 
-	domain "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/domain/sample_lineage"
+	domain "github.com/kweaver-ai/dsg/services/apps/data-catalog/domain/sample_lineage"
 
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
+	"github.com/kweaver-ai/dsg/services/apps/data-catalog/infrastructure/repository/db/model"
 )
 
 /** 解决方案

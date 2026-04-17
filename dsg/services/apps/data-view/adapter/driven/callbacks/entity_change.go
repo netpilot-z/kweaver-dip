@@ -3,8 +3,8 @@ package callbacks
 import (
 	"context"
 	"encoding/json"
-	kafka_pub "github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/adapter/driven/mq/kafka"
-	"github.com/kweaver-ai/kweaver-dip/dsg/services/apps/data-view/common/constant"
+	kafka_pub "github.com/kweaver-ai/dsg/services/apps/data-view/adapter/driven/mq/kafka"
+	"github.com/kweaver-ai/dsg/services/apps/data-view/common/constant"
 	"github.com/kweaver-ai/idrm-go-common/database_callback/callback"
 )
 
