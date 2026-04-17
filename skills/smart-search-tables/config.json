@@ -7,7 +7,7 @@
   },
   "description": "找表/找数编排：runtime_ready（base_url/user_id/token）→ query_object_instance（元数据/表实例）→ department_duty_query（相关部门职责）→ 总结",
   "defaults": {
-    "user_id": "f6713976-1cf6-11f1-b2cd-d6e9efdbcbb2",
+    "user_id": "",
     "x_business_domain": "bd_public"
   },
   "tools": {
@@ -20,7 +20,7 @@
         "include_type_info": false
       },
       "envelope_header": {
-        "x-account-id": "f6713976-1cf6-11f1-b2cd-d6e9efdbcbb2",
+        "x-account-id": "",
         "x-account-type": "user"
       }
     },
