@@ -38,6 +38,60 @@ PUBLIC_REFRESH_TOKEN=your_refresh_token # 可以为空
 
 `PUBLIC_IS_ADMIN=true`
 
+### 微应用开发联调（本地入口覆盖）
+
+`apps/dip` 已内置“开发环境微应用入口覆盖”能力，联调时不需要修改源码里的菜单配置（如 `menus.ts`）。
+
+#### 适用场景
+
+- 线上/测试环境默认入口可用，但你需要把某个微应用切换到本地 dev server 调试
+- 希望临时切换入口，调试完可快速回退
+
+#### 使用方式
+
+在浏览器控制台执行：
+
+```javascript
+localStorage.setItem('DIP_HUB_LOCAL_DEV_MICRO_APPS', JSON.stringify({
+  'data-connect': 'http://localhost:8081',
+  'my-agent-list': 'http://localhost:8082'
+}))
+```
+
+然后刷新页面。
+
+说明：
+
+- `key` 必须是微应用 `micro_app.name`（通常与菜单里的 `page.app.name` 一致）
+- `value` 是该微应用本地开发服务入口（通常为 `http://localhost:<port>`）
+
+#### 常见问题
+
+- 不生效：确认已正确写入浏览器当前域名的 Local Storage，并在设置后刷新页面
+- 名称不匹配：确认 key 与微应用 `micro_app.name` 完全一致
+- 跨域问题：确认本地微应用 dev server 已允许主应用域名访问（CORS）
+
+注意：
+
+- 当前实现会读取 `DIP_HUB_LOCAL_DEV_MICRO_APPS` 并覆盖入口地址，未额外限制运行环境
+- 建议仅在本地联调时使用，调试完成后及时清理该配置
+
+#### 清理联调配置
+
+清空全部覆盖：
+
+```javascript
+localStorage.removeItem('DIP_HUB_LOCAL_DEV_MICRO_APPS')
+```
+
+删除某一个微应用覆盖：
+
+```javascript
+const config = JSON.parse(localStorage.getItem('DIP_HUB_LOCAL_DEV_MICRO_APPS') || '{}')
+delete config['data-connect']
+localStorage.setItem('DIP_HUB_LOCAL_DEV_MICRO_APPS', JSON.stringify(config))
+```
+
 ## 开发质量检查
 
 建议在提交代码前执行：

@@ -27,7 +27,7 @@
 │  ├─ doc-audit-client/      # 审核待办
 │  ├─ model-manager/         # 模型管理
 │  ├─ business-system/       # 业务域管理
-│  └─ dataflow-web/          # 数据流（独立子 workspace，见下方说明）
+│  └─ dataflow-web/          # 数据流
 ├─ packages/                 # 共享库（供 apps 引用）
 │  ├─ components/            # 基于 antd adapter 的通用组件包
 │  ├─ icons/                 # 通用图标导出包
@@ -96,6 +96,8 @@ pnpm dev:dip
 ```
 
 环境变量、端口、本地调试与质量门禁等说明见：[apps/dip/README.md](apps/dip/README.md)。
+
+其中“微应用开发联调（本地入口覆盖）”请直接参考：`apps/dip/README.md` 的对应章节。
 
 ---
 

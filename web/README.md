@@ -97,6 +97,8 @@ pnpm dev:dip
 
 Env vars, port, local debugging, and quality gates: [apps/dip/README.md](apps/dip/README.md).
 
+For "Micro-app local integration debugging (local entry override)", see the corresponding section in `apps/dip/README.md`.
+
 ---
 
 For more app-level documentation, see each app’s `README` (e.g. `apps/dip/README.md`, `apps/agent-web/README.md`).
