@@ -992,6 +992,6 @@ If any file cannot be read, explicitly report which path failed and why.
 | key | string | 是 | 会话 key |
 | subpath | string | 是 | 归档子路径，支持多级目录 |
 
-响应：`200 application/json | application/octet-stream | text/plain`
+响应：`200 application/json | application/octet-stream | text/html | text/plain`
 
 目录返回 JSON，文件返回原始内容。路径解析规则与“获取会话归档列表”一致。

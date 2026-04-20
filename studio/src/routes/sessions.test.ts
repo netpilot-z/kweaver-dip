@@ -1045,9 +1045,9 @@ describe("createSessionsRouter", () => {
     const getSessionArchiveSubpath = vi.fn().mockResolvedValue({
       status: 200,
       headers: new Headers({
-        "content-type": "text/plain"
+        "content-type": "text/html; charset=utf-8"
       }),
-      body: new Uint8Array(Buffer.from("hello"))
+      body: new Uint8Array(Buffer.from("<!doctype html><html></html>"))
     });
     const router = createSessionsRouter(
       {
@@ -1103,9 +1103,14 @@ describe("createSessionsRouter", () => {
       "agent:de_finance:user:user-1:direct:session-1",
       "notes/today.txt"
     );
-    expect(response.setHeader).toHaveBeenCalledWith("content-type", "text/plain");
+    expect(response.setHeader).toHaveBeenCalledWith(
+      "content-type",
+      "text/html; charset=utf-8"
+    );
     expect(response.status).toHaveBeenCalledWith(200);
-    expect(response.send).toHaveBeenCalled();
+    expect(response.send).toHaveBeenCalledWith(
+      Buffer.from("<!doctype html><html></html>")
+    );
     expect(next).not.toHaveBeenCalled();
   });
 

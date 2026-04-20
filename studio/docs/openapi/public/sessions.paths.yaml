@@ -258,6 +258,9 @@ paths:
               schema:
                 type: string
                 format: binary
+            text/html:
+              schema:
+                type: string
             text/plain:
               schema:
                 type: string

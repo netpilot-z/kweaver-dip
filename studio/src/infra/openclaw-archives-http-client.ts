@@ -163,7 +163,7 @@ implements OpenClawArchivesHttpClient {
       ),
       {
         method: "GET",
-        headers: createOpenClawArchivesHeaders(connectionOptions.token)
+        headers: createOpenClawArchivesHeaders(connectionOptions.token, "*/*")
       }
     ).catch((error: unknown) => {
       throw normalizeOpenClawArchivesError(error);
@@ -172,8 +172,6 @@ implements OpenClawArchivesHttpClient {
     if (!upstreamResponse.ok) {
       throw await createOpenClawArchivesStatusError(upstreamResponse);
     }
-
-    throwIfUnexpectedArchivesContentType(upstreamResponse);
 
     return {
       status: upstreamResponse.status,
@@ -291,11 +289,15 @@ export function encodePathSubpath(subpath: string): string {
  * Creates the headers used to call OpenClaw `/v1/archives`.
  *
  * @param token The optional gateway bearer token.
+ * @param accept The MIME types accepted from OpenClaw.
  * @returns The normalized request headers.
  */
-export function createOpenClawArchivesHeaders(token?: string): Headers {
+export function createOpenClawArchivesHeaders(
+  token?: string,
+  accept = "application/json"
+): Headers {
   const headers = new Headers({
-    accept: "application/json"
+    accept
   });
 
   if (token !== undefined) {
