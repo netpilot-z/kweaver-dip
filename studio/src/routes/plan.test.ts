@@ -9,6 +9,7 @@ import {
   parseCronRunSortDir,
   parseNonNegativeIntegerString,
   parseOptionalSingleQueryValue,
+  readDefaultCronJobListQuery,
   readCronJobListQuery,
   readUpdatePlanRequest,
   readCronRunListQuery
@@ -65,6 +66,37 @@ describe("readCronJobListQuery", () => {
         includeDisabled: "bad"
       })
     ).toThrow("Invalid query parameter `includeDisabled`");
+  });
+});
+
+describe("readDefaultCronJobListQuery", () => {
+  it("uses expected defaults without exposing includeDisabled", () => {
+    expect(readDefaultCronJobListQuery({})).toEqual({
+      includeDisabled: true,
+      limit: 50,
+      offset: 0,
+      enabled: "all",
+      sortBy: "nextRunAtMs",
+      sortDir: "asc"
+    });
+  });
+
+  it("rejects invalid enum values", () => {
+    expect(() =>
+      readDefaultCronJobListQuery({
+        enabled: "bad"
+      })
+    ).toThrow("Invalid query parameter `enabled`");
+    expect(() =>
+      readDefaultCronJobListQuery({
+        sortBy: "bad"
+      })
+    ).toThrow("Invalid query parameter `sortBy`");
+    expect(() =>
+      readDefaultCronJobListQuery({
+        sortDir: "bad"
+      })
+    ).toThrow("Invalid query parameter `sortDir`");
   });
 });
 

@@ -26,10 +26,35 @@ import type {
  */
 export interface CronJobListQuery {
   /**
-   * Include disabled jobs when true.
+   * Maximum page size.
    */
-  includeDisabled?: string;
+  limit?: string;
 
+  /**
+   * Zero-based page offset.
+   */
+  offset?: string;
+
+  /**
+   * Enabled-state filter.
+   */
+  enabled?: string;
+
+  /**
+   * Sort field.
+   */
+  sortBy?: string;
+
+  /**
+   * Sort direction.
+   */
+  sortDir?: string;
+}
+
+/**
+ * Supported query fields for plans list endpoints that keep the default disabled-job behavior.
+ */
+export interface DefaultCronJobListQuery {
   /**
    * Maximum page size.
    */
@@ -143,13 +168,13 @@ export function createCronRouter(logic: CronLogic = cronLogic): Router {
   router.get(
     "/api/dip-studio/v1/plans",
     async (
-      request: Request<unknown, unknown, unknown, CronJobListQuery>,
+      request: Request<unknown, unknown, unknown, DefaultCronJobListQuery>,
       response: Response,
       next: NextFunction
     ): Promise<void> => {
       try {
         const query = {
-          ...readCronJobListQuery(request.query),
+          ...readDefaultCronJobListQuery(request.query),
           userId: readAuthenticatedUserId(request)
         };
         const result = await logic.listCronJobs(query);
@@ -168,13 +193,13 @@ export function createCronRouter(logic: CronLogic = cronLogic): Router {
   router.get(
     "/api/dip-studio/v1/digital-human/:id/plans",
     async (
-      request: Request<DigitalHumanPlansParams, unknown, unknown, CronJobListQuery>,
+      request: Request<DigitalHumanPlansParams, unknown, unknown, DefaultCronJobListQuery>,
       response: Response,
       next: NextFunction
     ): Promise<void> => {
       try {
         const query = {
-          ...readCronJobListQuery(request.query),
+          ...readDefaultCronJobListQuery(request.query),
           userId: readAuthenticatedUserId(request)
         };
         const result = await logic.listCronJobs(query);
@@ -371,6 +396,26 @@ export function readUpdatePlanRequest(body: unknown): UpdatePlanRequest {
 export function readCronJobListQuery(query: CronJobListQuery): OpenClawCronListParams {
   return {
     includeDisabled: parseBooleanQueryValue(query.includeDisabled, true, "includeDisabled"),
+    limit: parseNonNegativeIntegerString(query.limit, 50, "limit"),
+    offset: parseNonNegativeIntegerString(query.offset, 0, "offset"),
+    enabled: parseCronJobEnabled(query.enabled),
+    sortBy: parseCronJobSortBy(query.sortBy),
+    sortDir: parseCronJobSortDir(query.sortDir)
+  };
+}
+
+/**
+ * Parses and validates plans list query parameters while preserving the default
+ * disabled-job behavior.
+ *
+ * @param query Raw query string values.
+ * @returns Parsed `cron.list` parameters with `includeDisabled` fixed to `true`.
+ */
+export function readDefaultCronJobListQuery(
+  query: DefaultCronJobListQuery
+): OpenClawCronListParams {
+  return {
+    includeDisabled: true,
     limit: parseNonNegativeIntegerString(query.limit, 50, "limit"),
     offset: parseNonNegativeIntegerString(query.offset, 0, "offset"),
     enabled: parseCronJobEnabled(query.enabled),

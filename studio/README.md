@@ -660,7 +660,7 @@ DIP 数字员工 Web 界面
 
 `GET /api/dip-studio/v1/plans`
 
-支持查询参数：`includeDisabled`、`limit`、`offset`、`enabled`、`sortBy`、`sortDir`
+支持查询参数：`limit`、`offset`、`enabled`、`sortBy`、`sortDir`
 
 响应：`200 application/json`
 
@@ -683,7 +683,7 @@ DIP 数字员工 Web 界面
 | -- | -- | -- | -- |
 | id | string | 是 | 数字员工 ID |
 
-支持查询参数：`includeDisabled`、`limit`、`offset`、`enabled`、`sortBy`、`sortDir`
+支持查询参数：`limit`、`offset`、`enabled`、`sortBy`、`sortDir`
 
 响应：`200 application/json`
 
