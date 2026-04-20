@@ -20,6 +20,8 @@
       "periodicTask": "Periodic task",
       "timedPlan": "Scheduled plan",
       "executionCondition": "Execution condition",
+      "executionConditionAt": "Scheduled execution",
+      "executionConditionEvery": "Recurring execution",
       "lastExecution": "Last execution",
       "nextExecution": "Next execution",
       "statusDisabled": "Paused",

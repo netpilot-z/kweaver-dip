@@ -20,6 +20,8 @@
       "periodicTask": "週期任務",
       "timedPlan": "定時計劃",
       "executionCondition": "執行條件",
+      "executionConditionAt": "定時執行",
+      "executionConditionEvery": "週期執行",
       "lastExecution": "最近執行",
       "nextExecution": "下次執行",
       "statusDisabled": "已暫停",

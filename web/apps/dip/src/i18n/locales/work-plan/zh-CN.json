@@ -20,6 +20,8 @@
       "periodicTask": "周期任务",
       "timedPlan": "定时计划",
       "executionCondition": "执行条件",
+      "executionConditionAt": "定时执行",
+      "executionConditionEvery": "周期执行",
       "lastExecution": "最近执行",
       "nextExecution": "下次执行",
       "statusDisabled": "已暂停",

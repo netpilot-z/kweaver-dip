@@ -50,6 +50,10 @@ export function planJobDescription(job: CronJob): string {
 
 /** 执行条件展示：wakeMode、payload.conditionLabel，否则尝试每日 Cron 文案 */
 export function planExecutionConditionText(job: CronJob): string {
+  const scheduleKind = job.schedule?.kind?.trim()
+  if (scheduleKind === 'at') return intl.get('workPlan.list.executionConditionAt')
+  if (scheduleKind === 'every') return intl.get('workPlan.list.executionConditionEvery')
+
   const w = job.wakeMode?.trim()
   if (w) return w
   const p = job.payload
