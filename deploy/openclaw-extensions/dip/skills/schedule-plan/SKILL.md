@@ -65,6 +65,7 @@ metadata:
 1. `sessionTarget` 必须是 "isolated"
 2. `payload.kind` 必须是 "agentTurn"
 3. `delivery.bestEffort` 必须是 true
+4. `delivery.mode` 必须是 "none"
 
 ## 【PLAN.md 模板】
 
