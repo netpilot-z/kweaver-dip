@@ -154,7 +154,7 @@ function PlanListItemInner({
         <Dropdown menu={{ items: operationItems }} trigger={['click']} placement="bottomRight">
           <button
             type="button"
-            className="hidden ml-2 group-hover:inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md border-0 bg-transparent text-[--dip-text-color-45] hover:bg-[rgba(0,0,0,0.06)]"
+            className="ml-2 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md border-0 bg-transparent text-[--dip-text-color-45] opacity-0 invisible pointer-events-none transition-opacity group-hover:opacity-100 group-hover:visible group-hover:pointer-events-auto hover:bg-[rgba(0,0,0,0.06)]"
             onClick={(event) => {
               event.stopPropagation()
             }}
