@@ -318,12 +318,13 @@ export async function createOpenClawArchivesStatusError(
 ): Promise<HttpError> {
   const responseText = await response.text();
   const trimmedResponseText = responseText.trim();
+  const statusCode = response.status === 404 ? 404 : 502;
   const message =
     trimmedResponseText === ""
       ? `OpenClaw /v1/archives returned HTTP ${response.status}`
       : `OpenClaw /v1/archives returned HTTP ${response.status}: ${trimmedResponseText}`;
 
-  return new HttpError(502, message);
+  return new HttpError(statusCode, message);
 }
 
 /**

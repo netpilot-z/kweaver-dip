@@ -160,9 +160,9 @@ export class DefaultCronLogic implements CronLogic {
     command: GetPlanContentCommand
   ): Promise<PlanContentResponse> {
     const job = await this.readOwnedJob(command.id, command.userId);
-    const archiveLookup = buildPlanArchiveLookup(job.sessionKey);
 
     try {
+      const archiveLookup = buildPlanArchiveLookup(job.sessionKey);
       const planResponse = await this.openClawArchivesHttpClient.getSessionArchiveSubpath(
         archiveLookup.digitalHumanId,
         archiveLookup.sessionId,
@@ -174,7 +174,15 @@ export class DefaultCronLogic implements CronLogic {
         content
       };
     } catch (error) {
-      throw normalizePlanContentReadError(error);
+      const normalizedError = normalizePlanContentReadError(error);
+
+      if (normalizedError.statusCode === 404) {
+        return {
+          content: ""
+        };
+      }
+
+      throw normalizedError;
     }
   }
 
@@ -281,16 +289,11 @@ export function buildPlanArchiveLookup(sessionKey: string): {
  */
 export function normalizePlanContentReadError(error: unknown): HttpError {
   if (error instanceof HttpError) {
-    return error;
-  }
+    if (error.statusCode === 404) {
+      return new HttpError(404, "PLAN.md not found");
+    }
 
-  if (
-    typeof error === "object" &&
-    error !== null &&
-    "code" in error &&
-    error.code === "ENOENT"
-  ) {
-    return new HttpError(404, "PLAN.md not found");
+    return error;
   }
 
   const message = error instanceof Error ? error.message : String(error);

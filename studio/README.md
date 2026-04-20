@@ -747,6 +747,8 @@ DIP 数字员工 Web 界面
 | -- | -- | -- |
 | content | string | 该计划关联的 `PLAN.md` 原始文本内容 |
 
+当计划任务不存在时返回 `404`；当该计划归档目录下不存在 `PLAN.md` 时返回 `200`，且 `content` 为空字符串。
+
 #### 编辑计划任务
 
 `PUT /api/dip-studio/v1/plans/{id}`
@@ -980,6 +982,7 @@ If any file cannot be read, explicitly report which path failed and why.
 - 对 cron run 会话，会读取 `archives/{runId}` 下的运行归档
 - 对创建计划的原始会话，会读取 `archives/{chatId}` 下的计划归档与镜像产物
 - `PLAN.md` 仅保留在原始计划会话对应的归档目录中，不会出现在 `runId` 目录下
+- 当归档目录不存在时返回 `200`，且 `contents` 为空数组
 
 #### 获取会话归档子路径内容
 
@@ -995,3 +998,4 @@ If any file cannot be read, explicitly report which path failed and why.
 响应：`200 application/json | application/octet-stream | text/html | text/plain`
 
 目录返回 JSON，文件返回原始内容。路径解析规则与“获取会话归档列表”一致。
+当归档子路径不存在时返回 `200`，且响应体为空。

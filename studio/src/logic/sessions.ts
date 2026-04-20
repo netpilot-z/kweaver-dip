@@ -246,7 +246,16 @@ export class DefaultSessionsLogic implements SessionsLogic {
     const result = await this.openClawArchivesHttpClient.listSessionArchives(
       archiveLookup.digitalHumanId,
       archiveLookup.sessionId
-    );
+    ).catch((error: unknown) => {
+      if (error instanceof HttpError && error.statusCode === 404) {
+        return {
+          path: "/",
+          contents: []
+        };
+      }
+
+      throw normalizeSessionArchiveReadError(error);
+    });
 
     return {
       ...result,
@@ -275,7 +284,17 @@ export class DefaultSessionsLogic implements SessionsLogic {
       archiveLookup.digitalHumanId,
       archiveLookup.sessionId,
       subpath
-    );
+    ).catch((error: unknown) => {
+      if (error instanceof HttpError && error.statusCode === 404) {
+        return {
+          status: 200,
+          headers: new Headers(),
+          body: new Uint8Array()
+        };
+      }
+
+      throw normalizeSessionArchiveReadError(error);
+    });
   }
 
   /**
@@ -753,4 +772,14 @@ export function readSessionArchiveLookup(key: string): {
     digitalHumanId,
     sessionId
   };
+}
+
+/**
+ * Normalizes archive read failures for session archive endpoints.
+ *
+ * @param error The unknown archive read error.
+ * @returns A normalized error instance.
+ */
+export function normalizeSessionArchiveReadError(error: unknown): Error {
+  return error instanceof Error ? error : new Error(String(error));
 }

@@ -87,7 +87,7 @@ describe("createOpenClawArchivesHeaders", () => {
 });
 
 describe("createOpenClawArchivesStatusError", () => {
-  it("returns a 502 error with upstream details", async () => {
+  it("returns a 502 error with non-404 upstream details", async () => {
     const response = new Response("denied", {
       status: 403
     });
@@ -95,6 +95,17 @@ describe("createOpenClawArchivesStatusError", () => {
     await expect(createOpenClawArchivesStatusError(response)).resolves.toMatchObject({
       statusCode: 502,
       message: "OpenClaw /v1/archives returned HTTP 403: denied"
+    });
+  });
+
+  it("preserves upstream 404 archive misses", async () => {
+    const response = new Response("Not Found", {
+      status: 404
+    });
+
+    await expect(createOpenClawArchivesStatusError(response)).resolves.toMatchObject({
+      statusCode: 404,
+      message: "OpenClaw /v1/archives returned HTTP 404: Not Found"
     });
   });
 });
