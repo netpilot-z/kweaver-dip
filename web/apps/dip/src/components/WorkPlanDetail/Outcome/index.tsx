@@ -37,7 +37,7 @@ const ResultsPanel = ({
   planId: _planId,
   dhId,
   sessionId,
-  previewDrawerGetContainer,
+  previewDrawerGetContainer: _previewDrawerGetContainer,
 }: ResultsPanelProps) => {
   const [rootLoading, setRootLoading] = useState(false)
   const [root, setRoot] = useState<SessionArchivesResponse | null>(null)
@@ -119,15 +119,6 @@ const ResultsPanel = ({
     sessionId,
   )
   const [previewFullscreenOpen, setPreviewFullscreenOpen] = useState(false)
-
-  const resolveDrawerContainer = useCallback((): HTMLElement => {
-    if (!previewDrawerGetContainer) return document.body
-    const node =
-      typeof previewDrawerGetContainer === 'function'
-        ? previewDrawerGetContainer()
-        : previewDrawerGetContainer
-    return node instanceof HTMLElement ? node : document.body
-  }, [previewDrawerGetContainer])
 
   useEffect(() => {
     if (preview === null) setPreviewFullscreenOpen(false)
@@ -288,7 +279,7 @@ const ResultsPanel = ({
         <ArchivePreviewDrawer
           open={previewFullscreenOpen}
           preview={preview}
-          getContainer={resolveDrawerContainer}
+          getContainer={document.body}
           isPreviewFullscreen
           showInlineDownload={false}
           onClose={() => {

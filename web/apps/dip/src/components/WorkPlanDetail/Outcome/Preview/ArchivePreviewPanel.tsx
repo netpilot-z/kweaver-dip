@@ -99,6 +99,8 @@ const ArchivePreviewPanel = ({
   onExitPreviewFullscreen,
 }: ArchivePreviewPanelProps) => {
   const codeLang = getCodeLangFromTitle(preview.title)
+  const fillViewportPreview =
+    isPreviewFullscreen && (preview.viewer === 'pdf' || preview.viewer === 'html')
 
   return (
     <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
@@ -115,7 +117,8 @@ const ArchivePreviewPanel = ({
       ) : null}
       <ScrollBarContainer
         className={classNames(
-          'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden p-4',
+          'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden',
+          fillViewportPreview ? 'p-0' : 'p-4',
           className,
         )}
       >
@@ -134,7 +137,10 @@ const ArchivePreviewPanel = ({
           <iframe
             title={preview.title}
             src={preview.blobUrl}
-            className="min-h-[min(480px,60vh)] w-full shrink-0 rounded-md border border-[--dip-border-color]"
+            className={classNames(
+              'w-full shrink-0 rounded-md border border-[--dip-border-color]',
+              fillViewportPreview ? 'h-full min-h-0 flex-1 rounded-none border-0' : 'min-h-[min(480px,60vh)]',
+            )}
           />
         ) : preview.viewer === 'image' && preview.blobUrl ? (
           <div className="flex w-full justify-center py-2">
@@ -188,7 +194,10 @@ const ArchivePreviewPanel = ({
           <iframe
             title={preview.title}
             srcDoc={injectHtmlPreviewStyle(preview.body)}
-            className="min-h-[min(520px,68vh)] w-full shrink-0 rounded-md border border-[--dip-border-color] bg-[--dip-white]"
+            className={classNames(
+              'w-full shrink-0 rounded-md border border-[--dip-border-color] bg-[--dip-white]',
+              fillViewportPreview ? 'h-full min-h-0 flex-1 rounded-none border-0' : 'min-h-[min(520px,68vh)]',
+            )}
           />
         ) : preview.viewer === 'markdown' && preview.body.trim() ? (
           <XMarkdown className={styles.markdownRoot}>{preview.body}</XMarkdown>
