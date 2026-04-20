@@ -777,6 +777,25 @@ DIP 数字员工 Web 界面
 
 响应：`204`
 
+#### 删除数字员工
+
+`DELETE /api/dip-studio/v1/digital-human/{id}`
+
+路径参数：
+
+| 参数 | 类型 | 是否必填 | 说明 |
+| -- | -- | -- | -- |
+| id | string | 是 | 数字员工 ID |
+
+支持查询参数：`deleteFiles`
+
+说明：
+
+- 删除数字员工时，服务会同步删除该数字员工名下的全部计划任务
+- `deleteFiles=false` 时仅删除 agent 配置，保留工作区文件；计划任务仍会被删除
+
+响应：`204`
+
 #### 创建数字员工
 
 `POST /api/dip-studio/v1/digital-human`

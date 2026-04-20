@@ -3,6 +3,7 @@ import { Router, type NextFunction, type Request, type Response } from "express"
 import {
   OpenClawAgentsGatewayAdapter,
 } from "../adapters/openclaw-agents-adapter";
+import { OpenClawCronGatewayAdapter } from "../adapters/openclaw-cron-adapter";
 import { getEnv, getOpenClawGatewayRuntimeConfig } from "../utils/env";
 import { HttpError } from "../errors/http-error";
 import {
@@ -46,8 +47,17 @@ const agentSkillsLogic = new DefaultAgentSkillsLogic(
   }),
   openClawAgentsAdapter
 );
+const openClawCronAdapter = new OpenClawCronGatewayAdapter(
+  OpenClawGatewayClient.getInstance({
+    url: env.openClawGatewayUrl,
+    token: env.openClawGatewayToken,
+    timeoutMs: env.openClawGatewayTimeoutMs,
+    configReader: getOpenClawGatewayRuntimeConfig
+  })
+);
 const digitalHumanLogic = new DefaultDigitalHumanLogic({
   openClawAgentsAdapter,
+  openClawCronAdapter,
   agentSkillsLogic
 });
 const builtInDigitalHumanLogic = new DefaultBuiltInDigitalHumanLogic();

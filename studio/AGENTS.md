@@ -8,16 +8,17 @@
 - 每次对 routes 进行更新时，同步更新 `docs/openapi` 下的对应文档，并更新 README.md 中的 API 部分
 
 ## 文档结构
-AGENTS.md（本文档）           项目的基本要求         
-ARCHITECTURE.md             项目的工程结构
-docs/                       项目相关的文档             
-├── design/                 设计文档
-│   ├── product/            产品设计
-│   ├── implementation/     实现设计
-├── openapi/                本服务对外提供的 API
-├── references/             参考文档
-│   ├── openapi/            项目中使用到的外部 API
-├── src/                    源代码
+AGENTS.md（本文档）                   项目的基本要求         
+ARCHITECTURE.md                     项目的工程结构
+docs/                               项目相关的文档             
+├── design/                         设计文档
+│   ├── product/                    产品设计
+│   ├── implementation/             实现设计
+├── openapi/                        本服务对外提供的 API
+├── references/                     参考文档
+│   ├── openapi/                    项目中使用到的外部 API
+│   ├── openclaw-websocket-rpc/     OpenClaw WebScoket RPC 接口
+├── src/                            源代码
 
 - 编写代码前，先读取 `ARCHITECTURE.md` 确认项目结构。
 - 编写 HTTP 接口层代码前：

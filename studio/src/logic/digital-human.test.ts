@@ -5,6 +5,7 @@ import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { HttpError } from "../errors/http-error";
+import type { OpenClawCronAdapter } from "../adapters/openclaw-cron-adapter";
 
 import type { AgentSkillsLogic } from "./agent-skills";
 
@@ -47,6 +48,25 @@ function stubAgentSkills(overrides?: Partial<AgentSkillsLogic>): AgentSkillsLogi
   } as AgentSkillsLogic;
 }
 
+function stubCronAdapter(
+  overrides?: Partial<OpenClawCronAdapter>
+): OpenClawCronAdapter {
+  return {
+    listCronJobs: vi.fn().mockResolvedValue({
+      jobs: [],
+      total: 0,
+      offset: 0,
+      limit: 200,
+      hasMore: false,
+      nextOffset: null
+    }),
+    updateCronJob: vi.fn(),
+    removeCronJob: vi.fn().mockResolvedValue({ removed: true }),
+    listCronRuns: vi.fn(),
+    ...overrides
+  } as OpenClawCronAdapter;
+}
+
 describe("DefaultDigitalHumanLogic", () => {
   it("fetches agents and enriches list with full detail fields", async () => {
     const openClawAgentsAdapter = {
@@ -74,6 +94,7 @@ describe("DefaultDigitalHumanLogic", () => {
     };
     const logic = new DefaultDigitalHumanLogic({
       openClawAgentsAdapter: openClawAgentsAdapter as never,
+      openClawCronAdapter: stubCronAdapter(),
       agentSkillsLogic: stubAgentSkills()
     });
 
@@ -119,6 +140,7 @@ describe("DefaultDigitalHumanLogic", () => {
     };
     const logic = new DefaultDigitalHumanLogic({
       openClawAgentsAdapter: openClawAgentsAdapter as never,
+      openClawCronAdapter: stubCronAdapter(),
       agentSkillsLogic: stubAgentSkills()
     });
 
@@ -148,6 +170,7 @@ describe("DefaultDigitalHumanLogic", () => {
     };
     const logic = new DefaultDigitalHumanLogic({
       openClawAgentsAdapter: openClawAgentsAdapter as never,
+      openClawCronAdapter: stubCronAdapter(),
       agentSkillsLogic: stubAgentSkills()
     });
 
@@ -217,6 +240,7 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
 
     const logic = new DefaultDigitalHumanLogic({
       openClawAgentsAdapter: adapter as never,
+      openClawCronAdapter: stubCronAdapter(),
       agentSkillsLogic: stubAgentSkills({
         getAgentSkills: vi.fn().mockResolvedValue({ agentId: id, skills: ["s1"] })
       })
@@ -295,6 +319,7 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
 
       const logic = new DefaultDigitalHumanLogic({
         openClawAgentsAdapter: adapter as never,
+        openClawCronAdapter: stubCronAdapter(),
         agentSkillsLogic: stubAgentSkills()
       });
 
@@ -357,6 +382,7 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
 
       const logic = new DefaultDigitalHumanLogic({
         openClawAgentsAdapter: adapter as never,
+        openClawCronAdapter: stubCronAdapter(),
         agentSkillsLogic: stubAgentSkills()
       });
 
@@ -401,6 +427,7 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
       };
       const logic = new DefaultDigitalHumanLogic({
         openClawAgentsAdapter: adapter as never,
+        openClawCronAdapter: stubCronAdapter(),
         agentSkillsLogic: stubAgentSkills()
       });
       const detail = await logic.getDigitalHuman(id);
@@ -449,6 +476,7 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
       };
       const logic = new DefaultDigitalHumanLogic({
         openClawAgentsAdapter: adapter as never,
+        openClawCronAdapter: stubCronAdapter(),
         agentSkillsLogic: stubAgentSkills()
       });
       const detail = await logic.getDigitalHuman(id);
@@ -497,6 +525,7 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
       };
       const logic = new DefaultDigitalHumanLogic({
         openClawAgentsAdapter: adapter as never,
+        openClawCronAdapter: stubCronAdapter(),
         agentSkillsLogic: stubAgentSkills()
       });
       const detail = await logic.getDigitalHuman(id);
@@ -545,6 +574,7 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
       };
       const logic = new DefaultDigitalHumanLogic({
         openClawAgentsAdapter: adapter as never,
+        openClawCronAdapter: stubCronAdapter(),
         agentSkillsLogic: stubAgentSkills()
       });
       const detail = await logic.getDigitalHuman(id);
@@ -570,6 +600,7 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
     };
     const logic = new DefaultDigitalHumanLogic({
       openClawAgentsAdapter: adapter as never,
+      openClawCronAdapter: stubCronAdapter(),
       agentSkillsLogic: stubAgentSkills()
     });
 
@@ -591,14 +622,58 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
     };
     const logic = new DefaultDigitalHumanLogic({
       openClawAgentsAdapter: adapter as never,
+      openClawCronAdapter: stubCronAdapter(),
       agentSkillsLogic: stubAgentSkills()
     });
 
     await expect(logic.getDigitalHuman("x")).rejects.toBe(forbidden);
   });
 
-  it("deleteDigitalHuman delegates to deleteAgent", async () => {
+  it("deleteDigitalHuman deletes the agent and its plans", async () => {
     const deleteAgent = vi.fn().mockResolvedValue({ ok: true });
+    const listCronJobs = vi.fn().mockResolvedValue({
+      jobs: [
+        {
+          id: "plan-1",
+          agentId: "agent-1",
+          sessionKey: "agent:agent-1:cron:plan-1:run:run-1",
+          name: "Plan 1",
+          enabled: true,
+          createdAtMs: 1,
+          updatedAtMs: 1,
+          schedule: {},
+          targetType: "session"
+        },
+        {
+          id: "plan-2",
+          agentId: "other-agent",
+          sessionKey: "agent:other-agent:cron:plan-2:run:run-1",
+          name: "Plan 2",
+          enabled: true,
+          createdAtMs: 1,
+          updatedAtMs: 1,
+          schedule: {},
+          targetType: "session"
+        },
+        {
+          id: "plan-3",
+          agentId: "agent-1",
+          sessionKey: "agent:agent-1:cron:plan-3:run:run-1",
+          name: "Plan 3",
+          enabled: false,
+          createdAtMs: 1,
+          updatedAtMs: 1,
+          schedule: {},
+          targetType: "session"
+        }
+      ],
+      total: 3,
+      offset: 0,
+      limit: 200,
+      hasMore: false,
+      nextOffset: null
+    });
+    const removeCronJob = vi.fn().mockResolvedValue({ removed: true });
     const logic = new DefaultDigitalHumanLogic({
       openClawAgentsAdapter: {
         listAgents: vi.fn(),
@@ -606,18 +681,149 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
         deleteAgent,
         getAgentFile: vi.fn(),
         setAgentFile: vi.fn(),
+        listAgentFiles: vi.fn(),
         getConfig: vi.fn(),
         patchConfig: vi.fn()
       } as never,
+      openClawCronAdapter: stubCronAdapter({
+        listCronJobs,
+        removeCronJob
+      }),
       agentSkillsLogic: stubAgentSkills()
     });
 
     await logic.deleteDigitalHuman("agent-1", false);
 
+    expect(listCronJobs).toHaveBeenCalledWith({
+      includeDisabled: true,
+      limit: 200,
+      offset: 0,
+      enabled: "all",
+      sortBy: "updatedAtMs",
+      sortDir: "desc"
+    });
     expect(deleteAgent).toHaveBeenCalledWith({
       agentId: "agent-1",
       deleteFiles: false
     });
+    expect(removeCronJob).toHaveBeenCalledTimes(2);
+    expect(removeCronJob).toHaveBeenCalledWith({ id: "plan-1" });
+    expect(removeCronJob).toHaveBeenCalledWith({ id: "plan-3" });
+  });
+
+  it("deleteDigitalHuman scans all cron pages before removing matching plans", async () => {
+    const listCronJobs = vi
+      .fn()
+      .mockResolvedValueOnce({
+        jobs: [
+          {
+            id: "plan-1",
+            agentId: "agent-1",
+            sessionKey: "agent:agent-1:cron:plan-1:run:run-1",
+            name: "Plan 1",
+            enabled: true,
+            createdAtMs: 1,
+            updatedAtMs: 1,
+            schedule: {},
+            targetType: "session"
+          }
+        ],
+        total: 2,
+        offset: 0,
+        limit: 200,
+        hasMore: true,
+        nextOffset: 200
+      })
+      .mockResolvedValueOnce({
+        jobs: [
+          {
+            id: "plan-2",
+            agentId: "agent-1",
+            sessionKey: "agent:agent-1:cron:plan-2:run:run-1",
+            name: "Plan 2",
+            enabled: true,
+            createdAtMs: 1,
+            updatedAtMs: 1,
+            schedule: {},
+            targetType: "session"
+          }
+        ],
+        total: 2,
+        offset: 200,
+        limit: 200,
+        hasMore: false,
+        nextOffset: null
+      });
+    const removeCronJob = vi.fn().mockResolvedValue({ removed: true });
+    const logic = new DefaultDigitalHumanLogic({
+      openClawAgentsAdapter: {
+        listAgents: vi.fn(),
+        createAgent: vi.fn(),
+        deleteAgent: vi.fn().mockResolvedValue({ ok: true }),
+        getAgentFile: vi.fn(),
+        setAgentFile: vi.fn(),
+        listAgentFiles: vi.fn(),
+        getConfig: vi.fn(),
+        patchConfig: vi.fn()
+      } as never,
+      openClawCronAdapter: stubCronAdapter({
+        listCronJobs,
+        removeCronJob
+      }),
+      agentSkillsLogic: stubAgentSkills()
+    });
+
+    await logic.deleteDigitalHuman("agent-1");
+
+    expect(listCronJobs).toHaveBeenNthCalledWith(1, expect.objectContaining({ offset: 0 }));
+    expect(listCronJobs).toHaveBeenNthCalledWith(2, expect.objectContaining({ offset: 200 }));
+    expect(removeCronJob).toHaveBeenCalledTimes(2);
+  });
+
+  it("deleteDigitalHuman stops when agent deletion fails", async () => {
+    const deleteAgent = vi.fn().mockRejectedValue(new Error("unknown agent id"));
+    const removeCronJob = vi.fn();
+    const logic = new DefaultDigitalHumanLogic({
+      openClawAgentsAdapter: {
+        listAgents: vi.fn(),
+        createAgent: vi.fn(),
+        deleteAgent,
+        getAgentFile: vi.fn(),
+        setAgentFile: vi.fn(),
+        listAgentFiles: vi.fn(),
+        getConfig: vi.fn(),
+        patchConfig: vi.fn()
+      } as never,
+      openClawCronAdapter: stubCronAdapter({
+        listCronJobs: vi.fn().mockResolvedValue({
+          jobs: [
+            {
+              id: "plan-1",
+              agentId: "agent-1",
+              sessionKey: "agent:agent-1:cron:plan-1:run:run-1",
+              name: "Plan 1",
+              enabled: true,
+              createdAtMs: 1,
+              updatedAtMs: 1,
+              schedule: {},
+              targetType: "session"
+            }
+          ],
+          total: 1,
+          offset: 0,
+          limit: 200,
+          hasMore: false,
+          nextOffset: null
+        }),
+        removeCronJob
+      }),
+      agentSkillsLogic: stubAgentSkills()
+    });
+
+    await expect(logic.deleteDigitalHuman("agent-1")).rejects.toMatchObject({
+      statusCode: 404
+    });
+    expect(removeCronJob).not.toHaveBeenCalled();
   });
 
   it("createDigitalHuman writes markdown via gateway RPC and configures skills", async () => {
@@ -647,6 +853,7 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
         getConfig: vi.fn(),
         patchConfig: vi.fn()
       } as never,
+      openClawCronAdapter: stubCronAdapter(),
       agentSkillsLogic: stubAgentSkills({ updateAgentSkills })
     });
 
@@ -707,6 +914,7 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
         getConfig: vi.fn(),
         patchConfig: vi.fn()
       } as never,
+      openClawCronAdapter: stubCronAdapter(),
       agentSkillsLogic: stubAgentSkills({ updateAgentSkills })
     });
 
@@ -745,6 +953,7 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
         getConfig: vi.fn(),
         patchConfig: vi.fn()
       } as never,
+      openClawCronAdapter: stubCronAdapter(),
       agentSkillsLogic: stubAgentSkills({ updateAgentSkills })
     });
 
@@ -771,6 +980,7 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
         getConfig: vi.fn(),
         patchConfig: vi.fn()
       } as never,
+      openClawCronAdapter: stubCronAdapter(),
       agentSkillsLogic: stubAgentSkills({ updateAgentSkills })
     });
 
@@ -811,6 +1021,7 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
 
     const logic = new DefaultDigitalHumanLogic({
       openClawAgentsAdapter: adapter as never,
+      openClawCronAdapter: stubCronAdapter(),
       agentSkillsLogic: stubAgentSkills({
         getAgentSkills: vi.fn().mockResolvedValue({
           agentId: id,
@@ -863,6 +1074,7 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
 
     const logic = new DefaultDigitalHumanLogic({
       openClawAgentsAdapter: adapter as never,
+      openClawCronAdapter: stubCronAdapter(),
       agentSkillsLogic: stubAgentSkills()
     });
 
@@ -911,6 +1123,7 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
         getConfig,
         patchConfig
       } as never,
+      openClawCronAdapter: stubCronAdapter(),
       agentSkillsLogic: stubAgentSkills()
     });
 
@@ -980,6 +1193,7 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
         getConfig,
         patchConfig
       } as never,
+      openClawCronAdapter: stubCronAdapter(),
       agentSkillsLogic: stubAgentSkills()
     });
 
@@ -1062,6 +1276,7 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
 
       const logic = new DefaultDigitalHumanLogic({
         openClawAgentsAdapter: adapter as never,
+        openClawCronAdapter: stubCronAdapter(),
         agentSkillsLogic: stubAgentSkills()
       });
 
@@ -1124,6 +1339,7 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
 
       const logic = new DefaultDigitalHumanLogic({
         openClawAgentsAdapter: adapter as never,
+        openClawCronAdapter: stubCronAdapter(),
         agentSkillsLogic: stubAgentSkills()
       });
 
@@ -1162,6 +1378,7 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
         getConfig,
         patchConfig
       } as never,
+      openClawCronAdapter: stubCronAdapter(),
       agentSkillsLogic: stubAgentSkills()
     });
 
@@ -1218,6 +1435,7 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
         getConfig: vi.fn().mockResolvedValue({ raw: "{}", hash: "h" }),
         patchConfig
       } as never,
+      openClawCronAdapter: stubCronAdapter(),
       agentSkillsLogic: stubAgentSkills()
     });
 
@@ -1266,6 +1484,7 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
         getConfig: vi.fn().mockResolvedValue({ raw: "{}", hash: "h" }),
         patchConfig
       } as never,
+      openClawCronAdapter: stubCronAdapter(),
       agentSkillsLogic: stubAgentSkills()
     });
 
@@ -1315,6 +1534,7 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
         getConfig,
         patchConfig
       } as never,
+      openClawCronAdapter: stubCronAdapter(),
       agentSkillsLogic: stubAgentSkills()
     });
 

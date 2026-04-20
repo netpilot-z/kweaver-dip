@@ -4,6 +4,7 @@ import { homedir } from "node:os";
 import { join } from "node:path";
 
 import type { OpenClawAgentsAdapter } from "../adapters/openclaw-agents-adapter";
+import type { OpenClawCronAdapter } from "../adapters/openclaw-cron-adapter";
 import { HttpError } from "../errors/http-error";
 import type {
   ChannelConfig,
@@ -16,6 +17,7 @@ import type {
   UpdateDigitalHumanRequest,
   UpdateDigitalHumanResult
 } from "../types/digital-human";
+import type { OpenClawCronJob } from "../types/plan";
 import { normalizeCreateDigitalHumanSkills } from "../utils/skills";
 import type { AgentSkillsLogic } from "./agent-skills";
 import {
@@ -27,6 +29,7 @@ import {
 } from "./digital-human-template";
 
 const HIDDEN_DIGITAL_HUMAN_IDS = new Set(["main", "__internal_skill_agent__"]);
+const DIGITAL_HUMAN_CRON_SCAN_LIMIT = 200;
 
 /**
  * Application logic used to manage digital humans.
@@ -87,10 +90,14 @@ export interface DigitalHumanLogicOptions {
   openClawAgentsAdapter: OpenClawAgentsAdapter;
 
   /**
+   * The adapter used to list and delete OpenClaw cron jobs.
+   */
+  openClawCronAdapter: OpenClawCronAdapter;
+
+  /**
    * Logic used to read and replace per-agent skill bindings (dip skills API).
    */
   agentSkillsLogic: AgentSkillsLogic;
-
 }
 
 /**
@@ -98,6 +105,7 @@ export interface DigitalHumanLogicOptions {
  */
 export class DefaultDigitalHumanLogic implements DigitalHumanLogic {
   private readonly openClawAgentsAdapter: OpenClawAgentsAdapter;
+  private readonly openClawCronAdapter: OpenClawCronAdapter;
   private readonly agentSkillsLogic: AgentSkillsLogic;
 
   /**
@@ -107,6 +115,7 @@ export class DefaultDigitalHumanLogic implements DigitalHumanLogic {
    */
   public constructor(options: DigitalHumanLogicOptions) {
     this.openClawAgentsAdapter = options.openClawAgentsAdapter;
+    this.openClawCronAdapter = options.openClawCronAdapter;
     this.agentSkillsLogic = options.agentSkillsLogic;
   }
 
@@ -247,10 +256,22 @@ export class DefaultDigitalHumanLogic implements DigitalHumanLogic {
     id: string,
     deleteFiles?: boolean
   ): Promise<void> {
-    await this.openClawAgentsAdapter.deleteAgent({
-      agentId: id,
-      deleteFiles
-    });
+    const relatedCronJobs = await this.listCronJobsForDigitalHuman(id);
+
+    try {
+      await this.openClawAgentsAdapter.deleteAgent({
+        agentId: id,
+        deleteFiles
+      });
+    } catch (error: unknown) {
+      throw toNotFoundIfAgentMissing(error, id);
+    }
+
+    await Promise.all(
+      relatedCronJobs.map(async (job) => {
+        await this.openClawCronAdapter.removeCronJob({ id: job.id });
+      })
+    );
   }
 
   /**
@@ -398,6 +419,40 @@ export class DefaultDigitalHumanLogic implements DigitalHumanLogic {
         "utf-8"
       );
     }
+  }
+
+  /**
+   * Fetches all cron jobs owned by the specified digital human.
+   *
+   * @param agentId The OpenClaw agent identifier.
+   * @returns All cron jobs whose `agentId` matches the digital human id.
+   */
+  private async listCronJobsForDigitalHuman(
+    agentId: string
+  ): Promise<OpenClawCronJob[]> {
+    const jobs: OpenClawCronJob[] = [];
+    let offset = 0;
+
+    while (true) {
+      const result = await this.openClawCronAdapter.listCronJobs({
+        includeDisabled: true,
+        limit: DIGITAL_HUMAN_CRON_SCAN_LIMIT,
+        offset,
+        enabled: "all",
+        sortBy: "updatedAtMs",
+        sortDir: "desc"
+      });
+
+      jobs.push(...result.jobs.filter((job) => job.agentId === agentId));
+
+      if (result.hasMore !== true || result.nextOffset === null) {
+        break;
+      }
+
+      offset = result.nextOffset;
+    }
+
+    return jobs;
   }
 }
 
