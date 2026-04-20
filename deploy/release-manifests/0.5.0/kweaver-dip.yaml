@@ -19,7 +19,7 @@ releases:
     version: 0.3.0-1d43acc
   mf-model-manager-nginx:
     chart: mf-model-manager-nginx
-    version: 0.5.0
+    version: 0.5.0-main.git-2a143e0.1796934 
   vega-web:
     chart: vega-web
     version: 0.5.1-main
