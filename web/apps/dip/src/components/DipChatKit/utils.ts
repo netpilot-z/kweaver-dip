@@ -53,6 +53,23 @@ export const getConversationTitle = (messageTurns: DipChatKitMessageTurn[]): str
   return truncate(firstQuestion, { length: 50, omission: '' })
 }
 
+export const maskFirstQuestionTurn = (
+  messageTurns: DipChatKitMessageTurn[],
+): DipChatKitMessageTurn[] => {
+  const firstQuestionTurnIndex = messageTurns.findIndex(
+    (turn) => turn.question.trim().length > 0 || turn.questionAttachments.length > 0,
+  )
+  if (firstQuestionTurnIndex < 0) return messageTurns
+  return messageTurns.map((turn, index) => {
+    if (index !== firstQuestionTurnIndex) return turn
+    return {
+      ...turn,
+      question: '',
+      questionAttachments: [],
+    }
+  })
+}
+
 export const isAsyncIterable = <T = unknown>(value: unknown): value is AsyncIterable<T> => {
   if (!value || typeof value !== 'object') {
     return false

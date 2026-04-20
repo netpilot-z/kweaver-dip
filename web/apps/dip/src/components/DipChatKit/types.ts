@@ -94,6 +94,7 @@ export interface DipChatKitProps {
   style?: React.CSSProperties
   locale?: DipChatKitLocale
   showHeader?: boolean
+  hideFirstUserMessage?: boolean
   initialSubmitPayload?: AiPromptSubmitPayload
   sessionId?: string
   assignEmployeeValue?: string

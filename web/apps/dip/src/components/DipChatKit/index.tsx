@@ -92,6 +92,7 @@ const DipChatKitInner: React.FC<Omit<DipChatKitProps, 'initialSubmitPayload' | '
   className,
   style,
   showHeader = true,
+  hideFirstUserMessage = false,
   sessionId,
   assignEmployeeValue,
   employeeOptions,
@@ -223,6 +224,7 @@ const DipChatKitInner: React.FC<Omit<DipChatKitProps, 'initialSubmitPayload' | '
                 employeeOptions={employeeOptions}
                 defaultEmployeeValue={defaultEmployeeValue}
                 inputPlaceholder={inputPlaceholder}
+                hideFirstUserMessage={hideFirstUserMessage}
                 onSessionKeyReady={onSessionKeyReady}
               />
             </div>
