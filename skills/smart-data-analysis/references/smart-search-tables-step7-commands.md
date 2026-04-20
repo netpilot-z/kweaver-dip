@@ -55,18 +55,5 @@ kweaver context-loader query-object-instance '{\"ot_id\":\"metadata\",\"conditio
 ### Linux 变量组装版本（推荐）
 
 ```bash
-query="用户问题"
-json=$(jq -nc --arg q "$query" '{
-  ot_id:"metadata",
-  condition:{
-    operation:"or",
-    sub_conditions:[
-      {field:"embeddings_text", operation:"match", value:$q},
-      {limit_value:1000, field:"embeddings_text", operation:"knn", value:$q, limit_key:"k"}
-    ]
-  },
-  limit:5
-}')
-json_escaped=$(printf '%s' "$json" | sed 's/"/\\"/g')
-kweaver context-loader query-object-instance "$json_escaped"
+query="绿色食品认证 生产企业 企业名称 核准产量" && json=$(jq -nc --arg q "$query" '{ot_id:"metadata",condition:{operation:"or",sub_conditions:[{field:"embeddings_text",operation:"match",value:$q},{limit_value:1000,field:"embeddings_text",operation:"knn",value:$q,limit_key:"k"}]},limit:30}') && json_escaped=$(printf '%s' "$json" | sed 's/"/\\"/g') && echo "JSON: $json" && echo "Escaped: $json_escaped" && kweaver context-loader query-object-instance "$json_escaped"
 ```

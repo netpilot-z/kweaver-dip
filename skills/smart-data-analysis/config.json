@@ -1,0 +1,89 @@
+{
+  "name": "smart-data-analysis",
+  "version": "1.1.0",
+  "openclaw": {
+    "skillKey": "smart-data-analysis"
+  },
+  "description": "数据分析总入口编排：先做环境检测与配置检查，再按意图路由到找表（smart-search-tables）或问数（smart-ask-data）子流程；仅在问数场景按需触发 execute-code-sync/json2plot。",
+  "defaults": {
+    "x_business_domain": "bd_public",
+    "progress_template": "[{flow}] 进度：已完成第 {step} 步（{name}）；下一步：{next}"
+  },
+  "tools": {
+    "smart_search_tables": {
+      "type": "subskill",
+      "reference": "skills/smart-data-analysis/references/smart-search-tables.md"
+    },
+    "smart_ask_data": {
+      "type": "subskill",
+      "reference": "skills/smart-data-analysis/references/smart-ask-data.md"
+    },
+    "execute_code_sync": {
+      "type": "subskill",
+      "reference": "skills/smart-data-analysis/references/execute-code-sync.md",
+      "url_path": "/api/v1/executions/sessions/sess-agent-default/execute-sync"
+    },
+    "smart_json2plot": {
+      "type": "subskill",
+      "reference": "skills/smart-data-analysis/references/smart-json2plot.md",
+      "url_path": "/api/af-sailor-agent/v1/assistant/tools/json2plot"
+    }
+  },
+  "pipeline": [
+    {
+      "step": 1,
+      "role": "environment_check",
+      "flow": "smart-data-analysis",
+      "required": true
+    },
+    {
+      "step": 2,
+      "role": "config_check",
+      "flow": "smart-data-analysis",
+      "required": true,
+      "source": "SOUL.md"
+    },
+    {
+      "step": 3,
+      "role": "intent_routing",
+      "flow": "smart-data-analysis",
+      "required": true
+    },
+    {
+      "step": 4,
+      "role": "dispatch_subflow",
+      "flow": "smart-data-analysis",
+      "required": true
+    },
+    {
+      "step": 5,
+      "role": "find_tables",
+      "flow": "smart-search-tables",
+      "trigger": "intent=find_table",
+      "reference": "skills/smart-data-analysis/references/smart-search-tables.md"
+    },
+    {
+      "step": 5,
+      "role": "ask_data",
+      "flow": "smart-ask-data",
+      "trigger": "intent=ask_data",
+      "reference": "skills/smart-data-analysis/references/smart-ask-data.md"
+    },
+    {
+      "step": 11,
+      "role": "post_process_code",
+      "flow": "smart-ask-data",
+      "trigger": "intent=ask_data and need_post_process=true",
+      "optional": true,
+      "reference": "skills/smart-data-analysis/references/execute-code-sync.md"
+    },
+    {
+      "step": 11,
+      "role": "chart_data",
+      "flow": "smart-ask-data",
+      "trigger": "intent=ask_data and need_chart=true",
+      "optional": true,
+      "reference": "skills/smart-data-analysis/references/smart-json2plot.md"
+    }
+  ]
+}
