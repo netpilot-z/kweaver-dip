@@ -42,7 +42,14 @@ export interface PlanListItemProps {
 export type PlanStatusPill = { text: string; className: string }
 
 /** 计划列表行展示用状态（左侧图标 + 右侧胶囊统一由此派生） */
-export type PlanJobDisplayStatus = 'disabled' | 'running' | 'ok' | 'error' | 'pending' | 'skipped'
+export type PlanJobDisplayStatus =
+  | 'disabled'
+  | 'running'
+  | 'ok'
+  | 'error'
+  | 'pending'
+  | 'skipped'
+  | 'ended'
 
 export interface PlanJobLeftIconStyle {
   boxClassName: string

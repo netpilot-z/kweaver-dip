@@ -25,6 +25,7 @@
       "statusOk": "[Completed]",
       "statusError": "[Failed]",
       "statusSkipped": "[Skipped]",
+      "statusEnded": "[Ended]",
       "statusDisabled": "[Paused]",
       "statusPending": "[Pending]"
     },

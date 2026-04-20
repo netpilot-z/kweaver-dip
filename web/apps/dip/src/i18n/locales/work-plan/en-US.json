@@ -25,6 +25,8 @@
       "lastExecution": "Last execution",
       "nextExecution": "Next execution",
       "statusDisabled": "Paused",
+      "statusEnded": "Ended",
+      "statusEndedBracketed": "[Ended]",
       "statusRunning": "Running",
       "statusDone": "Completed",
       "statusFailed": "Failed",

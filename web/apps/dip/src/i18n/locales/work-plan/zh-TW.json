@@ -25,6 +25,8 @@
       "lastExecution": "最近執行",
       "nextExecution": "下次執行",
       "statusDisabled": "已暫停",
+      "statusEnded": "已結束",
+      "statusEndedBracketed": "[已結束]",
       "statusRunning": "執行中",
       "statusDone": "已完成",
       "statusFailed": "失敗",

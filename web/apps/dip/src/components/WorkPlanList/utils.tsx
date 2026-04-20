@@ -9,6 +9,10 @@ import type {
   PlanStatusPill,
 } from './types'
 
+export function isEndedAtPlan(job: CronJob): boolean {
+  return job.schedule?.kind?.trim() === 'at' && job.state?.lastRunAtMs != null
+}
+
 /** 常见 Cron：分 时 日 月 周 均为 * 时解析为「每日 HH:mm」 */
 export function formatDailyCronLabel(expr: string): string | null {
   const parts = expr.trim().split(/\s+/).filter(Boolean)
@@ -155,10 +159,21 @@ const PLAN_JOB_DISPLAY: Record<PlanJobDisplayStatus, PlanJobDisplayEntry> = {
       iconClassName: 'text-lg text-[rgba(0,0,0,0.45)]',
     },
   },
+  ended: {
+    pill: {
+      text: intl.get('workPlan.list.statusEnded'),
+      className: 'bg-[rgba(0,0,0,0.06)] text-[rgba(0,0,0,0.65)]',
+    },
+    leftIcon: {
+      boxClassName: 'bg-[rgba(0,0,0,0.06)]',
+      iconClassName: 'text-lg text-[rgba(0,0,0,0.45)]',
+    },
+  },
 }
 
 /** 从 CronJob 解析展示状态（与 lastRunStatus：ok / error / skipped 等对齐） */
 export function getPlanJobDisplayStatus(job: CronJob): PlanJobDisplayStatus {
+  if (isEndedAtPlan(job)) return 'ended'
   if (!job.enabled) return 'disabled'
   if (job.state?.runningAtMs) return 'running'
   const last = job.state?.lastRunStatus?.toLowerCase()

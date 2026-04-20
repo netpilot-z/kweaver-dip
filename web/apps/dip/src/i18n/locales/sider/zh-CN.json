@@ -25,6 +25,7 @@
       "statusOk": "[已完成]",
       "statusError": "[失败]",
       "statusSkipped": "[已跳过]",
+      "statusEnded": "[已结束]",
       "statusDisabled": "[已暂停]",
       "statusPending": "[待执行]"
     },

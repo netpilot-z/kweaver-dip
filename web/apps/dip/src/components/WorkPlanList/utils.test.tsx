@@ -7,7 +7,7 @@ vi.mock('react-intl-universal', () => ({
 }))
 
 import type { CronJob } from '@/apis/dip-studio/plan'
-import { planExecutionConditionText } from './utils'
+import { getPlanJobDisplayStatus, isEndedAtPlan, planExecutionConditionText } from './utils'
 
 function createJob(overrides: Partial<CronJob> = {}): CronJob {
   return {
@@ -45,5 +45,15 @@ describe('planExecutionConditionText', () => {
         }),
       ),
     ).toBe('手动触发')
+  })
+
+  it('marks executed at plan as ended', () => {
+    const job = createJob({
+      enabled: false,
+      schedule: { kind: 'at' },
+      state: { lastRunAtMs: 1 },
+    })
+    expect(isEndedAtPlan(job)).toBe(true)
+    expect(getPlanJobDisplayStatus(job)).toBe('ended')
   })
 })

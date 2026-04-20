@@ -6,7 +6,7 @@ import { useState } from 'react'
 import intl from 'react-intl-universal'
 import type { CronJob } from '@/apis/dip-studio/plan'
 import IconFont from '@/components/IconFont'
-import { getPlanJobDisplayStatus } from '@/components/WorkPlanList/utils'
+import { getPlanJobDisplayStatus, isEndedAtPlan } from '@/components/WorkPlanList/utils'
 import { formatTotalDisplay } from '../utils'
 
 interface WorkPlanSectionProps {
@@ -51,6 +51,9 @@ export const WorkPlanSection = ({
         prefix: intl.get('sider.workPlan.statusSkipped'),
         colorClass: 'text-[rgba(0,0,0,0.65)]',
       }
+    }
+    if (status === 'ended') {
+      return { prefix: intl.get('sider.workPlan.statusEnded'), colorClass: 'text-[rgba(0,0,0,0.65)]' }
     }
     if (status === 'disabled') {
       return { prefix: intl.get('sider.workPlan.statusDisabled'), colorClass: 'text-[#D48806]' }
@@ -127,32 +130,45 @@ export const WorkPlanSection = ({
             ) : (
               plans.map((plan) => {
                 const isActive = selectedPlanId === plan.id
+                const isEnded = isEndedAtPlan(plan)
                 const { prefix: statusPrefix, colorClass } = getPlanStatusMeta(plan)
-                const operationItems: MenuProps['items'] = [
-                  {
-                    key: plan.enabled ? 'pause' : 'resume',
-                    label: plan.enabled
-                      ? intl.get('sider.workPlan.actionPause')
-                      : intl.get('sider.workPlan.actionEnable'),
-                    onClick: (e) => {
-                      e.domEvent.stopPropagation()
-                      if (plan.enabled) {
-                        void onPausePlan(plan.id)
-                      } else {
-                        void onResumePlan(plan.id)
-                      }
-                    },
-                  },
-                  {
-                    key: 'delete',
-                    label: intl.get('sider.workPlan.actionDelete'),
-                    danger: true,
-                    onClick: (e) => {
-                      e.domEvent.stopPropagation()
-                      handleDeletePlan(plan.id)
-                    },
-                  },
-                ]
+                const operationItems: MenuProps['items'] = isEnded
+                  ? [
+                      {
+                        key: 'delete',
+                        label: intl.get('sider.workPlan.actionDelete'),
+                        danger: true,
+                        onClick: (e) => {
+                          e.domEvent.stopPropagation()
+                          handleDeletePlan(plan.id)
+                        },
+                      },
+                    ]
+                  : [
+                      {
+                        key: plan.enabled ? 'pause' : 'resume',
+                        label: plan.enabled
+                          ? intl.get('sider.workPlan.actionPause')
+                          : intl.get('sider.workPlan.actionEnable'),
+                        onClick: (e) => {
+                          e.domEvent.stopPropagation()
+                          if (plan.enabled) {
+                            void onPausePlan(plan.id)
+                          } else {
+                            void onResumePlan(plan.id)
+                          }
+                        },
+                      },
+                      {
+                        key: 'delete',
+                        label: intl.get('sider.workPlan.actionDelete'),
+                        danger: true,
+                        onClick: (e) => {
+                          e.domEvent.stopPropagation()
+                          handleDeletePlan(plan.id)
+                        },
+                      },
+                    ]
                 return (
                   <button
                     key={`work-plan-${plan.id}`}
