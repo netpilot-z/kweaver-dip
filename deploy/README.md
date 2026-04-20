@@ -49,7 +49,7 @@ export INGRESS_NGINX_HTTP_PORT=8080
 export INGRESS_NGINX_HTTPS_PORT=8443
 
 # 3. Install KWeaver DIP
-bash ./deploy.sh kweaver-dip install
+bash ./deploy.sh kweaver-dip install --version 0.5.0
 
 # 4. Install OpenClaw DIP extensions
 openclaw plugins install ./openclaw-extensions/dip

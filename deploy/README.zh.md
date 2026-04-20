@@ -51,7 +51,7 @@ export INGRESS_NGINX_HTTP_PORT=8080
 export INGRESS_NGINX_HTTPS_PORT=8443
 
 # 3. 安装 KWeaver DIP
-bash ./deploy.sh kweaver-dip install
+bash ./deploy.sh kweaver-dip install --version 0.5.0
 
 # 4. 安装 OpenClaw DIP 插件
 openclaw plugins install ./openclaw-extensions/dip
@@ -139,7 +139,7 @@ Approved cc8d2143cf8fcd04161ade9e5161006c410a0bee65f835e2629792aa584bb119 (3ef17
 ./deploy.sh kweaver-dip install
 
 # 安装指定版本
-./deploy.sh kweaver-dip install --version=0.5.0
+./deploy.sh kweaver-dip install --version 0.5.0
 
 # 查看 DIP 状态
 ./deploy.sh kweaver-dip status
