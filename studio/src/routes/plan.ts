@@ -26,6 +26,11 @@ import type {
  */
 export interface CronJobListQuery {
   /**
+   * Include disabled jobs when true.
+   */
+  includeDisabled?: string;
+
+  /**
    * Maximum page size.
    */
   limit?: string;
