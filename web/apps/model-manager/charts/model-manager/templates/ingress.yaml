@@ -17,17 +17,3 @@ spec:
                   number: 80
             path: /mf-model-manager
             pathType: ImplementationSpecific
-          - backend:
-              service:
-                name: mf-model-manager
-                port:
-                  number: 9898
-            path: /api/mf-model-manager
-            pathType: Prefix
-          - backend:
-              service:
-                name: mf-model-api
-                port:
-                  number: 9898
-            path: /api/mf-model-api
-            pathType: Prefix
