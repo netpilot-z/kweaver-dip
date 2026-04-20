@@ -50,7 +50,6 @@ paths:
             type: string
             enum:
               - nextRunAtMs
-              - createdAtMs
               - updatedAtMs
               - name
             default: nextRunAtMs
@@ -130,7 +129,6 @@ paths:
             type: string
             enum:
               - nextRunAtMs
-              - createdAtMs
               - updatedAtMs
               - name
             default: nextRunAtMs

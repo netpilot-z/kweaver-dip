@@ -45,6 +45,14 @@ describe("readCronJobListQuery", () => {
     });
   });
 
+  it("rejects unsupported OpenClaw cron sort fields", () => {
+    expect(() =>
+      readCronJobListQuery({
+        sortBy: "createdAtMs"
+      })
+    ).toThrow("Invalid query parameter `sortBy`");
+  });
+
   it("rejects invalid enum values", () => {
     expect(() =>
       readCronJobListQuery({
@@ -79,6 +87,14 @@ describe("readDefaultCronJobListQuery", () => {
       sortBy: "nextRunAtMs",
       sortDir: "asc"
     });
+  });
+
+  it("rejects unsupported OpenClaw cron sort fields", () => {
+    expect(() =>
+      readDefaultCronJobListQuery({
+        sortBy: "createdAtMs"
+      })
+    ).toThrow("Invalid query parameter `sortBy`");
   });
 
   it("rejects invalid enum values", () => {

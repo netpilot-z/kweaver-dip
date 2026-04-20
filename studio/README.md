@@ -662,6 +662,8 @@ DIP 数字员工 Web 界面
 
 支持查询参数：`limit`、`offset`、`enabled`、`sortBy`、`sortDir`
 
+其中 `sortBy` 仅支持：`nextRunAtMs`、`updatedAtMs`、`name`。
+
 响应：`200 application/json`
 
 | 参数 | 类型 | 说明 |
@@ -684,6 +686,8 @@ DIP 数字员工 Web 界面
 | id | string | 是 | 数字员工 ID |
 
 支持查询参数：`limit`、`offset`、`enabled`、`sortBy`、`sortDir`
+
+其中 `sortBy` 仅支持：`nextRunAtMs`、`updatedAtMs`、`name`。
 
 响应：`200 application/json`
 

@@ -8,7 +8,6 @@ export type CronListEnabledFilter = "all" | "enabled" | "disabled";
  */
 export type CronListSortBy =
   | "nextRunAtMs"
-  | "createdAtMs"
   | "updatedAtMs"
   | "name";
 

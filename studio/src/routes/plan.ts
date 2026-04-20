@@ -551,7 +551,7 @@ export function parseCronJobSortBy(rawValue: string | undefined): CronListSortBy
   return parseStringEnum(
     rawValue,
     "nextRunAtMs",
-    ["nextRunAtMs", "createdAtMs", "updatedAtMs", "name"],
+    ["nextRunAtMs", "updatedAtMs", "name"],
     "sortBy"
   );
 }
