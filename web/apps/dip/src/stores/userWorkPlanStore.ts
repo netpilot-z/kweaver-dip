@@ -60,7 +60,6 @@ export const useUserWorkPlanStore = create<UserWorkPlanState>()((set, get) => ({
         const res = PLAN_LIST_USE_MOCK
           ? await mockFetchPlanListPage(0, 200)
           : await getCronJobList({
-              includeDisabled: true,
               offset: 0,
               // limit: 200,
               sortBy: 'updatedAtMs',

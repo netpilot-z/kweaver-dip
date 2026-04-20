@@ -160,8 +160,6 @@ export type SortDir = 'asc' | 'desc'
  * `getCronJobList`（`GET /plans`，见 `plan.paths.yaml`）的 query 参数。
  */
 export interface GetCronJobListParams {
-  /** 是否包含已禁用任务，默认 `true` */
-  includeDisabled?: boolean
   /** 分页大小，默认 `50` */
   limit?: number
   /** 分页偏移量，默认 `0` */
