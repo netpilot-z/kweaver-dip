@@ -1,0 +1,17 @@
+apiVersion: deploy.kweaver.ai/v1alpha1
+kind: VersionSet
+product: etrino
+version: 0.5.0
+source:
+  helmRepoName: kweaver
+  helmRepoUrl: https://kweaver-ai.github.io/helm-repo/
+releases:
+  vega-hdfs:
+    chart: vega-hdfs
+    version: 3.1.0-release
+  vega-calculate:
+    chart: vega-calculate
+    version: 3.3.4-release
+  vega-metadata:
+    chart: vega-metadata
+    version: 3.3.1-release

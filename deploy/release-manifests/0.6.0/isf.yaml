@@ -13,15 +13,15 @@ releases:
   hydra:
     chart: hydra
     version: 0.6.0-10288a4-20260410.1
+  sharemgnt:
+    chart: sharemgnt
+    version: 0.6.0-89990a1-20260410.4
   sharemgnt-single:
     chart: sharemgnt-single
     version: 0.6.0-89990a1-20260410.4
   user-management:
     chart: user-management
     version: 0.6.0-aed33e6-20260410.1
-  sharemgnt:
-    chart: sharemgnt
-    version: 0.6.0-89990a1-20260410.4
   authentication:
     chart: authentication
     version: 0.6.0-001416e-20260410.1

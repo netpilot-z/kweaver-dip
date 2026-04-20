@@ -83,8 +83,7 @@ the authorization has succeeded.
 
 3. After authorization, you can access:
 
-- `https://<node-ip>/deploy`: deployment console
-- `https://<node-ip>/studio`: KWeaver Studio
+- `https://<node-ip>/dip-hub`: DIP Hub
 
 Default username: `admin`
 Initial password: `eisoo.com`
@@ -145,35 +144,17 @@ Notes:
 ### Recommended commands
 
 ```bash
-# Install KWeaver DIP
+# Install KWeaver DIP (latest version)
 ./deploy.sh kweaver-dip install
 
-# Use a specific config file
-./deploy.sh kweaver-dip install --config=/root/.kweaver-ai/config.yaml
-
-# Download DIP + Core + ISF charts
-./deploy.sh kweaver-dip download
-
-# Download into a specific local directory
-./deploy.sh kweaver-dip download --charts_dir=/path/to/charts
-
-# Install DIP from pre-downloaded charts
-./deploy.sh kweaver-dip install --charts_dir=/path/to/charts
-
 # Install a specific version
-./deploy.sh kweaver-dip install --version=0.4.0
-
-# Download a specific version
-./deploy.sh kweaver-dip download --version=0.4.0
+./deploy.sh kweaver-dip install --version=0.5.0
 
 # Show DIP status
 ./deploy.sh kweaver-dip status
 
 # Uninstall the DIP application layer
 ./deploy.sh kweaver-dip uninstall
-
-# `dip` is an alias of `kweaver-dip`
-./deploy.sh dip install
 ```
 
 ### Dependency-layer and supplemental commands
@@ -189,62 +170,6 @@ Notes:
 ./deploy.sh infra install
 
 ```
-
-### Chart pre-download and cache
-
-- The default shared cache directory is `deploy/.tmp/charts`
-- `kweaver-dip download` downloads the full dependency charts for DIP, `kweaver-core`, and `isf`
-- `install` only uses local `.tgz` files when `--charts_dir=<dir>` is passed explicitly
-- If `download` cannot find `helm`, it installs `helm` first
-- `download` refreshes incrementally by default instead of re-downloading everything
-- If `--version` is set and `deploy/release-manifests/<version>/<product>.yaml` exists, the script resolves the exact release chart versions from that manifest
-- If `--version_file` is provided, it overrides the embedded manifest path
-- If no matching manifest exists, `--version` is used directly as the chart version
-
-Current embedded release manifests in this repo:
-
-```text
-deploy/release-manifests/
-├── 0.4.0/
-│   ├── isf.yaml
-│   ├── kweaver-core.yaml
-│   └── kweaver-dip.yaml
-└── 0.5.0/
-    ├── isf.yaml
-    └── kweaver-core.yaml
-```
-
-That means:
-
-- `kweaver-dip --version=0.4.0` can resolve through the embedded DIP manifest
-- `kweaver-dip --version=0.5.0` currently has no embedded `kweaver-dip.yaml`, so it falls back to the normal chart version resolution path
-
-### Versioned SQL initialization
-
-- SQL directories are organized under `deploy/scripts/sql/<version>/<product>/`
-- `isf install --version=<x>` executes `.sql` files under `deploy/scripts/sql/<x>/isf/`
-- `kweaver-core install --version=<x>` executes module directories under `deploy/scripts/sql/<x>/kweaver-core/`
-- `kweaver-dip install --version=<x>` only executes SQL when `deploy/scripts/sql/<x>/kweaver-dip/` exists and contains `.sql` files
-- Missing directories are skipped cleanly instead of failing the install
-- The current default SQL version is `0.5.0`
-
-Current SQL directories in this repo:
-
-```text
-deploy/scripts/sql/
-├── 0.4.0/
-│   ├── isf/
-│   └── kweaver-core/
-└── 0.5.0/
-    ├── isf/
-    └── kweaver-core/
-```
-
-If you use an external database:
-
-1. Set `depServices.rds.source_type` to `external`
-2. Fill in the external database connection values
-3. Run the matching versioned SQL scripts manually for the relevant product
 
 ## ⚙️ Configuration
 
@@ -273,19 +198,14 @@ accessAddress:
   scheme: https
   path: /
 
-dipStudio:
-  openClaw:
-    configHostPath: /Users/yannan/.openclaw/openclaw.json
-    workspaceHostPath: /Users/yannan/.openclaw/workspace
-
 depServices:
   rds:
     source_type: internal
     host: mariadb.resource.svc.cluster.local
     port: 3306
-    user: adp
+    user: kweaver
     password: ""
-    database: adp
+    database: kweaver
   redis:
     sourceType: internal
   mq:
@@ -295,12 +215,7 @@ depServices:
     host: opensearch-cluster-master.resource.svc.cluster.local
     protocol: https
     port: 9200
-```
-
-If you want to use the repository-local example config instead, pass it explicitly:
-
-```bash
-./deploy.sh kweaver-dip install --config=./conf/config.yaml
+  # Other service configurations...
 ```
 
 ## ✅ Verify deployment
@@ -337,7 +252,7 @@ deploy/
 `kweaver-dip uninstall` removes only the DIP application layer. It does not automatically remove `kweaver-core`, `isf`, or infrastructure.
 
 ```bash
-# 1. Remove the DIP application layer
+# 1. Remove the DIP application layer (or skip to step 3 for full reset)
 ./deploy.sh kweaver-dip uninstall
 
 # 2. Remove Core / ISF if you no longer need them
@@ -345,7 +260,7 @@ deploy/
 ./deploy.sh isf uninstall
 
 # 3. Reset infrastructure last
-./deploy.sh infra reset
+./deploy.sh k8s reset
 ```
 
 ## 🔍 Troubleshooting
@@ -356,8 +271,10 @@ deploy/
 # Check whether firewall is disabled
 systemctl status firewalld
 
-# Restart CoreDNS
-kubectl -n kube-system delete pod -l k8s-app=kube-dns
+# If pods cannot reach external network
+# Check if the host's DNS server has TCP 53 enabled. If not, run:
+kubectl -n kube-system edit core-dns
+# Add 'prefer_udp' below 'forward . /etc/resolv.conf {', then restart CoreDNS pods
 ```
 
 ### Pods fail to pull images

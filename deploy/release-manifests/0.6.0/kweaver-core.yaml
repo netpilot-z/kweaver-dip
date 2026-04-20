@@ -5,17 +5,24 @@ version: 0.6.0
 source:
   helmRepoName: kweaver
   helmRepoUrl: https://kweaver-ai.github.io/helm-repo/
+dependencies:
+- product: isf
+  version: 0.6.0
+  manifest: ./isf.yaml
+  optional: true
+  defaultEnabled: true
+  enabledIf: auth.enabled
 releases:
   kweaver-core-data-migrator:
     chart: kweaver-core-data-migrator
-    version: 0.6.0-main.20260410.4.9fd9eb7
+    version: 0.6.0
     stage: pre
   mf-model-manager:
     chart: mf-model-manager
-    version: 0.3.0
+    version: 0.6.0
   mf-model-api:
     chart: mf-model-api
-    version: 0.3.0
+    version: 0.6.0
   bkn-backend:
     chart: bkn-backend
     version: 0.6.0
@@ -49,9 +56,6 @@ releases:
   agent-retrieval:
     chart: agent-retrieval
     version: 0.6.0
-  data-retrieval:
-    chart: data-retrieval
-    version: 0.3.2
   agent-backend:
     chart: agent-backend
     version: 0.6.0
@@ -69,10 +73,10 @@ releases:
     version: 0.3.2
   oss-gateway-backend:
     chart: oss-gateway-backend
-    version: 0.5.0
+    version: 0.6.0
   otelcol-contrib:
     chart: otelcol-contrib
-    version: 0.2.1-refactor-monorepo.sha2962656
+    version: 0.2.3
   agent-observability:
     chart: agent-observability
-    version: 0.2.1-refactor-monorepo.sha2962656
+    version: 0.2.3

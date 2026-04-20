@@ -85,8 +85,7 @@ Approved cc8d2143cf8fcd04161ade9e5161006c410a0bee65f835e2629792aa584bb119 (3ef17
 
 3. 授权完成后，可访问：
 
-- `https://<节点IP>/deploy`：部署控制台
-- `https://<节点IP>/studio`：KWeaver Studio
+- `https://<节点IP>/dip-hub`：DIP Hub
 
 默认账号：`admin`
 初始密码：`eisoo.com`
@@ -136,26 +135,11 @@ Approved cc8d2143cf8fcd04161ade9e5161006c410a0bee65f835e2629792aa584bb119 (3ef17
 ### 推荐命令
 
 ```bash
-# 安装 KWeaver DIP（推荐入口）
+# 安装 KWeaver DIP 当前最新版本
 ./deploy.sh kweaver-dip install
 
-# 指定配置文件
-./deploy.sh kweaver-dip install --config=/root/.kweaver-ai/config.yaml
-
-# 预下载 DIP + Core + ISF charts
-./deploy.sh kweaver-dip download
-
-# 下载到指定目录
-./deploy.sh kweaver-dip download --charts_dir=/path/to/charts
-
-# 从本地 charts 安装 DIP
-./deploy.sh kweaver-dip install --charts_dir=/path/to/charts
-
-# 安装指定版本（当对应 manifest 存在时，会自动解析精确 chart 版本）
-./deploy.sh kweaver-dip install --version=0.4.0
-
-# 下载指定版本
-./deploy.sh kweaver-dip download --version=0.4.0
+# 安装指定版本
+./deploy.sh kweaver-dip install --version=0.5.0
 
 # 查看 DIP 状态
 ./deploy.sh kweaver-dip status
@@ -163,8 +147,6 @@ Approved cc8d2143cf8fcd04161ade9e5161006c410a0bee65f835e2629792aa584bb119 (3ef17
 # 卸载 DIP 应用层
 ./deploy.sh kweaver-dip uninstall
 
-# `dip` 是 `kweaver-dip` 的别名
-./deploy.sh dip install
 ```
 
 ### 依赖层与补充命令
@@ -176,66 +158,7 @@ Approved cc8d2143cf8fcd04161ade9e5161006c410a0bee65f835e2629792aa584bb119 (3ef17
 # 单独安装 ISF
 ./deploy.sh isf install
 
-# 仅安装基础设施和数据服务
-./deploy.sh infra install
-
 ```
-
-### Chart 预下载与缓存
-
-- 默认共享缓存目录是 `deploy/.tmp/charts`
-- `kweaver-dip download` 会同时下载 DIP、`kweaver-core`、`isf` 的完整依赖 chart
-- `install` 只有在显式传入 `--charts_dir=<目录>` 时，才会使用本地 `.tgz`
-- `download` 如果检测不到 `helm`，会先自动安装 `helm`
-- `download` 默认增量刷新，不会每次全量重下
-- 如果指定了 `--version`，且存在 `deploy/release-manifests/<version>/<product>.yaml`，脚本会优先按 manifest 解析每个 release 的精确 chart 版本
-- 如果显式传入 `--version_file`，会覆盖默认的 embedded manifest 路径
-- 如果没有对应 manifest，`--version` 会直接作为 chart 版本使用
-
-当前仓库内嵌的 release manifest 现状：
-
-```text
-deploy/release-manifests/
-├── 0.4.0/
-│   ├── isf.yaml
-│   ├── kweaver-core.yaml
-│   └── kweaver-dip.yaml
-└── 0.5.0/
-    ├── isf.yaml
-    └── kweaver-core.yaml
-```
-
-这意味着：
-
-- `kweaver-dip --version=0.4.0` 可以直接走内嵌 manifest 解析
-- `kweaver-dip --version=0.5.0` 当前没有对应的 `kweaver-dip.yaml`，会退回普通 chart 版本解析逻辑
-
-### SQL 按版本初始化
-
-- SQL 目录按 `deploy/scripts/sql/<version>/<product>/` 组织
-- `isf install --version=<x>` 会执行 `deploy/scripts/sql/<x>/isf/` 下存在的 `.sql`
-- `kweaver-core install --version=<x>` 会执行 `deploy/scripts/sql/<x>/kweaver-core/` 下各模块目录
-- `kweaver-dip install --version=<x>` 只有在 `deploy/scripts/sql/<x>/kweaver-dip/` 存在且包含 `.sql` 文件时才会执行
-- 缺失目录会被跳过，不会导致安装失败
-- 当前默认 SQL 版本是 `0.5.0`
-
-当前仓库内的 SQL 目录现状：
-
-```text
-deploy/scripts/sql/
-├── 0.4.0/
-│   ├── isf/
-│   └── kweaver-core/
-└── 0.5.0/
-    ├── isf/
-    └── kweaver-core/
-```
-
-如果你使用外部数据库：
-
-1. 将 `depServices.rds.source_type` 改为 `external`
-2. 补齐外部数据库连接信息
-3. 手动执行对应版本、对应产品下的 SQL 初始化脚本
 
 ## ⚙️ Configuration
 
@@ -269,9 +192,9 @@ depServices:
     source_type: internal
     host: mariadb.resource.svc.cluster.local
     port: 3306
-    user: adp
+    user: kweaver
     password: ""
-    database: adp
+    database: kweaver
   redis:
     sourceType: internal
   mq:
@@ -281,12 +204,7 @@ depServices:
     host: opensearch-cluster-master.resource.svc.cluster.local
     protocol: https
     port: 9200
-```
-
-如果需要使用仓库内的示例配置文件，也可以显式指定：
-
-```bash
-./deploy.sh kweaver-dip install --config=./conf/config.yaml
+  # 其他服务配置...
 ```
 
 ## ✅ 验证部署
@@ -323,7 +241,7 @@ deploy/
 `kweaver-dip uninstall` 只卸载 DIP 应用层，不会自动删除 `kweaver-core`、`isf` 和基础设施。
 
 ```bash
-# 1. 卸载 DIP 应用层
+# 1. 卸载 DIP 应用层，也可以直接执行步骤 3 全部重置
 ./deploy.sh kweaver-dip uninstall
 
 # 2. 如不再需要 Core / ISF，可继续卸载
@@ -331,7 +249,7 @@ deploy/
 ./deploy.sh isf uninstall
 
 # 3. 最后重置基础设施
-./deploy.sh infra reset
+./deploy.sh k8s reset
 ```
 
 ## 🔍 Troubleshooting
@@ -342,8 +260,10 @@ deploy/
 # 检查防火墙是否关闭
 systemctl status firewalld
 
-# 重启 CoreDNS
-kubectl -n kube-system delete pod -l k8s-app=kube-dns
+# pod内到外面的网络不通
+检查主机所指向的 dns server是否启用tcp 53，如未启用可以执行
+kubectl -n kube-system edit core-dns 
+把 prefer_udp 添加到 forward . /etc/resolv.conf { 下面，再重启coredns 的pod
 ```
 
 ### Pod 拉取镜像失败

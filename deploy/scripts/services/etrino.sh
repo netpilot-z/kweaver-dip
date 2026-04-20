@@ -6,6 +6,36 @@
 # Read namespace from config file or use default
 NAMESPACE="${NAMESPACE:-kweaver}"
 CONFIG_FILE="${CONFIG_FILE:-$HOME/.kweaver-ai/config.yaml}"
+HELM_REPO_NAME="${HELM_REPO_NAME:-myrepo}"
+REGISTRY=""
+
+VEGA_METADATA_VERSION="3.3.1-release"
+VEGA_CALCULATE_VERSION="3.3.4-release"
+VEGA_HDFS_VERSION="3.1.0-release"
+
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --helm-repo-name)
+            HELM_REPO_NAME="$2"
+            shift 2
+            ;;
+        --registry)
+            REGISTRY="$2"
+            shift 2
+            ;;
+        *)
+            echo "Unknown option: $1"
+            exit 1
+            ;;
+    esac
+done
+
+# Build registry set-string if specified
+REGISTRY_SET_STRING=""
+if [ -n "$REGISTRY" ]; then
+    REGISTRY_SET_STRING="--set-string image.registry=$REGISTRY"
+fi
 
 # Try to read namespace from config file if it exists
 if [[ -f "${CONFIG_FILE}" ]]; then
@@ -95,18 +125,7 @@ done
 
 echo "Directory creation completed!"
 
-# 4. Add Helm repository
-echo "Adding Helm repository..."
-if helm repo list 2>/dev/null | grep -q "^myrepo"; then
-    echo "Helm repo 'myrepo' already exists, updating..."
-    helm repo update myrepo
-else
-    echo "Adding new Helm repo 'myrepo'..."
-    helm repo add myrepo https://kweaver-ai.github.io/helm-repo/
-    helm repo update
-fi
-
-# 5. Check config file
+# 4. Check config file
 if [ ! -f "$CONFIG_FILE" ]; then
     echo "WARNING: Config file not found at $CONFIG_FILE"
     echo "Installing without custom values file..."
@@ -116,26 +135,30 @@ else
     VALUES_FLAG="-f $CONFIG_FILE"
 fi
 
-# 6. Install services in kweaver namespace
+# 5. Install services in kweaver namespace
 echo "Installing Etrino services in ${NAMESPACE} namespace..."
+echo "Using Helm repo: ${HELM_REPO_NAME}"
+if [ -n "$REGISTRY" ]; then
+    echo "Using image registry: ${REGISTRY}"
+fi
 
 if [ "$VEGA_HDFS_INSTALLED" = false ]; then
     echo "Installing vega-hdfs..."
-    helm install -n "$NAMESPACE" vega-hdfs myrepo/vega-hdfs --version 3.1.0-release $VALUES_FLAG
+    helm install -n "$NAMESPACE" vega-hdfs ${HELM_REPO_NAME}/vega-hdfs --version $VEGA_HDFS_VERSION $VALUES_FLAG $REGISTRY_SET_STRING --set namespace=$NAMESPACE
 else
     echo "Skipping vega-hdfs (already installed)"
 fi
 
 if [ "$VEGA_CALCULATE_INSTALLED" = false ]; then
     echo "Installing vega-calculate..."
-    helm install -n "$NAMESPACE" vega-calculate myrepo/vega-calculate --version 3.3.3-release $VALUES_FLAG
+    helm install -n "$NAMESPACE" vega-calculate ${HELM_REPO_NAME}/vega-calculate --version $VEGA_CALCULATE_VERSION $VALUES_FLAG $REGISTRY_SET_STRING --set namespace=$NAMESPACE
 else
     echo "Skipping vega-calculate (already installed)"
 fi
 
 if [ "$VEGA_METADATA_INSTALLED" = false ]; then
     echo "Installing vega-metadata..."
-    helm install -n "$NAMESPACE" vega-metadata myrepo/vega-metadata --version 3.3.0-release $VALUES_FLAG
+    helm install -n "$NAMESPACE" vega-metadata ${HELM_REPO_NAME}/vega-metadata --version $VEGA_METADATA_VERSION $VALUES_FLAG $REGISTRY_SET_STRING --set namespace=$NAMESPACE
 else
     echo "Skipping vega-metadata (already installed)"
 fi
