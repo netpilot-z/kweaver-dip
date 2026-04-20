@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
+import { HttpError } from "../errors/http-error";
 import { DefaultCronLogic } from "./plan";
 import type { OpenClawArchivesHttpClient } from "../infra/openclaw-archives-http-client";
 
@@ -491,7 +492,7 @@ describe("DefaultCronLogic", () => {
     expect(getSessionArchiveSubpath).toHaveBeenCalledWith("dh-1", "chat-1", "PLAN.md");
   });
 
-  it("forwards archive read failure when PLAN.md is missing upstream", async () => {
+  it("returns empty content when PLAN.md is missing upstream", async () => {
     const listCronJobs = vi.fn().mockResolvedValue({
       jobs: [
         {
@@ -514,9 +515,9 @@ describe("DefaultCronLogic", () => {
       hasMore: false,
       nextOffset: null
     });
-    const getSessionArchiveSubpath = vi.fn().mockRejectedValue(
-      new Error("OpenClaw /v1/archives returned HTTP 404: Not Found")
-    );
+    const getSessionArchiveSubpath = vi
+      .fn()
+      .mockRejectedValue(new HttpError(404, "OpenClaw /v1/archives returned HTTP 404"));
     const logic = new DefaultCronLogic(
       {
         listCronJobs,
@@ -535,9 +536,55 @@ describe("DefaultCronLogic", () => {
         id: "job-1",
         userId: "user-1"
       })
+    ).resolves.toEqual({
+      content: ""
+    });
+  });
+
+  it("wraps unexpected PLAN.md read failures as upstream errors", async () => {
+    const listCronJobs = vi.fn().mockResolvedValue({
+      jobs: [
+        {
+          id: "job-1",
+          agentId: "dh-1",
+          sessionKey: "agent:dh-1:user:user-1:direct:chat-1",
+          name: "Job 1",
+          enabled: true,
+          createdAtMs: 1,
+          updatedAtMs: 2,
+          schedule: {
+            expr: "0 9 * * *",
+            tz: "Asia/Shanghai"
+          }
+        }
+      ],
+      total: 1,
+      offset: 0,
+      limit: 200,
+      hasMore: false,
+      nextOffset: null
+    });
+    const logic = new DefaultCronLogic(
+      {
+        listCronJobs,
+        updateCronJob: vi.fn(),
+        removeCronJob: vi.fn(),
+        listCronRuns: vi.fn()
+      },
+      {
+        listSessionArchives: vi.fn(),
+        getSessionArchiveSubpath: vi.fn().mockRejectedValue(new Error("boom"))
+      }
+    );
+
+    await expect(
+      logic.getPlanContent({
+        id: "job-1",
+        userId: "user-1"
+      })
     ).rejects.toMatchObject({
       statusCode: 502,
-      message: "Failed to read PLAN.md: OpenClaw /v1/archives returned HTTP 404: Not Found"
+      message: "Failed to read PLAN.md: boom"
     });
   });
 

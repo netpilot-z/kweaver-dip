@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
+import { HttpError } from "../errors/http-error";
 import {
   buildAggregatedFileContentPart,
   buildSanitizedMessageContentFromArray,
@@ -13,6 +14,7 @@ import {
   hasMatchingSessionUserId,
   isHiddenSessionArchiveEntry,
   normalizeAttachmentEntry,
+  normalizeSessionArchiveReadError,
   readSessionArchiveLookup,
   sanitizeSessionGetResultMessages,
   withDerivedTitles
@@ -259,6 +261,43 @@ describe("DefaultSessionsLogic", () => {
       contents: [{ name: "report.md", type: "file" }]
     });
     expect(listSessionArchives).toHaveBeenCalledWith("de_finance", "session-1");
+  });
+
+  it("returns empty archive payloads when session archives are missing", async () => {
+    const logic = new DefaultSessionsLogic(
+      {
+        listSessions: vi.fn(),
+        getSession: vi.fn(),
+        deleteSession: vi.fn(),
+        previewSessions: vi.fn()
+      },
+      {
+        listSessionArchives: vi
+          .fn()
+          .mockRejectedValue(new HttpError(404, "OpenClaw /v1/archives returned HTTP 404")),
+        getSessionArchiveSubpath: vi
+          .fn()
+          .mockRejectedValue(new HttpError(404, "OpenClaw /v1/archives returned HTTP 404"))
+      }
+    );
+
+    await expect(
+      logic.getSessionArchives("agent:de_finance:user:user-1:direct:session-1")
+    ).resolves.toEqual({
+      path: "/",
+      contents: []
+    });
+
+    await expect(
+      logic.getSessionArchiveSubpath(
+        "agent:de_finance:user:user-1:direct:session-1",
+        "reports/today.md"
+      )
+    ).resolves.toEqual({
+      status: 200,
+      headers: new Headers(),
+      body: new Uint8Array()
+    });
   });
 
   it("delegates previewSessions to the adapter", async () => {
@@ -613,5 +652,16 @@ describe("sessions logic helpers", () => {
     expect(() => readSessionArchiveLookup("session-1")).toThrow(
       "Invalid path parameter `key`"
     );
+  });
+
+  it("normalizes session archive read errors", () => {
+    const notFound = new HttpError(404, "missing");
+    expect(normalizeSessionArchiveReadError(notFound)).toBe(notFound);
+
+    const upstreamError = new Error("boom");
+    expect(normalizeSessionArchiveReadError(upstreamError)).toBe(upstreamError);
+    expect(normalizeSessionArchiveReadError("boom")).toMatchObject({
+      message: "boom"
+    });
   });
 });

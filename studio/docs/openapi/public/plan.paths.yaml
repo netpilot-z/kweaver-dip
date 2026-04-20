@@ -245,7 +245,11 @@ paths:
         "403":
           $ref: '../common.schemas.yaml#/errors/Forbidden'
         "404":
-          $ref: '../common.schemas.yaml#/errors/NotFound'
+          description: 计划任务不存在；若仅 PLAN.md 不存在，返回 200 且 content 为空字符串
+          content:
+            application/json:
+              schema:
+                $ref: '../common.schemas.yaml#/schemas/ErrorResponse'
         "409":
           $ref: '../common.schemas.yaml#/errors/Conflict'
         "500":
