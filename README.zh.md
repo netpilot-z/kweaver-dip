@@ -61,15 +61,15 @@ dnf install containerd.io
 git clone https://github.com/kweaver-ai/kweaver-dip.git
 cd kweaver-dip/deploy
 
-# 2. 安装 KWeaver DIP
-sudo ./deploy.sh kweaver-dip install
+# 2. （可选）自定义访问端口
+# 默认情况下，ingress-nginx 使用 80/443 端口。如需使用其他端口（例如 8080/8443）：
+export INGRESS_NGINX_HTTP_PORT=8080
+export INGRESS_NGINX_HTTPS_PORT=8443
 
-# 3. 安装 Kweaver-SDK
-# 如果您选择使用 KWeaver DIP 自带的 OpenClaw 可以跳过此步
-npm install -g @kweaver-ai/kweaver-sdk
+# 3. 安装 KWeaver DIP
+bash ./deploy.sh kweaver-dip install --version 0.5.0
 
 # 4. 安装 OpenClaw DIP 插件
-# 如果您选择使用 KWeaver DIP 自带的 OpenClaw 可以跳过此步
 openclaw plugins install ./openclaw-extensions/dip
 ```
 
