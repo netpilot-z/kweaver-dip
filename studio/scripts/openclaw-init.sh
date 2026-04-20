@@ -2,6 +2,15 @@
 
 set -eu
 
+ensure_openclaw_config_exists() {
+  CONFIG_PATH="${HOME}/.openclaw/openclaw.json"
+  mkdir -p "$(dirname "$CONFIG_PATH")"
+
+  if [ ! -s "$CONFIG_PATH" ]; then
+    printf '{}\n' > "$CONFIG_PATH"
+  fi
+}
+
 resolve_installed_dip_plugin_dir() {
   PLUGIN_INFO_OUTPUT="$(openclaw plugins info dip --json 2>&1 || true)"
 
@@ -43,5 +52,6 @@ install_dip_plugin() {
   openclaw plugins install /app/extensions/dip
 }
 
-install_dip_plugin
+ensure_openclaw_config_exists
+install_dip_plugin || echo "dip plugin installation failed; continuing init flow"
 node /app/scripts/init_agents/index.mjs

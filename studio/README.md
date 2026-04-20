@@ -141,7 +141,8 @@ docker run \
 
 在 Kubernetes / Helm 部署中，镜像启动前会先执行 `init-container`：
 
-- 安装/刷新 `dip` OpenClaw 插件
+- 若挂载目录中不存在 `openclaw.json` 或该文件为空，会先创建一个最小 `{}` 配置
+- 安装/刷新 `dip` OpenClaw 插件；若 OpenClaw CLI 仍执行失败，会继续执行后续初始化流程
 - 执行 `node /app/scripts/init_agents/index.mjs`，同步内置 Agent 工作区与相关配置
 
 主容器只负责启动 Studio 服务与 OpenClaw Gateway 守护进程。
