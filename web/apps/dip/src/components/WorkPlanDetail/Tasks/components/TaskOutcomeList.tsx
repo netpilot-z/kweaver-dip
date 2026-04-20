@@ -11,7 +11,7 @@ import {
   VideoCameraOutlined,
 } from '@ant-design/icons'
 import { Spin } from 'antd'
-import { memo, useEffect, useMemo, useState } from 'react'
+import { memo, useEffect, useState } from 'react'
 import intl from 'react-intl-universal'
 import {
   getSessionArchiveSubpath,
@@ -29,7 +29,6 @@ import {
   mockGetDigitalHumanSessionArchives,
   RESULTS_PANEL_USE_MOCK,
 } from '../../Outcome/resultsPanelMock'
-import { usePreviewDrawerContainer } from '../previewDrawerContainerContext'
 
 export type TaskOutcomeListProps = {
   digitalHumanId?: string
@@ -149,15 +148,6 @@ function TaskOutcomeListInner({ digitalHumanId, sessionId }: TaskOutcomeListProp
   const [entries, setEntries] = useState<SessionArchiveFileItem[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [drawerOpen, setDrawerOpen] = useState(false)
-  const previewDrawerGetContainer = usePreviewDrawerContainer()
-  const drawerGetContainer = useMemo(() => {
-    if (!previewDrawerGetContainer) return undefined
-    if (typeof previewDrawerGetContainer === 'function') {
-      return () => previewDrawerGetContainer() ?? document.body
-    }
-    return previewDrawerGetContainer
-  }, [previewDrawerGetContainer])
   const { preview, openFilePreview, closePreview, downloadFile } = useArchivePreview(
     dhId ?? '',
     sessionIdTrimmed ?? '',
@@ -231,7 +221,6 @@ function TaskOutcomeListInner({ digitalHumanId, sessionId }: TaskOutcomeListProp
                 type="button"
                 className="flex w-full items-center justify-between rounded-md border border-[--dip-border-color] bg-[--dip-white] px-3 py-2 text-left transition-colors hover:border-[--dip-primary-color] hover:bg-[--dip-hover-bg-color]"
                 onClick={() => {
-                  setDrawerOpen(true)
                   void openFilePreview(item.path, item.name)
                 }}
               >
@@ -251,14 +240,12 @@ function TaskOutcomeListInner({ digitalHumanId, sessionId }: TaskOutcomeListProp
       </ul>
 
       <ArchivePreviewDrawer
-        open={drawerOpen}
+        open={preview !== null}
         preview={preview}
         size="100%"
-        getContainer={drawerGetContainer}
-        onClose={() => {
-          setDrawerOpen(false)
-          closePreview()
-        }}
+        getContainer={document.body}
+        isPreviewFullscreen
+        onClose={closePreview}
         onDownload={() => {
           if (!preview) return
           return downloadFile(preview.subpath, preview.title)

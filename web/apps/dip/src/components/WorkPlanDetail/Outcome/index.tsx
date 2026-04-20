@@ -9,7 +9,7 @@ import Empty from '@/components/Empty'
 import IconFont from '@/components/IconFont'
 import ScrollBarContainer from '@/components/ScrollBarContainer'
 import styles from './index.module.less'
-import { ArchivePreviewDrawer, ArchivePreviewPanel, useArchivePreview } from './Preview'
+import { ArchivePreviewDrawer, useArchivePreview } from './Preview'
 import {
   mockGetDigitalHumanSessionArchiveSubpath,
   mockGetDigitalHumanSessionArchives,
@@ -118,11 +118,6 @@ const ResultsPanel = ({
     dhId,
     sessionId,
   )
-  const [previewFullscreenOpen, setPreviewFullscreenOpen] = useState(false)
-
-  useEffect(() => {
-    if (preview === null) setPreviewFullscreenOpen(false)
-  }, [preview])
 
   const collapseItems = useMemo(() => {
     return dateKeys.map((dateKey) => {
@@ -264,29 +259,13 @@ const ResultsPanel = ({
         </div>
       </div>
       {preview !== null && (
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col border-l border-[--dip-border-color] bg-[--dip-white]">
-          <ArchivePreviewPanel
-            preview={preview}
-            showHeader
-            onClose={closePreview}
-            onDownload={() => downloadFile(preview.subpath, preview.title)}
-            showInlineDownload={false}
-            onEnterPreviewFullscreen={() => setPreviewFullscreenOpen(true)}
-          />
-        </div>
-      )}
-      {preview !== null && previewFullscreenOpen && (
         <ArchivePreviewDrawer
-          open={previewFullscreenOpen}
+          open
           preview={preview}
           getContainer={document.body}
           isPreviewFullscreen
           showInlineDownload={false}
-          onClose={() => {
-            setPreviewFullscreenOpen(false)
-            closePreview()
-          }}
-          onExitPreviewFullscreen={() => setPreviewFullscreenOpen(false)}
+          onClose={closePreview}
           onDownload={() => downloadFile(preview.subpath, preview.title)}
         />
       )}
