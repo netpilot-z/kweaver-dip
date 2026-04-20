@@ -5,9 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import {
   type GuideInitializeRequest,
   type GuideInitializeResponse,
-  getOpenClawDetectedConfig,
   initializeGuide,
-  type OpenClawDetectedConfig,
 } from '@/apis/dip-studio/guide'
 import ScrollBarContainer from '@/components/ScrollBarContainer'
 import { useUserInfoStore } from '@/stores/userInfoStore'
@@ -15,7 +13,7 @@ import CheckEnvironmentStep from './components/CheckEnvironmentStep'
 import ConnectOpenClawStep from './components/ConnectOpenClawStep'
 import InitializeResultStep from './components/InitializeResultStep'
 import SelectPresetDigitalHumanStep from './components/SelectPresetDigitalHumanStep'
-import type { StepKey } from './types'
+import { DEFAULT_KWEAVER_BASE_URL, type StepKey } from './types'
 
 const stepTitles = [
   'initialConfiguration.stepTitles.connect',
@@ -30,8 +28,8 @@ const InitialConfiguration = () => {
   const isAdmin = useUserInfoStore((s) => s.isAdmin)
   const [step, setStep] = useState<StepKey>(0)
 
-  const [loading, setLoading] = useState(false)
-  const [detectedConfig, setDetectedConfig] = useState<OpenClawDetectedConfig | null>(null)
+  // const [loading, setLoading] = useState(false)
+  // const [detectedConfig, setDetectedConfig] = useState<OpenClawDetectedConfig | null>(null)
   const [openClawValues, setOpenClawValues] = useState<GuideInitializeRequest | null>(null)
 
   const [submitting, setSubmitting] = useState(false)
@@ -40,18 +38,18 @@ const InitialConfiguration = () => {
 
   const [form] = Form.useForm<GuideInitializeRequest>()
 
-  const fetchOpenClawConfig = async () => {
-    try {
-      setLoading(true)
-      const cfg = await getOpenClawDetectedConfig()
-      setDetectedConfig(cfg)
-    } catch {
-      // 获取失败时静默处理，允许用户手动填写
-      setDetectedConfig(null)
-    } finally {
-      setLoading(false)
-    }
-  }
+  // const fetchOpenClawConfig = async () => {
+  //   try {
+  //     setLoading(true)
+  //     const cfg = await getOpenClawDetectedConfig()
+  //     setDetectedConfig(cfg)
+  //   } catch {
+  //     // 获取失败时静默处理，允许用户手动填写
+  //     setDetectedConfig(null)
+  //   } finally {
+  //     setLoading(false)
+  //   }
+  // }
 
   useEffect(() => {
     if (!isAdmin) {
@@ -59,19 +57,18 @@ const InitialConfiguration = () => {
       return
     }
 
-    void fetchOpenClawConfig()
+    // void fetchOpenClawConfig()
   }, [isAdmin, navigate])
 
   useEffect(() => {
-    if (!detectedConfig) return
+    // if (!detectedConfig) return
 
     form.setFieldsValue({
-      openclaw_address: `${detectedConfig.protocol}://${detectedConfig.host}:${detectedConfig.port}`,
-      openclaw_token: detectedConfig.token,
-      kweaver_base_url: detectedConfig.kweaver_base_url,
-      kweaver_token: detectedConfig.kweaver_token,
+      // openclaw_address: `${detectedConfig.protocol}://${detectedConfig.host}:${detectedConfig.port}`,
+      // openclaw_token: detectedConfig.token,
+      kweaver_base_url: DEFAULT_KWEAVER_BASE_URL,
     })
-  }, [detectedConfig, form])
+  }, [form])
 
   useEffect(() => {
     if (step !== 3 || !initResult) return
@@ -135,7 +132,7 @@ const InitialConfiguration = () => {
     if (step === 0) {
       return (
         <ConnectOpenClawStep
-          loading={loading}
+          // loading={loading}
           submitError={submitError}
           submitting={submitting}
           form={form}

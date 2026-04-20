@@ -33,6 +33,7 @@ const ArchivePreviewNav = ({
   onExitPreviewFullscreen,
 }: ArchivePreviewNavProps) => {
   const [downloading, setDownloading] = useState(false)
+  const shouldHideCloseWhenFullscreen = isPreviewFullscreen && Boolean(onExitPreviewFullscreen)
 
   return (
     <div
@@ -81,8 +82,8 @@ const ArchivePreviewNav = ({
           />
         </Tooltip>
       ) : null}
-      <div className="h-4 w-px bg-[--dip-border-color]" />
-      {closable ? (
+      {!shouldHideCloseWhenFullscreen ? <div className="h-4 w-px bg-[--dip-border-color]" /> : null}
+      {closable && !shouldHideCloseWhenFullscreen ? (
         <Tooltip title={intl.get('workPlan.detail.closePreview')}>
           <Button type="text" icon={<IconFont type="icon-close" />} onClick={() => onClose?.()} />
         </Tooltip>

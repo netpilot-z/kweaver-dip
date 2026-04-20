@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import formatXml from 'xml-but-prettier';
 import toLower from 'lodash/toLower';
 import { extractFileNameFromContentDispositionHeader } from '../utils';

@@ -1,8 +1,9 @@
 import { Router, type NextFunction, type Request, type Response } from "express";
 
 import { OpenClawCronGatewayAdapter } from "../adapters/openclaw-cron-adapter";
-import { getEnv } from "../utils/env";
+import { getEnv, getOpenClawGatewayRuntimeConfig } from "../utils/env";
 import { HttpError } from "../errors/http-error";
+import { DefaultOpenClawArchivesHttpClient } from "../infra/openclaw-archives-http-client";
 import { OpenClawGatewayClient } from "../infra/openclaw-gateway-client";
 import { readAuthenticatedUserId } from "../middleware/hydra-auth";
 import { DefaultCronLogic, type CronLogic } from "../logic/plan";
@@ -29,6 +30,36 @@ export interface CronJobListQuery {
    */
   includeDisabled?: string;
 
+  /**
+   * Maximum page size.
+   */
+  limit?: string;
+
+  /**
+   * Zero-based page offset.
+   */
+  offset?: string;
+
+  /**
+   * Enabled-state filter.
+   */
+  enabled?: string;
+
+  /**
+   * Sort field.
+   */
+  sortBy?: string;
+
+  /**
+   * Sort direction.
+   */
+  sortDir?: string;
+}
+
+/**
+ * Supported query fields for plans list endpoints that keep the default disabled-job behavior.
+ */
+export interface DefaultCronJobListQuery {
   /**
    * Maximum page size.
    */
@@ -112,15 +143,22 @@ export interface PlanParams {
 
 const MAX_LIMIT = 200;
 const env = getEnv();
+const openClawArchivesHttpClient = new DefaultOpenClawArchivesHttpClient({
+  gatewayUrl: env.openClawGatewayHttpUrl,
+  token: env.openClawGatewayToken,
+  timeoutMs: env.openClawGatewayTimeoutMs,
+  configReader: getOpenClawGatewayRuntimeConfig
+});
 const cronLogic = new DefaultCronLogic(
   new OpenClawCronGatewayAdapter(
     OpenClawGatewayClient.getInstance({
       url: env.openClawGatewayUrl,
       token: env.openClawGatewayToken,
-      timeoutMs: env.openClawGatewayTimeoutMs
+      timeoutMs: env.openClawGatewayTimeoutMs,
+      configReader: getOpenClawGatewayRuntimeConfig
     })
   ),
-  env.openClawWorkspaceDir
+  openClawArchivesHttpClient
 );
 
 /**
@@ -135,13 +173,13 @@ export function createCronRouter(logic: CronLogic = cronLogic): Router {
   router.get(
     "/api/dip-studio/v1/plans",
     async (
-      request: Request<unknown, unknown, unknown, CronJobListQuery>,
+      request: Request<unknown, unknown, unknown, DefaultCronJobListQuery>,
       response: Response,
       next: NextFunction
     ): Promise<void> => {
       try {
         const query = {
-          ...readCronJobListQuery(request.query),
+          ...readDefaultCronJobListQuery(request.query),
           userId: readAuthenticatedUserId(request)
         };
         const result = await logic.listCronJobs(query);
@@ -160,13 +198,13 @@ export function createCronRouter(logic: CronLogic = cronLogic): Router {
   router.get(
     "/api/dip-studio/v1/digital-human/:id/plans",
     async (
-      request: Request<DigitalHumanPlansParams, unknown, unknown, CronJobListQuery>,
+      request: Request<DigitalHumanPlansParams, unknown, unknown, DefaultCronJobListQuery>,
       response: Response,
       next: NextFunction
     ): Promise<void> => {
       try {
         const query = {
-          ...readCronJobListQuery(request.query),
+          ...readDefaultCronJobListQuery(request.query),
           userId: readAuthenticatedUserId(request)
         };
         const result = await logic.listCronJobs(query);
@@ -372,6 +410,26 @@ export function readCronJobListQuery(query: CronJobListQuery): OpenClawCronListP
 }
 
 /**
+ * Parses and validates plans list query parameters while preserving the default
+ * disabled-job behavior.
+ *
+ * @param query Raw query string values.
+ * @returns Parsed `cron.list` parameters with `includeDisabled` fixed to `true`.
+ */
+export function readDefaultCronJobListQuery(
+  query: DefaultCronJobListQuery
+): OpenClawCronListParams {
+  return {
+    includeDisabled: true,
+    limit: parseNonNegativeIntegerString(query.limit, 50, "limit"),
+    offset: parseNonNegativeIntegerString(query.offset, 0, "offset"),
+    enabled: parseCronJobEnabled(query.enabled),
+    sortBy: parseCronJobSortBy(query.sortBy),
+    sortDir: parseCronJobSortDir(query.sortDir)
+  };
+}
+
+/**
  * Filters one cron jobs result to the specified digital human.
  *
  * @param result The cron jobs result already filtered for the authenticated user.
@@ -498,7 +556,7 @@ export function parseCronJobSortBy(rawValue: string | undefined): CronListSortBy
   return parseStringEnum(
     rawValue,
     "nextRunAtMs",
-    ["nextRunAtMs", "createdAtMs", "updatedAtMs", "name"],
+    ["nextRunAtMs", "updatedAtMs", "name"],
     "sortBy"
   );
 }

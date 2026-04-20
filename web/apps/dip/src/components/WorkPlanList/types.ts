@@ -25,6 +25,8 @@ export interface PlanListProps {
   searchValue?: string
   /** 点击计划行 */
   onPlanClick?: (job: CronJob) => void
+  /** 空列表「开启会话创建计划」按钮点击事件 */
+  onEmptyCreateClick?: () => void
 }
 
 export interface PlanListItemProps {
@@ -40,7 +42,14 @@ export interface PlanListItemProps {
 export type PlanStatusPill = { text: string; className: string }
 
 /** 计划列表行展示用状态（左侧图标 + 右侧胶囊统一由此派生） */
-export type PlanJobDisplayStatus = 'disabled' | 'running' | 'ok' | 'error' | 'pending' | 'skipped'
+export type PlanJobDisplayStatus =
+  | 'disabled'
+  | 'running'
+  | 'ok'
+  | 'error'
+  | 'pending'
+  | 'skipped'
+  | 'ended'
 
 export interface PlanJobLeftIconStyle {
   boxClassName: string

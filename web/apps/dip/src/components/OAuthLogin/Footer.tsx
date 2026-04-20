@@ -1,5 +1,5 @@
-import { useOEMConfigStore } from '@/stores/oemConfigStore'
 import intl from 'react-intl-universal'
+import { useOEMConfigStore } from '@/stores/oemConfigStore'
 
 function Footer() {
   const { getOEMBasicConfig } = useOEMConfigStore()

@@ -22,6 +22,7 @@ export type ArchivePreviewState = {
   viewer: ArchivePreviewViewer
   blobUrl?: string
   error?: string | null
+  emptyText?: string
 }
 
 export function useArchivePreview(dhId: string, sessionId: string) {

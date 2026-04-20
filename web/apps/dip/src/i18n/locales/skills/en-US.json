@@ -17,6 +17,11 @@
     "emptySubDesc": "There are currently no available skills. You can import one or create one via chat.",
     "loadFailed": "Failed to load skill list"
   },
+  "skillList": {
+    "badgeLabel": "skill",
+    "typeOfficial": "Official",
+    "typeCustom": "Custom"
+  },
   "skillDetail": {
     "filesTab": "Files",
     "skillNotFound": "Skill not found",

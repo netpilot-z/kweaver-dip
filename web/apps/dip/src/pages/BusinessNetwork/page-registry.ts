@@ -1,11 +1,7 @@
 import type { ComponentType, LazyExoticComponent } from 'react'
-import type { CurrentMicroAppInfo } from '@/stores/microAppStore'
+import type { MenuWorkbenchComponentPageProps } from '@/pages/_shared/menu-workbench/types'
 
-export interface BusinessComponentPageProps {
-  appBasicInfo: CurrentMicroAppInfo | null
-  homeRoute: string
-  customProps: Record<string, unknown>
-}
+export type BusinessComponentPageProps = MenuWorkbenchComponentPageProps
 
 // 业务组件页面注册
 export const businessComponentPageRegistry: Record<

@@ -102,7 +102,11 @@ const ActionModal = ({ open, onCancel, onSuccess, plan }: ActionModalProps) => {
               },
             ]}
           >
-            <Input placeholder={intl.get('workPlan.actionModal.planNamePlaceholder')} maxLength={128} showCount />
+            <Input
+              placeholder={intl.get('workPlan.actionModal.planNamePlaceholder')}
+              maxLength={128}
+              showCount
+            />
           </Form.Item>
         </Form>
       </Modal>

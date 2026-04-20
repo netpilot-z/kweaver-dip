@@ -63,6 +63,33 @@ describe('DigitalHumanSetting/digitalHumanStore', () => {
     expect(state.dirty).toBe(true)
   })
 
+  it('syncBuiltInSkills 会补齐内置技能且不标记 dirty', () => {
+    const detail = {
+      id: 'dh-3',
+      name: '员工C',
+      creature: '简介C',
+      soul: '灵魂C',
+    } as any
+    const store = useDigitalHumanStore.getState()
+    store.bindDigitalHuman(detail, [{ name: '技能1', built_in: false }] as any)
+
+    store.syncBuiltInSkills([
+      { name: '内置技能', built_in: true },
+      { name: '技能1', built_in: false },
+    ] as any)
+
+    const state = useDigitalHumanStore.getState()
+    expect(state.skills).toEqual([
+      { name: '技能1', built_in: false },
+      { name: '内置技能', built_in: true },
+    ])
+    expect(state.detail?.skills).toEqual([
+      { name: '技能1', built_in: false },
+      { name: '内置技能', built_in: true },
+    ])
+    expect(state.dirty).toBe(false)
+  })
+
   it('resetAllToDetail 会回滚到 detail 快照并清理 dirty', () => {
     const detail = {
       id: 'dh-2',

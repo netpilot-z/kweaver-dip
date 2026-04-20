@@ -18,15 +18,26 @@ The platform is an enterprise digital employee platform built on the **KWeaver C
 
 ## Quick Start
 
-### OpenClaw requirements
+### OpenClaw
 
-DIP Studio requires OpenClaw to be installed and running:
+DIP Studio depends on OpenClaw. You can either deploy OpenClaw on your own host or use the OpenClaw instance bundled with KWeaver DIP.
 
-1. Deploy [OpenClaw](https://openclaw.ai) first. The supported version is `v2026.3.11`. You can also refer to the preparation notes in [kweaver-ai/dip-studio/studio/README.md](https://github.com/kweaver-ai/dip-studio/blob/main/studio/README.md).
-2. Start OpenClaw Gateway.
-3. Copy `gateway.auth.token` from `openclaw.json`, then run `openclaw gateway status` and record the gateway bind address and port.
-4. Make sure the machine running `deploy.sh` can access the OpenClaw config file and workspace directory. If you want to preconfigure them, set `dipStudio.openClaw.configHostPath` and `dipStudio.openClaw.workspaceHostPath` in `deploy/conf/config.yaml` or in your custom config file.
-5. Start OpenClaw in LAN mode: `openclaw gateway --bind lan`, listening on `0.0.0.0:18789`.
+#### Deploy OpenClaw yourself
+
+1. KWeaver DIP supports OpenClaw `v2026.3.11`. You can install it from the official site at https://openclaw.ai or from GitHub at https://github.com/openclaw/openclaw.
+2. After installation, run `openclaw gateway onboard` to initialize OpenClaw.
+3. Update `gateway.bind` in `openclaw.json` to `"lan"`, and keep the value of `gateway.auth.token` for the later OpenClaw connection setup in KWeaver DIP.
+4. Run `openclaw gateway restart` to restart the OpenClaw gateway.
+5. Run `openclaw gateway status` and record the gateway listen address, which is usually `ws://0.0.0.0:18789`.
+6. Make sure the machine running `deploy.sh` can access the OpenClaw config file and workspace directory. Edit `deploy/release-manifests/<version>/kweaver-dip.yaml`:
+
+ - `dip-studio.values.studio.envFileHostPath`: host path of the Studio ENV configuration file
+ - `dip-studio.values.studio.openClawHostPath`: host path of the `.openclaw/` root directory
+ - `dip-studio.values.studio.useExternalOpenClaw`: whether to use a self-deployed OpenClaw instance
+
+#### Use the OpenClaw bundled with KWeaver DIP
+
+After installing and deploying KWeaver DIP, follow [Initialize KWeaver DIP OpenClaw](#kweaver-dip-onboard).
 
 ### Host prerequisites
 
@@ -58,9 +69,35 @@ sudo ./deploy.sh kweaver-dip install
 openclaw plugins install ./openclaw-extensions/dip
 ```
 
-### Authorization
+After deployment, you can access:
 
-After deployment, authorize OpenClaw to link with DIP Studio:
+- `https://<node-ip>/dip-hub`
+
+Default username: `admin`
+Initial password: `eisoo.com`
+
+### Initialize KWeaver DIP OpenClaw
+<a id="kweaver-dip-onboard"></a>
+If you choose to use the OpenClaw bundled with KWeaver DIP, complete the following steps after deployment:
+
+- Run `kubectl get pods -nkweaver | grep dip-studio` on the host and copy the POD ID.
+- Run `kubectl exec -it <POD ID> -nkweaver -- /bin/bash` on the host to enter the container.
+- Run `openclaw onboard` inside the container to initialize OpenClaw.
+
+### Configure OpenClaw
+
+Sign in to KWeaver DIP Studio with the `admin` account first, then follow the UI instructions to finish the OpenClaw configuration.
+
+**Note**:
+
+- If you deploy OpenClaw on the host yourself, use `ws://<host-ip>:<port>` as the connection address.
+- If you use the OpenClaw bundled with KWeaver DIP, use `ws://127.0.0.1:<port>` as the connection address.
+
+#### Authorization
+
+If you use the OpenClaw bundled with KWeaver DIP, you can skip authorization.
+
+After deployment, authorize OpenClaw to connect with DIP Studio:
 
 1. Run `openclaw devices list` and find the pending device shown below:
 
@@ -84,15 +121,7 @@ Approved cc8d2143cf8fcd04161ade9e5161006c410a0bee65f835e2629792aa584bb119 (3ef17
 
 the authorization has succeeded.
 
-3. After authorization, you can access:
-
-- `https://<node-ip>/deploy`: deployment console
-- `https://<node-ip>/studio`: KWeaver Studio
-
-Default username: `admin`
-Initial password: `eisoo.com`
-
-For full installation requirements, config details, flags, and offline deployment options, see [deploy/README.md](deploy/README.md).
+For full installation requirements, configuration details, parameter descriptions, and offline deployment options, see [deploy/README.md](deploy/README.md).
 
 ## Community Reading Path
 

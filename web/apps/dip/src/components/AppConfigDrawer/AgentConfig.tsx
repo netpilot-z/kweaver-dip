@@ -1,6 +1,7 @@
 import { ShareAltOutlined } from '@ant-design/icons'
 import { Alert, message, Spin } from 'antd'
 import { memo, useEffect, useState } from 'react'
+import intl from 'react-intl-universal'
 import { type AgentInfo, getApplicationsAgents } from '@/apis'
 import ScrollBarContainer from '../ScrollBarContainer'
 
@@ -47,11 +48,13 @@ const AgentConfig = ({ appKey }: AgentConfigProps) => {
   return (
     <div className="h-full flex flex-col gap-y-2">
       {messageContextHolder}
-      <div className="px-4 text-sm font-medium text-[--dip-text-color]">智能体配置</div>
+      <div className="px-4 text-sm font-medium text-[--dip-text-color]">
+        {intl.get('application.config.agentSectionTitle')}
+      </div>
 
       {/* 提示信息框 */}
       <Alert
-        title="以下是此应用包含的智能体。您可以点击下方链接查看或调整智能体的详细配置（如知识来源、模型参数等）。"
+        title={intl.get('application.config.agentAlertTitle')}
         type="info"
         showIcon
         className="mx-4 border-[#BAE0FF] bg-[#E6F4FF]"
@@ -69,7 +72,9 @@ const AgentConfig = ({ appKey }: AgentConfigProps) => {
       <ScrollBarContainer className="px-4">
         <div className="flex flex-col gap-3">
           {agents.length === 0 ? (
-            <div className="text-center text-[--dip-text-color-secondary] py-8">暂无智能体配置</div>
+            <div className="text-center text-[--dip-text-color-secondary] py-8">
+              {intl.get('application.config.agentEmpty')}
+            </div>
           ) : (
             agents.map((item) => {
               const prompt = ''
@@ -82,7 +87,8 @@ const AgentConfig = ({ appKey }: AgentConfigProps) => {
                 >
                   {/* 标题 */}
                   <div className="mb-2 text-xs leading-5 font-medium text-[--dip-text-color]">
-                    {item.name || `智能体 #${item.id}`}
+                    {item.name ||
+                      intl.get('application.config.agentNameFallback', { id: String(item.id) })}
                   </div>
 
                   {/* 描述 */}
@@ -95,7 +101,9 @@ const AgentConfig = ({ appKey }: AgentConfigProps) => {
                   {/* 提示词 */}
                   {prompt && (
                     <div className="mb-3 flex flex-col gap-y-2">
-                      <div className="text-xs leading-5 text-[--dip-text-color-65]">提示词</div>
+                      <div className="text-xs leading-5 text-[--dip-text-color-65]">
+                        {intl.get('application.config.promptLabel')}
+                      </div>
                       <div className="rounded-lg bg-[#F9FAFC] p-3.5 text-xs text-[--dip-text-color] leading-5">
                         {prompt}
                       </div>
@@ -105,7 +113,9 @@ const AgentConfig = ({ appKey }: AgentConfigProps) => {
                   {/* 技能列表 */}
                   {skills.length > 0 && (
                     <div className="mb-3 flex flex-col gap-y-2">
-                      <div className="text-xs leading-5 text-[--dip-text-color-65]">技能列表</div>
+                      <div className="text-xs leading-5 text-[--dip-text-color-65]">
+                        {intl.get('application.config.skillsLabel')}
+                      </div>
                       <div className="flex flex-col gap-y-1.5 pl-2">
                         {skills.map((skill: any) => (
                           <div key={skill.tool_id} className="flex items-start gap-3.5">
@@ -127,7 +137,7 @@ const AgentConfig = ({ appKey }: AgentConfigProps) => {
                     className="inline-flex items-center gap-1.5 mt-2 text-xs text-[var(--dip-primary-color)] hover:text-[var(--dip-primary-color)] hover:underline"
                   >
                     <ShareAltOutlined />
-                    前往ADP平台查看详细配置
+                    {intl.get('application.config.linkAgentAdp')}
                   </a>
                 </div>
               )

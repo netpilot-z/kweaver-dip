@@ -1,0 +1,95 @@
+{
+  "application": {
+    "loadFailed": "載入失敗",
+    "retry": "重試",
+    "searchPlaceholder": "搜尋應用",
+    "appStore": {
+      "title": "應用商店",
+      "subtitle": "管理企業應用市場，安裝或解除安裝應用",
+      "confirmUninstallTitle": "確認解除安裝",
+      "confirmUninstallContent": "解除安裝後，相關設定與資料將被清除，使用者將無法使用此應用。是否繼續？",
+      "uninstallSuccess": "解除安裝成功",
+      "emptyTitle": "暫無應用",
+      "emptySubDesc": "目前應用市場尚無內容，您可點擊下方按鈕安裝第一個企業應用。",
+      "installApp": "安裝應用",
+      "uploadSuccessBefore": "應用「",
+      "uploadSuccessAfter": "」上傳成功，請完成設定以啟用服務。",
+      "goToConfig": "前往設定"
+    },
+    "myApp": {
+      "title": "探索企業級 AI 應用",
+      "subtitle": "尋找具備專業能力的應用，協助您解決業務上的複雜問題",
+      "emptyTitle": "暫無可用應用",
+      "emptySubDesc": "您目前沒有任何應用的存取權限。可能是管理員尚未為您分配權限，或應用尚未部署。",
+      "pin": "釘選",
+      "unpin": "取消釘選",
+      "useNow": "立即使用"
+    },
+    "appList": {
+      "tabAll": "全部"
+    },
+    "menu": {
+      "config": "設定",
+      "run": "執行",
+      "uninstall": "解除安裝"
+    },
+    "upload": {
+      "dipOnly": "僅支援 .dip 格式的應用安裝套件",
+      "maxSize": "應用安裝套件大小不能超過 1GB",
+      "uploadFailedRetry": "上傳失敗，請重試",
+      "cannotCancelAfterDone": "安裝已完成，無法取消",
+      "confirmCancelTitle": "確認取消安裝",
+      "confirmCancelContent": "正在上傳中，取消將中斷上傳。是否繼續？",
+      "validatingPackage": "正在驗證應用套件...",
+      "dragHint": "點擊或將檔案拖曳到此處上傳",
+      "dipHint": "支援 .dip 格式的應用安裝套件",
+      "validating": "驗證中",
+      "waitingInstall": "等待安裝",
+      "installFailed": "安裝失敗",
+      "installApp": "安裝應用",
+      "installSuccessTitle": "應用安裝成功",
+      "installSuccessDesc": "您的應用已安裝成功，可前往應用列表查看",
+      "modalTitle": "安裝應用套件",
+      "unitB": "B",
+      "unitKB": "KB",
+      "unitMB": "MB",
+      "unitGB": "GB"
+    },
+    "config": {
+      "drawerTitle": "應用設定",
+      "menuBasic": "基本資訊",
+      "menuOntology": "業務知識網路",
+      "menuAgent": "智慧體設定",
+      "basicSectionTitle": "基本資訊",
+      "fieldName": "應用名稱：",
+      "fieldDescription": "應用描述：",
+      "fieldVersion": "版本號：",
+      "agentSectionTitle": "智慧體設定",
+      "agentAlertTitle": "以下是此應用包含的智慧體。您可點擊下方連結檢視或調整智慧體的詳細設定（如知識來源、模型參數等）。",
+      "agentEmpty": "暫無智慧體設定",
+      "agentNameFallback": "智慧體 {id}",
+      "promptLabel": "提示詞",
+      "skillsLabel": "技能列表",
+      "linkAgentAdp": "前往 ADP 平台檢視詳細設定",
+      "ontologySectionTitle": "業務知識網路",
+      "ontologyAlertTitle": "此應用依賴以下業務知識網路。請前往 ADP 平台完成資料檢視對應，以確保應用能取得資料。",
+      "ontologyEmpty": "暫無業務知識網路設定",
+      "ontologyNameFallback": "業務知識網路 {id}",
+      "linkOntologyAdp": "前往 ADP 平台設定資料檢視對應"
+    },
+    "container": {
+      "fetchAppFailed": "取得應用失敗",
+      "fetchConfigFailed": "取得應用設定失敗"
+    },
+    "loader": {
+      "appNameLabel": "應用名稱",
+      "errorLabel": "錯誤資訊"
+    },
+    "appIcon": {
+      "builtInTooltip": "內建應用"
+    },
+    "card": {
+      "updateLabel": "更新：{time}"
+    }
+  }
+}

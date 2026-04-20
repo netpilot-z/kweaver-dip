@@ -1,6 +1,7 @@
 import { Avatar, Tooltip } from 'antd'
 import clsx from 'clsx'
 import { useState } from 'react'
+import intl from 'react-intl-universal'
 import BuiltInIcon from '@/assets/images/project/builtIn.svg?react'
 import SystemIcon from '@/assets/images/project/system.svg?react'
 
@@ -88,7 +89,7 @@ const AppIcon = ({
         />
       )}
       {isBuiltIn && (
-        <Tooltip title="内置应用">
+        <Tooltip title={intl.get('application.appIcon.builtInTooltip')}>
           <div className="absolute bottom-[-1px] right-[-1px]">
             <SystemIcon style={{ width: size / 3, height: size / 3 }} />
           </div>

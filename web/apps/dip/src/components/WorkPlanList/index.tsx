@@ -1,10 +1,12 @@
-import { Spin } from 'antd'
+import { Button, Spin } from 'antd'
 import { throttle } from 'lodash'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import intl from 'react-intl-universal'
+import { useNavigate } from 'react-router-dom'
 import { List } from 'react-window'
 import { type CronJob, getDigitalHumanPlanList } from '@/apis/dip-studio/plan'
 import Empty from '@/components/Empty'
+import IconFont from '@/components/IconFont'
 import ScrollBarContainer from '@/components/ScrollBarContainer'
 import ActionModal from '@/components/WorkPlanDetail/ActionModal/ActionModal'
 import { useUserWorkPlanStore } from '@/stores/userWorkPlanStore'
@@ -23,7 +25,9 @@ function PlanListInner({
   className,
   onPlanClick,
   searchValue,
+  onEmptyCreateClick,
 }: PlanListProps) {
+  const navigate = useNavigate()
   const pausePlan = useUserWorkPlanStore((state) => state.pausePlan)
   const resumePlan = useUserWorkPlanStore((state) => state.resumePlan)
   const deletePlan = useUserWorkPlanStore((state) => state.deletePlan)
@@ -228,7 +232,40 @@ function PlanListInner({
       if (trimmedSearchValue) {
         return <Empty type="search" desc={intl.get('workPlan.common.searchNoResult')} />
       }
-      return <Empty title={intl.get('workPlan.common.noData')} />
+      if (isGlobalMode) {
+        return <Empty title={intl.get('workPlan.common.noData')} />
+      }
+      return (
+        <Empty
+          title={
+            <span className="text-black text-base font-semibold">
+              {intl.get('workPlan.list.emptyPlanTitle')}
+            </span>
+          }
+          subDesc={
+            <span className="block max-w-md mx-auto text-center text-black leading-6 whitespace-pre-line">
+              {intl.get('workPlan.list.emptyPlanSubDesc')}
+            </span>
+          }
+        >
+          <Button
+            type="primary"
+            onClick={() => {
+              if (onEmptyCreateClick) {
+                onEmptyCreateClick()
+                return
+              }
+              navigate('/studio/work-plan/create')
+            }}
+            className="mt-4"
+          >
+            <div className="w-4 h-5">
+              <IconFont type="icon-newchat" className="!text-xl" />
+            </div>
+            {intl.get('workPlan.list.emptyPlanCreateButton')}
+          </Button>
+        </Empty>
+      )
     }
 
     return null
@@ -238,9 +275,11 @@ function PlanListInner({
     <div className={`flex flex-1 min-h-0 flex-col overflow-hidden ${className ?? ''}`}>
       <div className="flex min-h-0 flex-1 flex-col">
         {stateContent ? (
-          <div className="absolute inset-0 flex items-center justify-center px-6 min-h-[300px]">
-            {stateContent}
-          </div>
+          <ScrollBarContainer className="min-h-0 min-w-0 flex-1">
+            <div className="flex min-h-full w-full flex-col items-center justify-center px-6 pb-20 box-border">
+              {stateContent}
+            </div>
+          </ScrollBarContainer>
         ) : (
           <>
             <div className="min-h-0 flex-1">

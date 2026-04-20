@@ -21,7 +21,8 @@ paths:
       description: |
         当目标路径为目录时返回 JSON 列表。
         `agent` 用于切换到指定 agent 的 workspace 下的 `archives/` 目录。
-        `session` 仅在列根目录时生效，用于按会话前缀过滤目录项。
+        `session` 支持传入 session key 或 session id；插件会将其归一化为归档目录名后直接定位。
+        对 cron run 会话，归一化结果通常为 `runId`；对原始聊天会话，归一化结果通常为 `chatId`。
       parameters:
         - name: agent
           in: query
@@ -32,7 +33,7 @@ paths:
         - name: session
           in: query
           required: false
-          description: 会话 ID，仅在查询归档根目录时按目录名前缀过滤
+          description: 会话 key 或会话 ID；插件会将其归一化为归档目录名
           schema:
             type: string
       responses:
@@ -91,7 +92,7 @@ paths:
         - name: session
           in: query
           required: false
-          description: 会话 ID，仅在目录查询且位于根目录时按前缀过滤
+          description: 会话 key 或会话 ID；插件会将其归一化为归档目录名
           schema:
             type: string
       responses:

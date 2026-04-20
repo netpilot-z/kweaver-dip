@@ -425,6 +425,11 @@ export const getAnswerEventDisplayText = (event: DipChatKitAnswerEvent): string 
     return text
   }
 
+  const resultText = normalizeLineBreak(event.resultText || '')
+  if (resultText) {
+    return resultText
+  }
+
   if (event.details) {
     return toTextFromUnknown(event.details)
   }
@@ -520,6 +525,19 @@ const buildPreviewText = (text: string): string => {
   return getTruncatedPreview(text)
 }
 
+const buildToolCallCardBodyMarkdown = (event: DipChatKitAnswerEvent): string => {
+  const args = normalizeLineBreak(event.text || '')
+  const result = normalizeLineBreak(event.resultText || '')
+  const parts: string[] = []
+  if (args) {
+    parts.push(`\`\`\`\n${args}\n\`\`\``)
+  }
+  if (result) {
+    parts.push(result)
+  }
+  return parts.join('\n\n')
+}
+
 export const buildToolCardItems = (events: DipChatKitAnswerEvent[]): DipChatKitToolCardItem[] => {
   return events.reduce<DipChatKitToolCardItem[]>((cards, event, index) => {
     const kind = normalizeToolCardKind(event)
@@ -528,8 +546,14 @@ export const buildToolCardItems = (events: DipChatKitAnswerEvent[]): DipChatKitT
     }
 
     const normalizedText = getAnswerEventDisplayText(event)
-    const textForDetail = kind === 'call' ? normalizeLineBreak(event.text || '') : normalizedText
-    const text = kind === 'call' ? '' : normalizedText
+    const textForDetail =
+      kind === 'call'
+        ? normalizeLineBreak(event.text || '') || normalizeLineBreak(event.resultText || '')
+        : normalizedText
+    const callBodyMarkdown = kind === 'call' ? buildToolCallCardBodyMarkdown(event) : ''
+    const callText = callBodyMarkdown.trim() ? callBodyMarkdown : ''
+    const text = kind === 'call' ? callText : normalizedText
+    const renderBodyMarkdown = kind === 'call' && Boolean(callText)
     const status = normalizeToolCardStatus(event)
 
     cards.push({
@@ -543,6 +567,7 @@ export const buildToolCardItems = (events: DipChatKitAnswerEvent[]): DipChatKitT
       text,
       inlineText: buildInlineText(text),
       previewText: buildPreviewText(text),
+      renderBodyMarkdown,
       isError: event.isError,
     })
 

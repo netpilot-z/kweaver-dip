@@ -1,0 +1,95 @@
+{
+  "application": {
+    "loadFailed": "加载失败",
+    "retry": "重试",
+    "searchPlaceholder": "搜索应用",
+    "appStore": {
+      "title": "应用商店",
+      "subtitle": "管理企业应用市场，安装或卸载应用",
+      "confirmUninstallTitle": "确认卸载",
+      "confirmUninstallContent": "卸载应用后，相关配置和数据将被清除，用户将无法使用应用。是否继续?",
+      "uninstallSuccess": "卸载成功",
+      "emptyTitle": "暂无应用",
+      "emptySubDesc": "当前应用市场空空如也，您可以点击下方按钮安装第一个企业应用。",
+      "installApp": "安装应用",
+      "uploadSuccessBefore": "应用\"",
+      "uploadSuccessAfter": "\"上传成功，请完成配置以启用服务。",
+      "goToConfig": "去配置"
+    },
+    "myApp": {
+      "title": "探索企业级 AI 应用",
+      "subtitle": "查找具备专业能力的应用，帮你解决业务上的复杂问题",
+      "emptyTitle": "暂无可用应用",
+      "emptySubDesc": "您当前没有任何应用的访问权限。这可能是因为管理员尚未为您分配权限，或者应用尚未部署。",
+      "pin": "固定",
+      "unpin": "取消固定",
+      "useNow": "立即使用"
+    },
+    "appList": {
+      "tabAll": "全部"
+    },
+    "menu": {
+      "config": "配置",
+      "run": "运行",
+      "uninstall": "卸载"
+    },
+    "upload": {
+      "dipOnly": "仅支持 .dip 格式的应用安装包",
+      "maxSize": "应用安装包大小不能超过 1GB",
+      "uploadFailedRetry": "上传失败，请重试",
+      "cannotCancelAfterDone": "安装已完成，无法取消",
+      "confirmCancelTitle": "确认取消安装",
+      "confirmCancelContent": "正在上传中，取消后将中断上传。是否继续？",
+      "validatingPackage": "正在验证应用包...",
+      "dragHint": "点击或将文件拖拽到这里上传",
+      "dipHint": "支持 .dip 格式的应用安装包",
+      "validating": "验证中",
+      "waitingInstall": "等待安装",
+      "installFailed": "安装失败",
+      "installApp": "安装应用",
+      "installSuccessTitle": "应用安装成功",
+      "installSuccessDesc": "您的应用已安装成功，可前往应用列表查看",
+      "modalTitle": "安装应用包",
+      "unitB": "B",
+      "unitKB": "KB",
+      "unitMB": "MB",
+      "unitGB": "GB"
+    },
+    "config": {
+      "drawerTitle": "应用配置",
+      "menuBasic": "基本信息",
+      "menuOntology": "业务知识网络",
+      "menuAgent": "智能体配置",
+      "basicSectionTitle": "基本信息",
+      "fieldName": "应用名称：",
+      "fieldDescription": "应用描述：",
+      "fieldVersion": "版本号：",
+      "agentSectionTitle": "智能体配置",
+      "agentAlertTitle": "以下是此应用包含的智能体。您可以点击下方链接查看或调整智能体的详细配置（如知识来源、模型参数等）。",
+      "agentEmpty": "暂无智能体配置",
+      "agentNameFallback": "智能体 {id}",
+      "promptLabel": "提示词",
+      "skillsLabel": "技能列表",
+      "linkAgentAdp": "前往ADP平台查看详细配置",
+      "ontologySectionTitle": "业务知识网络",
+      "ontologyAlertTitle": "此应用依赖以下业务知识网络。请前往 ADP 平台完成数据视图映射，以确保应用能获取数据。",
+      "ontologyEmpty": "暂无业务知识网络配置",
+      "ontologyNameFallback": "业务知识网络 {id}",
+      "linkOntologyAdp": "前往ADP平台配置数据视图映射"
+    },
+    "container": {
+      "fetchAppFailed": "获取应用失败",
+      "fetchConfigFailed": "获取应用配置失败"
+    },
+    "loader": {
+      "appNameLabel": "应用名称",
+      "errorLabel": "错误信息"
+    },
+    "appIcon": {
+      "builtInTooltip": "内置应用"
+    },
+    "card": {
+      "updateLabel": "更新：{time}"
+    }
+  }
+}

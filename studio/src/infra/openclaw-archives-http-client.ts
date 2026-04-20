@@ -1,10 +1,11 @@
 import { HttpError } from "../errors/http-error";
 import type { OpenClawSessionArchivesResult } from "../types/sessions";
+import type { OpenClawGatewayRuntimeConfig } from "../utils/env";
 
 /**
  * Runtime configuration used to call OpenClaw `/v1/archives`.
  */
-export interface OpenClawArchivesHttpClientOptions {
+export interface OpenClawArchivesHttpConnectionOptions {
   /**
    * The configured OpenClaw gateway URL.
    */
@@ -19,6 +20,17 @@ export interface OpenClawArchivesHttpClientOptions {
    * Reserved for compatibility with shared OpenClaw runtime config.
    */
   timeoutMs: number;
+}
+
+/**
+ * Runtime configuration used to call OpenClaw `/v1/archives`.
+ */
+export interface OpenClawArchivesHttpClientOptions
+extends OpenClawArchivesHttpConnectionOptions {
+  /**
+   * Reads the latest OpenClaw Gateway settings before each HTTP request.
+   */
+  configReader?: () => OpenClawGatewayRuntimeConfig;
 }
 
 /**
@@ -104,15 +116,16 @@ implements OpenClawArchivesHttpClient {
     digitalHumanId: string,
     sessionId: string
   ): Promise<OpenClawSessionArchivesResult> {
+    const connectionOptions = this.getConnectionOptions();
     const upstreamResponse = await this.fetchImpl(
       buildOpenClawSessionArchivesUrl(
-        this.options.gatewayUrl,
+        connectionOptions.gatewayUrl,
         digitalHumanId,
         sessionId
       ),
       {
         method: "GET",
-        headers: createOpenClawArchivesHeaders(this.options.token)
+        headers: createOpenClawArchivesHeaders(connectionOptions.token)
       }
     ).catch((error: unknown) => {
       throw normalizeOpenClawArchivesError(error);
@@ -121,6 +134,8 @@ implements OpenClawArchivesHttpClient {
     if (!upstreamResponse.ok) {
       throw await createOpenClawArchivesStatusError(upstreamResponse);
     }
+
+    throwIfUnexpectedArchivesContentType(upstreamResponse, "application/json");
 
     return (await upstreamResponse.json()) as OpenClawSessionArchivesResult;
   }
@@ -138,16 +153,17 @@ implements OpenClawArchivesHttpClient {
     sessionId: string,
     subpath: string
   ): Promise<OpenClawArchivesHttpResult> {
+    const connectionOptions = this.getConnectionOptions();
     const upstreamResponse = await this.fetchImpl(
       buildOpenClawSessionArchiveSubpathUrl(
-        this.options.gatewayUrl,
+        connectionOptions.gatewayUrl,
         digitalHumanId,
         sessionId,
         subpath
       ),
       {
         method: "GET",
-        headers: createOpenClawArchivesHeaders(this.options.token)
+        headers: createOpenClawArchivesHeaders(connectionOptions.token, "*/*")
       }
     ).catch((error: unknown) => {
       throw normalizeOpenClawArchivesError(error);
@@ -161,6 +177,25 @@ implements OpenClawArchivesHttpClient {
       status: upstreamResponse.status,
       headers: upstreamResponse.headers,
       body: new Uint8Array(await upstreamResponse.arrayBuffer())
+    };
+  }
+
+  /**
+   * Reads the latest upstream HTTP connection options.
+   *
+   * @returns The effective gateway HTTP settings.
+   */
+  private getConnectionOptions(): OpenClawArchivesHttpConnectionOptions {
+    if (this.options.configReader === undefined) {
+      return this.options;
+    }
+
+    const latestConfig = this.options.configReader();
+
+    return {
+      gatewayUrl: latestConfig.httpUrl,
+      token: latestConfig.token,
+      timeoutMs: latestConfig.timeoutMs
     };
   }
 }
@@ -254,11 +289,15 @@ export function encodePathSubpath(subpath: string): string {
  * Creates the headers used to call OpenClaw `/v1/archives`.
  *
  * @param token The optional gateway bearer token.
+ * @param accept The MIME types accepted from OpenClaw.
  * @returns The normalized request headers.
  */
-export function createOpenClawArchivesHeaders(token?: string): Headers {
+export function createOpenClawArchivesHeaders(
+  token?: string,
+  accept = "application/json"
+): Headers {
   const headers = new Headers({
-    accept: "application/json"
+    accept
   });
 
   if (token !== undefined) {
@@ -304,4 +343,36 @@ export function normalizeOpenClawArchivesError(error: unknown): HttpError {
     502,
     `Failed to communicate with OpenClaw /v1/archives: ${message}`
   );
+}
+
+/**
+ * Validates the upstream content type returned by OpenClaw `/v1/archives`.
+ *
+ * @param response Successful upstream response.
+ * @param expectedPrefix Optional expected content-type prefix.
+ * @throws {HttpError} Thrown when OpenClaw returned HTML instead of archives data.
+ */
+export function throwIfUnexpectedArchivesContentType(
+  response: Response,
+  expectedPrefix?: string
+): void {
+  const contentType = response.headers.get("content-type")?.toLowerCase() ?? "";
+
+  if (contentType.startsWith("text/html")) {
+    throw new HttpError(
+      502,
+      "OpenClaw /v1/archives returned HTML instead of archives data. The dip plugin archives route may not be loaded."
+    );
+  }
+
+  if (
+    expectedPrefix !== undefined &&
+    contentType !== "" &&
+    !contentType.startsWith(expectedPrefix.toLowerCase())
+  ) {
+    throw new HttpError(
+      502,
+      `OpenClaw /v1/archives returned unexpected content-type: ${contentType}`
+    );
+  }
 }

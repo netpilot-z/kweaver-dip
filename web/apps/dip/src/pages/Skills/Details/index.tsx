@@ -155,8 +155,7 @@ const SkillsDetailPage = () => {
             ? await mockFetchSkillFileContent(decodedName, { path })
             : await getSkillFileContent(decodedName, { path })
           const body =
-            res.content +
-            (res.truncated ? `\n\n${intl.get('skillDetail.previewTruncated')}` : '')
+            res.content + (res.truncated ? `\n\n${intl.get('skillDetail.previewTruncated')}` : '')
           setFilePreview((p) =>
             p
               ? {

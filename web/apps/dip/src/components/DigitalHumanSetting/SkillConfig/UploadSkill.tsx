@@ -115,7 +115,9 @@ const UploadSkill = ({ open, onCancel, onSuccess, onDetail }: UploadSkillProps) 
     }
 
     if (!validateSkillFileSize(fileObj)) {
-      messageApi.error(intl.get('digitalHuman.skillUpload.sizeExceeded', { maxMb: MAX_FILE_SIZE_MB }))
+      messageApi.error(
+        intl.get('digitalHuman.skillUpload.sizeExceeded', { maxMb: MAX_FILE_SIZE_MB }),
+      )
       return
     }
 
@@ -232,7 +234,9 @@ const UploadSkill = ({ open, onCancel, onSuccess, onDetail }: UploadSkillProps) 
         {isUploading ? (
           <div className="flex flex-col items-center justify-center" style={{ height: '100%' }}>
             <Spin />
-            <p className="mt-4 text-sm text-[#1677FF]">{intl.get('digitalHuman.skillUpload.validating')}</p>
+            <p className="mt-4 text-sm text-[#1677FF]">
+              {intl.get('digitalHuman.skillUpload.validating')}
+            </p>
           </div>
         ) : (
           <>
@@ -334,7 +338,9 @@ const UploadSkill = ({ open, onCancel, onSuccess, onDetail }: UploadSkillProps) 
     return (
       <div className="py-12 flex flex-col items-center justify-center">
         <CheckCircleFilled className="text-7xl text-[--dip-success-color]" />
-        <div className="mt-8 text-2xl font-medium">{intl.get('digitalHuman.skillUpload.successTitle')}</div>
+        <div className="mt-8 text-2xl font-medium">
+          {intl.get('digitalHuman.skillUpload.successTitle')}
+        </div>
         <div className="mt-2 text-sm text-[--dip-text-color-45]">
           {intl.get('digitalHuman.skillUpload.successDesc')}
         </div>

@@ -44,7 +44,7 @@ const BusinessHeader = () => {
     if (matchedBusinessMenu) {
       return {
         key: matchedBusinessMenu.key,
-        label: matchedBusinessMenu.label,
+        labelKey: matchedBusinessMenu.labelKey,
         path: matchedBusinessMenu.path.replace(/^\//, ''),
         sidebarMode: 'hidden',
       } as RouteConfig

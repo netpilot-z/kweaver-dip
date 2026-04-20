@@ -1,5 +1,6 @@
 import { Spin } from 'antd'
 import { useEffect, useMemo, useState } from 'react'
+import intl from 'react-intl-universal'
 import { useLocation, useParams } from 'react-router-dom'
 import { getApplicationsBasicInfo } from '@/apis'
 import Empty from '@/components/Empty'
@@ -44,7 +45,7 @@ const MicroAppContainer = () => {
   useEffect(() => {
     const fetchApp = async () => {
       if (!appKeyParam) {
-        setError('获取应用失败')
+        setError(intl.get('application.container.fetchAppFailed'))
         setLoading(false)
         return
       }
@@ -53,11 +54,11 @@ const MicroAppContainer = () => {
         setLoading(true)
         const appData = await getApplicationsBasicInfo(appKeyParam)
         if (!appData) {
-          setError('获取应用配置失败')
+          setError(intl.get('application.container.fetchConfigFailed'))
         } else {
           const currentAppKey = appData.key
           if (!currentAppKey) {
-            setError('获取应用配置失败')
+            setError(intl.get('application.container.fetchConfigFailed'))
             return
           }
           setCurrentMicroApp({
@@ -70,7 +71,7 @@ const MicroAppContainer = () => {
         if (err?.description) {
           setError(err.description)
         } else {
-          setError('获取应用配置失败')
+          setError(intl.get('application.container.fetchConfigFailed'))
         }
       } finally {
         setLoading(false)
@@ -103,7 +104,7 @@ const MicroAppContainer = () => {
     if (error || !currentMicroApp) {
       return (
         <div className="absolute inset-0 flex justify-center items-center">
-          <Empty type="failed" title="加载失败" subDesc={error ?? ''} />
+          <Empty type="failed" title={intl.get('application.loadFailed')} subDesc={error ?? ''} />
         </div>
       )
     }

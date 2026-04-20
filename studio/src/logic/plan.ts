@@ -1,8 +1,6 @@
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
-
 import type { OpenClawCronAdapter } from "../adapters/openclaw-cron-adapter";
 import { HttpError } from "../errors/http-error";
+import type { OpenClawArchivesHttpClient } from "../infra/openclaw-archives-http-client";
 import type {
   DeleteCronJobCommand,
   GetCronJobCommand,
@@ -81,11 +79,11 @@ export class DefaultCronLogic implements CronLogic {
    * Creates the cron logic.
    *
    * @param openClawCronAdapter The adapter used to fetch OpenClaw cron data.
-   * @param openClawWorkspaceDir The OpenClaw workspace root used to read PLAN.md.
+   * @param openClawArchivesHttpClient The archives client used to read PLAN.md.
    */
   public constructor(
     private readonly openClawCronAdapter: OpenClawCronAdapter,
-    private readonly openClawWorkspaceDir: string
+    private readonly openClawArchivesHttpClient: OpenClawArchivesHttpClient
   ) {}
 
   /**
@@ -153,7 +151,7 @@ export class DefaultCronLogic implements CronLogic {
   }
 
   /**
-   * Reads one plan markdown file from the OpenClaw workspace.
+   * Reads one plan markdown file from the OpenClaw archives gateway.
    *
    * @param command The read command.
    * @returns The normalized PLAN.md content.
@@ -162,10 +160,15 @@ export class DefaultCronLogic implements CronLogic {
     command: GetPlanContentCommand
   ): Promise<PlanContentResponse> {
     const job = await this.readOwnedJob(command.id, command.userId);
-    const planPath = buildPlanMarkdownPath(this.openClawWorkspaceDir, job.sessionKey);
+    const archiveLookup = buildPlanArchiveLookup(job.sessionKey);
 
     try {
-      const content = await readFile(planPath, "utf8");
+      const planResponse = await this.openClawArchivesHttpClient.getSessionArchiveSubpath(
+        archiveLookup.digitalHumanId,
+        archiveLookup.sessionId,
+        "PLAN.md"
+      );
+      const content = new TextDecoder().decode(planResponse.body);
 
       return {
         content
@@ -244,29 +247,36 @@ export class DefaultCronLogic implements CronLogic {
 }
 
 /**
- * Builds the PLAN.md absolute path from one cron session key.
+ * Builds the archive lookup used to read PLAN.md from one cron session key.
  *
- * @param workspaceDir The configured OpenClaw workspace root.
  * @param sessionKey The cron job session key.
- * @returns The absolute PLAN.md path.
+ * @returns The digital human id and normalized archives session id.
  */
-export function buildPlanMarkdownPath(
-  workspaceDir: string,
-  sessionKey: string
-): string {
+export function buildPlanArchiveLookup(sessionKey: string): {
+  digitalHumanId: string;
+  sessionId: string;
+} {
   const parsedSession = parseSession(sessionKey);
+  const sessionId = sessionKey
+    .split(":")
+    .map((part) => part.trim())
+    .filter((part) => part !== "")
+    .at(-1);
 
-  if (parsedSession.agent === undefined || parsedSession.chatId === undefined) {
+  if (parsedSession.agent === undefined || sessionId === undefined) {
     throw new HttpError(404, "PLAN.md not found");
   }
 
-  return join(workspaceDir, parsedSession.agent, "archives", parsedSession.chatId, "PLAN.md");
+  return {
+    digitalHumanId: parsedSession.agent,
+    sessionId
+  };
 }
 
 /**
- * Normalizes file-system read failures for PLAN.md.
+ * Normalizes archive-read failures for PLAN.md.
  *
- * @param error The unknown filesystem error.
+ * @param error The unknown archive read error.
  * @returns A normalized HttpError instance.
  */
 export function normalizePlanContentReadError(error: unknown): HttpError {

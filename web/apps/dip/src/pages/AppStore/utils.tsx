@@ -1,4 +1,5 @@
 import type { MenuProps } from 'antd'
+import intl from 'react-intl-universal'
 import type { ApplicationInfo } from '@/apis'
 import IconFont from '@/components/IconFont'
 import { WENSHU_APP_KEY } from '@/routes/types'
@@ -14,13 +15,13 @@ export const getAppStoreMenuItems = (
     {
       key: AppStoreActionEnum.Config,
       icon: <IconFont type="icon-settings" />,
-      label: '配置',
+      label: intl.get('application.menu.config'),
       onClick: () => onMenuClick(AppStoreActionEnum.Config),
     },
     {
       key: AppStoreActionEnum.Run,
       icon: <IconFont type="icon-run" />,
-      label: '运行',
+      label: intl.get('application.menu.run'),
       onClick: () => onMenuClick(AppStoreActionEnum.Run),
     },
   ]
@@ -32,7 +33,7 @@ export const getAppStoreMenuItems = (
           key: AppStoreActionEnum.Uninstall,
           icon: <IconFont type="icon-trash" />,
           danger: true,
-          label: '卸载',
+          label: intl.get('application.menu.uninstall'),
           onClick: () => onMenuClick(AppStoreActionEnum.Uninstall),
         },
       ],

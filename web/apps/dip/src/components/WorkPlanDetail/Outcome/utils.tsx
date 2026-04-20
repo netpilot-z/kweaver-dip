@@ -1,5 +1,5 @@
-import type { SessionArchiveEntry, SessionArchivesResponse } from '@/apis/dip-studio/sessions'
 import intl from 'react-intl-universal'
+import type { SessionArchiveEntry, SessionArchivesResponse } from '@/apis/dip-studio/sessions'
 
 /** 目录名形如 `{uuid}_{YYYY-MM-DD-HH-mm-ss}` 或 `{YYYY-MM-DD-HH-mm-ss}`，提取 `YYYY-MM-DD` 用于分组 */
 const DIR_NAME_RE =

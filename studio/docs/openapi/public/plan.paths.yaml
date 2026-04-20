@@ -15,13 +15,6 @@ paths:
       operationId: getCronJobList
       summary: 获取计划任务列表
       parameters:
-        - name: includeDisabled
-          in: query
-          required: false
-          description: 是否包含已禁用任务，默认 true
-          schema:
-            type: boolean
-            default: true
         - name: limit
           in: query
           required: false
@@ -57,7 +50,6 @@ paths:
             type: string
             enum:
               - nextRunAtMs
-              - createdAtMs
               - updatedAtMs
               - name
             default: nextRunAtMs
@@ -102,13 +94,6 @@ paths:
           description: 数字员工 ID
           schema:
             type: string
-        - name: includeDisabled
-          in: query
-          required: false
-          description: 是否包含已禁用任务，默认 true
-          schema:
-            type: boolean
-            default: true
         - name: limit
           in: query
           required: false
@@ -144,7 +129,6 @@ paths:
             type: string
             enum:
               - nextRunAtMs
-              - createdAtMs
               - updatedAtMs
               - name
             default: nextRunAtMs

@@ -7,6 +7,7 @@ import AdminSider from './AdminSider'
 import BusinessSider from './BusinessSider'
 import HomeSider from './HomeSider'
 import styles from './index.module.less'
+import SystemSider from './SystemSider'
 
 const { Sider: AntdSider } = Layout
 
@@ -65,6 +66,8 @@ const Sider = ({
     >
       {routeModule === 'business' ? (
         <BusinessSider collapsed={collapsed} onCollapse={onCollapse} />
+      ) : routeModule === 'system' ? (
+        <SystemSider collapsed={collapsed} onCollapse={onCollapse} />
       ) : isAdmin ? (
         <AdminSider collapsed={collapsed} onCollapse={onCollapse} layout={layout} />
       ) : (

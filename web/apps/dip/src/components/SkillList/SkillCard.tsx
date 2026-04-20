@@ -1,6 +1,7 @@
 import { Card, Dropdown, type MenuProps } from 'antd'
 import clsx from 'clsx'
 import { useState } from 'react'
+import intl from 'react-intl-universal'
 import type { DigitalHumanSkill } from '@/apis'
 import { DEFAULT_SKILL_ICON_COLORS, getMatchedColorByName } from '@/utils/handle-function'
 import IconFont from '../IconFont'
@@ -52,10 +53,10 @@ const SkillCard: React.FC<SkillCardProps> = ({ skill, menuItems, onCardClick }) 
           className="w-9 h-9 flex-shrink-0 overflow-hidden rounded-md flex items-end pl-1 pb-0.5"
           style={{ backgroundColor: getMatchedColorByName(skill.name, DEFAULT_SKILL_ICON_COLORS) }}
         >
-          <span className="text-white text-[8px]">skill</span>
+          <span className="text-white text-[8px]">{intl.get('skillList.badgeLabel')}</span>
         </div>
         <div className="flex-1 min-w-0">
-          <div className="text-[22px] leading-[22px] font-bold truncate" title={skill.name}>
+          <div className="text-[22px] font-bold truncate" title={skill.name}>
             {skill.name}
           </div>
         </div>
@@ -64,7 +65,7 @@ const SkillCard: React.FC<SkillCardProps> = ({ skill, menuItems, onCardClick }) 
         className="mt-3 flex-1 min-h-0 text-[13px] leading-5 text-[--dip-text-color-45] line-clamp-2"
         title={skill.description}
       >
-        {skill.description?.trim() || '[暂无描述]'}
+        {skill.description?.trim() || intl.get('global.notDes')}
       </p>
 
       <div className="mt-2 flex h-6 shrink-0 items-center justify-end text-xs">
@@ -92,7 +93,10 @@ const SkillCard: React.FC<SkillCardProps> = ({ skill, menuItems, onCardClick }) 
           </Dropdown>
         ) : (
           <span className="text-[#A0A0A9]">
-            @{skill.type === 'openclaw-managed' ? '自定义' : '官方'}
+            @
+            {skill.type === 'openclaw-managed'
+              ? intl.get('skillList.typeCustom')
+              : intl.get('skillList.typeOfficial')}
           </span>
         )}
       </div>

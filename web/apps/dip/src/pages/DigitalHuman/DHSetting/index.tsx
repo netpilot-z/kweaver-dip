@@ -213,7 +213,9 @@ const DHSetting = () => {
           ) : (
             <>
               {uiMode === 'edit' && (
-                <Button onClick={handleCancelEdit}>{intl.get('digitalHuman.setting.cancel')}</Button>
+                <Button onClick={handleCancelEdit}>
+                  {intl.get('digitalHuman.setting.cancel')}
+                </Button>
               )}
               <Button type="primary" loading={publishing} onClick={() => void handlePublish()}>
                 {intl.get('digitalHuman.setting.publish')}

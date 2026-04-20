@@ -14,6 +14,45 @@
     "dhSettingItem": "数字员工配置",
     "dhDetail": "数字员工详情",
     "initialConfiguration": "系统初始化配置",
-    "businessNetwork": "全局业务知识网络"
+    "businessNetwork": "全局业务知识网络",
+    "businessMenu": {
+      "ontology": "领域业务知识网络",
+      "vega": "通用业务知识网络",
+      "dataConnection": "数据连接",
+      "dataView": "数据视图",
+      "atomicDataView": "原子视图",
+      "customDataView": "自定义视图",
+      "dataModel": "数据模型",
+      "metricModel": "指标模型",
+      "decision-agent": "决策智能体",
+      "myAgents": "开发",
+      "agent-square": "广场",
+      "execution-factory": "执行工厂",
+      "executionManagement": "执行单元管理",
+      "allExecutions": "全部执行单元",
+      "autoflow": "Autoflow",
+      "dataflow": "数据流",
+      "workflow": "工作流",
+      "knowledgeItems": "知识条目",
+      "dataSemanticGovernance": "数据语义治理"
+    },
+    "systemMenu": {
+      "information-security": "信息安全管理",
+      "auth": "统一身份认证",
+      "user-org": "账户",
+      "cert-manage": "认证",
+      "security": "角色与访问策略",
+      "role-manage": "角色管理",
+      "audit": "日志及审计",
+      "auditlog": "审计日志",
+      "model-authorization": "模型",
+      "model-manager": "模型管理",
+      "model-quota": "配额管理",
+      "default-model": "默认模型",
+      "model-statistics": "模型统计",
+      "public-service": "公共服务",
+      "mailconfig": "邮件服务",
+      "third-party-messaging-plugin": "第三方消息插件"
+    }
   }
 }

@@ -8,9 +8,7 @@ const NoAccess = () => {
     <GradientContainer className="w-full h-full flex items-center justify-center">
       <Result
         subTitle={
-          <span className="text-base text-[--dip-text-color-65]">
-            {intl.get('error.noAccess')}
-          </span>
+          <span className="text-base text-[--dip-text-color-65]">{intl.get('error.noAccess')}</span>
         }
         // extra={
         //   <Button type="primary" onClick={() => navigate('/')}>

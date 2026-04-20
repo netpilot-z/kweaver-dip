@@ -143,13 +143,16 @@ participant BE as Studio Backend（Express）
 participant OC as OpenClaw
 
 BE ->> OC: 1. ws: agents.delete
-BE ->> BE: 2. 返回 204 No Content
+BE ->> OC: 2. 删除数字员工计划
+BE ->> BE: 3. 返回 204 No Content
 ```
 
 1、删除 Agent  
 通过 OpenClaw 的 WebSocket RPC 执行 `agents.delete` method。可通过 `deleteFiles` 控制是否删除 agent 工作目录。
 
-2、错误映射  
+2、从所有 cron 任务列表中筛选出 agentID 等于数字员工 ID 的 cron 任务，然后执行 `cron.remove` 进行删除。
+
+3、错误映射  
 当 OpenClaw 返回 agent 不存在相关错误时，后端转换为 404 语义返回。
 
 ### 通过接口删除数字员工

@@ -9,6 +9,10 @@ import type {
   PlanStatusPill,
 } from './types'
 
+export function isEndedAtPlan(job: CronJob): boolean {
+  return job.schedule?.kind?.trim() === 'at' && job.state?.lastRunAtMs != null
+}
+
 /** 常见 Cron：分 时 日 月 周 均为 * 时解析为「每日 HH:mm」 */
 export function formatDailyCronLabel(expr: string): string | null {
   const parts = expr.trim().split(/\s+/).filter(Boolean)
@@ -50,6 +54,10 @@ export function planJobDescription(job: CronJob): string {
 
 /** 执行条件展示：wakeMode、payload.conditionLabel，否则尝试每日 Cron 文案 */
 export function planExecutionConditionText(job: CronJob): string {
+  const scheduleKind = job.schedule?.kind?.trim()
+  if (scheduleKind === 'at') return intl.get('workPlan.list.executionConditionAt')
+  if (scheduleKind === 'every') return intl.get('workPlan.list.executionConditionEvery')
+
   const w = job.wakeMode?.trim()
   if (w) return w
   const p = job.payload
@@ -151,10 +159,21 @@ const PLAN_JOB_DISPLAY: Record<PlanJobDisplayStatus, PlanJobDisplayEntry> = {
       iconClassName: 'text-lg text-[rgba(0,0,0,0.45)]',
     },
   },
+  ended: {
+    pill: {
+      text: intl.get('workPlan.list.statusEnded'),
+      className: 'bg-[rgba(0,0,0,0.06)] text-[rgba(0,0,0,0.65)]',
+    },
+    leftIcon: {
+      boxClassName: 'bg-[rgba(0,0,0,0.06)]',
+      iconClassName: 'text-lg text-[rgba(0,0,0,0.45)]',
+    },
+  },
 }
 
 /** 从 CronJob 解析展示状态（与 lastRunStatus：ok / error / skipped 等对齐） */
 export function getPlanJobDisplayStatus(job: CronJob): PlanJobDisplayStatus {
+  if (isEndedAtPlan(job)) return 'ended'
   if (!job.enabled) return 'disabled'
   if (job.state?.runningAtMs) return 'running'
   const last = job.state?.lastRunStatus?.toLowerCase()

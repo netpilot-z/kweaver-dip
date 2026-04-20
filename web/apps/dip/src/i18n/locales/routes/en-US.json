@@ -14,6 +14,45 @@
     "dhSettingItem": "Digital human settings",
     "dhDetail": "Digital human details",
     "initialConfiguration": "Initial setup",
-    "businessNetwork": "Global business knowledge network"
+    "businessNetwork": "Global business knowledge network",
+    "businessMenu": {
+      "ontology": "Domain business knowledge network",
+      "vega": "Shared business knowledge network",
+      "dataConnection": "Data connection",
+      "dataView": "Data view",
+      "atomicDataView": "Atomic view",
+      "customDataView": "Custom view",
+      "dataModel": "Data model",
+      "metricModel": "Metric model",
+      "decision-agent": "Decision agent",
+      "myAgents": "Development",
+      "agent-square": "Square",
+      "execution-factory": "Execution factory",
+      "executionManagement": "Execution unit management",
+      "allExecutions": "All execution units",
+      "autoflow": "Autoflow",
+      "dataflow": "Data flow",
+      "workflow": "Workflow",
+      "knowledgeItems": "Knowledge Items",
+      "dataSemanticGovernance": "Data semantic governance"
+    },
+    "systemMenu": {
+      "information-security": "Information security",
+      "auth": "Unified identity authentication",
+      "user-org": "Accounts",
+      "cert-manage": "Authentication",
+      "security": "Roles and access policies",
+      "role-manage": "Role management",
+      "audit": "Logging and audit",
+      "auditlog": "Audit log",
+      "model-authorization": "Models",
+      "model-manager": "Model management",
+      "model-quota": "Quota management",
+      "default-model": "Default model",
+      "model-statistics": "Model statistics",
+      "public-service": "Public services",
+      "mailconfig": "Email service",
+      "third-party-messaging-plugin": "Third-party messaging plugin"
+    }
   }
 }

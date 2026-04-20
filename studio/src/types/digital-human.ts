@@ -242,9 +242,8 @@ export interface CreateDigitalHumanRequest {
   soul?: string;
 
   /**
-   * Extra skill names to bind to the agent.
-   * The server always merges `archive-protocol`, `schedule-plan`, and
-   * `kweaver-core` first; duplicates are omitted.
+   * Skill names to bind to the agent at create time.
+   * Duplicates are ignored while preserving first occurrence order.
    */
   skills?: string[];
 
@@ -291,7 +290,7 @@ export interface CreateDigitalHumanResult {
   soul?: string;
 
   /**
-   * Skill names bound to the agent (includes built-in defaults merged at create time).
+   * Skill names bound to the agent after create-time normalization.
    */
   skills?: string[];
 
@@ -341,7 +340,7 @@ export interface DigitalHumanDetail {
   bkn?: BknEntry[];
 
   /**
-   * Skill names currently configured on the agent (includes built-in defaults when bound).
+   * Skill names currently configured on the agent.
    */
   skills?: string[];
 
@@ -401,7 +400,7 @@ export interface UpdateDigitalHumanResult {
   creature?: string;
   icon_id?: string;
   soul?: string;
-  /** Skill ids currently on the agent (includes built-in defaults when bound). */
+  /** Skill ids currently on the agent. */
   skills?: string[];
   bkn?: BknEntry[];
   channel?: ChannelConfig;

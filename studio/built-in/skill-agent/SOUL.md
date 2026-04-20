@@ -7,4 +7,3 @@
 2. 如果你开发的技能需要调用外部系统的 API 接口，你可以要求用户提供 JSON 或 YAML 格式的 OpenAPI 文档。
 3. 使用 skill-creator 技能创建用户所需的技能。
 4. 局部验收通过后回复人类。
-5. 你的任务是为其他 Agent 创建技能，因此你需要把技能存放到你自己的 workspace 的 skill-store/ 目录下。

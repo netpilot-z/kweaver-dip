@@ -11,7 +11,7 @@ import {
   VideoCameraOutlined,
 } from '@ant-design/icons'
 import { Spin } from 'antd'
-import { memo, useEffect, useMemo, useState } from 'react'
+import { memo, useEffect, useState } from 'react'
 import intl from 'react-intl-universal'
 import {
   getSessionArchiveSubpath,
@@ -29,7 +29,6 @@ import {
   mockGetDigitalHumanSessionArchives,
   RESULTS_PANEL_USE_MOCK,
 } from '../../Outcome/resultsPanelMock'
-import { usePreviewDrawerContainer } from '../previewDrawerContainerContext'
 
 export type TaskOutcomeListProps = {
   digitalHumanId?: string
@@ -53,7 +52,10 @@ function renderFileTypeMeta(fileName: string) {
   const iconClassName = 'text-[--dip-text-color-45]'
 
   if (['png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp', 'svg', 'ico', 'avif'].includes(ext)) {
-    return { icon: <FileImageOutlined className={iconClassName} />, label: intl.get('workPlan.detail.fileTypeImage') }
+    return {
+      icon: <FileImageOutlined className={iconClassName} />,
+      label: intl.get('workPlan.detail.fileTypeImage'),
+    }
   }
   if (ext === 'pdf') {
     return { icon: <FilePdfOutlined className={iconClassName} />, label: 'PDF' }
@@ -65,13 +67,22 @@ function renderFileTypeMeta(fileName: string) {
     return { icon: <FileExcelOutlined className={iconClassName} />, label: 'Excel' }
   }
   if (['zip', 'rar', '7z', 'tar', 'gz', 'tgz'].includes(ext)) {
-    return { icon: <FileZipOutlined className={iconClassName} />, label: intl.get('workPlan.detail.fileTypeArchive') }
+    return {
+      icon: <FileZipOutlined className={iconClassName} />,
+      label: intl.get('workPlan.detail.fileTypeArchive'),
+    }
   }
   if (['mp4', 'webm', 'mov', 'm4v', 'ogv'].includes(ext)) {
-    return { icon: <VideoCameraOutlined className={iconClassName} />, label: intl.get('workPlan.detail.fileTypeVideo') }
+    return {
+      icon: <VideoCameraOutlined className={iconClassName} />,
+      label: intl.get('workPlan.detail.fileTypeVideo'),
+    }
   }
   if (['mp3', 'wav', 'aac', 'flac', 'm4a', 'opus', 'oga', 'weba'].includes(ext)) {
-    return { icon: <AudioOutlined className={iconClassName} />, label: intl.get('workPlan.detail.fileTypeAudio') }
+    return {
+      icon: <AudioOutlined className={iconClassName} />,
+      label: intl.get('workPlan.detail.fileTypeAudio'),
+    }
   }
   if (['md', 'mdx', 'markdown'].includes(ext)) {
     return { icon: <FileMarkdownOutlined className={iconClassName} />, label: 'Markdown' }
@@ -137,15 +148,6 @@ function TaskOutcomeListInner({ digitalHumanId, sessionId }: TaskOutcomeListProp
   const [entries, setEntries] = useState<SessionArchiveFileItem[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [drawerOpen, setDrawerOpen] = useState(false)
-  const previewDrawerGetContainer = usePreviewDrawerContainer()
-  const drawerGetContainer = useMemo(() => {
-    if (!previewDrawerGetContainer) return undefined
-    if (typeof previewDrawerGetContainer === 'function') {
-      return () => previewDrawerGetContainer() ?? document.body
-    }
-    return previewDrawerGetContainer
-  }, [previewDrawerGetContainer])
   const { preview, openFilePreview, closePreview, downloadFile } = useArchivePreview(
     dhId ?? '',
     sessionIdTrimmed ?? '',
@@ -180,8 +182,8 @@ function TaskOutcomeListInner({ digitalHumanId, sessionId }: TaskOutcomeListProp
           }),
         )
         if (!cancelled) setEntries(nested.flat())
-      } catch (error: any) {
-        if (!cancelled) setError(error?.description ?? intl.get('workPlan.detail.archiveFetchFailed'))
+      } catch {
+        if (!cancelled) setError(intl.get('workPlan.detail.taskOutcomeFetchFailed'))
       } finally {
         if (!cancelled) setLoading(false)
       }
@@ -193,7 +195,7 @@ function TaskOutcomeListInner({ digitalHumanId, sessionId }: TaskOutcomeListProp
   }, [dhId, sessionIdTrimmed])
 
   if (!canFetch) {
-    return <Empty title={intl.get('workPlan.detail.noOutcome')} />
+    return <Empty title={intl.get('workPlan.detail.taskOutcomeNotGenerated')} />
   }
   if (loading) {
     return (
@@ -203,10 +205,10 @@ function TaskOutcomeListInner({ digitalHumanId, sessionId }: TaskOutcomeListProp
     )
   }
   if (error) {
-    return <Empty type="failed" title={intl.get('workPlan.common.loadFailed')} desc={error} />
+    return <Empty type="failed" title={error} />
   }
   if (entries.length === 0) {
-    return <Empty title={intl.get('workPlan.detail.noOutcome')} />
+    return <Empty title={intl.get('workPlan.detail.taskOutcomeNotGenerated')} />
   }
   return (
     <>
@@ -219,7 +221,6 @@ function TaskOutcomeListInner({ digitalHumanId, sessionId }: TaskOutcomeListProp
                 type="button"
                 className="flex w-full items-center justify-between rounded-md border border-[--dip-border-color] bg-[--dip-white] px-3 py-2 text-left transition-colors hover:border-[--dip-primary-color] hover:bg-[--dip-hover-bg-color]"
                 onClick={() => {
-                  setDrawerOpen(true)
                   void openFilePreview(item.path, item.name)
                 }}
               >
@@ -239,14 +240,12 @@ function TaskOutcomeListInner({ digitalHumanId, sessionId }: TaskOutcomeListProp
       </ul>
 
       <ArchivePreviewDrawer
-        open={drawerOpen}
+        open={preview !== null}
         preview={preview}
         size="100%"
-        getContainer={drawerGetContainer}
-        onClose={() => {
-          setDrawerOpen(false)
-          closePreview()
-        }}
+        getContainer={document.body}
+        isPreviewFullscreen
+        onClose={closePreview}
         onDownload={() => {
           if (!preview) return
           return downloadFile(preview.subpath, preview.title)

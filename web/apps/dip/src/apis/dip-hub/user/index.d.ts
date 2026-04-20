@@ -1,3 +1,13 @@
+/** 用户角色 */
+export type UserRole =
+  | 'normal_user'
+  | 'super_admin'
+  | 'org_manager'
+  | 'org_audit'
+  | 'sys_admin'
+  | 'audit_admin'
+  | 'sec_admin'
+
 /** 用户信息 */
 export interface UserInfo {
   /** 用户ID */
@@ -8,6 +18,8 @@ export interface UserInfo {
   vision_name: string
   /** 邮箱 */
   email?: string
+  /** 角色 */
+  roles?: Record<UserRole, boolean>
 }
 
 /** 角色对象 */

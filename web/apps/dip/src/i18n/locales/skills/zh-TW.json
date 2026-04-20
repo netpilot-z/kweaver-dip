@@ -17,6 +17,11 @@
     "emptySubDesc": "目前沒有可用技能，可點擊下方按鈕導入或會話建立技能。",
     "loadFailed": "技能列表載入失敗"
   },
+  "skillList": {
+    "badgeLabel": "技能",
+    "typeOfficial": "官方",
+    "typeCustom": "自訂"
+  },
   "skillDetail": {
     "filesTab": "檔案列表",
     "skillNotFound": "技能不存在",

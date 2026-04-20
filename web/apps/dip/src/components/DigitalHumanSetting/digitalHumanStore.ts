@@ -66,6 +66,8 @@ export interface DigitalHumanState {
   deleteBkn: (url: string) => void
   /** 更新技能目录名列表（整组替换） */
   updateSkills: (patches: DigitalHumanSkill[]) => void
+  /** 合并内置技能到当前配置和详情快照，不标记 dirty */
+  syncBuiltInSkills: (builtInSkills: DigitalHumanSkill[]) => void
   /** 删除单个技能（按目录名） */
   deleteSkill: (skillDirectoryName: string) => void
   /** 更新渠道配置 */
@@ -85,6 +87,17 @@ const defaultBasic: DigitalHumanBasic = {
 const defaultSkills: DigitalHumanSkill[] = []
 
 const defaultBkn: BknEntry[] = []
+
+const mergeSkillsByName = (
+  currentSkills: DigitalHumanSkill[],
+  nextSkills: DigitalHumanSkill[],
+): DigitalHumanSkill[] => {
+  if (nextSkills.length === 0) return currentSkills
+  const existedNames = new Set(currentSkills.map((skill) => skill.name))
+  const appendedSkills = nextSkills.filter((skill) => !existedNames.has(skill.name))
+  if (appendedSkills.length === 0) return currentSkills
+  return [...currentSkills, ...appendedSkills]
+}
 
 export const useDigitalHumanStore = create<DigitalHumanState>()((set) => ({
   uiMode: 'create',
@@ -175,6 +188,32 @@ export const useDigitalHumanStore = create<DigitalHumanState>()((set) => ({
       skills: patches,
       dirty: true,
     })),
+
+  syncBuiltInSkills: (builtInSkills) =>
+    set((state) => {
+      const nextSkills = mergeSkillsByName(state.skills, builtInSkills)
+      const nextDetailSkills = mergeSkillsByName(
+        state.detail?.skills ?? defaultSkills,
+        builtInSkills,
+      )
+
+      if (
+        nextSkills === state.skills &&
+        nextDetailSkills === (state.detail?.skills ?? defaultSkills)
+      ) {
+        return state
+      }
+
+      return {
+        skills: nextSkills,
+        detail: state.detail
+          ? {
+              ...state.detail,
+              skills: nextDetailSkills,
+            }
+          : state.detail,
+      }
+    }),
 
   deleteSkill: (skillName) =>
     set((state) => ({

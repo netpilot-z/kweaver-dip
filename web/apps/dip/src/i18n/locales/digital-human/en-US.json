@@ -17,6 +17,7 @@
       "loadFailedTitle": "Failed to load digital employees",
       "retry": "Retry",
       "menuEdit": "Edit",
+      "menuSession": "Session",
       "menuDelete": "Delete",
       "deleteModalTitle": "Delete digital employee",
       "deleteConfirmBody": "Delete digital employee __DH_NAME__? All data under this employee will be permanently deleted. This action cannot be undone.",

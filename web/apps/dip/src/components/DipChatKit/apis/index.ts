@@ -131,6 +131,30 @@ const buildToolCallEventId = (
   return `sse_tool_call_${toolName || 'tool'}`
 }
 
+/** 解析 OpenAI-style tool result：{ content: [{ type: 'text', text: '...' }, ...] } */
+const extractTextFromResultLike = (value: unknown): string => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return ''
+  const record = value as Record<string, unknown>
+  const content = record.content
+  if (!Array.isArray(content)) return ''
+  const parts: string[] = []
+  for (const part of content) {
+    if (!part || typeof part !== 'object' || Array.isArray(part)) continue
+    const p = part as Record<string, unknown>
+    if (normalizeEventType(p.type) !== 'text') continue
+    if (typeof p.text === 'string') {
+      parts.push(p.text)
+    }
+  }
+  return parts.join('')
+}
+
+const extractToolResultTextFromItemPayload = (itemPayload: Record<string, unknown>): string => {
+  const fromResult = extractTextFromResultLike(itemPayload.result)
+  if (fromResult) return fromResult
+  return extractTextFromResultLike(itemPayload.partialResult)
+}
+
 const extractToolCallChunkFromPayload = (
   payload: Record<string, unknown>,
 ): DipChatKitResponseStreamToolCallChunk | null => {
@@ -154,12 +178,15 @@ const extractToolCallChunkFromPayload = (
   const toolCallId = toOptionalString(itemPayload.call_id ?? itemPayload.callId) || ''
   const itemId = toOptionalString(itemPayload.id) || ''
   const outputIndex = toOptionalFiniteNumber(payload.output_index)
-  const isCompleted = eventType === 'response.output_item.done'
+  const isDoneEvent = eventType === 'response.output_item.done'
+  const itemStatus = normalizeEventType(itemPayload.status)
+  const isPartialDone =
+    isDoneEvent && (itemPayload.partial === true || itemStatus === 'in_progress')
+  const status: DipChatKitResponseStreamToolCallPayload['status'] =
+    eventType === 'response.output_item.added' || isPartialDone ? 'in_progress' : 'completed'
   const text = toTextFromUnknown(itemPayload.arguments)
-  const isError = isCompleted && itemPayload.error !== undefined && itemPayload.error !== null
-  const status: DipChatKitResponseStreamToolCallPayload['status'] = isCompleted
-    ? 'completed'
-    : 'in_progress'
+  const resultText = extractToolResultTextFromItemPayload(itemPayload)
+  const isError = isDoneEvent && itemPayload.error !== undefined && itemPayload.error !== null
 
   return {
     kind: 'toolCall',
@@ -168,6 +195,7 @@ const extractToolCallChunkFromPayload = (
       toolName,
       toolCallId,
       text,
+      resultText,
       status,
       isError,
       itemId,

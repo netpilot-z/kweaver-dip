@@ -1,7 +1,9 @@
-import { memo, useEffect, useRef } from 'react'
+import { memo, useEffect, useMemo, useRef } from 'react'
 import intl from 'react-intl-universal'
 import { useSearchParams } from 'react-router-dom'
 import { getLoginUrl } from '@/apis'
+import { useLanguageStore } from '@/stores/languageStore'
+import { useOEMConfigStore } from '@/stores/oemConfigStore'
 
 interface ContentProps {
   iframeHeight: number
@@ -11,6 +13,9 @@ interface ContentProps {
 function Content({ iframeHeight, width = 560 }: ContentProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const [searchParams] = useSearchParams()
+  const { getOEMResourceConfig } = useOEMConfigStore()
+  const { language } = useLanguageStore()
+  const oemResourceConfig = getOEMResourceConfig(language)
 
   // 获取重定向地址（登录成功后跳转）
   const asredirect = searchParams.get('asredirect') || undefined
@@ -28,14 +33,22 @@ function Content({ iframeHeight, width = 560 }: ContentProps) {
   const widthStyle =
     typeof width === 'number' ? `${width}px` : typeof width === 'string' ? width : '560px'
 
+  const logoUrl = useMemo(() => {
+    return oemResourceConfig?.['logo.png']
+  }, [oemResourceConfig])
+
   return (
-    <iframe
-      src={loginUrl}
-      ref={iframeRef}
-      className="border-none"
-      style={{ height: `${iframeHeight}px`, width: widthStyle }}
-      title={intl.get('oauthLogin.iframeTitle')}
-    />
+    <>
+      <img src={logoUrl} alt="logo" className="h-8 w-full mx-auto" />
+      {/* <span className="text-center text-base text-gray-500 mx-auto">决策智能体平台</span> */}
+      <iframe
+        src={loginUrl}
+        ref={iframeRef}
+        className="border-none"
+        style={{ height: `${iframeHeight}px`, width: widthStyle }}
+        title={intl.get('oauthLogin.iframeTitle')}
+      />
+    </>
   )
 }
 

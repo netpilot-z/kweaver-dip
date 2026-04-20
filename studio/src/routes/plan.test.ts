@@ -9,6 +9,7 @@ import {
   parseCronRunSortDir,
   parseNonNegativeIntegerString,
   parseOptionalSingleQueryValue,
+  readDefaultCronJobListQuery,
   readCronJobListQuery,
   readUpdatePlanRequest,
   readCronRunListQuery
@@ -44,6 +45,14 @@ describe("readCronJobListQuery", () => {
     });
   });
 
+  it("rejects unsupported OpenClaw cron sort fields", () => {
+    expect(() =>
+      readCronJobListQuery({
+        sortBy: "createdAtMs"
+      })
+    ).toThrow("Invalid query parameter `sortBy`");
+  });
+
   it("rejects invalid enum values", () => {
     expect(() =>
       readCronJobListQuery({
@@ -57,6 +66,50 @@ describe("readCronJobListQuery", () => {
     ).toThrow("Invalid query parameter `sortBy`");
     expect(() =>
       readCronJobListQuery({
+        sortDir: "bad"
+      })
+    ).toThrow("Invalid query parameter `sortDir`");
+    expect(() =>
+      readCronJobListQuery({
+        includeDisabled: "bad"
+      })
+    ).toThrow("Invalid query parameter `includeDisabled`");
+  });
+});
+
+describe("readDefaultCronJobListQuery", () => {
+  it("uses expected defaults without exposing includeDisabled", () => {
+    expect(readDefaultCronJobListQuery({})).toEqual({
+      includeDisabled: true,
+      limit: 50,
+      offset: 0,
+      enabled: "all",
+      sortBy: "nextRunAtMs",
+      sortDir: "asc"
+    });
+  });
+
+  it("rejects unsupported OpenClaw cron sort fields", () => {
+    expect(() =>
+      readDefaultCronJobListQuery({
+        sortBy: "createdAtMs"
+      })
+    ).toThrow("Invalid query parameter `sortBy`");
+  });
+
+  it("rejects invalid enum values", () => {
+    expect(() =>
+      readDefaultCronJobListQuery({
+        enabled: "bad"
+      })
+    ).toThrow("Invalid query parameter `enabled`");
+    expect(() =>
+      readDefaultCronJobListQuery({
+        sortBy: "bad"
+      })
+    ).toThrow("Invalid query parameter `sortBy`");
+    expect(() =>
+      readDefaultCronJobListQuery({
         sortDir: "bad"
       })
     ).toThrow("Invalid query parameter `sortDir`");
@@ -99,12 +152,15 @@ describe("cron helpers", () => {
     expect(parseCronJobSortDir(undefined)).toBe("asc");
     expect(parseCronRunSortDir(undefined)).toBe("desc");
     expect(parseOptionalSingleQueryValue(["single"], "id")).toBe("single");
+    expect(parseOptionalSingleQueryValue(undefined, "id")).toBeUndefined();
     expect(() => parseOptionalSingleQueryValue(["a", "b"], "id")).toThrow(
       "Invalid query parameter `id`"
     );
     expect(() => parseCronRunSortDir("bad")).toThrow(
       "Invalid query parameter `sortDir`"
     );
+    expect(parseBooleanQueryValue("false", true, "includeDisabled")).toBe(false);
+    expect(parseNonNegativeIntegerString(undefined, 7, "offset")).toBe(7);
   });
 });
 
@@ -502,6 +558,59 @@ describe("createCronRouter", () => {
     expect(next).not.toHaveBeenCalled();
   });
 
+  it("forwards known and wraps unknown plan content errors", async () => {
+    const { HttpError } = await import("../errors/http-error");
+    const router = createCronRouter({
+      listCronJobs: vi.fn(),
+      getCronJob: vi.fn(),
+      getPlanContent: vi.fn().mockRejectedValueOnce(new HttpError(404, "missing")).mockRejectedValueOnce(new Error("boom")),
+      updateCronJob: vi.fn(),
+      deleteCronJob: vi.fn(),
+      listCronRuns: vi.fn()
+    }) as {
+      stack: Array<{
+        route?: {
+          path: string;
+          stack: Array<{
+            handle: (
+              request: Request,
+              response: Response,
+              next: NextFunction
+            ) => Promise<void>;
+          }>;
+        };
+      }>;
+    };
+    const layer = router.stack.find(
+      (entry) => entry.route?.path === "/api/dip-studio/v1/plans/:id/content"
+    );
+    const handler = layer?.route?.stack[0]?.handle;
+    const response = createResponseDouble();
+    const firstNext = vi.fn<NextFunction>();
+    const secondNext = vi.fn<NextFunction>();
+    const request = {
+      params: { id: "plan-1" },
+      headers: {}
+    } as unknown as Request;
+
+    injectAuthenticatedUserId(request, "user-1");
+    await handler?.(request, response, firstNext);
+    await handler?.(request, response, secondNext);
+
+    expect(firstNext).toHaveBeenCalledWith(
+      expect.objectContaining({
+        statusCode: 404,
+        message: "missing"
+      })
+    );
+    expect(secondNext).toHaveBeenCalledWith(
+      expect.objectContaining({
+        statusCode: 502,
+        message: "Failed to read plan content"
+      })
+    );
+  });
+
   it("reads one plan for the authenticated user", async () => {
     const getCronJob = vi.fn().mockResolvedValue({
       id: "plan-1",
@@ -575,6 +684,59 @@ describe("createCronRouter", () => {
     expect(next).not.toHaveBeenCalled();
   });
 
+  it("forwards known and wraps unknown plan read errors", async () => {
+    const { HttpError } = await import("../errors/http-error");
+    const router = createCronRouter({
+      listCronJobs: vi.fn(),
+      getCronJob: vi.fn().mockRejectedValueOnce(new HttpError(403, "forbidden")).mockRejectedValueOnce(new Error("boom")),
+      getPlanContent: vi.fn(),
+      updateCronJob: vi.fn(),
+      deleteCronJob: vi.fn(),
+      listCronRuns: vi.fn()
+    }) as {
+      stack: Array<{
+        route?: {
+          path: string;
+          stack: Array<{
+            handle: (
+              request: Request,
+              response: Response,
+              next: NextFunction
+            ) => Promise<void>;
+          }>;
+        };
+      }>;
+    };
+    const layer = router.stack.find(
+      (entry) => entry.route?.path === "/api/dip-studio/v1/plans/:id"
+    );
+    const handler = layer?.route?.stack[0]?.handle;
+    const response = createResponseDouble();
+    const request = {
+      params: { id: "plan-1" },
+      headers: {}
+    } as unknown as Request;
+    const firstNext = vi.fn<NextFunction>();
+    const secondNext = vi.fn<NextFunction>();
+
+    injectAuthenticatedUserId(request, "user-1");
+    await handler?.(request, response, firstNext);
+    await handler?.(request, response, secondNext);
+
+    expect(firstNext).toHaveBeenCalledWith(
+      expect.objectContaining({
+        statusCode: 403,
+        message: "forbidden"
+      })
+    );
+    expect(secondNext).toHaveBeenCalledWith(
+      expect.objectContaining({
+        statusCode: 502,
+        message: "Failed to read plan"
+      })
+    );
+  });
+
   it("handles plan runs request with id override", async () => {
     const listCronRuns = vi.fn().mockResolvedValue({
       entries: [],
@@ -632,6 +794,52 @@ describe("createCronRouter", () => {
     });
     expect(response.status).toHaveBeenCalledWith(200);
     expect(next).not.toHaveBeenCalled();
+  });
+
+  it("wraps unexpected errors when querying plan runs", async () => {
+    const router = createCronRouter({
+      listCronJobs: vi.fn(),
+      getCronJob: vi.fn(),
+      getPlanContent: vi.fn(),
+      updateCronJob: vi.fn(),
+      deleteCronJob: vi.fn(),
+      listCronRuns: vi.fn().mockRejectedValue(new Error("boom"))
+    }) as {
+      stack: Array<{
+        route?: {
+          path: string;
+          stack: Array<{
+            handle: (
+              request: Request,
+              response: Response,
+              next: NextFunction
+            ) => Promise<void>;
+          }>;
+        };
+      }>;
+    };
+    const layer = router.stack.find(
+      (entry) => entry.route?.path === "/api/dip-studio/v1/plans/:id/runs"
+    );
+    const handler = layer?.route?.stack[0]?.handle;
+    const response = createResponseDouble();
+    const next = vi.fn<NextFunction>();
+
+    await handler?.(
+      {
+        params: { id: "plan-1" },
+        query: {}
+      } as unknown as Request,
+      response,
+      next
+    );
+
+    expect(next).toHaveBeenCalledWith(
+      expect.objectContaining({
+        statusCode: 502,
+        message: "Failed to query plan runs"
+      })
+    );
   });
 
   it("handles plan update request", async () => {
@@ -782,5 +990,71 @@ describe("createCronRouter", () => {
     expect(updateResponse.status).toHaveBeenCalledWith(200);
     expect(deleteResponse.status).toHaveBeenCalledWith(204);
     expect(deleteResponse.send).toHaveBeenCalled();
+  });
+
+  it("wraps unexpected update and delete errors", async () => {
+    const router = createCronRouter({
+      listCronJobs: vi.fn(),
+      getCronJob: vi.fn(),
+      getPlanContent: vi.fn(),
+      updateCronJob: vi.fn().mockRejectedValue(new Error("boom")),
+      deleteCronJob: vi.fn().mockRejectedValue(new Error("boom")),
+      listCronRuns: vi.fn()
+    }) as {
+      stack: Array<{
+        route?: {
+          path: string;
+          stack: Array<{
+            handle: (
+              request: Request,
+              response: Response,
+              next: NextFunction
+            ) => Promise<void>;
+          }>;
+        };
+      }>;
+    };
+    const updateLayer = router.stack.find(
+      (entry) =>
+        entry.route?.path === "/api/dip-studio/v1/plans/:id"
+        && (entry.route as { methods?: Record<string, boolean> }).methods?.put === true
+    );
+    const deleteLayer = router.stack.find(
+      (entry) =>
+        entry.route?.path === "/api/dip-studio/v1/plans/:id"
+        && (entry.route as { methods?: Record<string, boolean> }).methods?.delete === true
+    );
+    const updateHandler = updateLayer?.route?.stack[0]?.handle;
+    const deleteHandler = deleteLayer?.route?.stack[0]?.handle;
+    const updateRequest = {
+      params: { id: "plan-1" },
+      body: { enabled: false },
+      headers: {}
+    } as unknown as Request;
+    const deleteRequest = {
+      params: { id: "plan-1" },
+      headers: {}
+    } as unknown as Request;
+    const updateNext = vi.fn<NextFunction>();
+    const deleteNext = vi.fn<NextFunction>();
+
+    injectAuthenticatedUserId(updateRequest, "user-1");
+    injectAuthenticatedUserId(deleteRequest, "user-1");
+
+    await updateHandler?.(updateRequest, createResponseDouble(), updateNext);
+    await deleteHandler?.(deleteRequest, createResponseDouble(), deleteNext);
+
+    expect(updateNext).toHaveBeenCalledWith(
+      expect.objectContaining({
+        statusCode: 502,
+        message: "Failed to update plan"
+      })
+    );
+    expect(deleteNext).toHaveBeenCalledWith(
+      expect.objectContaining({
+        statusCode: 502,
+        message: "Failed to delete plan"
+      })
+    );
   });
 });

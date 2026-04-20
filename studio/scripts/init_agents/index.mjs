@@ -67,10 +67,10 @@ if (fs.existsSync(dotenvFilePath)) {
   console.log(`[配置] 已从 .env 加载: ${dotenvFilePath}`);
 }
 
-const STATE_DIR = process.env.OPENCLAW_ROOT_DIR || path.join(os.homedir(), ".openclaw");
+const STATE_DIR = path.join(os.homedir(), ".openclaw");
 const BUILT_IN_DIR = process.env.OPENCLAW_BUILT_IN_DIR || path.join(__dirname, "../..", "built-in");
 const WORKSPACE_ROOT = path.resolve(
-  process.env.OPENCLAW_WORKSPACE_DIR || STATE_DIR
+  process.env.OPENCLAW_WORKSPACE_DIR || path.join(STATE_DIR, "workspace")
 );
 
 function readJsonFile(filePath) {
@@ -158,6 +158,16 @@ function upsertAgentConfig(agentConfigs, newAgent) {
   console.log(`[新增] 在配置文件中注册 ${newAgent.id}`);
 }
 
+function ensureArchiveToolAllowed(cfg) {
+  const tools = cfg.tools && typeof cfg.tools === "object" ? cfg.tools : {};
+  const alsoAllow = Array.isArray(tools.alsoAllow) ? tools.alsoAllow : [];
+
+  cfg.tools = {
+    ...tools,
+    alsoAllow: alsoAllow.includes("archive") ? alsoAllow : [...alsoAllow, "archive"]
+  };
+}
+
 async function initOpenClawConfig(builtInAgents) {
   console.log("🛠️ 开始校准 openclaw.json 中的 Agent 配置...");
   const configPath = path.join(STATE_DIR, "openclaw.json");
@@ -176,6 +186,11 @@ async function initOpenClawConfig(builtInAgents) {
 
   cfg.agents = cfg.agents || {};
   cfg.agents.list = cfg.agents.list || [];
+  cfg.cron = {
+    ...(cfg.cron || {}),
+    sessionRetention: false
+  };
+  ensureArchiveToolAllowed(cfg);
 
   for (const agent of builtInAgents) {
     upsertAgentConfig(cfg.agents.list, {

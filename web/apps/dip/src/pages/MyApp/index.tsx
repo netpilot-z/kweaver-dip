@@ -1,5 +1,6 @@
 import { Button, message, Spin, Tooltip } from 'antd'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
+import intl from 'react-intl-universal'
 import { useNavigate } from 'react-router-dom'
 import type { ApplicationInfo } from '@/apis'
 import AppList from '@/components/AppList'
@@ -88,9 +89,9 @@ const MyApp = () => {
 
     if (error) {
       return (
-        <Empty type="failed" title="加载失败">
+        <Empty type="failed" title={intl.get('application.loadFailed')}>
           <Button className="mt-1" type="primary" onClick={handleRefresh}>
-            重试
+            {intl.get('application.retry')}
           </Button>
         </Empty>
       )
@@ -98,12 +99,12 @@ const MyApp = () => {
 
     if (apps.length === 0) {
       if (searchValue) {
-        return <Empty type="search" desc="抱歉，没有找到相关内容" />
+        return <Empty type="search" desc={intl.get('global.noResult')} />
       }
       return (
         <Empty
-          title="暂无可用应用"
-          subDesc="您当前没有任何应用的访问权限。这可能是因为管理员尚未为您分配权限，或者应用尚未部署。"
+          title={intl.get('application.myApp.emptyTitle')}
+          subDesc={intl.get('application.myApp.emptySubDesc')}
         />
       )
     }
@@ -138,9 +139,11 @@ const MyApp = () => {
       {messageContextHolder}
       <div className="flex justify-between mb-4 flex-shrink-0 z-20">
         <div className="flex flex-col gap-y-3">
-          <span className="text-2xl font-bold text-[--dip-text-color-75]">探索企业级 AI 应用</span>
+          <span className="text-2xl font-bold text-[--dip-text-color-75]">
+            {intl.get('application.myApp.title')}
+          </span>
           <span className="text-[--dip-text-color-65]">
-            查找具备专业能力的应用，帮你解决业务上的复杂问题
+            {intl.get('application.myApp.subtitle')}
           </span>
         </div>
         {(hasLoadedData || searchValue) && (
@@ -149,9 +152,9 @@ const MyApp = () => {
               variant="borderless"
               className="!rounded-2xl"
               onSearch={handleSearch}
-              placeholder="搜索应用"
+              placeholder={intl.get('application.searchPlaceholder')}
             />
-            <Tooltip title="刷新">
+            <Tooltip title={intl.get('global.refresh')}>
               <Button type="text" icon={<IconFont type="icon-refresh" />} onClick={handleRefresh} />
             </Tooltip>
           </div>

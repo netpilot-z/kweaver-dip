@@ -1,10 +1,19 @@
-import { mkdtemp, mkdir, rm, writeFile } from "node:fs/promises";
-import { join } from "node:path";
-import { tmpdir } from "node:os";
-
 import { describe, expect, it, vi } from "vitest";
 
 import { DefaultCronLogic } from "./plan";
+import type { OpenClawArchivesHttpClient } from "../infra/openclaw-archives-http-client";
+
+/**
+ * Creates a mocked OpenClaw archives client.
+ *
+ * @returns The mocked archives client.
+ */
+function createArchivesHttpClient(): OpenClawArchivesHttpClient {
+  return {
+    listSessionArchives: vi.fn(),
+    getSessionArchiveSubpath: vi.fn()
+  };
+}
 
 describe("DefaultCronLogic", () => {
   it("delegates listCronJobs to the adapter", async () => {
@@ -20,7 +29,7 @@ describe("DefaultCronLogic", () => {
       updateCronJob: vi.fn(),
       removeCronJob: vi.fn(),
       listCronRuns: vi.fn()
-    }, "workspace");
+    }, createArchivesHttpClient());
 
     await expect(
       logic.listCronJobs({
@@ -38,7 +47,7 @@ describe("DefaultCronLogic", () => {
       limit: 50,
       hasMore: false,
       nextOffset: null
-    }, "workspace");
+    }, createArchivesHttpClient());
   });
 
   it("filters cron jobs by session user id", async () => {
@@ -89,13 +98,13 @@ describe("DefaultCronLogic", () => {
       limit: 50,
       hasMore: false,
       nextOffset: null
-    }, "workspace");
+    }, createArchivesHttpClient());
     const logic = new DefaultCronLogic({
       listCronJobs,
       updateCronJob: vi.fn(),
       removeCronJob: vi.fn(),
       listCronRuns: vi.fn()
-    }, "workspace");
+    }, createArchivesHttpClient());
 
     await expect(
       logic.listCronJobs({
@@ -167,7 +176,7 @@ describe("DefaultCronLogic", () => {
       updateCronJob: vi.fn(),
       removeCronJob: vi.fn(),
       listCronRuns: vi.fn()
-    }, "workspace");
+    }, createArchivesHttpClient());
 
     await expect(
       logic.getCronJob({
@@ -202,7 +211,7 @@ describe("DefaultCronLogic", () => {
         hasMore: false,
         nextOffset: null
       })
-    }, "workspace");
+    }, createArchivesHttpClient());
 
     await expect(
       logic.listCronRuns({
@@ -264,7 +273,7 @@ describe("DefaultCronLogic", () => {
       updateCronJob,
       removeCronJob: vi.fn(),
       listCronRuns: vi.fn()
-    });
+    }, createArchivesHttpClient());
 
     await expect(
       logic.updateCronJob({
@@ -345,7 +354,7 @@ describe("DefaultCronLogic", () => {
       updateCronJob,
       removeCronJob: vi.fn(),
       listCronRuns: vi.fn()
-    });
+    }, createArchivesHttpClient());
 
     await expect(
       logic.updateCronJob({
@@ -410,7 +419,7 @@ describe("DefaultCronLogic", () => {
       updateCronJob: vi.fn(),
       removeCronJob,
       listCronRuns: vi.fn()
-    });
+    }, createArchivesHttpClient());
 
     await expect(
       logic.deleteCronJob({
@@ -428,9 +437,6 @@ describe("DefaultCronLogic", () => {
   });
 
   it("reads PLAN.md content for a user-owned job", async () => {
-    const workspaceDir = await mkdtemp(join(tmpdir(), "dip-studio-plan-test-"));
-    const planDir = join(workspaceDir, "dh-1", "archives", "chat-1");
-    const planPath = join(planDir, "PLAN.md");
     const listCronJobs = vi.fn().mockResolvedValue({
       jobs: [
         {
@@ -453,27 +459,86 @@ describe("DefaultCronLogic", () => {
       hasMore: false,
       nextOffset: null
     });
-    await mkdir(planDir, { recursive: true });
-    await writeFile(planPath, "# PLAN\nhello", "utf8");
-    try {
-      const logic = new DefaultCronLogic({
+    const getSessionArchiveSubpath = vi.fn().mockResolvedValue({
+      status: 200,
+      headers: new Headers({
+        "content-type": "text/markdown; charset=utf-8"
+      }),
+      body: new TextEncoder().encode("# PLAN\nhello")
+    });
+    const logic = new DefaultCronLogic(
+      {
         listCronJobs,
         updateCronJob: vi.fn(),
         removeCronJob: vi.fn(),
         listCronRuns: vi.fn()
-      }, workspaceDir);
+      },
+      {
+        listSessionArchives: vi.fn(),
+        getSessionArchiveSubpath
+      }
+    );
 
-      await expect(
-        logic.getPlanContent({
+    await expect(
+      logic.getPlanContent({
+        id: "job-1",
+        userId: "user-1"
+      })
+    ).resolves.toEqual({
+      content: "# PLAN\nhello"
+    });
+
+    expect(getSessionArchiveSubpath).toHaveBeenCalledWith("dh-1", "chat-1", "PLAN.md");
+  });
+
+  it("forwards archive read failure when PLAN.md is missing upstream", async () => {
+    const listCronJobs = vi.fn().mockResolvedValue({
+      jobs: [
+        {
           id: "job-1",
-          userId: "user-1"
-        })
-      ).resolves.toEqual({
-        content: "# PLAN\nhello"
-      });
-    } finally {
-      await rm(workspaceDir, { recursive: true, force: true });
-    }
+          agentId: "dh-1",
+          sessionKey: "agent:dh-1:user:user-1:direct:chat-1",
+          name: "Job 1",
+          enabled: true,
+          createdAtMs: 1,
+          updatedAtMs: 2,
+          schedule: {
+            expr: "0 9 * * *",
+            tz: "Asia/Shanghai"
+          }
+        }
+      ],
+      total: 1,
+      offset: 0,
+      limit: 200,
+      hasMore: false,
+      nextOffset: null
+    });
+    const getSessionArchiveSubpath = vi.fn().mockRejectedValue(
+      new Error("OpenClaw /v1/archives returned HTTP 404: Not Found")
+    );
+    const logic = new DefaultCronLogic(
+      {
+        listCronJobs,
+        updateCronJob: vi.fn(),
+        removeCronJob: vi.fn(),
+        listCronRuns: vi.fn()
+      },
+      {
+        listSessionArchives: vi.fn(),
+        getSessionArchiveSubpath
+      }
+    );
+
+    await expect(
+      logic.getPlanContent({
+        id: "job-1",
+        userId: "user-1"
+      })
+    ).rejects.toMatchObject({
+      statusCode: 502,
+      message: "Failed to read PLAN.md: OpenClaw /v1/archives returned HTTP 404: Not Found"
+    });
   });
 
   it("rejects plan mutation when the user does not own the job", async () => {
@@ -504,7 +569,7 @@ describe("DefaultCronLogic", () => {
       updateCronJob: vi.fn(),
       removeCronJob: vi.fn(),
       listCronRuns: vi.fn()
-    });
+    }, createArchivesHttpClient());
 
     await expect(
       logic.deleteCronJob({

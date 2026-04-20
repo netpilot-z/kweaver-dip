@@ -5,6 +5,7 @@ vi.mock('../UploadSkill', () => ({
 vi.mock('../UploadSkill.module.less', () => ({ default: {} }))
 
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import intl from 'react-intl-universal'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { DigitalHumanSkill } from '@/apis'
 import { getEnabledSkills } from '@/apis'
@@ -60,6 +61,12 @@ describe('DigitalHumanSetting/SkillConfig/SelectSkillModal', () => {
 
   const mockSkills: DigitalHumanSkill[] = [
     {
+      name: '内置技能',
+      description: '系统默认技能',
+      type: 'official',
+      built_in: true,
+    },
+    {
       name: '产品问答',
       description: '回答产品相关问题',
       type: 'official',
@@ -90,6 +97,7 @@ describe('DigitalHumanSetting/SkillConfig/SelectSkillModal', () => {
     expect(await screen.findByText('产品问答')).toBeInTheDocument()
     expect(screen.getByText('技术支持')).toBeInTheDocument()
     expect(screen.getByText('回答产品相关问题')).toBeInTheDocument()
+    expect(screen.queryByText('内置技能')).not.toBeInTheDocument()
   })
 
   it('显示默认选中的技能', async () => {
@@ -101,7 +109,7 @@ describe('DigitalHumanSetting/SkillConfig/SelectSkillModal', () => {
         onOk={mockOnOk}
         onCancel={mockOnCancel}
         onSubmit={mockOnSubmit}
-        defaultSelectedSkills={[mockSkills[0]]}
+        defaultSelectedSkills={[mockSkills[1]]}
       />,
     )
 
@@ -111,6 +119,46 @@ describe('DigitalHumanSetting/SkillConfig/SelectSkillModal', () => {
       .filter((btn) => btn.textContent === txt.added || btn.textContent === txt.add)
     expect(skillButtons[0]).toHaveTextContent(txt.added)
     expect(skillButtons[1]).toHaveTextContent(txt.add)
+  })
+
+  it('标题已选数量只统计可添加列表中的技能', async () => {
+    mockedGetEnabledSkills.mockResolvedValue(mockSkills)
+
+    render(
+      <SelectSkillModal
+        open
+        onOk={mockOnOk}
+        onCancel={mockOnCancel}
+        onSubmit={mockOnSubmit}
+        defaultSelectedSkills={[mockSkills[0], mockSkills[1]]}
+      />,
+    )
+
+    await screen.findByText('产品问答')
+    expect(screen.getByText('digitalHuman.skillModal.selectedCount')).toBeInTheDocument()
+    expect(screen.queryByText('内置技能')).not.toBeInTheDocument()
+  })
+
+  it('标题已选总数使用当前列表展示的技能数', async () => {
+    mockedGetEnabledSkills.mockResolvedValue(mockSkills)
+    const intlGetSpy = vi.spyOn(intl, 'get')
+
+    render(
+      <SelectSkillModal
+        open
+        onOk={mockOnOk}
+        onCancel={mockOnCancel}
+        onSubmit={mockOnSubmit}
+        defaultSelectedSkills={[mockSkills[1]]}
+      />,
+    )
+
+    await screen.findByText('产品问答')
+    expect(intl.get).toHaveBeenCalledWith('digitalHuman.skillModal.selectedCount', {
+      selected: 1,
+      max: 2,
+    })
+    intlGetSpy.mockRestore()
   })
 
   it('可以切换选择技能', async () => {
@@ -135,7 +183,7 @@ describe('DigitalHumanSetting/SkillConfig/SelectSkillModal', () => {
     fireEvent.click(productAddBtn)
 
     await waitFor(() => {
-      expect(mockOnOk).toHaveBeenCalledWith([mockSkills[0]])
+      expect(mockOnOk).toHaveBeenCalledWith([mockSkills[1]])
     })
 
     const productAddedBtn = screen.getByText(txt.added)
@@ -171,6 +219,7 @@ describe('DigitalHumanSetting/SkillConfig/SelectSkillModal', () => {
       () => {
         expect(screen.getByText('产品问答')).toBeInTheDocument()
         expect(screen.queryByText('技术支持')).not.toBeInTheDocument()
+        expect(screen.queryByText('内置技能')).not.toBeInTheDocument()
       },
       { timeout: 2000 },
     )

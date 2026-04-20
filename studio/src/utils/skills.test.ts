@@ -4,7 +4,7 @@ import {
   deriveSkillIdFromUploadedFilename,
   isDefaultDigitalHumanSkillSlug,
   isValidSkillSlug,
-  mergeCreateDigitalHumanSkills
+  normalizeCreateDigitalHumanSkills
 } from "./skills";
 
 describe("deriveSkillIdFromUploadedFilename", () => {
@@ -49,22 +49,11 @@ describe("utils/skills digital-human defaults", () => {
     expect(isDefaultDigitalHumanSkillSlug("custom")).toBe(false);
   });
 
-  it("mergeCreateDigitalHumanSkills prepends defaults and dedupes", () => {
-    expect(mergeCreateDigitalHumanSkills()).toEqual([
-      "archive-protocol",
-      "schedule-plan",
-      "kweaver-core"
-    ]);
-    expect(mergeCreateDigitalHumanSkills(["x"])).toEqual([
-      "archive-protocol",
-      "schedule-plan",
-      "kweaver-core",
-      "x"
-    ]);
-    expect(mergeCreateDigitalHumanSkills(["archive-protocol", "y"])).toEqual([
-      "archive-protocol",
-      "schedule-plan",
-      "kweaver-core",
+  it("normalizeCreateDigitalHumanSkills dedupes request values only", () => {
+    expect(normalizeCreateDigitalHumanSkills()).toEqual([]);
+    expect(normalizeCreateDigitalHumanSkills(["x"])).toEqual(["x"]);
+    expect(normalizeCreateDigitalHumanSkills(["x", "x", "y"])).toEqual([
+      "x",
       "y"
     ]);
   });

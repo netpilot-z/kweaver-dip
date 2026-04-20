@@ -26,6 +26,31 @@ export interface LoadEnvFileOptions {
 }
 
 /**
+ * Describes the OpenClaw Gateway connection settings used by runtime clients.
+ */
+export interface OpenClawGatewayRuntimeConfig {
+  /**
+   * OpenClaw Gateway WebSocket URL.
+   */
+  url: string;
+
+  /**
+   * OpenClaw Gateway HTTP base URL.
+   */
+  httpUrl: string;
+
+  /**
+   * Optional bearer token used for upstream authentication.
+   */
+  token?: string;
+
+  /**
+   * Upstream timeout in milliseconds.
+   */
+  timeoutMs: number;
+}
+
+/**
  * Resolves the HTTP port from an environment variable.
  *
  * @param value The raw environment variable value.
@@ -86,7 +111,32 @@ export function getEnv(): {
     openClawGatewayHttpUrl: resolveGatewayHttpUrl(gatewayUrl),
     openClawGatewayToken: readOptionalString(process.env.OPENCLAW_GATEWAY_TOKEN),
     openClawGatewayTimeoutMs: resolveTimeoutMs(process.env.OPENCLAW_GATEWAY_TIMEOUT_MS),
-    openClawWorkspaceDir: resolveWorkspaceDir(process.env.OPENCLAW_ROOT_DIR)
+    openClawWorkspaceDir: resolveWorkspaceDir()
+  };
+}
+
+/**
+ * Reloads `.env` and returns the latest OpenClaw Gateway connection settings.
+ *
+ * @param options Optional env-file loading overrides used by tests.
+ * @returns The normalized OpenClaw runtime configuration.
+ */
+export function getOpenClawGatewayRuntimeConfig(
+  options: LoadEnvFileOptions = {}
+): OpenClawGatewayRuntimeConfig {
+  loadEnvFile({
+    ...options,
+    override: options.override ?? true,
+    forceReload: options.forceReload ?? true
+  });
+
+  const env = getEnv();
+
+  return {
+    url: env.openClawGatewayUrl,
+    httpUrl: env.openClawGatewayHttpUrl,
+    token: env.openClawGatewayToken,
+    timeoutMs: env.openClawGatewayTimeoutMs
   };
 }
 
@@ -105,6 +155,7 @@ export function loadEnvFile(options: LoadEnvFileOptions = {}): void {
     override: options.override,
     quiet: true
   });
+
   hasLoadedDotEnv = true;
 }
 
@@ -287,13 +338,12 @@ export function readOptionalString(value: string | undefined): string | undefine
 }
 
 /**
- * Resolves the OpenClaw workspace root directory from the OpenClaw root directory.
+ * Resolves the OpenClaw workspace root directory under the fixed OpenClaw home.
  *
- * @param value The raw OpenClaw root directory value.
  * @returns The configured workspace root directory.
  */
-export function resolveWorkspaceDir(value: string | undefined): string {
-  return join(readOptionalString(value) ?? join(homedir(), ".openclaw"), "workspace");
+export function resolveWorkspaceDir(): string {
+  return join(homedir(), ".openclaw", "workspace");
 }
 
 /**

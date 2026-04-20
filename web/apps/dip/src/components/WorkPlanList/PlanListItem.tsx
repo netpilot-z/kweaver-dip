@@ -10,7 +10,12 @@ import { memo, type ReactNode } from 'react'
 import intl from 'react-intl-universal'
 import IconFont from '@/components/IconFont'
 import type { PlanListItemProps } from './types'
-import { formatPlanRelativeDayTime, planExecutionConditionText, planJobDescription } from './utils'
+import {
+  formatPlanRelativeDayTime,
+  isEndedAtPlan,
+  planExecutionConditionText,
+  planJobDescription,
+} from './utils'
 
 function PlanMetaColumn({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
   return (
@@ -39,59 +44,89 @@ function PlanListItemInner({
 }: PlanListItemProps) {
   const description = planJobDescription(job)
   const isPeriodic = job.schedule?.kind === 'every'
+  const isEnded = isEndedAtPlan(job)
   const conditionText = planExecutionConditionText(job)
   const lastRun = formatPlanRelativeDayTime(job.state?.lastRunAtMs)
   const nextRun = formatPlanRelativeDayTime(job.state?.nextRunAtMs)
   const [modal, contextHolder] = Modal.useModal()
 
-  const operationItems: MenuProps['items'] = [
-    {
-      key: job.enabled ? 'pause' : 'resume',
-      label: job.enabled ? intl.get('workPlan.common.pause') : intl.get('workPlan.common.start'),
-      onClick: (e) => {
-        e.domEvent.stopPropagation()
-        if (job.enabled) {
-          void onPause?.(job.id)
-          return
-        }
-        void onResume?.(job.id)
-      },
-    },
-    {
-      key: 'edit',
-      label: intl.get('workPlan.common.edit'),
-      onClick: (e) => {
-        e.domEvent.stopPropagation()
-        onEdit?.(job)
-      },
-    },
-    {
-      key: 'delete',
-      label: intl.get('workPlan.common.delete'),
-      danger: true,
-      onClick: (e) => {
-        e.domEvent.stopPropagation()
-        modal.confirm({
-          title: intl.get('workPlan.common.deleteConfirmTitle'),
-          icon: <ExclamationCircleFilled />,
-          content: intl.get('workPlan.common.deleteConfirmContent'),
-          okText: intl.get('global.ok'),
-          okType: 'primary',
-          okButtonProps: { danger: true },
-          cancelText: intl.get('global.cancel'),
-          footer: (_, { OkBtn, CancelBtn }) => (
-            <>
-              <OkBtn />
-              <CancelBtn />
-            </>
-          ),
-          onOk: async () => {
-            await onDelete?.(job.id)
+  const operationItems: MenuProps['items'] = isEnded
+    ? [
+        {
+          key: 'delete',
+          label: intl.get('workPlan.common.delete'),
+          danger: true,
+          onClick: (e) => {
+            e.domEvent.stopPropagation()
+            modal.confirm({
+              title: intl.get('workPlan.common.deleteConfirmTitle'),
+              icon: <ExclamationCircleFilled />,
+              content: intl.get('workPlan.common.deleteConfirmContent'),
+              okText: intl.get('global.ok'),
+              okType: 'primary',
+              okButtonProps: { danger: true },
+              cancelText: intl.get('global.cancel'),
+              footer: (_, { OkBtn, CancelBtn }) => (
+                <>
+                  <OkBtn />
+                  <CancelBtn />
+                </>
+              ),
+              onOk: async () => {
+                await onDelete?.(job.id)
+              },
+            })
           },
-        })
-      },
-    },
-  ]
+        },
+      ]
+    : [
+        {
+          key: job.enabled ? 'pause' : 'resume',
+          label: job.enabled ? intl.get('workPlan.common.pause') : intl.get('workPlan.common.start'),
+          onClick: (e) => {
+            e.domEvent.stopPropagation()
+            if (job.enabled) {
+              void onPause?.(job.id)
+              return
+            }
+            void onResume?.(job.id)
+          },
+        },
+        {
+          key: 'edit',
+          label: intl.get('workPlan.common.edit'),
+          onClick: (e) => {
+            e.domEvent.stopPropagation()
+            onEdit?.(job)
+          },
+        },
+        {
+          key: 'delete',
+          label: intl.get('workPlan.common.delete'),
+          danger: true,
+          onClick: (e) => {
+            e.domEvent.stopPropagation()
+            modal.confirm({
+              title: intl.get('workPlan.common.deleteConfirmTitle'),
+              icon: <ExclamationCircleFilled />,
+              content: intl.get('workPlan.common.deleteConfirmContent'),
+              okText: intl.get('global.ok'),
+              okType: 'primary',
+              okButtonProps: { danger: true },
+              cancelText: intl.get('global.cancel'),
+              footer: (_, { OkBtn, CancelBtn }) => (
+                <>
+                  <OkBtn />
+                  <CancelBtn />
+                </>
+              ),
+              onOk: async () => {
+                await onDelete?.(job.id)
+              },
+            })
+          },
+        },
+      ]
 
   return (
     <>
@@ -122,6 +157,11 @@ function PlanListItemInner({
                 {intl.get('workPlan.list.timedPlan')}
               </span>
             )}
+            {isEnded ? (
+              <span className="inline-flex shrink-0 items-center text-xs leading-[18px] text-[rgba(0,0,0,0.65)]">
+                {intl.get('workPlan.list.statusEndedBracketed')}
+              </span>
+            ) : null}
           </div>
           {description ? (
             <p
@@ -154,7 +194,7 @@ function PlanListItemInner({
         <Dropdown menu={{ items: operationItems }} trigger={['click']} placement="bottomRight">
           <button
             type="button"
-            className="hidden ml-2 group-hover:inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md border-0 bg-transparent text-[--dip-text-color-45] hover:bg-[rgba(0,0,0,0.06)]"
+            className="ml-2 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md border-0 bg-transparent text-[--dip-text-color-45] opacity-0 invisible pointer-events-none transition-opacity group-hover:opacity-100 group-hover:visible group-hover:pointer-events-auto hover:bg-[rgba(0,0,0,0.06)]"
             onClick={(event) => {
               event.stopPropagation()
             }}

@@ -937,10 +937,9 @@ describe("gateway env helpers", () => {
     expect(() => resolveTimeoutMs("0")).toThrow(
       "Invalid OPENCLAW_GATEWAY_TIMEOUT_MS value: 0"
     );
-    expect(resolveWorkspaceDir(undefined)).toBe(
+    expect(resolveWorkspaceDir()).toBe(
       join(process.env.HOME ?? "", ".openclaw", "workspace")
     );
-    expect(resolveWorkspaceDir("./custom-root")).toBe("custom-root/workspace");
   });
 });
 
@@ -970,7 +969,7 @@ describe("getEnv", () => {
       openClawGatewayHttpUrl: "http://127.0.0.1:19001/",
       openClawGatewayToken: undefined,
       openClawGatewayTimeoutMs: 6000,
-      openClawWorkspaceDir: resolveWorkspaceDir(process.env.OPENCLAW_ROOT_DIR)
+      openClawWorkspaceDir: resolveWorkspaceDir()
     });
   });
 
@@ -981,7 +980,6 @@ describe("getEnv", () => {
       forceReload: true
     });
     process.env.OPENCLAW_GATEWAY_URL = "wss://gateway.example.com/ws";
-    process.env.OPENCLAW_ROOT_DIR = "./openclaw-root";
     process.env.KWEAVER_BASE_URL = "https://core.example.com";
     process.env.KWEAVER_TOKEN = "token-1";
     process.env.KWEAVER_HYDRA_ADMIN_URL = "https://hydra.example.com/admin";
@@ -996,7 +994,7 @@ describe("getEnv", () => {
       oauthMockUserId: "user-dev",
       openClawGatewayUrl: "wss://gateway.example.com/ws",
       openClawGatewayHttpUrl: "https://gateway.example.com/ws",
-      openClawWorkspaceDir: "openclaw-root/workspace"
+      openClawWorkspaceDir: resolveWorkspaceDir()
     });
   });
 });

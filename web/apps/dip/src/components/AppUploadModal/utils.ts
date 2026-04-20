@@ -1,14 +1,23 @@
+import intl from 'react-intl-universal'
 import type { FileInfo } from './types'
+
+const fileSizeUnitKeys = [
+  'application.upload.unitB',
+  'application.upload.unitKB',
+  'application.upload.unitMB',
+  'application.upload.unitGB',
+] as const
 
 /**
  * 格式化文件大小
  */
 export const formatFileSize = (bytes: number): string => {
-  if (bytes === 0) return '0 B'
+  const maxIdx = fileSizeUnitKeys.length - 1
+  if (bytes === 0) return `0 ${intl.get(fileSizeUnitKeys[0])}`
   const k = 1024
-  const sizes = ['B', 'KB', 'MB', 'GB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return `${parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`
+  const i = Math.min(Math.floor(Math.log(bytes) / Math.log(k)), maxIdx)
+  const unit = intl.get(fileSizeUnitKeys[i])
+  return `${parseFloat((bytes / k ** i).toFixed(2))} ${unit}`
 }
 
 /**

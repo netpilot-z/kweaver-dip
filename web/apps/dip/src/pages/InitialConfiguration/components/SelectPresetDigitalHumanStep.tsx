@@ -37,7 +37,9 @@ const SelectPresetDigitalHumanStep = ({
       } catch (error: any) {
         if (cancelled) return
         setTemplates([])
-        setListError(error?.description || intl.get('initialConfiguration.selectPreset.listLoadFailed'))
+        setListError(
+          error?.description || intl.get('initialConfiguration.selectPreset.listLoadFailed'),
+        )
       } finally {
         if (!cancelled) setListLoading(false)
       }

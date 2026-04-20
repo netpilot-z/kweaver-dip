@@ -195,45 +195,45 @@
       width: 100%;
     }
   }
+}
 
-  .collapsed {
-    :global {
-      .dip-menu-item {
-        height: 36px;
-        line-height: 36px;
-        padding-inline: calc(50% - 14px) !important;
-        margin-inline: 6px !important;
-      }
+.collapsed {
+  :global {
+    .dip-menu-item {
+      height: 36px;
+      line-height: 36px;
+      padding-inline: calc(50% - 14px) !important;
+      margin-inline: 6px !important;
+    }
 
-      .dip-menu-submenu-title {
-        height: 36px;
-        line-height: 36px;
-        padding-inline: calc(50% - 14px) !important;
-        margin-inline: 6px !important;
-      }
+    .dip-menu-submenu-title {
+      height: 36px;
+      line-height: 36px;
+      padding-inline: calc(50% - 14px) !important;
+      margin-inline: 6px !important;
+    }
 
-      .dip-menu-submenu.dip-menu-submenu-selected:not(.dip-menu-submenu-open)
-        > .dip-menu-submenu-title::before {
-        top: 8px;
-        bottom: 8px;
-      }
+    .dip-menu-submenu.dip-menu-submenu-selected:not(.dip-menu-submenu-open)
+      > .dip-menu-submenu-title::before {
+      top: 8px;
+      bottom: 8px;
+    }
 
-      .dip-menu-item-group {
-        display: none;
-      }
+    .dip-menu-item-group {
+      display: none;
+    }
 
-      .dip-sider-footer-row {
-        padding-inline: calc(50% - 14px) !important;
-        margin-inline: 6px !important;
-      }
+    .dip-sider-footer-row {
+      padding-inline: calc(50% - 14px) !important;
+      margin-inline: 6px !important;
+    }
 
-      /*
-     * 收起时底部两行不要左右 padding：calc 会压窄可点区；与菜单不同，这里是自定义整行交互，
-     * 用 0 + 子元素铺满 + flex 居中即可。外边距仍靠 margin-inline + width 与菜单项对齐。
-     */
-      .dip-sider-footer-stack .dip-sider-footer-row {
-        padding-inline: 0 !important;
-      }
+    /*
+   * 收起时底部两行不要左右 padding：calc 会压窄可点区；与菜单不同，这里是自定义整行交互，
+   * 用 0 + 子元素铺满 + flex 居中即可。外边距仍靠 margin-inline + width 与菜单项对齐。
+   */
+    .dip-sider-footer-stack .dip-sider-footer-row {
+      padding-inline: 0 !important;
     }
   }
 }

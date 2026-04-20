@@ -1,6 +1,7 @@
 import { DownOutlined } from '@ant-design/icons'
 import type { MenuProps } from 'antd'
 import { Dropdown } from 'antd'
+import intl from 'react-intl-universal'
 import AvatarIcon from '@/assets/images/sider/avatar.svg?react'
 import { useUserInfoStore } from '@/stores'
 
@@ -17,7 +18,7 @@ export const UserInfo = () => {
   const menuItems: MenuProps['items'] = [
     {
       key: 'logout',
-      label: '退出登录',
+      label: intl.get('sider.logout'),
       onClick: handleLogout,
     },
   ]

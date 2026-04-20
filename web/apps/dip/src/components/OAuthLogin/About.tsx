@@ -27,7 +27,9 @@ function About() {
             className="hover:text-[--dip-link-color]"
             onClick={() => {
               modal.info({
-                title: <div className="text-base font-medium">{intl.get('oauthLogin.about.title')}</div>,
+                title: (
+                  <div className="text-base font-medium">{intl.get('oauthLogin.about.title')}</div>
+                ),
                 width: 420,
                 icon: null,
                 footer: null,

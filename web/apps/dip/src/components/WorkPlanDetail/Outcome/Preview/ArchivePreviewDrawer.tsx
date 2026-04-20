@@ -29,6 +29,11 @@ const ArchivePreviewDrawer = ({
   onExitPreviewFullscreen,
   ...restProps
 }: ArchivePreviewDrawerProps) => {
+  const drawerRootStyle = isPreviewFullscreen ? { position: 'fixed' as const } : { position: 'absolute' as const }
+  const drawerBodyStyle = isPreviewFullscreen
+    ? { padding: 0, overflow: 'hidden', height: '100vh' }
+    : { padding: 0, overflow: 'hidden' }
+
   return (
     <Drawer
       open={open}
@@ -36,8 +41,12 @@ const ArchivePreviewDrawer = ({
       closable={false}
       mask={{ closable: true }}
       destroyOnHidden
-      styles={{ body: { padding: 0, overflow: 'hidden' } }}
-      rootStyle={{ position: 'absolute' }}
+      styles={{
+        body: drawerBodyStyle,
+        content: isPreviewFullscreen ? { height: '100vh' } : undefined,
+        wrapper: isPreviewFullscreen ? { height: '100vh' } : undefined,
+      }}
+      rootStyle={drawerRootStyle}
       size="100%"
       {...restProps}
     >

@@ -791,6 +791,9 @@ importers:
       postcss:
         specifier: ^8.5.6
         version: 8.5.8
+      postcss-less:
+        specifier: ^6.0.0
+        version: 6.0.0(postcss@8.5.8)
       postinstall-postinstall:
         specifier: ^2.1.0
         version: 2.1.0
@@ -8431,6 +8434,12 @@ packages:
     engines: {node: ^12 || ^14 || >= 16}
     peerDependencies:
       postcss: ^8.4.21
+
+  postcss-less@6.0.0:
+    resolution: {integrity: sha512-FPX16mQLyEjLzEuuJtxA8X3ejDLNGGEG503d2YGZR5Ask1SpDN8KmZUMpzCvyalWRywAn1n1VOA5dcqfCLo5rg==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      postcss: ^8.3.5
 
   postcss-load-config@6.0.1:
     resolution: {integrity: sha512-oPtTM4oerL+UXmx+93ytZVN82RrlY/wPUV8IeDxFrzIjXOLF1pN+EmKPLbubvKHT2HC20xXsCAH2Z+CKV6Oz/g==}
@@ -20052,6 +20061,10 @@ snapshots:
   postcss-js@4.1.0(postcss@8.5.8):
     dependencies:
       camelcase-css: 2.0.1
+      postcss: 8.5.8
+
+  postcss-less@6.0.0(postcss@8.5.8):
+    dependencies:
       postcss: 8.5.8
 
   postcss-load-config@6.0.1(jiti@1.21.7)(postcss@8.5.8)(tsx@4.21.0):

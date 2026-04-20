@@ -171,7 +171,7 @@
 4. **复制与命名（执行准入）**  
    - **必须**：使用 `cp` / `copy` / `Copy-Item` 等将 **整份** `text2sql_request_example.py`（或本轮选用的 `.sh`）复制到任务目录，并命名为 `_tmp_t2s_<动作>_<主题>_<YYYYMMDD_HHMMSS>.py`（动作建议 `show` / `exec`）。  
    - 建议命名示例：`_tmp_t2s_show_sales_region_20260402_153045.py`、`_tmp_t2s_exec_sales_region_20260402_153052.py`（同一轮 show/exec 建议使用不同时间戳，避免覆盖）。  
-   - 本轮参数一律通过 `-a`、`-t`、`-i`、`-g`、`-S`、`-k`、`-u` 与环境变量传入，**优先保持副本与样例文件内容完全一致**；若确需改常量，**只改副本**。  
+  - 本轮参数一律通过 `-a`、`-t`、`-i`、`-g`、`-k`、`-u` 与环境变量传入，**优先保持副本与样例文件内容完全一致**；若确需改常量，**只改副本**。  
    - **禁止**写成精简版 `requests` 片段、缺字段的 `curl` 生成器，或空白文件拼贴。
 
 ### 结构参考文件（临时脚本的复制源，不得当执行入口）
@@ -193,10 +193,9 @@ Linux/macOS（Bash）：
 
 ```bash
 export TEXT2SQL_TOKEN="$(kweaver token | tr -d '\r\n')"
-SID=$(python3 -c 'import uuid; print(uuid.uuid4())')
-python path/to/_tmp_t2s_show.py --action show_ds --session-id "$SID" --insecure \
+python path/to/_tmp_t2s_show.py --action show_ds --insecure \
   -i "销售域里区域、月份统计可能用到哪些表和字段"
-python path/to/_tmp_t2s_exec.py --action gen_exec --session-id "$SID" --insecure \
+python path/to/_tmp_t2s_exec.py --action gen_exec --insecure \
   -i "按区域汇总上月订单金额，并给出各区域占比" \
   -g "候选表：fact_sales_order（order_id, region, order_month, amount）；维度表 dim_region（region_id, region_name）。统计按 region_name、order_month。" \
   -R 50
@@ -207,9 +206,8 @@ Windows PowerShell：
 ```powershell
 # 建议用 cmd 只取 stdout，避免 Out-String 混入 stderr 导致 Token 含非 ASCII、urllib 报 latin-1（详见下方「Windows 排错」链接）
 $env:TEXT2SQL_TOKEN = (cmd /c "npx kweaver token 2>nul").Trim()
-$sid = [guid]::NewGuid().ToString()
-python path\to\_tmp_t2s_show.py -a show_ds -S $sid --insecure -i "销售域里区域、月份统计可能用到哪些表和字段"
-python path\to\_tmp_t2s_exec.py -a gen_exec -S $sid --insecure `
+python path\to\_tmp_t2s_show.py -a show_ds --insecure -i "销售域里区域、月份统计可能用到哪些表和字段"
+python path\to\_tmp_t2s_exec.py -a gen_exec --insecure `
   -i "按区域汇总上月订单金额，并给出各区域占比" `
   -g "候选表：fact_sales_order（order_id, region, order_month, amount）；维度表 dim_region（region_id, region_name）。统计按 region_name、order_month。" `
   -R 50
@@ -223,18 +221,16 @@ Windows CMD 示例（仅 **`cmd.exe`**）：
 
 ```cmd
 set TEXT2SQL_TOKEN=<your-token>
-set SID=<同一-guid-两次调用共用>
-python path\to\_tmp_t2s_show.py -a show_ds -S %SID% --insecure -i "销售域里区域、月份统计可能用到哪些表和字段"
-python path\to\_tmp_t2s_exec.py -a gen_exec -S %SID% --insecure -i "按区域汇总上月订单金额，并给出各区域占比" -g "候选表：..." -R 50
+python path\to\_tmp_t2s_show.py -a show_ds --insecure -i "销售域里区域、月份统计可能用到哪些表和字段"
+python path\to\_tmp_t2s_exec.py -a gen_exec --insecure -i "按区域汇总上月订单金额，并给出各区域占比" -g "候选表：..." -R 50
 ```
 
 **Bash + curl**（需 `python3` 组装 JSON；`-K` 跳过 TLS）：
 
 ```bash
 TOKEN=$(kweaver token | tr -d '\r\n')
-SID=$(python3 -c 'import uuid; print(uuid.uuid4())')
-./path/to/_tmp_t2s_show.sh -a show_ds -t "$TOKEN" -S "$SID" -i "销售域里区域、月份统计可能用到哪些表和字段" -K
-./path/to/_tmp_t2s_exec.sh -a gen_exec -t "$TOKEN" -S "$SID" \
+./path/to/_tmp_t2s_show.sh -a show_ds -t "$TOKEN" -i "销售域里区域、月份统计可能用到哪些表和字段" -K
+./path/to/_tmp_t2s_exec.sh -a gen_exec -t "$TOKEN" \
   -i "按区域汇总上月订单金额，并给出各区域占比" \
   -g "候选表：fact_sales_order（order_id, region, order_month, amount）..." \
   -R 50 -K

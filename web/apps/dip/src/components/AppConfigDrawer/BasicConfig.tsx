@@ -1,5 +1,6 @@
 import { message, Spin } from 'antd'
 import { memo, useEffect, useState } from 'react'
+import intl from 'react-intl-universal'
 import { type ApplicationBasicInfo, getApplicationsBasicInfo } from '@/apis'
 import ScrollBarContainer from '../ScrollBarContainer'
 
@@ -55,18 +56,24 @@ const BasicConfig = ({ appKey }: BasicConfigProps) => {
   return (
     <div className="h-full flex flex-col gap-y-3">
       {messageContextHolder}
-      <div className="px-4 text-sm font-medium text-[--dip-text-color]">基本信息</div>
+      <div className="px-4 text-sm font-medium text-[--dip-text-color]">
+        {intl.get('application.config.basicSectionTitle')}
+      </div>
       <ScrollBarContainer className="px-4">
         <div className="flex flex-col rounded-xl border border-[#E3E8EF] leading-8 p-3 text-sm text-[--dip-text-color] gap-2">
           {/* 应用名称：告警与故障分析 */}
           <div className="flex flex-1">
-            <span className="text-[--dip-text-color-45] mr-1 break-keep">应用名称：</span>
+            <span className="text-[--dip-text-color-45] mr-1 break-keep">
+              {intl.get('application.config.fieldName')}
+            </span>
             <span>{basicInfo?.name ?? '--'}</span>
           </div>
 
           {/* 应用描述：... */}
           <div className="flex flex-1">
-            <span className="text-[--dip-text-color-45] mr-1 align-top break-keep">应用描述：</span>
+            <span className="text-[--dip-text-color-45] mr-1 align-top break-keep">
+              {intl.get('application.config.fieldDescription')}
+            </span>
             <span className="inline-block flex-1 align-top break-words">
               {basicInfo?.description ?? '--'}
             </span>
@@ -74,7 +81,9 @@ const BasicConfig = ({ appKey }: BasicConfigProps) => {
 
           {/* 版本号：v1.0.0.0.0 */}
           <div className="flex flex-1">
-            <span className="text-[--dip-text-color-45] mr-1 break-keep">版本号：</span>
+            <span className="text-[--dip-text-color-45] mr-1 break-keep">
+              {intl.get('application.config.fieldVersion')}
+            </span>
             <span>{basicInfo?.version ?? '--'}</span>
           </div>
         </div>

@@ -1,12 +1,13 @@
 import { Drawer, type DrawerProps } from 'antd'
 import clsx from 'classnames'
 import { useEffect, useState } from 'react'
+import intl from 'react-intl-universal'
 import type { ApplicationBasicInfo } from '@/apis'
 import AgentConfig from './AgentConfig'
 import BasicConfig from './BasicConfig'
 import OntologyConfig from './OntologyConfig'
 import { ConfigMenuType } from './types'
-import { menuItems } from './utils'
+import { getConfigMenuItems } from './utils'
 
 export interface AppConfigDrawerProps extends Pick<DrawerProps, 'open' | 'onClose'> {
   /** 已有的应用基础信息 */
@@ -31,7 +32,7 @@ export const AppConfigDrawer = ({ appData, open, onClose }: AppConfigDrawerProps
     <Drawer
       title={
         <div className="flex items-center gap-1 text-base font-medium text-[--dip-text-color]">
-          <span>应用配置</span>
+          <span>{intl.get('application.config.drawerTitle')}</span>
           {appData?.name && (
             <>
               <span className="text-[--dip-text-color-45] font-normal">/</span>
@@ -55,7 +56,7 @@ export const AppConfigDrawer = ({ appData, open, onClose }: AppConfigDrawerProps
           {/* 左侧菜单栏 */}
           <div className="w-40 pl-2 pr-1.5 py-3 bg-[#F9FAFC] shrink-0">
             <div className="flex flex-col gap-2">
-              {menuItems.map((item) => (
+              {getConfigMenuItems().map((item) => (
                 <button
                   type="button"
                   key={item.key}

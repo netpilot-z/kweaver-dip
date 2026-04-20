@@ -88,7 +88,7 @@ export const HistorySection = ({
                   </div>
                   <button
                     type="button"
-                    className="w-6 h-6 flex-shrink-0 hidden items-center justify-center rounded text-[--dip-text-color-45] group-hover:inline-flex hover:bg-[rgba(0,0,0,0.06)]"
+                    className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-[--dip-text-color-45] opacity-0 invisible pointer-events-none transition-opacity group-hover:opacity-100 group-hover:visible group-hover:pointer-events-auto hover:bg-[rgba(0,0,0,0.06)]"
                     onClick={(event) => {
                       event.stopPropagation()
                       onDeleteHistory?.(session)

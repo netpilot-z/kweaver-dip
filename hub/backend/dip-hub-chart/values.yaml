@@ -64,7 +64,7 @@ depServices:
     system_id: ""
     host: mariadb-proton-mariadb.resource.svc.cluster.local
     port: 3306
-    database: "adp"
+    database: "kweaver"
     user: "adp"
     password: "3Ci72ILMVn"
     type: "MariaDB"

@@ -69,6 +69,9 @@ const Management = () => {
   const handleMenuClick = (key: DigitalHumanManagementActionEnum, digitalHuman: DigitalHuman) => {
     setSelectedItem(digitalHuman)
     switch (key) {
+      case DigitalHumanManagementActionEnum.Session:
+        navigate(`/studio/digital-human/${digitalHuman.id}`)
+        break
       case DigitalHumanManagementActionEnum.Edit:
         navigate(`/studio/digital-human/${digitalHuman.id}/setting?mode=edit`)
         break
@@ -135,7 +138,9 @@ const Management = () => {
         menuItems={
           isAdmin
             ? (digitalHuman) =>
-                getDigitalHumanManagementMenuItems((key) => handleMenuClick(key, digitalHuman))
+                getDigitalHumanManagementMenuItems(digitalHuman, (key) =>
+                  handleMenuClick(key, digitalHuman),
+                )
             : undefined
         }
       />

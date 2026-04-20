@@ -2,13 +2,15 @@ vi.mock('../index.module.less', () => ({
   default: {},
 }))
 
-import { fireEvent, render, screen } from '@testing-library/react'
-import { describe, expect, it, vi } from 'vitest'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { getEnabledSkills } from '@/apis'
 import { useDigitalHumanStore } from '../../digitalHumanStore'
 import SkillConfig from '../index'
 
 const mockDeleteSkill = vi.fn()
 const mockUpdateSkills = vi.fn()
+const mockSyncBuiltInSkills = vi.fn()
 
 vi.mock('@/stores/languageStore', () => ({
   useLanguageStore: () => ({ language: 'zh-CN' }),
@@ -16,6 +18,10 @@ vi.mock('@/stores/languageStore', () => ({
 
 vi.mock('../../digitalHumanStore', () => ({
   useDigitalHumanStore: vi.fn(),
+}))
+
+vi.mock('@/apis', () => ({
+  getEnabledSkills: vi.fn(),
 }))
 
 vi.mock('@/components/ScrollBarContainer', () => ({
@@ -38,15 +44,22 @@ vi.mock('@/components/IconFont', () => ({
 }))
 
 const mockedUseDigitalHumanStore = vi.mocked(useDigitalHumanStore)
+const mockedGetEnabledSkills = vi.mocked(getEnabledSkills)
 
 const addSkillBtnName = 'digitalHuman.skill.addSkillButton'
 
 describe('DigitalHumanSetting/SkillConfig', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockedGetEnabledSkills.mockResolvedValue([])
+  })
+
   it('应该正确渲染空状态，显示添加技能按钮', () => {
     mockedUseDigitalHumanStore.mockReturnValue({
       skills: [],
       deleteSkill: mockDeleteSkill,
       updateSkills: mockUpdateSkills,
+      syncBuiltInSkills: mockSyncBuiltInSkills,
       digitalHumanId: 'test-id',
     })
 
@@ -63,6 +76,7 @@ describe('DigitalHumanSetting/SkillConfig', () => {
       skills: [],
       deleteSkill: mockDeleteSkill,
       updateSkills: mockUpdateSkills,
+      syncBuiltInSkills: mockSyncBuiltInSkills,
       digitalHumanId: 'test-id',
     })
 
@@ -84,6 +98,7 @@ describe('DigitalHumanSetting/SkillConfig', () => {
       ],
       deleteSkill: mockDeleteSkill,
       updateSkills: mockUpdateSkills,
+      syncBuiltInSkills: mockSyncBuiltInSkills,
       digitalHumanId: 'test-id',
     })
 
@@ -109,6 +124,7 @@ describe('DigitalHumanSetting/SkillConfig', () => {
       ],
       deleteSkill: mockDeleteSkill,
       updateSkills: mockUpdateSkills,
+      syncBuiltInSkills: mockSyncBuiltInSkills,
       digitalHumanId: 'test-id',
     })
 
@@ -131,6 +147,7 @@ describe('DigitalHumanSetting/SkillConfig', () => {
       ],
       deleteSkill: mockDeleteSkill,
       updateSkills: mockUpdateSkills,
+      syncBuiltInSkills: mockSyncBuiltInSkills,
       digitalHumanId: 'test-id',
     })
 
@@ -153,6 +170,7 @@ describe('DigitalHumanSetting/SkillConfig', () => {
       ],
       deleteSkill: mockDeleteSkill,
       updateSkills: mockUpdateSkills,
+      syncBuiltInSkills: mockSyncBuiltInSkills,
       digitalHumanId: 'test-id',
     })
 
@@ -173,6 +191,7 @@ describe('DigitalHumanSetting/SkillConfig', () => {
       ],
       deleteSkill: mockDeleteSkill,
       updateSkills: mockUpdateSkills,
+      syncBuiltInSkills: mockSyncBuiltInSkills,
       digitalHumanId: 'test-id',
     })
 
@@ -187,6 +206,7 @@ describe('DigitalHumanSetting/SkillConfig', () => {
       skills: [],
       deleteSkill: mockDeleteSkill,
       updateSkills: mockUpdateSkills,
+      syncBuiltInSkills: mockSyncBuiltInSkills,
       digitalHumanId: 'test-id',
     })
 
@@ -208,6 +228,7 @@ describe('DigitalHumanSetting/SkillConfig', () => {
       ],
       deleteSkill: mockDeleteSkill,
       updateSkills: mockUpdateSkills,
+      syncBuiltInSkills: mockSyncBuiltInSkills,
       digitalHumanId: 'test-id',
     })
 
@@ -219,5 +240,27 @@ describe('DigitalHumanSetting/SkillConfig', () => {
     }
 
     expect(mockDeleteSkill).toHaveBeenCalledWith('产品问答')
+  })
+
+  it('进入技能配置时会预置内置技能', async () => {
+    mockedGetEnabledSkills.mockResolvedValue([
+      { name: '内置技能', built_in: true, type: 'official' },
+      { name: '普通技能', built_in: false, type: 'official' },
+    ] as any)
+    mockedUseDigitalHumanStore.mockReturnValue({
+      skills: [],
+      deleteSkill: mockDeleteSkill,
+      updateSkills: mockUpdateSkills,
+      syncBuiltInSkills: mockSyncBuiltInSkills,
+      digitalHumanId: 'test-id',
+    })
+
+    render(<SkillConfig />)
+
+    await waitFor(() => {
+      expect(mockSyncBuiltInSkills).toHaveBeenCalledWith([
+        { name: '内置技能', built_in: true, type: 'official' },
+      ])
+    })
   })
 })

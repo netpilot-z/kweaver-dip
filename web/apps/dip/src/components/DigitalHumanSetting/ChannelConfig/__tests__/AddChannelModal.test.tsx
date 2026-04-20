@@ -19,7 +19,9 @@ describe('DigitalHumanSetting/ChannelConfig/AddChannelModal', () => {
     expect(screen.getByText('digitalHuman.channelModal.feishuBot')).toBeInTheDocument()
     expect(screen.getAllByRole('radio')[0]).toBeChecked()
     expect(screen.getByText('digitalHuman.channelModal.feishuConfigTitle')).toBeInTheDocument()
-    expect(screen.getByPlaceholderText('digitalHuman.channelModal.placeholderFeishuAppKey')).toBeInTheDocument()
+    expect(
+      screen.getByPlaceholderText('digitalHuman.channelModal.placeholderFeishuAppKey'),
+    ).toBeInTheDocument()
   })
 
   it('可以切换选中钉钉', () => {
@@ -29,7 +31,9 @@ describe('DigitalHumanSetting/ChannelConfig/AddChannelModal', () => {
 
     expect(screen.getAllByRole('radio')[1]).toBeChecked()
     expect(screen.getByText('digitalHuman.channelModal.dingtalkConfigTitle')).toBeInTheDocument()
-    expect(screen.getByPlaceholderText('digitalHuman.channelModal.placeholderDingtalkAppKey')).toBeInTheDocument()
+    expect(
+      screen.getByPlaceholderText('digitalHuman.channelModal.placeholderDingtalkAppKey'),
+    ).toBeInTheDocument()
   })
 
   it('点击取消按钮调用 onCancel', () => {

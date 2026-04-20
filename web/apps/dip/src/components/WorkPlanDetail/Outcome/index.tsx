@@ -9,7 +9,7 @@ import Empty from '@/components/Empty'
 import IconFont from '@/components/IconFont'
 import ScrollBarContainer from '@/components/ScrollBarContainer'
 import styles from './index.module.less'
-import { ArchivePreviewDrawer, ArchivePreviewPanel, useArchivePreview } from './Preview'
+import { ArchivePreviewDrawer, useArchivePreview } from './Preview'
 import {
   mockGetDigitalHumanSessionArchiveSubpath,
   mockGetDigitalHumanSessionArchives,
@@ -37,7 +37,7 @@ const ResultsPanel = ({
   planId: _planId,
   dhId,
   sessionId,
-  previewDrawerGetContainer,
+  previewDrawerGetContainer: _previewDrawerGetContainer,
 }: ResultsPanelProps) => {
   const [rootLoading, setRootLoading] = useState(false)
   const [root, setRoot] = useState<SessionArchivesResponse | null>(null)
@@ -118,20 +118,6 @@ const ResultsPanel = ({
     dhId,
     sessionId,
   )
-  const [previewFullscreenOpen, setPreviewFullscreenOpen] = useState(false)
-
-  const resolveDrawerContainer = useCallback((): HTMLElement => {
-    if (!previewDrawerGetContainer) return document.body
-    const node =
-      typeof previewDrawerGetContainer === 'function'
-        ? previewDrawerGetContainer()
-        : previewDrawerGetContainer
-    return node instanceof HTMLElement ? node : document.body
-  }, [previewDrawerGetContainer])
-
-  useEffect(() => {
-    if (preview === null) setPreviewFullscreenOpen(false)
-  }, [preview])
 
   const collapseItems = useMemo(() => {
     return dateKeys.map((dateKey) => {
@@ -220,7 +206,7 @@ const ResultsPanel = ({
   if (!(dhId && sessionId)) {
     return (
       <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-6">
-        <Empty type="failed" title={intl.get('workPlan.common.loadFailed')} />
+        <Empty type="failed" title={intl.get('workPlan.detail.outcomeNotGenerated')} />
       </div>
     )
   }
@@ -233,10 +219,10 @@ const ResultsPanel = ({
     )
   }
 
-  if (rootError || !root) {
+  if (rootError) {
     return (
       <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-6">
-        <Empty title={intl.get('workPlan.common.noData')} />
+        <Empty type="failed" title={intl.get('workPlan.detail.outcomeLoadFailed')} />
       </div>
     )
   }
@@ -244,7 +230,7 @@ const ResultsPanel = ({
   if (dateKeys.length === 0) {
     return (
       <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-6">
-        <Empty title={intl.get('workPlan.common.noData')} />
+        <Empty title={intl.get('workPlan.detail.outcomeNotGenerated')} />
       </div>
     )
   }
@@ -273,29 +259,13 @@ const ResultsPanel = ({
         </div>
       </div>
       {preview !== null && (
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col border-l border-[--dip-border-color] bg-[--dip-white]">
-          <ArchivePreviewPanel
-            preview={preview}
-            showHeader
-            onClose={closePreview}
-            onDownload={() => downloadFile(preview.subpath, preview.title)}
-            showInlineDownload={false}
-            onEnterPreviewFullscreen={() => setPreviewFullscreenOpen(true)}
-          />
-        </div>
-      )}
-      {preview !== null && previewFullscreenOpen && (
         <ArchivePreviewDrawer
-          open={previewFullscreenOpen}
+          open
           preview={preview}
-          getContainer={resolveDrawerContainer}
+          getContainer={document.body}
           isPreviewFullscreen
           showInlineDownload={false}
-          onClose={() => {
-            setPreviewFullscreenOpen(false)
-            closePreview()
-          }}
-          onExitPreviewFullscreen={() => setPreviewFullscreenOpen(false)}
+          onClose={closePreview}
           onDownload={() => downloadFile(preview.subpath, preview.title)}
         />
       )}

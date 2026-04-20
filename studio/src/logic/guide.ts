@@ -355,7 +355,7 @@ export function normalizeInitializeGuideRequest(
   const stateDir =
     localPaths?.stateDir ??
     readRequiredGuideString(join(process.env.HOME ?? "", ".openclaw"), "stateDir");
-  const workspaceDir = localPaths?.workspaceDir ?? resolveWorkspaceDir(stateDir);
+  const workspaceDir = localPaths?.workspaceDir ?? resolveWorkspaceDir();
   const configPath = localPaths?.configPath ?? join(stateDir, "openclaw.json");
 
   return {
@@ -439,7 +439,6 @@ export function buildGuideEnvEntries(
   request: NormalizedInitializeGuideRequest
 ): ReadonlyArray<readonly [string, string]> {
   return [
-    ["OPENCLAW_ROOT_DIR", request.stateDir],
     ["OPENCLAW_GATEWAY_PROTOCOL", request.protocol],
     ["OPENCLAW_GATEWAY_HOST", request.host],
     ["OPENCLAW_GATEWAY_PORT", String(request.port)],
@@ -471,8 +470,6 @@ export function buildGuideEnvFileContent(
     `OPENCLAW_GATEWAY_TOKEN=${encodeEnvValue(request.token)}`,
     "OPENCLAW_GATEWAY_TIMEOUT_MS=5000",
     "",
-    `OPENCLAW_ROOT_DIR=${encodeEnvValue(request.stateDir)}`,
-    "",
     `KWEAVER_BASE_URL=${encodeEnvValue(request.kweaver_base_url ?? "")}`,
     `KWEAVER_TOKEN=${encodeEnvValue(request.kweaver_token ?? "")}`,
     "",
@@ -488,42 +485,40 @@ export function buildGuideEnvFileContent(
  * Builds the env entries written to the OpenClaw root `.env` file.
  *
  * @param request Normalized initialization payload.
- * @returns The KWeaver-related env key/value pairs.
+ * @returns The KWeaver-related env key/value pairs for OpenClaw processes.
  */
 export function buildOpenClawRootEnvEntries(
   request: NormalizedInitializeGuideRequest
 ): ReadonlyArray<readonly [string, string]> {
   return [
     ["KWEAVER_BASE_URL", request.kweaver_base_url ?? ""],
-    ["KWEAVER_TOKEN", request.kweaver_token ?? ""]
+    ["KWEAVER_TOKEN", request.kweaver_token ?? ""],
+    ["KWEAVER_BUSINESS_DOMAIN", "bd_public"],
+    ["KWEAVER_TLS_INSECURE", "1"]
   ];
 }
 
 /**
- * Resolves OpenClaw local filesystem paths from injected environment variables.
+ * Resolves OpenClaw local filesystem paths using the fixed OpenClaw home directory.
  *
- * @param envSource Environment variable source.
- * @param studioRootDir Base directory used to resolve relative paths.
+ * @param _envSource Environment variable source, ignored for backward compatibility.
+ * @param _studioRootDir Base directory used to resolve relative paths, ignored.
  * @returns The resolved config, state, and workspace paths.
  */
 export function resolveOpenClawLocalPathsFromEnv(
-  envSource: NodeJS.ProcessEnv,
-  studioRootDir: string
+  _envSource: NodeJS.ProcessEnv,
+  _studioRootDir: string
 ): {
   configPath: string;
   stateDir: string;
   workspaceDir: string;
 } {
-  const configuredRootDir = readOptionalString(envSource.OPENCLAW_ROOT_DIR);
-  const stateDir = resolveInjectedPath(
-    configuredRootDir ?? join(homedir(), ".openclaw"),
-    studioRootDir
-  );
+  const stateDir = join(homedir(), ".openclaw");
 
   return {
     configPath: join(stateDir, "openclaw.json"),
     stateDir,
-    workspaceDir: resolveWorkspaceDir(stateDir)
+    workspaceDir: resolveWorkspaceDir()
   };
 }
 

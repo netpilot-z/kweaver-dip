@@ -1,0 +1,26 @@
+.microAppScope {
+  height: 100%;
+  width: 100%;
+
+  --custom-theme-color: #126ee3;
+
+  :global {
+    img,
+    svg {
+      display: inline;
+      vertical-align: unset;
+    }
+
+    #isf-web-plugins {
+      .src-ui-ToolBar-styles-desktop---tool-bar,
+      .src-sweet-ui-components-Select-Option-styles---select-option,
+      .src-components-ThirdConfig-styles-view---header {
+        box-sizing: content-box !important;
+      }
+
+      .src-components-IntegrationConfig-SMTPConfig-styles-desktop---toolbar-icon {
+        line-height: normal;
+      }
+    }
+  }
+}

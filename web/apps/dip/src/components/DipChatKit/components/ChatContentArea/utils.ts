@@ -1,5 +1,9 @@
 import type { DipChatKitSessionMessage } from '../../apis/types'
-import type { DipChatKitAnswerEvent, DipChatKitMessageTurn } from '../../types'
+import type {
+  DipChatKitAnswerEvent,
+  DipChatKitAttachment,
+  DipChatKitMessageTurn,
+} from '../../types'
 import type { AiPromptSubmitPayload } from '../AiPromptInput/types'
 
 const SYSTEM_ROLE = 'system'
@@ -37,23 +41,102 @@ const isNonTextContentPartType = (type: string): boolean => {
   )
 }
 
-const normalizeSessionMessageContentPart = (part: unknown): string => {
-  if (part === null || part === undefined) return ''
-  if (typeof part === 'string') return part
-  if (typeof part === 'number' || typeof part === 'boolean') return String(part)
+const getPathTail = (path: string): string => {
+  const segments = path.split(/[\\/]/).filter(Boolean)
+  return segments[segments.length - 1] || ''
+}
 
-  if (Array.isArray(part)) {
-    return part
-      .map((item) => normalizeSessionMessageContentPart(item))
-      .filter(Boolean)
-      .join('')
+const createHistoryAttachment = (path: string): DipChatKitAttachment | null => {
+  const normalizedPath = path.trim()
+  if (!normalizedPath) return null
+
+  const name = getPathTail(normalizedPath) || normalizedPath
+  return {
+    uid: `history_attachment_${normalizedPath}`,
+    name,
+    size: 0,
+    type: '',
+  }
+}
+
+const parseAttachmentFromRecord = (value: unknown): DipChatKitAttachment | null => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null
+
+  const payload = value as Record<string, unknown>
+  const type = normalizeSessionContentPartType(payload.type)
+  if (type !== 'input_file') return null
+
+  const source = payload.source
+  if (!source || typeof source !== 'object' || Array.isArray(source)) return null
+
+  const path = (source as Record<string, unknown>).path
+  return typeof path === 'string' ? createHistoryAttachment(path) : null
+}
+
+const parseAttachmentFromUnknown = (value: unknown): DipChatKitAttachment | null => {
+  const fromRecord = parseAttachmentFromRecord(value)
+  if (fromRecord) return fromRecord
+
+  if (typeof value !== 'string') return null
+  const trimmed = value.trim()
+  if (!(trimmed.startsWith('{') && trimmed.endsWith('}'))) return null
+
+  try {
+    return parseAttachmentFromRecord(JSON.parse(trimmed))
+  } catch {
+    return null
+  }
+}
+
+const dedupeAttachments = (attachments: DipChatKitAttachment[]): DipChatKitAttachment[] => {
+  const seen = new Set<string>()
+  return attachments.filter((attachment) => {
+    const key = attachment.uid.trim() || attachment.name.trim()
+    if (!key || seen.has(key)) return false
+    seen.add(key)
+    return true
+  })
+}
+
+const extractSessionContent = (
+  content: unknown,
+): { text: string; attachments: DipChatKitAttachment[] } => {
+  if (content === null || content === undefined) {
+    return { text: '', attachments: [] }
   }
 
-  if (typeof part === 'object') {
-    const payload = part as Record<string, unknown>
+  const directAttachment = parseAttachmentFromUnknown(content)
+  if (directAttachment) {
+    return {
+      text: '',
+      attachments: [directAttachment],
+    }
+  }
+
+  if (typeof content === 'string') {
+    return { text: content, attachments: [] }
+  }
+
+  if (typeof content === 'number' || typeof content === 'boolean') {
+    return { text: String(content), attachments: [] }
+  }
+
+  if (Array.isArray(content)) {
+    const parts = content.map((item) => extractSessionContent(item))
+    return {
+      text: parts
+        .map((part) => part.text)
+        .filter(Boolean)
+        .join(''),
+      attachments: dedupeAttachments(parts.flatMap((part) => part.attachments)),
+    }
+  }
+
+  if (typeof content === 'object') {
+    const payload = content as Record<string, unknown>
     const contentType = normalizeSessionContentPartType(payload.type)
     if (isNonTextContentPartType(contentType)) {
-      return ''
+      return { text: '', attachments: [] }
     }
 
     const directTextKeys = ['text', 'output_text', 'content', 'value']
@@ -61,25 +144,34 @@ const normalizeSessionMessageContentPart = (part: unknown): string => {
     for (const key of directTextKeys) {
       const value = payload[key]
       if (typeof value === 'string') {
-        return value
+        return { text: value, attachments: [] }
       }
     }
 
     const nestedContent = payload.content
     if (Array.isArray(nestedContent)) {
-      const nestedText = nestedContent
-        .map((item) => normalizeSessionMessageContentPart(item))
-        .filter(Boolean)
-        .join('')
-      if (nestedText) return nestedText
+      const nested = extractSessionContent(nestedContent)
+      if (nested.text || nested.attachments.length > 0) {
+        return nested
+      }
     }
   }
 
   try {
-    return JSON.stringify(part)
+    return {
+      text: JSON.stringify(content),
+      attachments: [],
+    }
   } catch {
-    return String(part)
+    return {
+      text: String(content),
+      attachments: [],
+    }
   }
+}
+
+const normalizeSessionMessageContentPart = (part: unknown): string => {
+  return extractSessionContent(part).text
 }
 
 export const normalizeSessionMessageContent = (content: unknown): string => {
@@ -101,6 +193,19 @@ const normalizeDetails = (value: unknown): Record<string, unknown> | undefined =
   return value as Record<string, unknown>
 }
 
+const resolveMessageTimestamp = (message: DipChatKitSessionMessage): number | undefined => {
+  if (typeof message.ts === 'number' && Number.isFinite(message.ts)) {
+    return message.ts
+  }
+
+  const timestamp = (message as Record<string, unknown>).timestamp
+  if (typeof timestamp === 'number' && Number.isFinite(timestamp)) {
+    return timestamp
+  }
+
+  return undefined
+}
+
 const toTextFromUnknown = (value: unknown): string => {
   if (value === null || value === undefined) return ''
   if (typeof value === 'string') return value
@@ -119,8 +224,7 @@ const extractToolCallEventsFromMessage = (
   const content = message.content
   if (!Array.isArray(content)) return []
 
-  const timestamp =
-    typeof message.ts === 'number' && Number.isFinite(message.ts) ? message.ts : undefined
+  const timestamp = resolveMessageTimestamp(message)
 
   return content.reduce<DipChatKitAnswerEvent[]>((events, part, partIndex) => {
     if (!part || typeof part !== 'object' || Array.isArray(part)) return events
@@ -157,8 +261,7 @@ const createSessionEvent = (
   const toolCallId = normalizeToolCallId((message as Record<string, unknown>).toolCallId)
   const isError = (message as Record<string, unknown>).isError === true
   const details = normalizeDetails((message as Record<string, unknown>).details)
-  const timestamp =
-    typeof message.ts === 'number' && Number.isFinite(message.ts) ? message.ts : undefined
+  const timestamp = resolveMessageTimestamp(message)
   const contentText = normalizeSessionMessageContent(message.content).trim()
   const detailsText = details ? toTextFromUnknown(details) : ''
   const text = contentText || detailsText
@@ -203,6 +306,7 @@ const createEmptyTurn = (
   createdAt: string,
   sessionKey: string,
   question = '',
+  questionAttachments: DipChatKitAttachment[] = [],
   id?: string,
 ): DipChatKitMessageTurn => {
   const normalizedId = id ? `${id}_${index}` : String(index)
@@ -212,7 +316,7 @@ const createEmptyTurn = (
     sessionKey,
     question,
     questionEmployees: [],
-    questionAttachments: [],
+    questionAttachments,
     answerMarkdown: '',
     answerEvents: [],
     answerTimeline: [],
@@ -248,6 +352,60 @@ const appendTurnAnswerEvent = (
   event: DipChatKitAnswerEvent,
   timelineId: string,
 ) => {
+  const normalizedToolCallId = event.toolCallId?.trim() || ''
+  const isToolLifecycleEvent = event.type === 'toolCall' || event.type === 'toolResult'
+  if (isToolLifecycleEvent && normalizedToolCallId) {
+    const existedEventIndex = turn.answerEvents.findIndex((item) => {
+      const candidateToolCallId = item.toolCallId?.trim() || ''
+      const candidateIsToolLifecycle = item.type === 'toolCall' || item.type === 'toolResult'
+      return candidateIsToolLifecycle && candidateToolCallId === normalizedToolCallId
+    })
+
+    if (existedEventIndex >= 0) {
+      const existedEvent = turn.answerEvents[existedEventIndex]
+      const shouldUseResultText = event.type === 'toolResult' && event.text.trim().length > 0
+      const mergedEvent: DipChatKitAnswerEvent = {
+        ...existedEvent,
+        ...event,
+        id: existedEvent.id,
+        type:
+          existedEvent.type === 'toolResult' || event.type === 'toolResult'
+            ? 'toolResult'
+            : 'toolCall',
+        role:
+          existedEvent.type === 'toolResult' || event.type === 'toolResult'
+            ? 'toolResult'
+            : 'assistant',
+        text: shouldUseResultText ? event.text : existedEvent.text || event.text,
+        resultText: event.resultText !== undefined ? event.resultText : existedEvent.resultText,
+        details: {
+          ...(existedEvent.details || {}),
+          ...(event.details || {}),
+          status:
+            existedEvent.type === 'toolResult' || event.type === 'toolResult'
+              ? 'completed'
+              : existedEvent.details?.status || event.details?.status || 'in_progress',
+        },
+      }
+
+      turn.answerEvents[existedEventIndex] = mergedEvent
+
+      const existedTimelineEventIndex = turn.answerTimeline.findIndex(
+        (item) => item.kind === 'event' && item.event.id === existedEvent.id,
+      )
+      if (existedTimelineEventIndex >= 0) {
+        const timelineItem = turn.answerTimeline[existedTimelineEventIndex]
+        if (timelineItem.kind === 'event') {
+          turn.answerTimeline[existedTimelineEventIndex] = {
+            ...timelineItem,
+            event: mergedEvent,
+          }
+        }
+      }
+      return
+    }
+  }
+
   turn.answerEvents.push(event)
   turn.answerTimeline.push({
     id: timelineId,
@@ -270,21 +428,29 @@ export const mapSessionMessagesToTurns = (
   messages.forEach((message, index) => {
     const role = normalizeSessionMessageRole(message.role)
     const content = normalizeSessionMessageContent(message.content).trim()
-    const createdAt = normalizeSessionCreatedAt(message.ts)
+    const extractedContent = role === 'user' ? extractSessionContent(message.content) : null
+    const createdAt = normalizeSessionCreatedAt(resolveMessageTimestamp(message))
 
     if (role === SYSTEM_ROLE) {
       return
     }
 
     if (role === 'user') {
-      const nextTurn = createEmptyTurn(index, createdAt, sessionKey, content, message.id)
+      const nextTurn = createEmptyTurn(
+        index,
+        createdAt,
+        sessionKey,
+        extractedContent?.text.trim() || content,
+        extractedContent?.attachments || [],
+        message.id,
+      )
       turns.push(nextTurn)
       activeTurn = nextTurn
       return
     }
 
     if (!activeTurn) {
-      activeTurn = createEmptyTurn(index, createdAt, sessionKey, '', message.id)
+      activeTurn = createEmptyTurn(index, createdAt, sessionKey, '', [], message.id)
       turns.push(activeTurn)
     }
     const resolvedTurn = activeTurn
@@ -312,7 +478,13 @@ export const mapSessionMessagesToTurns = (
       appendTurnAnswerEvent(resolvedTurn, event, `session_timeline_event_${index}`)
     }
 
-    if (role !== 'assistant' && role !== SYSTEM_ROLE && content) {
+    if (
+      role !== 'assistant' &&
+      role !== SYSTEM_ROLE &&
+      role !== 'toolresult' &&
+      role !== 'tool' &&
+      content
+    ) {
       appendTurnAnswerText(resolvedTurn, content, `session_timeline_text_non_assistant_${index}`)
     }
   })

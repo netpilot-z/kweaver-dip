@@ -13,6 +13,7 @@ import { formatTimeSlash } from '@/utils/handle-function/FormatTime'
 import { useDigitalHumanPageLoad } from '../useDigitalHumanPageLoad'
 import Conversation from './Conversation'
 import styles from './index.module.less'
+import { BKN_CREATOR_ID } from '../type'
 
 type DetailsParams = {
   digitalHumanId?: string
@@ -39,10 +40,12 @@ const Details = () => {
 
   const digitalHumanId = params.digitalHumanId
   const [activeTab, setActiveTab] = useState<DigitalHumanDetailTab>('session')
+  const isBknCreator = digitalHumanId === BKN_CREATOR_ID
+  const canEnterDetail = !isAdmin || isBknCreator
 
   /** 管理员走全页配置 */
   useLayoutEffect(() => {
-    if (!isAdmin) return
+    if (canEnterDetail) return
     if (!digitalHumanId) {
       navigate('/studio/digital-human/setting', { replace: true })
       return
@@ -50,7 +53,7 @@ const Details = () => {
     navigate(`/studio/digital-human/${digitalHumanId}/setting${location.search}`, {
       replace: true,
     })
-  }, [isAdmin, digitalHumanId, navigate, location.search])
+  }, [canEnterDetail, digitalHumanId, navigate, location.search])
 
   /** 无 plan|session|config 段时补默认 Tab（路由 Tab 恢复时启用） */
   // useEffect(() => {
@@ -67,7 +70,7 @@ const Details = () => {
     }
   }, [digitalHumanId, navigate])
 
-  const loading = useDigitalHumanPageLoad(digitalHumanId, 'detail', null, !isAdmin)
+  const loading = useDigitalHumanPageLoad(digitalHumanId, 'detail', null, canEnterDetail)
 
   const headerAvatarSrc = useMemo(
     () => resolveDigitalHumanIconSrc(detail?.icon_id),
@@ -105,7 +108,7 @@ const Details = () => {
     return null
   }
 
-  if (isAdmin) {
+  if (!canEnterDetail) {
     return null
   }
 
@@ -176,6 +179,7 @@ const Details = () => {
         <div className="flex-1 min-h-0 overflow-hidden flex flex-col pt-5 relative">
           <WorkPlanList
             source={{ mode: 'digitalHuman', digitalHumanId: digitalHumanId }}
+            onEmptyCreateClick={() => setActiveTab('session')}
             onPlanClick={(job) => {
               const from = `${location.pathname}${location.search}`
               navigate(

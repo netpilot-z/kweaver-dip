@@ -3,6 +3,7 @@ import type { HeaderType } from '@/routes/types'
 import BaseHeader from './BaseHeader'
 import BusinessHeader from './BusinessHeader'
 import MicroAppHeader from './MicroAppHeader'
+import SystemHeader from './SystemHeader'
 
 const { Header: AntHeader } = Layout
 
@@ -10,8 +11,8 @@ const Header = ({ headerType }: { headerType: HeaderType }) => {
   if (headerType === 'home') {
     return null
   }
-  // business 场景不设置 z-index，避免盖住微应用的弹层（toast/notification）
-  const zIndexClass = headerType === 'business' ? '' : 'z-[100]'
+  // business / system 工作台微应用场景不设置 z-index，避免盖住微应用的弹层（toast/notification）
+  const zIndexClass = headerType === 'business' || headerType === 'system' ? '' : 'z-[100]'
   return (
     <AntHeader
       className={`h-[52px] bg-white border-b border-gray-200 flex items-center justify-between px-3 ${zIndexClass}`}
@@ -20,6 +21,8 @@ const Header = ({ headerType }: { headerType: HeaderType }) => {
         <MicroAppHeader />
       ) : headerType === 'business' ? (
         <BusinessHeader />
+      ) : headerType === 'system' ? (
+        <SystemHeader />
       ) : (
         <BaseHeader headerType={headerType} />
       )}

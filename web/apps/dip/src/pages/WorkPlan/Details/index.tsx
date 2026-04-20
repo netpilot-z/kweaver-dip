@@ -187,7 +187,9 @@ const WorkPlanDetail = () => {
     return [
       {
         key: currentPlan?.enabled ? 'pause' : 'resume',
-        label: currentPlan?.enabled ? intl.get('workPlan.common.pause') : intl.get('workPlan.common.start'),
+        label: currentPlan?.enabled
+          ? intl.get('workPlan.common.pause')
+          : intl.get('workPlan.common.start'),
         onClick: async () => {
           if (!workPlanId) return
           if (currentPlan?.enabled) {

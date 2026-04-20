@@ -1,6 +1,7 @@
 import { ExclamationCircleFilled } from '@ant-design/icons'
 import { Button, Modal, message, Spin, Tooltip } from 'antd'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
+import intl from 'react-intl-universal'
 import { useNavigate } from 'react-router-dom'
 import { type ApplicationInfo, deleteApplications } from '@/apis'
 import AppConfigDrawer from '@/components/AppConfigDrawer'
@@ -66,13 +67,13 @@ const AppStore = () => {
           /** 卸载应用 */
           case AppStoreActionEnum.Uninstall:
             modal.confirm({
-              title: '确认卸载',
+              title: intl.get('application.appStore.confirmUninstallTitle'),
               icon: <ExclamationCircleFilled />,
-              content: '卸载应用后，相关配置和数据将被清除，用户将无法使用应用。是否继续?',
-              okText: '确定',
+              content: intl.get('application.appStore.confirmUninstallContent'),
+              okText: intl.get('global.ok'),
               okType: 'primary',
               okButtonProps: { danger: true },
-              cancelText: '取消',
+              cancelText: intl.get('global.cancel'),
               footer: (_, { OkBtn, CancelBtn }) => (
                 <>
                   <OkBtn />
@@ -82,7 +83,7 @@ const AppStore = () => {
               onOk: async () => {
                 try {
                   await deleteApplications(_app.key)
-                  messageApi.success('卸载成功')
+                  messageApi.success(intl.get('application.appStore.uninstallSuccess'))
                   handleRefresh()
                   unpinMicroApp(_app.key, false)
                 } catch (err: any) {
@@ -131,9 +132,9 @@ const AppStore = () => {
 
     if (error) {
       return (
-        <Empty type="failed" title="加载失败">
+        <Empty type="failed" title={intl.get('application.loadFailed')}>
           <Button className="mt-1" type="primary" onClick={handleRefresh}>
-            重试
+            {intl.get('application.retry')}
           </Button>
         </Empty>
       )
@@ -141,12 +142,12 @@ const AppStore = () => {
 
     if (apps.length === 0) {
       if (searchValue) {
-        return <Empty type="search" desc="抱歉，没有找到相关内容" />
+        return <Empty type="search" desc={intl.get('global.noResult')} />
       }
       return (
         <Empty
-          title="暂无应用"
-          subDesc="当前应用市场空空如也，您可以点击下方按钮安装第一个企业应用。"
+          title={intl.get('application.appStore.emptyTitle')}
+          subDesc={intl.get('application.appStore.emptySubDesc')}
         >
           <Button
             className="mt-1"
@@ -156,7 +157,7 @@ const AppStore = () => {
               setInstallModalVisible(true)
             }}
           >
-            安装应用
+            {intl.get('application.appStore.installApp')}
           </Button>
         </Empty>
       )
@@ -188,9 +189,11 @@ const AppStore = () => {
       {messageContextHolder}
       <div className="flex justify-between mb-6 flex-shrink-0 z-20">
         <div className="flex flex-col gap-y-3">
-          <span className="text-base font-bold text-[--dip-text-color]">应用商店</span>
+          <span className="text-base font-bold text-[--dip-text-color]">
+            {intl.get('application.appStore.title')}
+          </span>
           <span className="text-sm text-[--dip-text-color-65]">
-            管理企业应用市场，安装或卸载应用
+            {intl.get('application.appStore.subtitle')}
           </span>
         </div>
         {(hasLoadedData || searchValue) && (
@@ -199,9 +202,9 @@ const AppStore = () => {
               variant="borderless"
               className="!rounded-2xl"
               onSearch={handleSearch}
-              placeholder="搜索应用"
+              placeholder={intl.get('application.searchPlaceholder')}
             />
-            <Tooltip title="刷新">
+            <Tooltip title={intl.get('global.refresh')}>
               <Button type="text" icon={<IconFont type="icon-refresh" />} onClick={handleRefresh} />
             </Tooltip>
             <Button
@@ -209,7 +212,7 @@ const AppStore = () => {
               icon={<IconFont type="icon-upload" />}
               onClick={() => setInstallModalVisible(true)}
             >
-              安装应用
+              {intl.get('application.appStore.installApp')}
             </Button>
           </div>
         )}
@@ -235,11 +238,11 @@ const AppStore = () => {
             content: (
               <div className="flex items-center gap-2">
                 <span>
-                  应用"
+                  {intl.get('application.appStore.uploadSuccessBefore')}
                   <span className="inline-block max-w-md truncate align-bottom">
                     {appInfo.name}
                   </span>
-                  "上传成功，请完成配置以启用服务。
+                  {intl.get('application.appStore.uploadSuccessAfter')}
                   <button
                     type="button"
                     onClick={() => {
@@ -249,7 +252,7 @@ const AppStore = () => {
                     }}
                     className="text-[--dip-primary-color]"
                   >
-                    去配置
+                    {intl.get('application.appStore.goToConfig')}
                   </button>
                 </span>
               </div>

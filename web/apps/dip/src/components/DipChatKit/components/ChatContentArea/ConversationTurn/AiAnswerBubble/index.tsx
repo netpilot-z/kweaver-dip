@@ -240,23 +240,45 @@ const extractToolDuplicateCandidates = (events: DipChatKitAnswerEvent[]): string
   const candidateSet = new Set<string>()
   events.forEach((event) => {
     const text = normalizeComparableText(event.text || '')
-    if (!text) return
-    if (text.length < 16) return
-    candidateSet.add(text)
+    if (text.length >= 16) {
+      candidateSet.add(text)
+    }
+    const resultText = normalizeComparableText(event.resultText || '')
+    if (resultText.length >= 16) {
+      candidateSet.add(resultText)
+    }
   })
   return Array.from(candidateSet).sort((left, right) => right.length - left.length)
 }
 
-const stripDuplicatedToolText = (text: string, events: DipChatKitAnswerEvent[]): string => {
-  const candidates = extractToolDuplicateCandidates(events)
-  if (candidates.length === 0) return text
-
+const replaceDuplicateCandidates = (text: string, candidates: string[]): string => {
   let nextText = text
   candidates.forEach((candidate) => {
     if (!candidate) return
     if (!nextText.includes(candidate)) return
     nextText = nextText.split(candidate).join('')
   })
+  return nextText
+}
+
+const stripDuplicatedToolText = (text: string, events: DipChatKitAnswerEvent[]): string => {
+  const candidates = extractToolDuplicateCandidates(events)
+  if (candidates.length === 0) return text
+
+  // Keep fenced code blocks intact; only deduplicate plain text regions.
+  const fencedCodeBlockPattern = /```[\s\S]*?```/g
+  let nextText = ''
+  let cursor = 0
+  let match = fencedCodeBlockPattern.exec(text)
+  while (match) {
+    const blockStart = match.index
+    const blockEnd = blockStart + match[0].length
+    nextText += replaceDuplicateCandidates(text.slice(cursor, blockStart), candidates)
+    nextText += match[0]
+    cursor = blockEnd
+    match = fencedCodeBlockPattern.exec(text)
+  }
+  nextText += replaceDuplicateCandidates(text.slice(cursor), candidates)
 
   return nextText.replace(/\n{3,}/g, '\n\n').trim()
 }
@@ -485,22 +507,15 @@ const AiAnswerBubble: React.FC<AiAnswerBubbleProps> = ({
 
       const displayText = normalizeMarkdownText(children) || fileName
       return (
-        <span
+        <button
+          type="button"
           className={clsx(className, styles.markdownFileLink)}
-          role="button"
-          tabIndex={0}
           onClick={() => {
             openMarkdownFilePreview(fileName, hrefText || displayText)
           }}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter' || event.key === ' ') {
-              event.preventDefault()
-              openMarkdownFilePreview(fileName, hrefText || displayText)
-            }
-          }}
         >
           {displayText}
-        </span>
+        </button>
       )
     }
 
@@ -517,16 +532,16 @@ const AiAnswerBubble: React.FC<AiAnswerBubbleProps> = ({
       const content = attrs['data-preview-content'] || normalizeMarkdownText(children)
 
       return (
-        <div
+        <button
+          type="button"
           className={styles.previewCard}
           onClick={() => {
             onOpenPreview(buildCardPreviewPayload(title, content))
           }}
-          role="presentation"
         >
           <span className={styles.previewCardTitle}>{title}</span>
           <span className={styles.previewCardDesc}>{content}</span>
-        </div>
+        </button>
       )
     }
 
@@ -597,9 +612,12 @@ const AiAnswerBubble: React.FC<AiAnswerBubbleProps> = ({
 
   const renderToolCard = (toolCard: DipChatKitToolCardItem) => {
     const hasText = Boolean(toolCard.text.trim())
+    const shouldHideStatusTag = !toolCard.isError && toolCard.status === 'completed' && hasText
+    const shouldShowStatusTag = !shouldHideStatusTag
     const showPreview = Boolean(toolCard.previewText)
     const showInline = Boolean(toolCard.inlineText)
-    const shouldRenderResultMarkdown = toolCard.kind === 'result' && hasText
+    const shouldRenderResultMarkdown =
+      hasText && (toolCard.kind === 'result' || toolCard.renderBodyMarkdown)
     const isOverflow = Boolean(overflowToolCards[toolCard.id])
     const isExpanded = Boolean(expandedToolCards[toolCard.id])
     const shouldCollapse = isOverflow && !isExpanded
@@ -647,8 +665,8 @@ const AiAnswerBubble: React.FC<AiAnswerBubbleProps> = ({
               </span>
             )}
           </div>
-          {toolCard.detail && <div className={styles.chatToolCardDetail}>{toolCard.detail}</div>}
-          {!hasText && (
+          {/* {toolCard.detail && <div className={styles.chatToolCardDetail}>{toolCard.detail}</div>} */}
+          {shouldShowStatusTag && (
             <div className={styles.chatToolCardStatusText}>
               <Tag color={statusTagColor}>{statusText}</Tag>
             </div>
@@ -779,8 +797,17 @@ const AiAnswerBubble: React.FC<AiAnswerBubbleProps> = ({
         className={styles.chatToolsCollapse}
         key={`${panelKey}_${keepExpandedUntilStreamDone ? 'streaming' : 'done'}`}
         ghost
-        expandIconPosition="start"
+        expandIconPlacement="start"
         defaultActiveKey={keepExpandedUntilStreamDone ? [panelKey] : []}
+        onChange={() => {
+          // Panels may mount lazily when opened; re-measure after open animation settles.
+          window.requestAnimationFrame(() => {
+            measureToolCardOverflow()
+          })
+          window.setTimeout(() => {
+            measureToolCardOverflow()
+          }, 200)
+        }}
         items={[
           {
             key: panelKey,

@@ -128,7 +128,9 @@ const InitializeResultStep = ({ initResult: _initResult }: InitializeResultStepP
       <div className="mt-5 text-[26px] font-bold text-[--dip-text-color] pr-2">
         {intl.get('initialConfiguration.result.title')}
       </div>
-      <div className="mt-3 text-sm text-black/50">{intl.get('initialConfiguration.result.subtitle')}</div>
+      <div className="mt-3 text-sm text-black/50">
+        {intl.get('initialConfiguration.result.subtitle')}
+      </div>
     </div>
   )
 }

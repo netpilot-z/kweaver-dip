@@ -99,7 +99,17 @@ Approved cc8d2143cf8fcd04161ade9e5161006c410a0bee65f835e2629792aa584bb119 (3ef17
 
 ### Docker build
 
-1. 执行 docker build 来构建镜像，`platform` 根据实际需要填写。
+1. 将 monorepo 中的 `dip` OpenClaw 插件同步到本目录（构建上下文需要存在 `extensions/dip`；在仓库根目录执行时路径如下）。
+
+```bash
+mkdir -p studio/extensions
+rm -rf studio/extensions/dip
+cp -R deploy/openclaw-extensions/dip studio/extensions/dip
+```
+
+若当前工作目录已是 `studio/`，可使用：`mkdir -p extensions && cp -R ../deploy/openclaw-extensions/dip extensions/dip`。
+
+2. 进入 `studio/` 目录后执行 docker build 来构建镜像（以下命令末尾的 `.` 表示以当前目录为构建上下文），`platform` 根据实际需要填写。
 
 ```bash
 docker buildx build \
@@ -110,7 +120,7 @@ docker buildx build \
   .                        
 ```
 
-2. 启动容器。
+3. 启动容器。
 
 - 3000 端口是 Studio 服务端口，18789 端口是 OpenClaw 默认端口。
 - `/data/.openclaw/` 用于挂载 OpenClaw 主目录到容器内（请根据实际情况选择本地路径）
@@ -127,21 +137,31 @@ docker run \
   dip-studio:0.4.0
 ```
 
-3. 复制 `container_id`
+注意：在完成 OpenClaw 初始化之前请不要使用 `--restart unless-stopped` 参数.
 
-4. 进入容器
+在 Kubernetes / Helm 部署中，镜像启动前会先执行 `init-container`：
+
+- 若挂载目录中不存在 `openclaw.json` 或该文件为空，会先创建一个最小 `{}` 配置
+- 安装/刷新 `dip` OpenClaw 插件；若 OpenClaw CLI 仍执行失败，会继续执行后续初始化流程
+- 执行 `node /app/scripts/init_agents/index.mjs`，同步内置 Agent 工作区与相关配置
+
+主容器只负责启动 Studio 服务与 OpenClaw Gateway 守护进程。
+
+4. 复制 `container_id`
+
+5. 进入容器
 
 ```bash
 docker exec -it <container_id> /bin/bash
 ```
 
-5. 初始化 OpenClaw。`openclaw.json` 会持久化到挂在到容器内的 OpenClaw 主目录
+6. 初始化 OpenClaw。`openclaw.json` 会持久化到挂在到容器内的 OpenClaw 主目录
 
 ```bash
 openclaw onboard
 ```
 
-6. 安装 extensions 
+7. 若镜像启动流程未自动安装插件，可手动安装 extensions：
 
 ```bash
 openclaw plugins install /app/extensions/dip
@@ -641,7 +661,9 @@ DIP 数字员工 Web 界面
 
 `GET /api/dip-studio/v1/plans`
 
-支持查询参数：`includeDisabled`、`limit`、`offset`、`enabled`、`sortBy`、`sortDir`
+支持查询参数：`limit`、`offset`、`enabled`、`sortBy`、`sortDir`
+
+其中 `sortBy` 仅支持：`nextRunAtMs`、`updatedAtMs`、`name`。
 
 响应：`200 application/json`
 
@@ -664,7 +686,9 @@ DIP 数字员工 Web 界面
 | -- | -- | -- | -- |
 | id | string | 是 | 数字员工 ID |
 
-支持查询参数：`includeDisabled`、`limit`、`offset`、`enabled`、`sortBy`、`sortDir`
+支持查询参数：`limit`、`offset`、`enabled`、`sortBy`、`sortDir`
+
+其中 `sortBy` 仅支持：`nextRunAtMs`、`updatedAtMs`、`name`。
 
 响应：`200 application/json`
 
@@ -758,6 +782,25 @@ DIP 数字员工 Web 界面
 
 响应：`204`
 
+#### 删除数字员工
+
+`DELETE /api/dip-studio/v1/digital-human/{id}`
+
+路径参数：
+
+| 参数 | 类型 | 是否必填 | 说明 |
+| -- | -- | -- | -- |
+| id | string | 是 | 数字员工 ID |
+
+支持查询参数：`deleteFiles`
+
+说明：
+
+- 删除数字员工时，服务会同步删除该数字员工名下的全部计划任务
+- `deleteFiles=false` 时仅删除 agent 配置，保留工作区文件；计划任务仍会被删除
+
+响应：`204`
+
 #### 创建数字员工
 
 `POST /api/dip-studio/v1/digital-human`
@@ -771,7 +814,7 @@ DIP 数字员工 Web 界面
 | creature | string | 否 | 数字员工岗位/角色 |
 | icon_id | string | 否 | 图标 ID |
 | soul | string | 否 | `SOUL.md` 内容 |
-| skills | string[] | 否 | 额外技能名称；服务端始终先绑定 `archive-protocol`、`schedule-plan`、`kweaver-core`，再与本字段合并（去重）。响应中 `skills` 为完整绑定 id 列表（含内置三项） |
+| skills | string[] | 否 | 创建时要绑定的技能名称列表；重复值会按首次出现顺序去重。响应中 `skills` 为实际绑定的技能 id 列表 |
 
 响应：`201 application/json`
 
@@ -931,6 +974,13 @@ If any file cannot be read, explicitly report which path failed and why.
 
 返回指定会话的归档物列表。
 
+说明：
+
+- 普通会话会读取该会话末段对应的归档目录
+- 对 cron run 会话，会读取 `archives/{runId}` 下的运行归档
+- 对创建计划的原始会话，会读取 `archives/{chatId}` 下的计划归档与镜像产物
+- `PLAN.md` 仅保留在原始计划会话对应的归档目录中，不会出现在 `runId` 目录下
+
 #### 获取会话归档子路径内容
 
 `GET /api/dip-studio/v1/sessions/{key}/archives/{subpath}`
@@ -942,6 +992,6 @@ If any file cannot be read, explicitly report which path failed and why.
 | key | string | 是 | 会话 key |
 | subpath | string | 是 | 归档子路径，支持多级目录 |
 
-响应：`200 application/json | application/octet-stream | text/plain`
+响应：`200 application/json | application/octet-stream | text/html | text/plain`
 
-目录返回 JSON，文件返回原始内容。
+目录返回 JSON，文件返回原始内容。路径解析规则与“获取会话归档列表”一致。

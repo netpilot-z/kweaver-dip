@@ -69,7 +69,9 @@ describe('DigitalHumanSetting/KnowledgeConfig/SelectKnowledgeModal', () => {
       <SelectKnowledgeModal open onOk={mockOnOk} onCancel={mockOnCancel} defaultSelectedIds={[]} />,
     )
 
-    expect(await screen.findByText('digitalHuman.knowledgeModal.emptyNoKnowledge')).toBeInTheDocument()
+    expect(
+      await screen.findByText('digitalHuman.knowledgeModal.emptyNoKnowledge'),
+    ).toBeInTheDocument()
   })
 
   it('加载失败显示错误状态', async () => {

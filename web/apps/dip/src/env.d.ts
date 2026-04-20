@@ -15,6 +15,7 @@ declare module '*.svg?react' {
  * 扩展 ImportMetaEnv 接口以支持自定义环境变量
  * 注意：此接口通过 TypeScript 接口合并机制扩展全局类型，linter 可能无法识别其使用
  */
+
 // biome-ignore lint/correctness/noUnusedVariables: 接口扩展用于类型合并，实际会被 TypeScript 使用
 interface ImportMetaEnv {
   // 是否跳过登录认证（设置为 'true' 时跳过）

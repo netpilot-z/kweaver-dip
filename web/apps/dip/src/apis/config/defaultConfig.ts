@@ -82,7 +82,7 @@ export const defaultOemBasicConfig: OemBasicConfig = {
   // 备案号
   recordNumber: '沪ICP备09089247号-9',
   // 自定义版本
-  customVersion: '1.0.4.0',
+  customVersion: '1.0.5.0',
   // 主题
   theme: '#126ee3',
   // 个性化ico

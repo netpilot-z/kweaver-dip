@@ -373,6 +373,37 @@ describe("createSkillsRouter", () => {
     expect(next).not.toHaveBeenCalled();
   });
 
+  it("uses trimmed first query path entry for skill content", async () => {
+    const getSkillContent = vi.fn().mockResolvedValue({
+      name: "weather",
+      path: "docs/guide.md",
+      content: "guide",
+      bytes: 5,
+      truncated: false
+    });
+    const { createSkillsRouter } = await importRouterWithLogicMock({
+      listEnabledSkills: async () => [],
+      getSkillContent
+    });
+    const router = createSkillsRouter() as Router;
+    const handler = findHandler(router, "get", skillContentPath);
+
+    await handler?.(
+      {
+        params: { name: "weather" },
+        query: { path: [" docs/guide.md ", "ignored"] }
+      } as unknown as Request,
+      createResponseDouble(),
+      vi.fn<NextFunction>()
+    );
+
+    expect(getSkillContent).toHaveBeenCalledWith(
+      "weather",
+      "docs/guide.md",
+      "/repo/skills/default"
+    );
+  });
+
   it("defaults to SKILL.md when path is missing in skill content query", async () => {
     const getSkillContent = vi.fn().mockResolvedValue({
       name: "weather",
@@ -412,6 +443,39 @@ describe("createSkillsRouter", () => {
     expect(next).not.toHaveBeenCalled();
   });
 
+  it("rejects invalid skill ids in content and download paths", async () => {
+    const { createSkillsRouter } = await importRouterWithLogicMock({
+      listEnabledSkills: async () => []
+    });
+    const router = createSkillsRouter() as Router;
+    const contentNext = vi.fn<NextFunction>();
+    const downloadNext = vi.fn<NextFunction>();
+
+    await findHandler(router, "get", skillContentPath)?.(
+      { params: { name: "bad name" }, query: {} } as unknown as Request,
+      createResponseDouble(),
+      contentNext
+    );
+    await findHandler(router, "get", skillDownloadPath)?.(
+      { params: { name: "bad name" }, query: {} } as unknown as Request,
+      createResponseDouble(),
+      downloadNext
+    );
+
+    expect(contentNext).toHaveBeenCalledWith(
+      expect.objectContaining({
+        statusCode: 400,
+        message: "Path parameter name must be a valid skill id"
+      })
+    );
+    expect(downloadNext).toHaveBeenCalledWith(
+      expect.objectContaining({
+        statusCode: 400,
+        message: "Path parameter name must be a valid skill id"
+      })
+    );
+  });
+
   it("downloads skill file and forwards response headers", async () => {
     const downloadSkillFile = vi.fn().mockResolvedValue({
       status: 200,
@@ -449,6 +513,135 @@ describe("createSkillsRouter", () => {
     expect(response.status).toHaveBeenCalledWith(200);
     expect(response.send).toHaveBeenCalledWith(Buffer.from("# Skill\n"));
     expect(next).not.toHaveBeenCalled();
+  });
+
+  it("downloads skill file without optional headers", async () => {
+    const downloadSkillFile = vi.fn().mockResolvedValue({
+      status: 206,
+      headers: new Headers(),
+      body: new Uint8Array(Buffer.from("partial"))
+    });
+    const { createSkillsRouter } = await importRouterWithLogicMock({
+      listEnabledSkills: async () => [],
+      downloadSkillFile
+    });
+    const router = createSkillsRouter() as Router;
+    const handler = findHandler(router, "get", skillDownloadPath);
+    const response = createResponseDouble();
+
+    await handler?.(
+      {
+        params: { name: "weather" },
+        query: { path: [" nested/file.md "] }
+      } as unknown as Request,
+      response,
+      vi.fn<NextFunction>()
+    );
+
+    expect(downloadSkillFile).toHaveBeenCalledWith(
+      "weather",
+      "nested/file.md",
+      "/repo/skills/default"
+    );
+    expect(response.setHeader).not.toHaveBeenCalled();
+    expect(response.status).toHaveBeenCalledWith(206);
+  });
+
+  it("wraps unexpected errors for tree, content, and download endpoints", async () => {
+    const { createSkillsRouter } = await importRouterWithLogicMock({
+      listEnabledSkills: async () => [],
+      getSkillTree: async () => {
+        throw new Error("boom-tree");
+      },
+      getSkillContent: async () => {
+        throw new Error("boom-content");
+      },
+      downloadSkillFile: async () => {
+        throw new Error("boom-download");
+      }
+    });
+    const router = createSkillsRouter() as Router;
+    const treeNext = vi.fn<NextFunction>();
+    const contentNext = vi.fn<NextFunction>();
+    const downloadNext = vi.fn<NextFunction>();
+
+    await findHandler(router, "get", skillTreePath)?.(
+      { params: { name: "weather" }, query: {} } as unknown as Request,
+      createResponseDouble(),
+      treeNext
+    );
+    await findHandler(router, "get", skillContentPath)?.(
+      { params: { name: "weather" }, query: {} } as unknown as Request,
+      createResponseDouble(),
+      contentNext
+    );
+    await findHandler(router, "get", skillDownloadPath)?.(
+      { params: { name: "weather" }, query: {} } as unknown as Request,
+      createResponseDouble(),
+      downloadNext
+    );
+
+    expect(treeNext).toHaveBeenCalledWith(
+      expect.objectContaining({
+        statusCode: 502,
+        message: "Failed to query skill tree"
+      })
+    );
+    expect(contentNext).toHaveBeenCalledWith(
+      expect.objectContaining({
+        statusCode: 502,
+        message: "Failed to query skill content"
+      })
+    );
+    expect(downloadNext).toHaveBeenCalledWith(
+      expect.objectContaining({
+        statusCode: 502,
+        message: "Failed to download skill file"
+      })
+    );
+  });
+
+  it("forwards HttpError instances for tree, content, and download endpoints", async () => {
+    const { HttpError } = await import("../errors/http-error");
+    const treeError = new HttpError(404, "missing-tree");
+    const contentError = new HttpError(404, "missing-content");
+    const downloadError = new HttpError(404, "missing-download");
+    const { createSkillsRouter } = await importRouterWithLogicMock({
+      listEnabledSkills: async () => [],
+      getSkillTree: async () => {
+        throw treeError;
+      },
+      getSkillContent: async () => {
+        throw contentError;
+      },
+      downloadSkillFile: async () => {
+        throw downloadError;
+      }
+    });
+    const router = createSkillsRouter() as Router;
+    const treeNext = vi.fn<NextFunction>();
+    const contentNext = vi.fn<NextFunction>();
+    const downloadNext = vi.fn<NextFunction>();
+
+    await findHandler(router, "get", skillTreePath)?.(
+      { params: { name: "weather" }, query: {} } as unknown as Request,
+      createResponseDouble(),
+      treeNext
+    );
+    await findHandler(router, "get", skillContentPath)?.(
+      { params: { name: "weather" }, query: {} } as unknown as Request,
+      createResponseDouble(),
+      contentNext
+    );
+    await findHandler(router, "get", skillDownloadPath)?.(
+      { params: { name: "weather" }, query: {} } as unknown as Request,
+      createResponseDouble(),
+      downloadNext
+    );
+
+    expect(treeNext).toHaveBeenCalledWith(treeError);
+    expect(contentNext).toHaveBeenCalledWith(contentError);
+    expect(downloadNext).toHaveBeenCalledWith(downloadError);
   });
 
   it("uninstalls skill from path parameter", async () => {
@@ -651,6 +844,65 @@ describe("createSkillsRouter", () => {
     );
   });
 
+  it("wraps unexpected uninstall errors", async () => {
+    const uninstallSkill = vi.fn().mockRejectedValue(new Error("boom-uninstall"));
+    const { createSkillsRouter } = await importRouterWithLogicMock({
+      listEnabledSkills: async () => [],
+      uninstallSkill,
+      getSkillStatuses: async () => [
+        {
+          skillKey: "weather",
+          source: "openclaw-managed",
+          skillPath: "/Users/test/.openclaw/skills/weather"
+        }
+      ]
+    });
+    const router = createSkillsRouter() as Router;
+    const handler = findHandler(router, "delete", "/api/dip-studio/v1/skills/:name");
+    const next = vi.fn<NextFunction>();
+
+    await handler?.(
+      { params: { name: "weather" }, query: {} } as unknown as Request,
+      createResponseDouble(),
+      next
+    );
+
+    expect(next).toHaveBeenCalledWith(
+      expect.objectContaining({
+        statusCode: 502,
+        message: "Failed to uninstall skill"
+      })
+    );
+  });
+
+  it("forwards HttpError instances during uninstall", async () => {
+    const { HttpError } = await import("../errors/http-error");
+    const uninstallError = new HttpError(409, "in use");
+    const uninstallSkill = vi.fn().mockRejectedValue(uninstallError);
+    const { createSkillsRouter } = await importRouterWithLogicMock({
+      listEnabledSkills: async () => [],
+      uninstallSkill,
+      getSkillStatuses: async () => [
+        {
+          skillKey: "weather",
+          source: "openclaw-managed",
+          skillPath: "/Users/test/.openclaw/skills/weather"
+        }
+      ]
+    });
+    const router = createSkillsRouter() as Router;
+    const handler = findHandler(router, "delete", "/api/dip-studio/v1/skills/:name");
+    const next = vi.fn<NextFunction>();
+
+    await handler?.(
+      { params: { name: "weather" }, query: {} } as unknown as Request,
+      createResponseDouble(),
+      next
+    );
+
+    expect(next).toHaveBeenCalledWith(uninstallError);
+  });
+
   it("installs skill from multipart file field", async () => {
     const installSkill = vi.fn().mockResolvedValue({
       name: "weather",
@@ -712,6 +964,35 @@ describe("createSkillsRouter", () => {
     expect(installSkill).toHaveBeenCalledWith(zip, { name: "my-skill" });
   });
 
+  it("accepts array multipart fields for overwrite and name", async () => {
+    const installSkill = vi.fn().mockResolvedValue({
+      name: "my-skill",
+      skillPath: "/repo/skills/my-skill",
+      displayName: "My Skill"
+    });
+    const { createSkillsRouter } = await importRouterWithLogicMock({
+      listEnabledSkills: async () => [],
+      installSkill
+    });
+    const router = createSkillsRouter() as Router;
+    const handler = findHandler(router, "post", skillsInstallPath);
+    const zip = Buffer.from([0x50, 0x4b, 0x03, 0x04]);
+
+    await handler?.(
+      createMultipartSkillRequest(zip, {
+        overwrite: ["1"],
+        name: [" my-skill "]
+      }),
+      createResponseDouble(),
+      vi.fn<NextFunction>()
+    );
+
+    expect(installSkill).toHaveBeenCalledWith(zip, {
+      overwrite: true,
+      name: "my-skill"
+    });
+  });
+
   it("derives name from upload filename when multipart name is absent", async () => {
     const installSkill = vi.fn().mockResolvedValue({
       name: "weather",
@@ -765,6 +1046,105 @@ describe("createSkillsRouter", () => {
       name: "Weather Pretty",
       skillPath: "/repo/skills/weather"
     });
+  });
+
+  it("keeps slug when display name lookup fails", async () => {
+    const installSkill = vi.fn().mockResolvedValue({
+      name: "weather",
+      skillPath: "/repo/skills/weather"
+    });
+    const listEnabledSkillsByQuery = vi.fn().mockRejectedValue(new Error("boom"));
+    const { createSkillsRouter } = await importRouterWithLogicMock({
+      listEnabledSkills: async () => [],
+      installSkill,
+      listEnabledSkillsByQuery
+    });
+    const router = createSkillsRouter() as Router;
+    const handler = findHandler(router, "post", skillsInstallPath);
+    const response = createResponseDouble();
+
+    await handler?.(
+      createMultipartSkillRequest(Buffer.from([0x50, 0x4b, 0x03, 0x04])),
+      response,
+      vi.fn<NextFunction>()
+    );
+
+    expect(response.json).toHaveBeenCalledWith({
+      name: "weather",
+      skillPath: "/repo/skills/weather"
+    });
+  });
+
+  it("keeps slug when display name lookup returns no matches", async () => {
+    const installSkill = vi.fn().mockResolvedValue({
+      name: "weather",
+      skillPath: "/repo/skills/weather"
+    });
+    const listEnabledSkillsByQuery = vi.fn().mockResolvedValue([]);
+    const { createSkillsRouter } = await importRouterWithLogicMock({
+      listEnabledSkills: async () => [],
+      installSkill,
+      listEnabledSkillsByQuery
+    });
+    const router = createSkillsRouter() as Router;
+    const handler = findHandler(router, "post", skillsInstallPath);
+    const response = createResponseDouble();
+
+    await handler?.(
+      createMultipartSkillRequest(Buffer.from([0x50, 0x4b, 0x03, 0x04])),
+      response,
+      vi.fn<NextFunction>()
+    );
+
+    expect(response.json).toHaveBeenCalledWith({
+      name: "weather",
+      skillPath: "/repo/skills/weather"
+    });
+  });
+
+  it("wraps unexpected install errors", async () => {
+    const installSkill = vi.fn().mockRejectedValue(new Error("boom-install"));
+    const { createSkillsRouter } = await importRouterWithLogicMock({
+      listEnabledSkills: async () => [],
+      installSkill
+    });
+    const router = createSkillsRouter() as Router;
+    const handler = findHandler(router, "post", skillsInstallPath);
+    const next = vi.fn<NextFunction>();
+
+    await handler?.(
+      createMultipartSkillRequest(Buffer.from([0x50, 0x4b, 0x03, 0x04])),
+      createResponseDouble(),
+      next
+    );
+
+    expect(next).toHaveBeenCalledWith(
+      expect.objectContaining({
+        statusCode: 502,
+        message: "Failed to install skill"
+      })
+    );
+  });
+
+  it("forwards HttpError instances during install", async () => {
+    const { HttpError } = await import("../errors/http-error");
+    const installError = new HttpError(409, "exists");
+    const installSkill = vi.fn().mockRejectedValue(installError);
+    const { createSkillsRouter } = await importRouterWithLogicMock({
+      listEnabledSkills: async () => [],
+      installSkill
+    });
+    const router = createSkillsRouter() as Router;
+    const handler = findHandler(router, "post", skillsInstallPath);
+    const next = vi.fn<NextFunction>();
+
+    await handler?.(
+      createMultipartSkillRequest(Buffer.from([0x50, 0x4b, 0x03, 0x04])),
+      createResponseDouble(),
+      next
+    );
+
+    expect(next).toHaveBeenCalledWith(installError);
   });
 
   it("rejects missing or empty multipart file", async () => {
@@ -836,6 +1216,28 @@ describe("createSkillsRouter", () => {
     expect(next).not.toHaveBeenCalled();
   });
 
+  it("forwards only the first skill name query value", async () => {
+    const listEnabledSkillsByQuery = vi.fn().mockResolvedValue([]);
+    const { createSkillsRouter } = await importRouterWithLogicMock({
+      listEnabledSkills: async () => [],
+      listEnabledSkillsByQuery
+    });
+    const router = createSkillsRouter() as Router;
+    const handler = findHandler(router, "get", skillsPath);
+
+    await handler?.(
+      {
+        query: {
+          name: ["planner", "writer"]
+        }
+      } as unknown as Request,
+      createResponseDouble(),
+      vi.fn<NextFunction>()
+    );
+
+    expect(listEnabledSkillsByQuery).toHaveBeenCalledWith("planner");
+  });
+
   it("registers GET /api/dip-studio/v1/digital-human/:id/skills", async () => {
     const { createSkillsRouter } = await importRouterWithLogicMock({
       listEnabledSkills: async () => []
@@ -891,6 +1293,24 @@ describe("createSkillsRouter", () => {
         message: "id path parameter is required"
       })
     );
+  });
+
+  it("accepts id path parameter arrays for digital human skills", async () => {
+    const listDigitalHumanSkills = vi.fn().mockResolvedValue([]);
+    const { createSkillsRouter } = await importRouterWithLogicMock({
+      listEnabledSkills: async () => [],
+      listDigitalHumanSkills
+    });
+    const router = createSkillsRouter() as Router;
+    const handler = findHandler(router, "get", digitalHumanSkillsPath);
+
+    await handler?.(
+      { params: { id: ["a1", "ignored"] } } as unknown as Request,
+      createResponseDouble(),
+      vi.fn<NextFunction>()
+    );
+
+    expect(listDigitalHumanSkills).toHaveBeenCalledWith("a1");
   });
 
   it("wraps unexpected errors", async () => {

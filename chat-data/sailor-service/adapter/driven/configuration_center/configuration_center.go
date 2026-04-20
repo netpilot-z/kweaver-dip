@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 	"unsafe"
 
@@ -16,6 +17,7 @@ import (
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/log"
 	"github.com/kweaver-ai/idrm-go-frame/core/telemetry/trace"
 	"github.com/kweaver-ai/idrm-go-frame/core/utils/httpclient"
+	"github.com/kweaver-ai/kweaver-dip/chat-data/sailor-service/adapter/driven/user_management"
 	"github.com/kweaver-ai/kweaver-dip/chat-data/sailor-service/common/constant"
 	"github.com/kweaver-ai/kweaver-dip/chat-data/sailor-service/common/errorcode"
 	"github.com/kweaver-ai/kweaver-dip/chat-data/sailor-service/common/settings"
@@ -241,6 +243,40 @@ func (a *ConfigurationCenter) HTTPGetResponse(ctx context.Context, method, strUr
 	}
 
 	return resp.StatusCode, buf, nil
+}
+
+func (c *ConfigurationCenter) GetDepartmentsByUserID(ctx context.Context, userID string) ([]DepartmentPath, error) {
+	parentDeps, err := c.userMgnt().GetUserParentDepartments(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+	paths := make([]DepartmentPath, 0)
+	seen := make(map[string]struct{})
+	for _, chain := range parentDeps {
+		if len(chain) == 0 {
+			continue
+		}
+		names := make([]string, 0, len(chain))
+		for _, dep := range chain {
+			names = append(names, dep.Name)
+			if dep.ID == "" {
+				continue
+			}
+			if _, ok := seen[dep.ID]; ok {
+				continue
+			}
+			seen[dep.ID] = struct{}{}
+			paths = append(paths, DepartmentPath{
+				ID:   dep.ID,
+				Path: strings.Join(names, "/"),
+			})
+		}
+	}
+	return paths, nil
+}
+
+func (c *ConfigurationCenter) userMgnt() user_management.DrivenUserMgnt {
+	return user_management.NewUserMgnt(c.RawHttpClient)
 }
 
 func httpGetDo[T any](ctx context.Context, u *url.URL, headers map[string][]string, a *ConfigurationCenter) (*T, error) {

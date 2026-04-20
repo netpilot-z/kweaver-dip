@@ -61,6 +61,7 @@ export type DipChatKitDigitalHumanList = DipChatKitDigitalHuman[]
 export interface DipChatKitDigitalHumanDetail {
   id: string
   name: string
+  icon_id?: string
 }
 
 export interface DipChatKitResponseSSEOptions {
@@ -91,6 +92,7 @@ export interface DipChatKitResponseStreamToolCallPayload {
   toolName: string
   toolCallId: string
   text: string
+  resultText: string
   status: DipChatKitResponseStreamStatus
   isError?: boolean
   itemId?: string

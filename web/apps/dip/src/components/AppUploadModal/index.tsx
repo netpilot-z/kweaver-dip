@@ -8,6 +8,7 @@ import type { ModalProps, UploadProps } from 'antd'
 import { Button, Modal, message, Spin, Upload } from 'antd'
 import clsx from 'clsx'
 import { useEffect, useRef, useState } from 'react'
+import intl from 'react-intl-universal'
 import { type ApplicationInfo, postApplications } from '@/apis'
 import UploadFileIcon from '@/assets/images/uploadFile.svg?react'
 import ScrollBarContainer from '../ScrollBarContainer'
@@ -82,13 +83,13 @@ const AppUploadModal = ({ open, onCancel, onSuccess }: AppUploadModalProps) => {
 
     // 验证文件格式
     if (!validateFileFormat(fileObj)) {
-      messageApi.error('仅支持 .dip 格式的应用安装包')
+      messageApi.error(intl.get('application.upload.dipOnly'))
       return
     }
 
     // 验证文件大小
     if (!validateFileSize(fileObj)) {
-      messageApi.error('应用安装包大小不能超过 1GB')
+      messageApi.error(intl.get('application.upload.maxSize'))
       return
     }
 
@@ -151,7 +152,7 @@ const AppUploadModal = ({ open, onCancel, onSuccess }: AppUploadModalProps) => {
       if (error?.description) {
         setErrorMessage(error?.description)
       } else {
-        setErrorMessage('上传失败，请重试')
+        setErrorMessage(intl.get('application.upload.uploadFailedRetry'))
       }
     }
   }
@@ -160,7 +161,7 @@ const AppUploadModal = ({ open, onCancel, onSuccess }: AppUploadModalProps) => {
   const handleCancelUpload = () => {
     // 竞态处理：如果已经成功安装，则不允许取消（使用 ref 避免拿到旧状态）
     if (uploadStatusRef.current === UploadStatus.SUCCESS) {
-      messageApi.warning('安装已完成，无法取消')
+      messageApi.warning(intl.get('application.upload.cannotCancelAfterDone'))
       return
     }
 
@@ -181,12 +182,12 @@ const AppUploadModal = ({ open, onCancel, onSuccess }: AppUploadModalProps) => {
     if (uploadStatus === UploadStatus.UPLOADING) {
       // 上传中需要二次确认
       modal.confirm({
-        title: '确认取消安装',
-        content: '正在上传中，取消后将中断上传。是否继续？',
-        okText: '确定',
+        title: intl.get('application.upload.confirmCancelTitle'),
+        content: intl.get('application.upload.confirmCancelContent'),
+        okText: intl.get('global.ok'),
         okType: 'primary',
         okButtonProps: { danger: true },
-        cancelText: '取消',
+        cancelText: intl.get('global.cancel'),
         onOk: handleCancelUpload,
         footer: (_, { OkBtn, CancelBtn }) => (
           <>
@@ -225,15 +226,17 @@ const AppUploadModal = ({ open, onCancel, onSuccess }: AppUploadModalProps) => {
         {isUploading ? (
           <div className="flex flex-col items-center justify-center" style={{ height: '100%' }}>
             <Spin />
-            <p className="mt-4 text-sm text-[#1677FF]">正在验证应用包...</p>
+            <p className="mt-4 text-sm text-[#1677FF]">
+              {intl.get('application.upload.validatingPackage')}
+            </p>
           </div>
         ) : (
           <>
             <p className="ant-upload-drag-icon">
               <UploadFileIcon style={{ width: 48, height: 48 }} />
             </p>
-            <p className="ant-upload-text">点击或将文件拖拽到这里上传</p>
-            <p className="ant-upload-hint">支持 .dip 格式的应用安装包</p>
+            <p className="ant-upload-text">{intl.get('application.upload.dragHint')}</p>
+            <p className="ant-upload-hint">{intl.get('application.upload.dipHint')}</p>
           </>
         )}
       </Dragger>
@@ -264,18 +267,18 @@ const AppUploadModal = ({ open, onCancel, onSuccess }: AppUploadModalProps) => {
           <div className="flex-shrink-0">
             {isUploading && (
               <span className="px-2 py-0.5 text-xs border border-[--dip-border-color-base] rounded">
-                验证中
+                {intl.get('application.upload.validating')}
               </span>
             )}
             {uploadStatus === UploadStatus.READY && (
               <span className="px-2 py-0.5 text-xs border border-[--dip-border-color-base] rounded">
-                等待安装
+                {intl.get('application.upload.waitingInstall')}
               </span>
             )}
             {isFailed && (
               <div className="flex items-center gap-1 px-2 py-0.5 text-xs text-[--dip-error-color] bg-[rgba(255,77,79,0.1)] border border-[#FFCCC7] rounded">
                 <CloseCircleOutlined className="text-[--dip-error-color]" />
-                安装失败
+                {intl.get('application.upload.installFailed')}
               </div>
             )}
           </div>
@@ -314,7 +317,7 @@ const AppUploadModal = ({ open, onCancel, onSuccess }: AppUploadModalProps) => {
           onClick={handleUpload}
           style={{ opacity: isUploading ? 0.25 : 1 }}
         >
-          安装应用
+          {intl.get('application.upload.installApp')}
         </Button>
       </div>
     )
@@ -329,9 +332,11 @@ const AppUploadModal = ({ open, onCancel, onSuccess }: AppUploadModalProps) => {
     return (
       <div className="py-12 flex flex-col items-center justify-center">
         <CheckCircleFilled className="text-7xl text-[--dip-success-color]" />
-        <div className="mt-8 text-2xl font-medium]">应用安装成功</div>
+        <div className="mt-8 text-2xl font-medium]">
+          {intl.get('application.upload.installSuccessTitle')}
+        </div>
         <div className="mt-2 text-sm text-[--dip-text-color-45]">
-          您的应用已安装成功，可前往应用列表查看
+          {intl.get('application.upload.installSuccessDesc')}
         </div>
       </div>
     )
@@ -339,7 +344,7 @@ const AppUploadModal = ({ open, onCancel, onSuccess }: AppUploadModalProps) => {
 
   return (
     <Modal
-      title="安装应用包"
+      title={intl.get('application.upload.modalTitle')}
       open={open}
       onCancel={handleCancel}
       closable
@@ -360,7 +365,7 @@ const AppUploadModal = ({ open, onCancel, onSuccess }: AppUploadModalProps) => {
           overflow: 'hidden',
         },
       }}
-      okText="确定"
+      okText={intl.get('global.ok')}
       onOk={
         uploadStatus === UploadStatus.SUCCESS
           ? () => {
@@ -372,7 +377,7 @@ const AppUploadModal = ({ open, onCancel, onSuccess }: AppUploadModalProps) => {
             }
           : undefined
       }
-      cancelText="取消"
+      cancelText={intl.get('global.cancel')}
       cancelButtonProps={{
         onClick: () => handleCancel(),
       }}

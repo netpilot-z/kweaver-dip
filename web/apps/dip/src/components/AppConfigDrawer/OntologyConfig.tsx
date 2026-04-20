@@ -1,6 +1,7 @@
 import { ShareAltOutlined } from '@ant-design/icons'
 import { Alert, message, Spin } from 'antd'
 import { memo, useEffect, useState } from 'react'
+import intl from 'react-intl-universal'
 import { getApplicationsOntologies, type OntologyInfo } from '@/apis'
 import ScrollBarContainer from '../ScrollBarContainer'
 
@@ -47,11 +48,13 @@ const OntologyConfig = ({ appKey }: OntologyConfigProps) => {
   return (
     <div className="h-full flex flex-col gap-y-2">
       {messageContextHolder}
-      <div className="px-4 text-sm font-medium text-[--dip-text-color]">业务知识网络</div>
+      <div className="px-4 text-sm font-medium text-[--dip-text-color]">
+        {intl.get('application.config.ontologySectionTitle')}
+      </div>
 
       {/* 提示信息框 */}
       <Alert
-        title="此应用依赖以下业务知识网络。请前往 ADP 平台完成数据视图映射，以确保应用能获取数据。"
+        title={intl.get('application.config.ontologyAlertTitle')}
         type="info"
         showIcon
         className="mx-4 border-[#BAE0FF] bg-[#E6F4FF]"
@@ -70,7 +73,7 @@ const OntologyConfig = ({ appKey }: OntologyConfigProps) => {
         <div className="flex flex-col gap-y-3">
           {ontologies.length === 0 ? (
             <div className="text-center text-[--dip-text-color-secondary] py-8">
-              暂无业务知识网络配置
+              {intl.get('application.config.ontologyEmpty')}
             </div>
           ) : (
             ontologies.map((item) => {
@@ -87,7 +90,10 @@ const OntologyConfig = ({ appKey }: OntologyConfigProps) => {
                       className="text-xs font-medium text-[--dip-text-color] truncate flex-1"
                       title={item.name}
                     >
-                      {item.name || `业务知识网络 #${item.id}`}
+                      {item.name ||
+                        intl.get('application.config.ontologyNameFallback', {
+                          id: String(item.id),
+                        })}
                     </div>
                     {/* <Tag
                       icon={isConfigured ? <CheckCircleOutlined /> : <InfoCircleOutlined />}
@@ -120,7 +126,7 @@ const OntologyConfig = ({ appKey }: OntologyConfigProps) => {
                     className="inline-flex items-center gap-1.5 mt-2 text-xs text-[--dip-primary-color] hover:text-[var(--dip-primary-color)] hover:underline"
                   >
                     <ShareAltOutlined />
-                    前往ADP平台配置数据视图映射
+                    {intl.get('application.config.linkOntologyAdp')}
                   </a>
                 </div>
               )

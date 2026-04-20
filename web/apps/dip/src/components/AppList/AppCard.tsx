@@ -3,6 +3,7 @@ import { Avatar, Button, Card, Dropdown } from 'antd'
 import classNames from 'classnames'
 import type React from 'react'
 import { useState } from 'react'
+import intl from 'react-intl-universal'
 import type { ApplicationInfo } from '@/apis'
 import { formatTimeSlash } from '@/utils/handle-function/FormatTime'
 import AppIcon from '../AppIcon'
@@ -84,7 +85,7 @@ const AppCard: React.FC<AppCardProps> = ({
                     onMenuButtonClick?.(app)
                   }}
                 >
-                  <span className="text-xs">立即使用</span>
+                  <span className="text-xs">{intl.get('application.myApp.useNow')}</span>
                   <IconFont type="icon-arrowup" rotate={90} className="text-xs" />
                 </Button>
               )}
@@ -98,7 +99,7 @@ const AppCard: React.FC<AppCardProps> = ({
               className="text-xs line-clamp-2 text-[--dip-text-color] leading-5"
               title={app.description}
             >
-              {app.description || '[暂无描述]'}
+              {app.description || intl.get('global.notDes')}
             </p>
           </div>
         </div>
@@ -119,7 +120,7 @@ const AppCard: React.FC<AppCardProps> = ({
             >
               {userName}
             </span>
-            <span>更新：{updateTime}</span>
+            <span>{intl.get('application.card.updateLabel', { time: updateTime })}</span>
           </div>
           {/* 更多操作 */}
           {menuItems && menuItems.length > 0 && (

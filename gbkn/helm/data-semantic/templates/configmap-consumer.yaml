@@ -27,8 +27,7 @@ data:
       Kafka:
         Brokers:
           - {{ .Values.depServices.mq.mqHost }}:{{ .Values.depServices.mq.mqPort }}
-        Topics:
-          - data-understanding-responses
+        Topic: data-understanding-responses
         Group: data-semantic-consumer-group
         Username: {{ .Values.depServices.mq.auth.username }}
         Password: {{ .Values.depServices.mq.auth.password }}

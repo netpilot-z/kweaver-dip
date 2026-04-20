@@ -10,9 +10,13 @@ import searchEmpty from '@/assets/images/abnormal/searchEmpty.svg'
  * @param {React.ReactElement} desc 描述文字
  */
 interface IEmpty
-  extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+  extends Omit<
+    React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
+    'title' | 'children'
+  > {
   iconSrc?: any
   iconHeight?: any
+  title?: React.ReactElement | string
   desc?: React.ReactElement | string
   subDesc?: React.ReactElement | string
   children?: React.ReactElement

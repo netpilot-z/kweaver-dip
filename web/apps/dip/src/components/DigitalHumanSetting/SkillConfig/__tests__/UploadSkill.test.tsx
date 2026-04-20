@@ -261,7 +261,9 @@ describe('DigitalHumanSetting/SkillConfig/UploadSkill', () => {
       expect(screen.getByText(T.successTitle)).toBeInTheDocument()
     })
 
-    const okBtn = screen.getAllByRole('button').find((btn) => btn.textContent?.includes('global.ok'))
+    const okBtn = screen
+      .getAllByRole('button')
+      .find((btn) => btn.textContent?.includes('global.ok'))
     if (okBtn === undefined) {
       throw new Error('expected ok button')
     }

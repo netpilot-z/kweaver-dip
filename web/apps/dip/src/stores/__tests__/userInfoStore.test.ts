@@ -46,7 +46,9 @@ describe('userInfoStore', () => {
   it('setModules 过滤非法项并去重', async () => {
     const { useUserInfoStore } = await import('../userInfoStore')
     // 故意传入非法模块名，验证运行时过滤（类型上需断言为 EnabledModule[]）
-    useUserInfoStore.getState().setModules(['studio', 'unknown', 'store', 'studio'] as EnabledModule[])
+    useUserInfoStore
+      .getState()
+      .setModules(['studio', 'unknown', 'store', 'studio'] as EnabledModule[])
     expect(useUserInfoStore.getState().modules).toEqual(['studio', 'store'])
   })
 

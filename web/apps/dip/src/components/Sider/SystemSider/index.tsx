@@ -1,0 +1,162 @@
+import type { MenuProps } from 'antd'
+import { Menu, Tooltip } from 'antd'
+import { useEffect, useMemo, useState } from 'react'
+import intl from 'react-intl-universal'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useLanguageStore, useUserInfoStore } from '@/stores'
+import IconFont from '../../IconFont'
+import { UserMenuItem } from '../components/UserMenuItem'
+import styles from './index.module.less'
+import {
+  filterSystemMenuItemsByRoles,
+  getSystemWorkbenchAncestorKeysByPath,
+  type SystemMenuIcon,
+  type SystemMenuItem,
+  type SystemMenuLeafItem,
+  systemMenuItems,
+} from './menus'
+
+interface SystemSiderProps {
+  collapsed: boolean
+  onCollapse: (collapsed: boolean) => void
+}
+
+const SystemSider = ({ collapsed, onCollapse }: SystemSiderProps) => {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { userInfo } = useUserInfoStore()
+  const { language } = useLanguageStore()
+  const roleFlags = userInfo?.roles ?? {}
+  const renderMenuIcon = (Icon?: SystemMenuIcon) =>
+    Icon ? (
+      <span className="inline-flex h-4 w-4 items-center justify-center">
+        <Icon className="w-4 h-4" />
+      </span>
+    ) : undefined
+
+  const visibleSystemMenuItems = useMemo(
+    () => filterSystemMenuItemsByRoles(systemMenuItems, roleFlags),
+    [roleFlags],
+  )
+
+  const flattenLeafItems = (items: SystemMenuItem[]): SystemMenuLeafItem[] =>
+    items.flatMap((item) => ('children' in item ? flattenLeafItems(item.children) : item))
+
+  const visibleSystemLeafMenuItems = useMemo(
+    () => flattenLeafItems(visibleSystemMenuItems),
+    [visibleSystemMenuItems],
+  )
+
+  const selectedKey = useMemo(() => {
+    const matched = visibleSystemLeafMenuItems.find((item) =>
+      location.pathname.startsWith(item.path),
+    )
+    return matched?.key ?? visibleSystemLeafMenuItems[0]?.key ?? ''
+  }, [location.pathname, visibleSystemLeafMenuItems])
+  const routeAncestorKeys = useMemo(
+    () => getSystemWorkbenchAncestorKeysByPath(location.pathname, visibleSystemMenuItems),
+    [location.pathname, visibleSystemMenuItems],
+  )
+  const [openKeys, setOpenKeys] = useState<string[]>(routeAncestorKeys)
+
+  useEffect(() => {
+    // 首次进入或路由切换时，确保当前路由对应的父级菜单自动展开
+    setOpenKeys((prev) => Array.from(new Set([...prev, ...routeAncestorKeys])))
+  }, [routeAncestorKeys])
+
+  const menuItems = useMemo<MenuProps['items']>(() => {
+    const toAntMenuItems = (item: SystemMenuItem): NonNullable<MenuProps['items']> => {
+      if ('children' in item) {
+        if (item.type === 'group') {
+          return [
+            {
+              key: `${item.key}-group-title`,
+              label: intl.get(item.labelKey),
+              type: 'group',
+            },
+            ...item.children.flatMap(toAntMenuItems),
+          ]
+        }
+        return [
+          {
+            key: item.key,
+            label: intl.get(item.labelKey),
+            icon: renderMenuIcon(item.icon),
+            children: item.children.flatMap(toAntMenuItems),
+          },
+        ]
+      }
+      return [
+        {
+          key: item.key,
+          label: intl.get(item.labelKey),
+          icon: renderMenuIcon(item.icon),
+          onClick: () => navigate(item.path),
+        },
+      ]
+    }
+
+    return visibleSystemMenuItems.flatMap(toAntMenuItems)
+  }, [navigate, visibleSystemMenuItems, language])
+
+  return (
+    <div className="flex flex-col h-full px-0 pt-4 pb-1 overflow-hidden">
+      <div className="flex-1 flex flex-col dip-hideScrollbar">
+        <div className="flex-1">
+          <Menu
+            className={styles.menu}
+            mode="inline"
+            selectedKeys={selectedKey ? [selectedKey] : []}
+            items={menuItems}
+            openKeys={openKeys}
+            onOpenChange={(keys) => setOpenKeys(keys as string[])}
+            inlineCollapsed={collapsed}
+            selectable
+          />
+        </div>
+      </div>
+
+      {collapsed ? null : (
+        <div className="mx-3 my-2 h-px shrink-0 bg-[var(--dip-border-color)]" aria-hidden />
+      )}
+
+      {collapsed ? (
+        <div className="dip-sider-footer-stack shrink-0">
+          <div className="dip-sider-footer-row">
+            <Tooltip title={intl.get('sider.expand')} placement="right">
+              <span className="flex min-w-0 flex-1">
+                <button
+                  type="button"
+                  className="flex h-10 min-h-10 w-full min-w-0 cursor-pointer items-center justify-center border-0 bg-transparent p-0 text-[var(--dip-text-color)]"
+                  onClick={() => onCollapse(false)}
+                >
+                  <IconFont type="icon-sidebar" className="text-base leading-none" />
+                </button>
+              </span>
+            </Tooltip>
+          </div>
+          <div className="dip-sider-footer-row">
+            <UserMenuItem collapsed={collapsed} />
+          </div>
+        </div>
+      ) : (
+        <div className="dip-sider-footer-row dip-sider-footer-row-horizontal shrink-0">
+          <div className="min-w-0 flex-1">
+            <UserMenuItem collapsed={collapsed} module="system" />
+          </div>
+          <Tooltip title={intl.get('sider.collapse')} placement="right">
+            <button
+              type="button"
+              className="flex h-4 w-4 shrink-0 cursor-pointer items-center justify-center border-0 bg-transparent p-0 text-[var(--dip-text-color)] hover:text-[var(--dip-primary-color)]"
+              onClick={() => onCollapse(true)}
+            >
+              <IconFont type="icon-sidebar" className="text-base leading-none" />
+            </button>
+          </Tooltip>
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default SystemSider

@@ -1,34 +1,33 @@
 export interface BusinessMenuLeafItem {
-  key: string
-  icon?: string
-  label: string
-  path: string
+  key: string;
+  icon?: string;
+  labelKey: string;
+  path: string;
   page:
     | {
-        type: 'micro-app'
+        type: 'micro-app';
         app: {
-          name: string
-          entry: string
-        }
+          name: string;
+          entry: string;
+        };
       }
     | {
-        type: 'component'
-        componentKey: string
-      }
+        type: 'component';
+        componentKey: string;
+      };
 }
 
 export interface BusinessMenuGroupItem {
-  key: string
-  icon?: string
-  label: string
-  children: BusinessMenuItem[]
+  key: string;
+  icon?: string;
+  labelKey: string;
+  children: BusinessMenuItem[];
 }
 
-export type BusinessMenuItem = BusinessMenuLeafItem | BusinessMenuGroupItem
+export type BusinessMenuItem = BusinessMenuLeafItem | BusinessMenuGroupItem;
 
-export const BUSINESS_NETWORK_BASE_PATH = '/business-network'
-export const buildBusinessNetworkPath = (suffix = ''): string =>
-  `${BUSINESS_NETWORK_BASE_PATH}${suffix}`
+export const BUSINESS_NETWORK_BASE_PATH = '/business-network';
+export const buildBusinessNetworkPath = (suffix = ''): string => `${BUSINESS_NETWORK_BASE_PATH}${suffix}`;
 
 /**
  * business 菜单单一数据源：
@@ -40,7 +39,7 @@ export const businessMenuItems: BusinessMenuItem[] = [
   {
     key: 'ontology',
     icon: 'icon-DomainBKN',
-    label: '领域业务知识网络',
+    labelKey: 'routes.businessMenu.ontology',
     path: buildBusinessNetworkPath('/vega/ontology'),
     page: {
       type: 'micro-app',
@@ -53,11 +52,11 @@ export const businessMenuItems: BusinessMenuItem[] = [
   {
     key: 'vega',
     icon: 'icon-SharedBKN',
-    label: '通用业务知识网络',
+    labelKey: 'routes.businessMenu.vega',
     children: [
       {
         key: 'dataConnection',
-        label: '数据连接',
+        labelKey: 'routes.businessMenu.dataConnection',
         path: buildBusinessNetworkPath('/vega/data-connect'),
         page: {
           type: 'micro-app',
@@ -69,11 +68,11 @@ export const businessMenuItems: BusinessMenuItem[] = [
       },
       {
         key: 'dataView',
-        label: '数据视图',
+        labelKey: 'routes.businessMenu.dataView',
         children: [
           {
             key: 'atomicDataView',
-            label: '原子视图',
+            labelKey: 'routes.businessMenu.atomicDataView',
             path: buildBusinessNetworkPath('/vega/atom-data-view'),
             page: {
               type: 'micro-app',
@@ -85,7 +84,7 @@ export const businessMenuItems: BusinessMenuItem[] = [
           },
           {
             key: 'customDataView',
-            label: '自定义视图',
+            labelKey: 'routes.businessMenu.customDataView',
             path: buildBusinessNetworkPath('/vega/custom-data-view'),
             page: {
               type: 'micro-app',
@@ -99,11 +98,11 @@ export const businessMenuItems: BusinessMenuItem[] = [
       },
       {
         key: 'dataModel',
-        label: '数据模型',
+        labelKey: 'routes.businessMenu.dataModel',
         children: [
           {
             key: 'metricModel',
-            label: '指标模型',
+            labelKey: 'routes.businessMenu.metricModel',
             path: buildBusinessNetworkPath('/vega/metric-model'),
             page: {
               type: 'micro-app',
@@ -115,16 +114,40 @@ export const businessMenuItems: BusinessMenuItem[] = [
           },
         ],
       },
+      {
+        key: 'knowledge-items',
+        labelKey: 'routes.businessMenu.knowledgeItems',
+        path: buildBusinessNetworkPath('/mdl/data-dict'),
+        page: {
+          type: 'micro-app',
+          app: {
+            name: 'data-dict',
+            entry: '//ip:port/mdl/web/',
+          },
+        },
+      },
+      {
+        key: 'data-semantic-governance',
+        labelKey: 'routes.businessMenu.dataSemanticGovernance',
+        path: buildBusinessNetworkPath('/data-semantic-governance'),
+        page: {
+          type: 'micro-app',
+          app: {
+            name: 'data-semantic-governance',
+            entry: '//ip:port/anyfabric/semanticGovernance.html',
+          },
+        },
+      },
     ],
   },
   {
     key: 'decision-agent',
     icon: 'icon-agent-factory',
-    label: '决策智能体',
+    labelKey: 'routes.businessMenu.decision-agent',
     children: [
       {
         key: 'myAgents',
-        label: '开发',
+        labelKey: 'routes.businessMenu.myAgents',
         path: buildBusinessNetworkPath('/my-agents'),
         page: {
           type: 'micro-app',
@@ -136,7 +159,7 @@ export const businessMenuItems: BusinessMenuItem[] = [
       },
       {
         key: 'agent-square',
-        label: '广场',
+        labelKey: 'routes.businessMenu.agent-square',
         path: buildBusinessNetworkPath('/agent-square'),
         page: {
           type: 'micro-app',
@@ -151,11 +174,11 @@ export const businessMenuItems: BusinessMenuItem[] = [
   {
     key: 'execution-factory',
     icon: 'icon-operator-factory',
-    label: '执行工厂',
+    labelKey: 'routes.businessMenu.execution-factory',
     children: [
       {
         key: 'executionManagement',
-        label: '执行单元管理',
+        labelKey: 'routes.businessMenu.executionManagement',
         path: buildBusinessNetworkPath('/execution-management'),
         page: {
           type: 'micro-app',
@@ -167,7 +190,7 @@ export const businessMenuItems: BusinessMenuItem[] = [
       },
       {
         key: 'allExecutions',
-        label: '全部执行单元',
+        labelKey: 'routes.businessMenu.allExecutions',
         path: buildBusinessNetworkPath('/all-executions'),
         page: {
           type: 'micro-app',
@@ -182,11 +205,11 @@ export const businessMenuItems: BusinessMenuItem[] = [
   {
     key: 'autoflow',
     icon: 'icon-workflow',
-    label: 'Autoflow',
+    labelKey: 'routes.businessMenu.autoflow',
     children: [
       {
         key: 'dataflow',
-        label: '数据流',
+        labelKey: 'routes.businessMenu.dataflow',
         path: buildBusinessNetworkPath('/dataflow'),
         page: {
           type: 'micro-app',
@@ -198,7 +221,7 @@ export const businessMenuItems: BusinessMenuItem[] = [
       },
       {
         key: 'workflow',
-        label: '工作流',
+        labelKey: 'routes.businessMenu.workflow',
         path: buildBusinessNetworkPath('/workflow'),
         page: {
           type: 'micro-app',
@@ -210,34 +233,30 @@ export const businessMenuItems: BusinessMenuItem[] = [
       },
     ],
   },
-]
+];
 
 const flattenLeafItems = (items: BusinessMenuItem[]): BusinessMenuLeafItem[] =>
-  items.flatMap((item) => ('children' in item ? flattenLeafItems(item.children) : item))
+  items.flatMap(item => ('children' in item ? flattenLeafItems(item.children) : item));
 
-export const businessLeafMenuItems: BusinessMenuLeafItem[] = flattenLeafItems(businessMenuItems)
+export const businessLeafMenuItems: BusinessMenuLeafItem[] = flattenLeafItems(businessMenuItems);
 
-const findAncestorKeysByPath = (
-  items: BusinessMenuItem[],
-  pathname: string,
-  parentKeys: string[] = [],
-): string[] => {
+const findAncestorKeysByPath = (items: BusinessMenuItem[], pathname: string, parentKeys: string[] = []): string[] => {
   for (const item of items) {
     if ('children' in item) {
-      const found = findAncestorKeysByPath(item.children, pathname, [...parentKeys, item.key])
+      const found = findAncestorKeysByPath(item.children, pathname, [...parentKeys, item.key]);
       if (found.length > 0) {
-        return found
+        return found;
       }
-      continue
+      continue;
     }
     if (pathname.startsWith(item.path)) {
-      return parentKeys
+      return parentKeys;
     }
   }
-  return []
-}
+  return [];
+};
 
 export const getBusinessAncestorKeysByPath = (pathname: string): string[] =>
-  findAncestorKeysByPath(businessMenuItems, pathname)
+  findAncestorKeysByPath(businessMenuItems, pathname);
 
-export const defaultBusinessMenuItem = businessLeafMenuItems[0]
+export const defaultBusinessMenuItem = businessLeafMenuItems[0];

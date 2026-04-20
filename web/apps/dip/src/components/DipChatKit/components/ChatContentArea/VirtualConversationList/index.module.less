@@ -19,7 +19,7 @@
 }
 
 .scrollArea:hover {
-  scrollbar-color: rgba(120, 132, 147, 0.72) transparent;
+  scrollbar-color: rgb(120 132 147 / 72%) transparent;
 }
 
 .scrollArea::-webkit-scrollbar {
@@ -33,19 +33,21 @@
 
 .scrollArea::-webkit-scrollbar-thumb {
   border-radius: 8px;
-  background-color: rgba(120, 132, 147, 0);
+  background-color: rgb(120 132 147 / 0%);
   transition: background-color 0.15s ease;
 }
 
 .scrollArea:hover::-webkit-scrollbar-thumb {
-  background-color: rgba(120, 132, 147, 0.72);
+  background-color: rgb(120 132 147 / 72%);
   transition-duration: 0s;
 }
 
 .list {
   width: 100%;
   max-width: 728px;
+
   --chat-turn-max-width: 80%;
+
   margin: 0 auto;
 }
 

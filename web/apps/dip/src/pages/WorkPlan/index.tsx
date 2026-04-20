@@ -20,7 +20,10 @@ const WorkPlan = () => {
           {intl.get('workPlan.common.all')}
         </span>
         <div className="flex-shrink-0">
-          <SearchInput placeholder={intl.get('workPlan.common.searchPlaceholder')} onSearch={handleSearch} />
+          <SearchInput
+            placeholder={intl.get('workPlan.common.searchPlaceholder')}
+            onSearch={handleSearch}
+          />
         </div>
       </div>
       <PlanList

@@ -14,6 +14,9 @@ interface GlobalLayoutState {
   /** 业务知识网络：面包屑第三级动态标题（由业务微应用驱动） */
   businessHeaderCustomBreadcrumbLabel: string | null
   setBusinessHeaderCustomBreadcrumbLabel: (label: string | null) => void
+  /** 系统工作台：无权限提示页展示时隐藏应用壳顶栏与侧栏 */
+  systemWorkbenchNoAccessUi: boolean
+  setSystemWorkbenchNoAccessUi: (active: boolean) => void
 }
 
 export const useGlobalLayoutStore = create<GlobalLayoutState>((set) => ({
@@ -30,6 +33,8 @@ export const useGlobalLayoutStore = create<GlobalLayoutState>((set) => ({
   businessHeaderCustomBreadcrumbLabel: null,
   setBusinessHeaderCustomBreadcrumbLabel: (label) =>
     set({ businessHeaderCustomBreadcrumbLabel: label }),
+  systemWorkbenchNoAccessUi: false,
+  setSystemWorkbenchNoAccessUi: (active) => set({ systemWorkbenchNoAccessUi: active }),
 }))
 
 /**

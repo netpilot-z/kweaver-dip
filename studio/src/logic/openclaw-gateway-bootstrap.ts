@@ -1,6 +1,6 @@
 import { collectMissingRequirements } from "./guide";
 import { OpenClawGatewayClient } from "../infra/openclaw-gateway-client";
-import { getEnv } from "../utils/env";
+import { getEnv, getOpenClawGatewayRuntimeConfig } from "../utils/env";
 
 const OPENCLAW_GATEWAY_RETRY_DELAY_MS = 1_000;
 
@@ -146,7 +146,8 @@ export async function connectOpenClawGateway(options: {
     OpenClawGatewayClient.getInstance({
       url: options.url,
       token: options.token,
-      timeoutMs: options.timeoutMs
+      timeoutMs: options.timeoutMs,
+      configReader: getOpenClawGatewayRuntimeConfig
     });
 
   connector.reconfigureConnection(options.url, options.token);

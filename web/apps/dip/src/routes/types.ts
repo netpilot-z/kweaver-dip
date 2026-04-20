@@ -8,16 +8,18 @@ export type HeaderType =
   | 'initial-configuration'
   /** 全局业务知识网络布局（路由前缀为 business-network） */
   | 'business'
+  /** 系统工作台布局（路由前缀为 system-workbench） */
+  | 'system'
 /** 侧边栏布局形态：入口壳（首页无顶栏）| 应用壳（模块内常有顶栏） */
 export type SiderType = 'entry' | 'app'
 
 /**
  * 路由归属的功能模块（与 EnabledModule 同值域；语义为路由/菜单分类，非布局形态）
  */
-export type RouteModule = 'studio' | 'store' | 'business'
+export type RouteModule = 'studio' | 'store' | 'business' | 'system'
 
 /** 用户可访问的模块（权限） */
-export type EnabledModule = 'studio' | 'store' | 'business'
+export type EnabledModule = 'studio' | 'store' | 'business' | 'system'
 
 /**
  * 路由在侧栏 / 「按 sider 取首条可访问路由」中的参与方式

@@ -95,7 +95,9 @@ const KnowledgeConfig = ({ readonly }: KnowledgeConfigProps) => {
           <div className="font-medium text-[--dip-text-color]">
             {intl.get('digitalHuman.setting.menuKnowledge')}
           </div>
-          <div className="text-[--dip-text-color-45]">{intl.get('digitalHuman.knowledge.sectionDesc')}</div>
+          <div className="text-[--dip-text-color-45]">
+            {intl.get('digitalHuman.knowledge.sectionDesc')}
+          </div>
         </div>
         {bkn.length > 0 && !readonly && (
           <div className="flex items-end gap-x-3">

@@ -16,12 +16,11 @@ const NameDescriptionFields = () => {
 
   return (
     <>
-      <Form.Item
-        label={intl.get('digitalHuman.basic.fieldName')}
-        name="name"
-        rules={nameRules}
-      >
-        <Input placeholder={intl.get('digitalHuman.basic.namePlaceholder')} maxLength={NAME_MAX_LENGTH} />
+      <Form.Item label={intl.get('digitalHuman.basic.fieldName')} name="name" rules={nameRules}>
+        <Input
+          placeholder={intl.get('digitalHuman.basic.namePlaceholder')}
+          maxLength={NAME_MAX_LENGTH}
+        />
       </Form.Item>
 
       <Form.Item label={intl.get('digitalHuman.basic.fieldBio')} name="creature">

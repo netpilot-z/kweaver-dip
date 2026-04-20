@@ -1,5 +1,6 @@
 import { Col, type MenuProps, Row, Tabs } from 'antd'
 import { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import intl from 'react-intl-universal'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import type { ApplicationInfo } from '@/apis'
 import ScrollBarContainer from '../ScrollBarContainer'
@@ -77,7 +78,7 @@ const AppList: React.FC<AppListProps> = ({
     const items = [
       {
         key: ALL_TAB_KEY,
-        label: '全部',
+        label: intl.get('application.appList.tabAll'),
       },
     ]
 

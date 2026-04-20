@@ -2,9 +2,9 @@
 
 `dip` 是一个 OpenClaw 网关扩展，当前主要提供三类能力：
 
-1. **Agent skills**：可发现技能列表、按 agent 读写技能绑定、以及通过 Gateway 上传 `.skill`（zip）安装到仓库 `skills/`。
-2. **工作区 archives**：HTTP 读取 `archives/`，以及写文件后的归档路径补齐。
-3. **内置技能包**：插件目录下附带若干 skill 文档，参与发现逻辑。
+1. **Agent skills**：按 agent 读写技能绑定、通过 Gateway 上传 `.skill`（zip）安装到仓库 `skills/`，以及读取 skill 目录内容。
+2. **工作区 archives**：HTTP 读取 `archives/`，以及通过工具执行归档搬移与 cron run 镜像。
+3. **内置技能包**：插件目录下附带若干 skill 文档，供 Studio 侧状态管理与内容访问使用。
 4. **工作区临时上传**：将上传文件写入 `workspace/tmp`（可按会话分目录）。
 
 插件自身打包了 2 个 skills：
@@ -19,20 +19,49 @@
 #### CLI
 
 ```text
-/skills-manage [list | enable <name> | disable <name>]
+/skills-manage [enable <name> | disable <name>]
 ```
 
-- `list`：返回当前可发现的 skill 名称，以及全局配置中的启用状态（`skills.entries.<name>.enabled`）。
 - `enable <name>` / `disable <name>`：写入 `openclaw` 配置里的 `skills.entries.<name>.enabled`。
+
+#### 工具
+
+- `archive`：通过 Gateway 工具目录暴露，Agent 调用时需传入：
+  - `kind`: `"plan"` / `"file"`
+  - `sourcePath`: 待归档文件的工作区相对路径
+  - 可选 `displayName`：归档卡片展示名
+  - 可选 `timestamp`: `YYYY-MM-DD-HH-MM-SS`（仅 `file` 变体，可复用同一时间桶）
+  - 可选 `sessionKey` / `sessionId`: 当上下文未携带 session 信息时的覆盖值
+  - 可选 `workspace`: 当插件无法自动解析时的工作区绝对路径
+
+`archive` 工具当前的归档语义：
+
+- 普通会话：`PLAN.md` 写入 `archives/{ARCHIVE_ID}/PLAN.md`，普通产物写入 `archives/{ARCHIVE_ID}/{TIMESTAMP}/{ORIGIN_NAME}`
+- cron run：通过当前运行上下文解析 `jobId`，再读取 cron job 的原始 `sessionKey` 反查 `ARCHIVE_ID`
+- cron run 的普通产物以 `runId` 为主目录，写入 `archives/{runId}/{TIMESTAMP}/{ORIGIN_NAME}`
+- 同一次 cron run 的普通产物会镜像到原始计划会话目录 `archives/{ARCHIVE_ID}/{TIMESTAMP}/{ORIGIN_NAME}`
+- cron run 的 `PLAN.md` 仍只保留在 `archives/{ARCHIVE_ID}/PLAN.md`，不会生成 `archives/{runId}/PLAN.md`
+
+示例：
+
+```json
+{
+  "name": "archive",
+  "arguments": {
+    "kind": "file",
+    "sourcePath": "drafts/result.json",
+    "displayName": "AI Summary"
+  }
+}
+```
 
 #### HTTP
 
 ```text
-GET    /v1/config/agents/skills
 GET    /v1/config/agents/skills?agentId=<id>
-GET    /v1/config/agents/skills/<name>/tree
-GET    /v1/config/agents/skills/<name>/content?path=<relative-file-path>
-GET    /v1/config/agents/skills/<name>/download?path=<relative-file-path>
+GET    /v1/config/agents/skills/<name>/tree?resolvedSkillPath=<abs-skill-dir>
+GET    /v1/config/agents/skills/<name>/content?path=<relative-file-path>&resolvedSkillPath=<abs-skill-dir>
+GET    /v1/config/agents/skills/<name>/download?path=<relative-file-path>&resolvedSkillPath=<abs-skill-dir>
 POST   /v1/config/agents/skills
 PUT    /v1/config/agents/skills
 POST   /v1/config/agents/skills/install
@@ -41,21 +70,20 @@ DELETE /v1/config/agents/skills/<name>
 
 **查询与更新 agent 技能绑定**
 
-- `GET` 无 `agentId`：返回当前可发现的 skill id 列表（JSON：`{ "skills": string[] }`）。
-- `GET` 带 `agentId`：
-  - 若该 agent 在配置中显式设置了 `skills`，直接返回该数组；
-  - 若未显式设置，则按发现逻辑返回该 agent 可见的 skills（JSON：`{ "agentId", "skills" }`）。
+- `GET` 必须带 `agentId`：返回该 agent 在配置中的 `skills` 数组；未显式设置时返回空数组（JSON：`{ "agentId", "skills" }`）。
 - `POST` / `PUT`：请求体为 JSON，需包含 `agentId`（string）与 `skills`（string[]），整组写回 `agents.list[].skills`（JSON：`{ "success", "agentId", "skills" }`）。
 
 **读取技能目录树**
 
-- `GET /v1/config/agents/skills/<name>/tree`
+- `GET /v1/config/agents/skills/<name>/tree?resolvedSkillPath=<abs-skill-dir>`
+- `resolvedSkillPath` 由 Studio 基于 `skills.status` 预先解析并传入；插件优先按该目录直接读取。
 - 返回技能目录下的完整文件树（JSON：`{ "name", "entries" }`）。
 - `entries[].type` 为 `file` 或 `directory`；目录节点额外带 `children`。
 
 **预览技能文件**
 
-- `GET /v1/config/agents/skills/<name>/content?path=<relative-file-path>`
+- `GET /v1/config/agents/skills/<name>/content?path=<relative-file-path>&resolvedSkillPath=<abs-skill-dir>`
+- `resolvedSkillPath` 为 Studio 解析出的技能绝对目录；插件不再自己查询 `skills.status`。
 - `path` 是技能目录内的相对路径，例如 `SKILL.md`、`docs/guide.md`；不传时默认 `SKILL.md`。
 - 仅允许读取普通文件；路径穿越和目录读取都会返回 `400`。
 - 成功返回：`{ "name", "path", "content", "bytes", "truncated" }`。
@@ -63,7 +91,8 @@ DELETE /v1/config/agents/skills/<name>
 
 **下载技能文件**
 
-- `GET /v1/config/agents/skills/<name>/download?path=<relative-file-path>`
+- `GET /v1/config/agents/skills/<name>/download?path=<relative-file-path>&resolvedSkillPath=<abs-skill-dir>`
+- `resolvedSkillPath` 为 Studio 解析出的技能绝对目录；插件仅做本地路径校验与流式输出。
 - `path` 是技能目录内的相对路径；不传时默认 `SKILL.md`。
 - 仅允许读取普通文件；路径穿越和目录读取都会返回 `400`。
 - 成功时返回原始文件字节流，并设置 `Content-Type` 与 `Content-Disposition: attachment`。
@@ -81,13 +110,13 @@ DELETE /v1/config/agents/skills/<name>
 **卸载技能（仓库 `skills/`）**
 
 - `DELETE /v1/config/agents/skills/<slug>`（路径参数为技能 id）。
-- 仅删除 **`{repoRoot}/skills/<name>/`**（或同名 `*.skill` 条目）若存在；若该 id **仅**存在于插件内置 `extensions/dip/skills/`，返回 **403**（`BUNDLED`），不删除内置包。Studio 仅会在 `skills.status` 条目 `source === "openclaw-managed"` 且目录位于 `~/.openclaw/skills/<name>/` 时调用此接口。
+- 仅删除 **`{repoRoot}/skills/<name>/`**（或同名 `*.skill` 条目）若存在；若该 id **仅**存在于插件内置 `deploy/openclaw-extensions/dip/skills/`，返回 **403**（`BUNDLED`），不删除内置包。Studio 仅会在 `skills.status` 条目 `source === "openclaw-managed"` 且目录位于 `~/.openclaw/skills/<name>/` 时调用此接口。
 - 成功：`200` + `{ "name": "<id>" }`。
 
-### 2. Skills 发现
+### 2. Skills 管理边界
 
-`discoverSkillNames` 统一使用 OpenClaw 原生 SDK 的 `listSkillCommandsForAgents` 进行发现，
-并对返回的 `skillName` 做去重和字典序排序。不再通过读取仓库或插件目录来列举技能。
+技能状态查询、可用技能列表归一化，以及启用/禁用等管理逻辑统一放在 Studio 侧，
+dip 插件仅保留本地文件动作：技能安装、卸载、agent 绑定读写，以及基于 `resolvedSkillPath` 的 skill 目录内容访问。
 
 ### 3. Archives 访问
 
@@ -102,6 +131,12 @@ GET /v1/archives...
 - 直接读取当前工作区下的 `archives/`
 - 通过 `?agent=<agentId>` 切换到对应 agent 的 `workspace` 下读取 `archives/`
 - 通过 `?session=<sessionKey或sessionId>` 将会话标识归一化后，直接定位到对应归档目录
+
+对 cron 相关会话：
+
+- 传入原始计划会话 `sessionKey` 时，会读取 `archives/{ARCHIVE_ID}`
+- 传入 cron run 会话 `sessionKey` 时，会读取 `archives/{runId}`
+- 插件不会在读取阶段做 run/chat 互跳；哪个会话 key 被查询，就读取哪个目录
 
 当前返回行为：
 
@@ -144,31 +179,18 @@ POST /v1/workspace/tmp/upload
 }
 ```
 
-### 4. 写文件后的归档补齐
+### 4. 归档执行约束
 
-插件监听 `after_tool_call`，只在以下工具名命中时生效：
+插件当前不再依赖 `after_tool_call` hook 自动补齐归档。归档由 `archive` 工具显式完成，原因是：
 
-- 名称包含 `write`
-- 名称包含 `edit`
-- 名称包含 `replace`
+- 避免写文件工具和 `archive` 工具同时生效时产生重复时间桶目录
+- 让 cron run 的“`runId` 主写、`ARCHIVE_ID` 镜像”在同一条工具链路里一次完成
+- 避免在 hook 阶段基于不完整的 session 上下文推断出错误的归档根
 
-当前只处理 `event.params.path`、`file` 或 `filename` 中给出的单个文件路径，并且要求：
+因此当前约束是：
 
-- 文件位于当前工作区内
-- 文件真实存在
-- 目标是普通文件
-
-归档规则是当前代码里真正实现的规则：
-
-- 如果文件名是 `plan.md`，补齐到 `archives/{sessionId}/PLAN.md`
-- 其他文件补齐到 `archives/{sessionId}/{YYYY-MM-DD-HH-mm-ss}/{sanitizedFileName}`
-
-其中：
-
-- `sessionId` 来自 `ctx.sessionKey` 最后一段，取不到时回退到 `ctx.sessionId`
-- 文件名会被标准化为小写、空白转 `_`、移除非法字符，扩展名保留为小写
-- 如果原路径已经符合上述规则，则不会重复复制
-- 当前实现是“复制到合规归档路径”，不会移动原文件
+- Agent 生成需要保留的文件后，应显式调用 `archive` 工具
+- `archives-access` 仅负责通过 `/v1/archives` 暴露归档读取能力，不再负责写后搬移或补齐
 
 ## 当前内置 skills
 
@@ -176,13 +198,13 @@ POST /v1/workspace/tmp/upload
 
 这是一个归档约束 skill，文档中要求在涉及文件写入时遵守：
 
-- 从 `session_status` 的 `sessionKey` 提取 `ARCHIVE_ID`
+- 优先通过运行上下文解析归档目标；cron run 需结合 `jobId` 反查原始 `ARCHIVE_ID`
 - 生成固定格式的时间戳
 - `PLAN.md` 与普通产物走不同归档路径
 - 写入后必须回读校验
 - 输出归档状态与用于 WebUI 的卡片 JSON
 
-注意：这些是该 skill 文档定义的操作协议，不是插件代码主动替 agent 执行的完整流程。插件代码当前只实现了上一节描述的“写文件后归档补齐”。
+注意：这些是该 skill 文档定义的操作协议。插件代码当前通过 `archive` 工具执行归档搬移与回执生成，但不会替 agent 自动决定何时归档。
 
 ### `schedule-plan`
 

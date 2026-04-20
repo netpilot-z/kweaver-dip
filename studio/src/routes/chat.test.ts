@@ -3,11 +3,26 @@ import { describe, expect, it, vi } from "vitest";
 
 import { HttpError } from "../errors/http-error";
 import {
+  appendAttachmentHintsToMessage,
+  attachDownstreamAbortHandlers,
   buildFirstTurnSessionLabel,
+  buildOpenClawSessionKey,
   createChatRouter,
+  isChatAgentMessageInputItem,
   isFirstChatTurn,
+  parseOptionalNonNegativeIntegerString,
+  readAgentIdFromSessionKey,
+  readChatAgentAttachments,
+  readChatAgentItemText,
+  readChatAgentMessage,
+  readChatAgentRequestBody,
   readChatHistoryParams,
-  resolveChatAgentSessionLabel
+  readCreateSessionKeyRequestBody,
+  readOptionalHeaderValue,
+  readRequiredSessionKeyHeader,
+  readRequiredUserIdHeader,
+  resolveChatAgentSessionLabel,
+  writeEventStreamHeaders
 } from "./chat";
 
 /**
@@ -91,6 +106,165 @@ describe("readChatHistoryParams", () => {
     expect(() => readChatHistoryParams({}, {})).toThrow(
       "x-openclaw-session-key header is required"
     );
+  });
+
+  it("validates session and integer helpers", () => {
+    expect(readRequiredUserIdHeader([" user-1 ", "ignored"])).toBe("user-1");
+    expect(() => readRequiredUserIdHeader(undefined)).toThrow(
+      "x-user-id header is required"
+    );
+    expect(readRequiredSessionKeyHeader({
+      "x-openclaw-session-key": ["agent:a:user:u:direct:c", "ignored"]
+    })).toBe("agent:a:user:u:direct:c");
+    expect(() => readRequiredSessionKeyHeader(undefined)).toThrow(
+      "x-openclaw-session-key header is required"
+    );
+    expect(readOptionalHeaderValue(undefined)).toBeUndefined();
+    expect(readOptionalHeaderValue(["x", "y"])).toBe("x");
+    expect(readAgentIdFromSessionKey("agent:demo:user:user-1:direct:chat-1")).toBe("demo");
+    expect(() => readAgentIdFromSessionKey("user:user-1:direct:chat-1")).toThrow(
+      "x-openclaw-session-key must start with agent:<agentId>:"
+    );
+    expect(parseOptionalNonNegativeIntegerString(undefined, "limit")).toBeUndefined();
+    expect(parseOptionalNonNegativeIntegerString("0", "limit")).toBe(0);
+    expect(() => parseOptionalNonNegativeIntegerString("x", "limit")).toThrow(
+      "Invalid query parameter `limit`"
+    );
+  });
+});
+
+describe("chat request helpers", () => {
+  it("validates session creation body and session key builder", () => {
+    expect(readCreateSessionKeyRequestBody({ agentId: " demo " })).toEqual({
+      agentId: "demo"
+    });
+    expect(buildOpenClawSessionKey("agent-1", "user-1", "chat-1")).toBe(
+      "agent:agent-1:user:user-1:direct:chat-1"
+    );
+    expect(() => readCreateSessionKeyRequestBody(null)).toThrow(
+      "Session key request body must be a JSON object"
+    );
+    expect(() => readCreateSessionKeyRequestBody({ agentId: " " })).toThrow(
+      "agentId is required"
+    );
+  });
+
+  it("validates chat agent request body, messages, and attachments", () => {
+    expect(
+      readChatAgentRequestBody({
+        input: [
+          {
+            type: "message",
+            role: "user",
+            content: [
+              { type: "input_text", text: " Hel" },
+              { type: "text", text: "lo " }
+            ]
+          }
+        ],
+        attachments: [
+          {
+            type: "input_file",
+            source: { type: "path", path: " tmp/a.txt " }
+          }
+        ]
+      })
+    ).toEqual({
+      message: "Hello",
+      attachments: [
+        {
+          type: "input_file",
+          source: { type: "path", path: "tmp/a.txt" }
+        }
+      ]
+    });
+    expect(readChatAgentMessage(" hello ")).toBe("hello");
+    expect(readChatAgentItemText(" hello ")).toBe("hello");
+    expect(readChatAgentItemText(1 as never)).toBe("");
+    expect(readChatAgentItemText([{ type: "image" } as never])).toBe("");
+    expect(isChatAgentMessageInputItem({ type: "message", role: "user", content: "x" })).toBe(true);
+    expect(isChatAgentMessageInputItem({ type: "tool" })).toBe(false);
+    expect(isChatAgentMessageInputItem(null)).toBe(false);
+    expect(readChatAgentAttachments(undefined)).toBeUndefined();
+    expect(appendAttachmentHintsToMessage("hello", undefined)).toBe("hello");
+
+    expect(() => readChatAgentRequestBody([])).toThrow(
+      "Chat agent request body must be a JSON object"
+    );
+    expect(() => readChatAgentMessage([])).toThrow(
+      "Chat agent input must include a user message"
+    );
+    expect(() => readChatAgentMessage(1)).toThrow(
+      "Chat agent input must be a non-empty string or a message item array"
+    );
+    expect(() => readChatAgentAttachments("x")).toThrow(
+      "Chat agent attachments must be an array"
+    );
+    expect(() => readChatAgentAttachments([1])).toThrow(
+      "Chat agent attachment must be an object"
+    );
+    expect(() => readChatAgentAttachments([{ type: "bad" }])).toThrow(
+      "Chat agent attachment type only supports `input_file`"
+    );
+    expect(() => readChatAgentAttachments([{ type: "input_file", source: null }])).toThrow(
+      "Chat agent attachment source must be an object"
+    );
+    expect(() =>
+      readChatAgentAttachments([{ type: "input_file", source: { type: "url" } }])
+    ).toThrow("Chat agent attachment source.type only supports `path`");
+    expect(() =>
+      readChatAgentAttachments([{ type: "input_file", source: { type: "path", path: " " } }])
+    ).toThrow("Chat agent attachment source.path must be a non-empty string");
+  });
+
+  it("writes SSE headers and aborts upstream only on unexpected disconnects", () => {
+    const response = {
+      status: vi.fn(),
+      setHeader: vi.fn(),
+      flushHeaders: vi.fn(),
+      on: vi.fn()
+    } as unknown as Response;
+    vi.mocked(response.status).mockReturnValue(response);
+
+    const headers = new Headers({
+      "content-type": "text/plain",
+      "cache-control": "private",
+      connection: "close"
+    });
+
+    writeEventStreamHeaders(response, 201, headers);
+
+    expect(response.status).toHaveBeenCalledWith(201);
+    expect(response.setHeader).toHaveBeenCalledWith("content-type", "text/plain");
+    expect(response.setHeader).toHaveBeenCalledWith("cache-control", "private");
+    expect(response.setHeader).toHaveBeenCalledWith("connection", "close");
+    expect(response.setHeader).toHaveBeenCalledWith("x-accel-buffering", "no");
+    expect(response.flushHeaders).toHaveBeenCalled();
+
+    const request = { on: vi.fn() } as unknown as Request;
+    const downstreamResponse = {
+      on: vi.fn(),
+      writableEnded: false
+    } as unknown as Response;
+    const abortController = new AbortController();
+    const abortSpy = vi.spyOn(abortController, "abort");
+
+    attachDownstreamAbortHandlers(request, downstreamResponse, abortController);
+
+    const requestAborted = vi.mocked(request.on).mock.calls[0]?.[1] as () => void;
+    const responseClosed = vi.mocked(downstreamResponse.on).mock.calls[0]?.[1] as () => void;
+
+    requestAborted();
+    responseClosed();
+
+    expect(abortSpy).toHaveBeenCalledTimes(2);
+
+    vi.mocked(downstreamResponse.on).mockClear();
+    (downstreamResponse as { writableEnded: boolean }).writableEnded = true;
+    attachDownstreamAbortHandlers(request, downstreamResponse, abortController);
+    const closedWithoutAbort = vi.mocked(downstreamResponse.on).mock.calls[0]?.[1] as () => void;
+    closedWithoutAbort();
+    expect(abortSpy).toHaveBeenCalledTimes(2);
   });
 });
 

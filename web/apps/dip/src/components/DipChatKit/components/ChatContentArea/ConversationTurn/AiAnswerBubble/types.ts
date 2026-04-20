@@ -19,5 +19,6 @@ export interface DipChatKitToolCardItem {
   text: string
   inlineText: string
   previewText: string
+  renderBodyMarkdown?: boolean
   isError?: boolean
 }

@@ -14,7 +14,7 @@ import {
 import type { DipChatKitResponseStreamChunk } from '../../apis/types'
 import { useDipChatKitStore } from '../../store'
 import type { DipChatKitAnswerEvent, DipChatKitPreviewPayload } from '../../types'
-import { isAsyncIterable, normalizeStreamChunk } from '../../utils'
+import { isAsyncIterable, maskFirstQuestionTurn, normalizeStreamChunk } from '../../utils'
 import AiPromptInput from '../AiPromptInput'
 import type { AiPromptSubmitPayload } from '../AiPromptInput/types'
 import styles from './index.module.less'
@@ -60,6 +60,7 @@ const ChatContentArea: React.FC<ChatContentAreaProps> = ({
   employeeOptions,
   defaultEmployeeValue,
   inputPlaceholder,
+  hideFirstUserMessage = false,
   onSessionKeyReady,
 }) => {
   const [inputValue, setInputValue] = useState('')
@@ -160,7 +161,8 @@ const ChatContentArea: React.FC<ChatContentAreaProps> = ({
       typeof candidate.id === 'string' &&
       typeof candidate.toolName === 'string' &&
       typeof candidate.toolCallId === 'string' &&
-      typeof candidate.text === 'string'
+      typeof candidate.text === 'string' &&
+      typeof candidate.resultText === 'string'
     )
   }
 
@@ -173,6 +175,7 @@ const ChatContentArea: React.FC<ChatContentAreaProps> = ({
       type: 'toolCall',
       role: 'assistant',
       text: payload.text,
+      resultText: payload.resultText,
       toolName: payload.toolName,
       toolCallId: payload.toolCallId,
       isError: payload.isError,
@@ -448,7 +451,8 @@ const ChatContentArea: React.FC<ChatContentAreaProps> = ({
       .then((response) => {
         if (disposed) return
         const resolvedSessionKey = response.key?.trim() || trimmedSessionId
-        const turns = mapSessionMessagesToTurns(response.messages, resolvedSessionKey)
+        const loadedTurns = mapSessionMessagesToTurns(response.messages, resolvedSessionKey)
+        const turns = hideFirstUserMessage ? maskFirstQuestionTurn(loadedTurns) : loadedTurns
         resetConversationRef.current(turns)
         setAutoScrollEnabledRef.current(true)
         setShowBackToBottomRef.current(false)
@@ -469,7 +473,13 @@ const ChatContentArea: React.FC<ChatContentAreaProps> = ({
         request.abort()
       }
     }
-  }, [abortAllStreaming, clearScheduledScroll, scheduleScrollToBottom, sessionId])
+  }, [
+    abortAllStreaming,
+    clearScheduledScroll,
+    hideFirstUserMessage,
+    scheduleScrollToBottom,
+    sessionId,
+  ])
 
   useEffect(() => {
     return () => {

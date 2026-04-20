@@ -1,7 +1,7 @@
 import { Button, Flex, Table, Tooltip } from 'antd'
-import { memo, useMemo, useState } from 'react'
+import { memo, useEffect, useMemo, useState } from 'react'
 import intl from 'react-intl-universal'
-import type { DigitalHumanSkill } from '@/apis'
+import { type DigitalHumanSkill, getEnabledSkills } from '@/apis'
 import type { AiPromptSubmitPayload } from '@/components/DipChatKit/components/AiPromptInput/types.ts'
 import Empty from '@/components/Empty'
 import IconFont from '@/components/IconFont'
@@ -20,13 +20,36 @@ interface SkillConfigProps {
 
 const SkillConfig = ({ readonly }: SkillConfigProps) => {
   const { language } = useLanguageStore()
-  const { skills, deleteSkill, updateSkills, digitalHumanId } = useDigitalHumanStore()
+  const { skills, deleteSkill, updateSkills, syncBuiltInSkills, digitalHumanId } =
+    useDigitalHumanStore()
   const [selectSkillModalOpen, setSelectSkillModalOpen] = useState(false)
   const [addSkillDrawerOpen, setAddSkillDrawerOpen] = useState(false)
   const [skillListRefreshToken, setSkillListRefreshToken] = useState(0)
   const [addSkillDrawerPayload, setAddSkillDrawerPayload] = useState<
     AiPromptSubmitPayload | undefined
   >(undefined)
+
+  useEffect(() => {
+    if (readonly) return
+
+    let cancelled = false
+
+    const loadBuiltInSkills = async () => {
+      try {
+        const enabledSkills = await getEnabledSkills()
+        if (cancelled) return
+        syncBuiltInSkills(enabledSkills.filter((skill) => skill.built_in))
+      } catch {
+        // 内置技能默认注入失败时不阻断技能配置主流程
+      }
+    }
+
+    void loadBuiltInSkills()
+
+    return () => {
+      cancelled = true
+    }
+  }, [readonly, syncBuiltInSkills])
 
   /** 添加技能 */
   const handleAddSkill = () => {
@@ -76,7 +99,9 @@ const SkillConfig = ({ readonly }: SkillConfigProps) => {
               <span title={text} className="truncate">
                 {text || '--'}
               </span>
-              <span className="text-xs text-[#A0A0A9] font-normal flex-shrink-0">@{tagLabel(record)}</span>
+              <span className="text-xs text-[#A0A0A9] font-normal flex-shrink-0">
+                @{tagLabel(record)}
+              </span>
             </div>
           )
         },
@@ -125,7 +150,9 @@ const SkillConfig = ({ readonly }: SkillConfigProps) => {
           <div className="font-medium text-[--dip-text-color]">
             {intl.get('digitalHuman.setting.menuSkill')}
           </div>
-          <div className="text-[--dip-text-color-45]">{intl.get('digitalHuman.skill.sectionDesc')}</div>
+          <div className="text-[--dip-text-color-45]">
+            {intl.get('digitalHuman.skill.sectionDesc')}
+          </div>
         </div>
         {skills.length > 0 && !readonly && (
           <div className="flex items-end gap-x-3">

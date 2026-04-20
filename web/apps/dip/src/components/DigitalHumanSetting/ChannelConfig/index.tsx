@@ -105,7 +105,9 @@ const ChannelConfig = ({ readonly }: ChannelConfigProps) => {
           <div className="font-medium text-[--dip-text-color]">
             {intl.get('digitalHuman.setting.menuChannel')}
           </div>
-          <div className="text-[--dip-text-color-45]">{intl.get('digitalHuman.channel.sectionDesc')}</div>
+          <div className="text-[--dip-text-color-45]">
+            {intl.get('digitalHuman.channel.sectionDesc')}
+          </div>
         </div>
         {channel && !readonly && (
           <div className="flex items-end gap-x-3">

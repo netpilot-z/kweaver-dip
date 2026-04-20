@@ -6,8 +6,8 @@ description: >-
   操作 Skill 管理模块 — 注册 Skill、市场查找、渐进式读取、下载与安装。
   操作 Vega 可观测平台 — 查询 Catalog/资源/连接器类型、健康巡检。
   当用户提到"知识网络"、"知识图谱"、"查询对象类"、
-  "执行 Action"、"有哪些 Agent"、"创建 Agent"、"跟 Agent 对话"、
-  "Skill"、"技能包"、"注册 Skill"、"安装 Skill"、"读取 SKILL.md"、
+  "执行 Action"、"有哪些 Agent"、"创建 Agent"、"跟 Agent 对话"、"列出所有 Agent 模板"、"列出我创建的Agent"、
+  "列出私人空间的Agent"、"Skill"、"技能包"、"注册 Skill"、"安装 Skill"、"读取 SKILL.md"、
   "数据源"、"数据视图"、"原子视图"、"Catalog"、"Vega"、
   "健康检查"、"巡检"、"trace"、"证据链"、"数据流追踪"、"数据来源"、"数据怎么得到的"等意图时自动使用。
 allowed-tools: Bash(kweaver *), Bash(npx kweaver *)
@@ -29,7 +29,7 @@ npm install -g @kweaver-ai/kweaver-sdk
 ## 使用方式
 
 ```bash
-kweaver <command> [subcommand] [options]
+kweaver [--user <userId|username>] <command> [subcommand] [options]
 ```
 
 **完整子命令与参数以当前安装的 CLI 为准**：运行 `kweaver --help`（或 `-h`）查看与代码同步的用法列表；查版本用 `kweaver --version` / `-V` / `kweaver version`。子命令细节用 `kweaver <group> <subcommand> --help`（例如 `kweaver auth --help`、`kweaver bkn push --help`）。
@@ -48,6 +48,7 @@ kweaver <command> [subcommand] [options]
 
 1. `KWEAVER_TOKEN` + `KWEAVER_BASE_URL` 环境变量 → 静态 Token（如存在则优先使用，**不会**用 refresh 换发）
 2. `~/.kweaver/` 凭据（`kweaver auth login` 写入）→ **默认**用 refresh_token 换发 access_token（推荐）
+3. `KWEAVER_USER` 环境变量（或全局 `--user` 参数）→ 使用指定用户的凭证，不切换活跃用户
 
 ### 业务域优先级（与认证独立）
 
@@ -59,12 +60,12 @@ kweaver <command> [subcommand] [options]
 
 | 命令组 | 说明 | 常用命令 | 详细参考 |
 |--------|------|---------|---------|
-| `auth` | 认证管理 | `auth login <url> [--alias name]`（简写：`auth <url> [--alias …]`）；可选 `-u`/`-p` 或 `--playwright`；`auth use` / `status` / `logout` / `delete` 支持平台 URL 或别名 | `references/auth.md` |
+| `auth` | 认证管理（支持多账号） | `auth login <url> [--alias name]`（简写：`auth <url> [--alias …]`）；可选 `-u`/`-p` 或 `--playwright`；`auth list`（树形展示所有平台及用户）；`auth users`（列出用户名）；`auth switch --user <username>`（按用户名切换）；全局 `--user <name>` 可免切换使用指定用户凭证（env: `KWEAVER_USER`）；`auth use` / `status` / `logout` / `delete` 支持平台 URL 或别名 | `references/auth.md` |
 | `token` | 打印当前 access token（自动刷新） | `token` | — |
 | `config` | **平台业务域（优先于多数 bkn/agent/ds 操作）** | `config show`, `config list-bd`, `config set-bd <uuid>` | `references/config.md` |
 | `bkn` | BKN 知识网络管理、Schema、查询、Action | `bkn validate`/`push` 默认检测 `.bkn` 编码并规范为 UTF-8，可用 `--no-detect-encoding` 或 `--source-encoding gb18030`；另有 `pull`、`object-type`、`search`、`create-from-ds`/`create-from-csv` 等，见 `references/bkn.md` | `references/bkn.md` |
-| `agent` | Agent CRUD、发布、对话、Trace | `agent list`, `agent get <id>`, `agent chat <id> -m "..."`、`agent sessions <agent_id>`、`agent history <conversation_id>`、`agent trace <conversation_id>` | `references/agent.md` |
-| `ds` | 数据源管理 | `ds list`, `ds get <id>`, `ds import-csv <file> --name <name>` | `references/ds.md` |
+| `agent` | Agent CRUD、发布、对话、Trace、模板、分类 | `agent list`, `agent get <id>`, `agent create --name <n> --profile <p> --config <json>`, `agent publish <id> --category-id <cid>`, `agent chat <id> -m "..."`、`agent category-list`, `agent template-list`, `agent template-get <tpl_id>`、`agent sessions <agent_id>`、`agent history <conversation_id>`、`agent trace <conversation_id>` | `references/agent.md` |
+| `ds` | 数据源管理 | `ds list`, `ds get <id>`, `ds import-csv <ds_id> --files <glob> [--recreate]` | `references/ds.md` |
 | `dataview` | 原子/自定义数据视图（mdl-data-model） | `dataview list`、`find --name`、`get`、`query`（SQL / mdl-uniquery）、`delete` | `references/dataview.md` |
 | `skill` | Skill 注册、市场查找、渐进式读取、下载与安装 | `skill list`、`market`、`register --zip-file`、`content`、`read-file`、`install` | `references/skill.md` |
 | `vega` | Vega 可观测平台 | `vega health`, `vega catalog list`, `vega resource list` | `references/vega.md` |
@@ -77,6 +78,7 @@ kweaver <command> [subcommand] [options]
 |------|------|---------|
 | 登录后确认业务域 | `config show`；若异常或列表为空 → `config list-bd` → `config set-bd <uuid>` | [references/config.md](references/config.md) |
 | 从数据库/CSV 构建 KN | 连接数据源 → CSV 导入 → 创建 KN → 构建索引 → 查询验证 → 绑定 Agent | [references/build-kn-from-db.md](references/build-kn-from-db.md) |
+| CLI 排障速查 | 权限、pull、build、import、dataview SQL 等 | [references/troubleshooting.md](references/troubleshooting.md) |
 | 列/查数据视图 | `list` 浏览；`find --name` 按名搜索（`--exact`/`--wait`）；`query` 对视图跑 SQL | [references/dataview.md](references/dataview.md) |
 | Trace 数据分析 | `agent trace <conversation_id>` 获取 trace 数据，构建证据链 | — |
 | 管理 Skill | `list` / `market` 查找 Skill；`content` / `read-file` 渐进式读取；`install` 下载并解压本地使用 | [references/skill.md](references/skill.md) |
@@ -92,6 +94,8 @@ kweaver <command> [subcommand] [options]
 /kweaver-core 跟 Agent xxx 对话，问他"今天库存情况"
 /kweaver-core 搜索知识网络 xxx 中关于"供应链"的内容
 /kweaver-core 用 dataview find 模糊搜索名字含 BOM 的数据视图
+/kweaver-core 列出所有 Agent 模板
+/kweaver-core 基于 "数据分析助手" 模板创建一个新的 Agent
 /kweaver-core 在 skill market 里查找名字包含 kweaver 的 skill
 /kweaver-core 读取 skill xxx 的 SKILL.md 并保存到本地目录
 ```

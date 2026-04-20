@@ -4,13 +4,10 @@ import type { Root } from 'mdast'
 import type { MarkdownNode } from '../types/base'
 
 export class SerializerStack {
-  // @ts-expect-error
-  private editor: Editor
   private marks: ReadonlyArray<Mark>
   private nodes: Array<MarkdownNode>
 
-  constructor(editor: Editor) {
-    this.editor = editor
+  constructor(_editor: Editor) {
     this.marks = Mark.none
     this.nodes = []
   }

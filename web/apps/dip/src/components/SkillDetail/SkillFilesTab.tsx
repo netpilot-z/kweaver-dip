@@ -1,7 +1,7 @@
 import { Spin } from 'antd'
-import intl from 'react-intl-universal'
 import classNames from 'classnames'
 import { memo, useEffect, useState } from 'react'
+import intl from 'react-intl-universal'
 import type { SkillTreeEntry } from '@/apis'
 import { getSkillTree } from '@/apis'
 import Empty from '@/components/Empty'

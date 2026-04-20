@@ -1,6 +1,7 @@
 import type { InputProps } from 'antd'
 import { Input } from 'antd'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import intl from 'react-intl-universal'
 import IconFont from '@/components/IconFont'
 
 interface SearchInputProps extends Omit<InputProps, 'onChange' | 'value'> {
@@ -17,7 +18,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
   onSearch,
   debounceDelay = 300,
   defaultValue = '',
-  placeholder = '搜索',
+  placeholder = intl.get('global.search'),
   className,
   ...restProps
 }) => {

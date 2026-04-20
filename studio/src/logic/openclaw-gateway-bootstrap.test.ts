@@ -58,8 +58,7 @@ describe("connectOpenClawGatewayIfInitialized", () => {
         "OPENCLAW_GATEWAY_PROTOCOL=ws",
         "OPENCLAW_GATEWAY_HOST=127.0.0.1",
         "OPENCLAW_GATEWAY_PORT=19001",
-        "OPENCLAW_GATEWAY_TOKEN=token-1",
-        `OPENCLAW_ROOT_DIR=${join(studioRootDir, ".openclaw")}`
+        "OPENCLAW_GATEWAY_TOKEN=token-1"
       ].join("\n"),
       "utf8"
     );
@@ -110,8 +109,7 @@ describe("connectOpenClawGatewayIfInitialized", () => {
         "OPENCLAW_GATEWAY_PROTOCOL=ws",
         "OPENCLAW_GATEWAY_HOST=127.0.0.1",
         "OPENCLAW_GATEWAY_PORT=19001",
-        "OPENCLAW_GATEWAY_TOKEN=token-1",
-        `OPENCLAW_ROOT_DIR=${join(studioRootDir, ".openclaw")}`
+        "OPENCLAW_GATEWAY_TOKEN=token-1"
       ].join("\n"),
       "utf8"
     );

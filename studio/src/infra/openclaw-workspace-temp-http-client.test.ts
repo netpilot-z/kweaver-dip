@@ -4,6 +4,7 @@ import {
   buildOpenClawWorkspaceTempUploadUrl,
   createOpenClawWorkspaceTempUploadFormData,
   createOpenClawWorkspaceTempUploadHeaders,
+  createOpenClawWorkspaceTempUploadStatusError,
   DefaultOpenClawWorkspaceTempHttpClient,
   normalizeOpenClawWorkspaceTempUploadError
 } from "./openclaw-workspace-temp-http-client";
@@ -18,6 +19,15 @@ describe("buildOpenClawWorkspaceTempUploadUrl", () => {
       )
     ).toBe(
       "http://127.0.0.1:19001/v1/workspace/tmp/upload?agent=agent-1&session=agent%3Aagent-1%3Auser%3Au%3Adirect%3Achat-1"
+    );
+    expect(
+      buildOpenClawWorkspaceTempUploadUrl(
+        "wss://gateway.example.com/socket",
+        "agent-1",
+        "session-1"
+      )
+    ).toBe(
+      "https://gateway.example.com/v1/workspace/tmp/upload?agent=agent-1&session=session-1"
     );
   });
 });
@@ -90,5 +100,47 @@ describe("DefaultOpenClawWorkspaceTempHttpClient", () => {
     expect(normalized.message).toBe(
       "Failed to communicate with OpenClaw /v1/workspace/tmp/upload: network down"
     );
+  });
+
+  it("converts non-2xx upstream responses into 502 errors", async () => {
+    const fetchImpl = vi.fn().mockResolvedValue(new Response("too large", { status: 413 }));
+    const client = new DefaultOpenClawWorkspaceTempHttpClient(
+      {
+        gatewayUrl: "http://127.0.0.1:19001",
+        token: "token",
+        timeoutMs: 5_000
+      },
+      fetchImpl
+    );
+
+    await expect(
+      client.uploadTempFile({
+        agentId: "agent-1",
+        sessionKey: "agent:agent-1:user:u:direct:chat-1",
+        filename: "x.txt",
+        body: Buffer.from("hello", "utf8")
+      })
+    ).rejects.toMatchObject({
+      statusCode: 502,
+      message: "OpenClaw /v1/workspace/tmp/upload returned HTTP 413: too large"
+    });
+  });
+
+  it("formats status errors without body text and preserves HttpError instances", async () => {
+    const { HttpError } = await import("../errors/http-error");
+
+    await expect(
+      createOpenClawWorkspaceTempUploadStatusError(new Response("", { status: 500 }))
+    ).resolves.toMatchObject({
+      statusCode: 502,
+      message: "OpenClaw /v1/workspace/tmp/upload returned HTTP 500"
+    });
+
+    const original = new HttpError(502, "existing");
+    expect(normalizeOpenClawWorkspaceTempUploadError(original)).toBe(original);
+    expect(normalizeOpenClawWorkspaceTempUploadError("down")).toMatchObject({
+      statusCode: 502,
+      message: "Failed to communicate with OpenClaw /v1/workspace/tmp/upload: down"
+    });
   });
 });

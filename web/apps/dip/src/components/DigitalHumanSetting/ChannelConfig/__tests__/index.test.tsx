@@ -103,7 +103,9 @@ describe('DigitalHumanSetting/ChannelConfig', () => {
 
     expect(screen.getByText('digitalHuman.channel.typeFeishu')).toBeInTheDocument()
     expect(screen.queryByText('digitalHuman.common.columnAction')).not.toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: /digitalHuman.common.remove/ })).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: /digitalHuman.common.remove/ }),
+    ).not.toBeInTheDocument()
   })
 
   it('钉钉类型应该显示正确标签和描述', () => {

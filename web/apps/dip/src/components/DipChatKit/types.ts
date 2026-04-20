@@ -28,6 +28,7 @@ export interface DipChatKitAnswerEvent {
   type: DipChatKitAnswerEventType
   role: string
   text: string
+  resultText?: string
   toolName?: string
   toolCallId?: string
   isError?: boolean
@@ -93,6 +94,7 @@ export interface DipChatKitProps {
   style?: React.CSSProperties
   locale?: DipChatKitLocale
   showHeader?: boolean
+  hideFirstUserMessage?: boolean
   initialSubmitPayload?: AiPromptSubmitPayload
   sessionId?: string
   assignEmployeeValue?: string

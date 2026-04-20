@@ -42,7 +42,9 @@
       "loadFailedTitle": "加载失败",
       "emptyTitle": "暂无预置数字员工模板",
       "skip": "跳过",
-      "installNow": "立即安装"
+      "installNow": "立即安装",
+      "installed": "已安装",
+      "presetDigitalHuman": "预置数字员工"
     },
     "result": {
       "title": "连接成功",

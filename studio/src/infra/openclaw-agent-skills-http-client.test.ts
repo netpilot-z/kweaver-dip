@@ -14,12 +14,14 @@ import {
   createOpenClawSkillContentStatusError,
   createOpenClawSkillDownloadStatusError,
   createOpenClawSkillTreeStatusError,
+  createOpenClawSkillUninstallStatusError,
   DefaultOpenClawAgentSkillsHttpClient,
   normalizeOpenClawAgentSkillsError,
   normalizeOpenClawSkillContentError,
   normalizeOpenClawSkillDownloadError,
   normalizeOpenClawSkillInstallError,
-  normalizeOpenClawSkillTreeError
+  normalizeOpenClawSkillTreeError,
+  normalizeOpenClawSkillUninstallError
 } from "./openclaw-agent-skills-http-client";
 
 describe("buildOpenClawSkillInstallUrl", () => {
@@ -188,6 +190,104 @@ describe("createOpenClawSkillInstallStatusError", () => {
       message: "skill already exists"
     });
   });
+
+  it("maps additional upstream install statuses and fallback payloads", async () => {
+    await expect(createOpenClawSkillInstallStatusError(new Response("", { status: 401 }))).resolves.toMatchObject({
+      statusCode: 401,
+      code: "DipStudio.UpstreamUnauthorized"
+    });
+    await expect(createOpenClawSkillInstallStatusError(new Response("", { status: 403 }))).resolves.toMatchObject({
+      statusCode: 403,
+      code: "DipStudio.UpstreamForbidden"
+    });
+    await expect(
+      createOpenClawSkillInstallStatusError(
+        new Response(JSON.stringify({ message: "too large" }), {
+          status: 413,
+          headers: { "content-type": "application/json" }
+        })
+      )
+    ).resolves.toMatchObject({
+      statusCode: 413,
+      code: "DipStudio.SkillPackageTooLarge",
+      message: "too large"
+    });
+    await expect(
+      createOpenClawSkillInstallStatusError(
+        new Response(JSON.stringify({ code: "OTHER", message: "conflict" }), {
+          status: 409,
+          headers: { "content-type": "application/json" }
+        })
+      )
+    ).resolves.toMatchObject({
+      statusCode: 409,
+      code: "DipStudio.Conflict"
+    });
+    await expect(
+      createOpenClawSkillInstallStatusError(new Response("gateway exploded", { status: 500 }))
+    ).resolves.toMatchObject({
+      statusCode: 502,
+      code: "DipStudio.UpstreamServiceError",
+      message: "OpenClaw /v1/config/agents/skills/install returned HTTP 500: gateway exploded"
+    });
+    await expect(
+      createOpenClawSkillInstallStatusError(new Response("", { status: 418 }))
+    ).resolves.toMatchObject({
+      statusCode: 418,
+      code: "DipStudio.Http418"
+    });
+    await expect(
+      createOpenClawSkillInstallStatusError(
+        new Response(JSON.stringify({ code: "BAD_FRONT_MATTER", error: "bad fm" }), {
+          status: 400,
+          headers: { "content-type": "application/json" }
+        })
+      )
+    ).resolves.toMatchObject({
+      statusCode: 400,
+      code: "DipStudio.SkillBadFrontMatter",
+      message: "bad fm"
+    });
+    await expect(
+      createOpenClawSkillInstallStatusError(
+        new Response(JSON.stringify({ code: "MISSING_SKILL_MD", error: "missing" }), {
+          status: 400,
+          headers: { "content-type": "application/json" }
+        })
+      )
+    ).resolves.toMatchObject({
+      statusCode: 400,
+      code: "DipStudio.SkillMissingSkillMd"
+    });
+    await expect(
+      createOpenClawSkillInstallStatusError(
+        new Response(JSON.stringify({ code: "INVALID_ZIP", error: "invalid zip" }), {
+          status: 400,
+          headers: { "content-type": "application/json" }
+        })
+      )
+    ).resolves.toMatchObject({
+      statusCode: 400,
+      code: "DipStudio.SkillInvalidPackage"
+    });
+    await expect(
+      createOpenClawSkillInstallStatusError(
+        new Response(JSON.stringify({ error: "broken" }), {
+          status: 400,
+          headers: { "content-type": "application/json" }
+        })
+      )
+    ).resolves.toMatchObject({
+      statusCode: 400,
+      code: "DipStudio.InvalidParameter"
+    });
+    await expect(
+      createOpenClawSkillInstallStatusError(new Response("", { status: 504 }))
+    ).resolves.toMatchObject({
+      statusCode: 504,
+      code: "DipStudio.UpstreamTimeout"
+    });
+  });
 });
 
 describe("normalizeOpenClawSkillInstallError", () => {
@@ -213,6 +313,10 @@ describe("normalizeOpenClawSkillInstallError", () => {
       code: "DipStudio.UpstreamServiceError",
       message: "Failed to communicate with OpenClaw /v1/config/agents/skills/install: down"
     });
+    expect(normalizeOpenClawSkillInstallError(new Error("socket closed"))).toMatchObject({
+      statusCode: 502,
+      code: "DipStudio.UpstreamUnavailable"
+    });
   });
 });
 
@@ -223,6 +327,17 @@ describe("createOpenClawSkillTreeStatusError", () => {
     await expect(createOpenClawSkillTreeStatusError(response)).resolves.toMatchObject({
       statusCode: 502,
       message: "OpenClaw /v1/config/agents/skills/{name}/tree returned HTTP 404: missing"
+    });
+  });
+});
+
+describe("createOpenClawSkillUninstallStatusError", () => {
+  it("returns a 502 error with upstream details", async () => {
+    const response = new Response("still used", { status: 409 });
+
+    await expect(createOpenClawSkillUninstallStatusError(response)).resolves.toMatchObject({
+      statusCode: 502,
+      message: "OpenClaw /v1/config/agents/skills/{name} returned HTTP 409: still used"
     });
   });
 });
@@ -258,6 +373,23 @@ describe("normalizeOpenClawSkillTreeError", () => {
     expect(normalizeOpenClawSkillTreeError(new Error("down"))).toMatchObject({
       statusCode: 502,
       message: "Failed to communicate with OpenClaw /v1/config/agents/skills/{name}/tree: down"
+    });
+  });
+});
+
+describe("normalizeOpenClawSkillUninstallError", () => {
+  it("keeps HttpError instances and wraps unknown errors", async () => {
+    const { HttpError } = await import("../errors/http-error");
+    const httpError = new HttpError(502, "x");
+
+    expect(normalizeOpenClawSkillUninstallError(httpError)).toBe(httpError);
+    expect(normalizeOpenClawSkillUninstallError(new Error("down"))).toMatchObject({
+      statusCode: 502,
+      message: "Failed to communicate with OpenClaw /v1/config/agents/skills/{name}: down"
+    });
+    expect(normalizeOpenClawSkillUninstallError("bad")).toMatchObject({
+      statusCode: 502,
+      message: "Failed to communicate with OpenClaw /v1/config/agents/skills/{name}: Unknown upstream error"
     });
   });
 });
@@ -593,5 +725,94 @@ describe("DefaultOpenClawAgentSkillsHttpClient", () => {
     expect(fetchImpl.mock.calls[0]?.[1]).toMatchObject({
       method: "GET"
     });
+  });
+
+  it("surfaces install and uninstall upstream failures", async () => {
+    const installStatusFetch = vi.fn<typeof fetch>().mockResolvedValue(
+      new Response(JSON.stringify({ code: "INVALID_NAME", message: "bad name" }), {
+        status: 400,
+        headers: { "content-type": "application/json" }
+      })
+    );
+    const installTransportFetch = vi.fn<typeof fetch>().mockRejectedValue(new Error("socket hang up"));
+    const uninstallStatusFetch = vi.fn<typeof fetch>().mockResolvedValue(
+      new Response("cannot delete", { status: 409 })
+    );
+    const uninstallTransportFetch = vi.fn<typeof fetch>().mockRejectedValue(new Error("offline"));
+
+    const installStatusClient = new DefaultOpenClawAgentSkillsHttpClient(
+      { gatewayUrl: "http://127.0.0.1:19001", timeoutMs: 5000 },
+      installStatusFetch
+    );
+    const installTransportClient = new DefaultOpenClawAgentSkillsHttpClient(
+      { gatewayUrl: "http://127.0.0.1:19001", timeoutMs: 5000 },
+      installTransportFetch
+    );
+    const uninstallStatusClient = new DefaultOpenClawAgentSkillsHttpClient(
+      { gatewayUrl: "http://127.0.0.1:19001", timeoutMs: 5000 },
+      uninstallStatusFetch
+    );
+    const uninstallTransportClient = new DefaultOpenClawAgentSkillsHttpClient(
+      { gatewayUrl: "http://127.0.0.1:19001", timeoutMs: 5000 },
+      uninstallTransportFetch
+    );
+
+    await expect(
+      installStatusClient.installSkill(Buffer.from([0x50, 0x4b]), { name: "bad" })
+    ).rejects.toMatchObject({
+      statusCode: 400,
+      code: "DipStudio.SkillInvalidName"
+    });
+    await expect(
+      installTransportClient.installSkill(Buffer.from([0x50, 0x4b]))
+    ).rejects.toMatchObject({
+      statusCode: 502,
+      code: "DipStudio.UpstreamUnavailable"
+    });
+    await expect(uninstallStatusClient.uninstallSkill("weather")).rejects.toMatchObject({
+      statusCode: 502,
+      message: "OpenClaw /v1/config/agents/skills/{name} returned HTTP 409: cannot delete"
+    });
+    await expect(uninstallTransportClient.uninstallSkill("weather")).rejects.toMatchObject({
+      statusCode: 502,
+      message: "Failed to communicate with OpenClaw /v1/config/agents/skills/{name}: offline"
+    });
+  });
+
+  it("reloads HTTP connection settings before each request", async () => {
+    const fetchImpl = vi.fn<typeof fetch>().mockResolvedValue(
+      new Response(JSON.stringify({ entries: [] }), {
+        status: 200,
+        headers: { "content-type": "application/json" }
+      })
+    );
+    const configReader = vi.fn().mockReturnValue({
+      url: "ws://127.0.0.1:19002/ws",
+      httpUrl: "http://127.0.0.1:19002/",
+      token: "latest-token",
+      timeoutMs: 8_000
+    });
+    const client = new DefaultOpenClawAgentSkillsHttpClient(
+      {
+        gatewayUrl: "http://127.0.0.1:19001",
+        token: "stale-token",
+        timeoutMs: 5_000,
+        configReader
+      },
+      fetchImpl
+    );
+
+    await client.listAvailableSkills();
+
+    expect(configReader).toHaveBeenCalledOnce();
+    expect(fetchImpl).toHaveBeenCalledWith(
+      "http://127.0.0.1:19002/v1/config/agents/skills",
+      expect.objectContaining({
+        method: "GET",
+        headers: expect.any(Headers)
+      })
+    );
+    const headers = fetchImpl.mock.calls[0]?.[1]?.headers as Headers;
+    expect(headers.get("authorization")).toBe("Bearer latest-token");
   });
 });

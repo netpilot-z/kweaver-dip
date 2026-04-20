@@ -1,16 +1,14 @@
-import { message } from 'antd';
 import { loadMicroApp } from 'qiankun';
 import type { UserInfo } from '@/apis/dip-hub/user';
 import { businessLeafMenuItems } from '@/components/Sider/BusinessSider/menus';
+import { getMenuWorkbenchBasePathByMicroWidgetName } from '@/pages/_shared/menu-workbench/getBasePathByMicroWidgetName';
+import { buildMicroWidgetUserInfoPayload, mapWorkbenchLanguage } from '@/pages/_shared/menu-workbench/isfUserContext';
+import { createMenuWorkbenchToastApi } from '@/pages/_shared/menu-workbench/micro-app-toast';
+import type { NavigateToMicroWidgetParams } from '@/pages/_shared/menu-workbench/types';
 import { themeColors } from '@/styles/themeColors';
-import { BASE_PATH } from '@/utils/config';
 import { getAccessToken, getRefreshToken, httpConfig } from '@/utils/http/token-config';
 
-export interface NavigateToMicroWidgetParams {
-  name: string;
-  path: string;
-  isNewTab: boolean;
-}
+export type { NavigateToMicroWidgetParams };
 
 interface BuildBusinessMicroAppPropsOptions {
   basePath: string;
@@ -22,17 +20,13 @@ interface BuildBusinessMicroAppPropsOptions {
   changeCustomPathComponent: (param: { label: string } | null) => void;
 }
 
-const mapLanguage = (language: string): 'zh-cn' | 'zh-tw' | 'en-us' => {
-  if (language === 'zh-TW') return 'zh-tw';
-  if (language === 'en-US') return 'en-us';
-  return 'zh-cn';
-};
-
-/** 如 /dip-hub/business-network/vega/xxx → /dip-hub/business-network/vega */
+/** 如 /dip-hub/business-network/vega|mdl/xxx → /dip-hub/business-network/vega|mdl */
 const normalizeVegaBasePath = (basePath: string): string => {
-  if (!basePath.includes('/vega/')) return basePath;
-  const idx = basePath.indexOf('/vega/');
-  return basePath.slice(0, idx + '/vega'.length);
+  const prefixes = ['/vega/', '/mdl/'];
+  const matchedPrefix = prefixes.find(prefix => basePath.includes(prefix));
+  if (!matchedPrefix) return basePath;
+  const idx = basePath.indexOf(matchedPrefix);
+  return basePath.slice(0, idx + matchedPrefix.length - 1);
 };
 
 const plugins = {
@@ -133,27 +127,14 @@ export const buildBusinessMicroAppProps = ({
   changeCustomPathComponent,
 }: BuildBusinessMicroAppPropsOptions) => {
   const resolvedBasePath = normalizeVegaBasePath(basePath);
-
-  // 兼容其他微应用里读取的 microWidgetProps.config.userInfo
-  const loginName = userInfo?.account ?? '';
-  const userid = userInfo?.id ?? '';
-  const userInfoPayload = {
-    id: userid,
-    user: {
-      loginName,
-      displayName: userInfo?.vision_name ?? '',
-      email: userInfo?.email ?? '',
-      // dip-hub 的 userinfo 类型当前不包含 roles，这里先透传空数组占位
-      roles: [],
-    },
-  };
-  const lang = mapLanguage(language);
+  const userInfoPayload = buildMicroWidgetUserInfoPayload(userInfo);
+  const lang = mapWorkbenchLanguage(language);
   const theme = themeColors.primary;
 
   return {
     lang,
-    username: loginName,
-    userid,
+    username: userInfo?.account ?? '',
+    userid: userInfo?.id ?? '',
     prefix: '',
     toggleSideBarShow,
     changeCustomPathComponent,
@@ -218,31 +199,12 @@ export const buildBusinessMicroAppProps = ({
     history: {
       getBasePath: resolvedBasePath,
       async getBasePathByName(microWidgetName: string) {
-        // 从menus中找到page.app.name为microWidgetName的item，然后返回该item的path
-        let newName = microWidgetName;
-        if (newName === 'agent-web-dataagent') {
-          newName = 'agent-square';
-        }
-
-        const item = businessLeafMenuItems.find(
-          menuItem => menuItem.page?.type === 'micro-app' && menuItem.page?.app?.name === newName
-        );
-        if (!item) return '';
-
-        return `${BASE_PATH}${item.path}`;
+        return getMenuWorkbenchBasePathByMicroWidgetName(businessLeafMenuItems, microWidgetName);
       },
       navigateToMicroWidget,
     },
     component: {
-      toast: () => {
-        const config = () => {
-          console.error('toast未开放config配置');
-        };
-        const destroy = () => {
-          console.error('toast未开放destroy方法');
-        };
-        return { ...message, config, destroy };
-      },
+      toast: () => createMenuWorkbenchToastApi(),
     },
     navigate,
     oemConfigs: {

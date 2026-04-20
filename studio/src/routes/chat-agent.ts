@@ -1,7 +1,10 @@
 import type { Router } from "express";
 
 import type { OpenClawChatAgentClient } from "../infra/openclaw-chat-agent-client";
-import { createChatRouter } from "./chat";
+import {
+  createChatRouter,
+  type ChatRouterDependencies
+} from "./chat";
 
 export {
   appendAttachmentHintsToMessage,
@@ -15,13 +18,20 @@ export {
 /**
  * Builds the dedicated chat agent router.
  *
- * @param chatAgentClient Optional OpenClaw chat agent client.
+ * @param dependencyOrClient Optional chat router dependencies or chat agent client.
  * @returns The router exposing the chat flow endpoint.
  */
 export function createChatAgentRouter(
-  chatAgentClient?: OpenClawChatAgentClient
+  dependencyOrClient?: ChatRouterDependencies | OpenClawChatAgentClient
 ): Router {
-  return createChatRouter({
-    chatAgentClient
-  });
+  if (
+    dependencyOrClient !== undefined
+    && "createResponseStream" in dependencyOrClient
+  ) {
+    return createChatRouter({
+      chatAgentClient: dependencyOrClient
+    });
+  }
+
+  return createChatRouter(dependencyOrClient);
 }

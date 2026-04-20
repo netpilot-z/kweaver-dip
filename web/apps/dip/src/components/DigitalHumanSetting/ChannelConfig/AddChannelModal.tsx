@@ -135,7 +135,8 @@ const AddChannelModal = ({ open, onOk, onCancel }: AddChannelModalProps) => {
               )}
               <div>
                 <div className="text-sm leading-5 text-[rgb(0_0_0_/_85%)]">
-                  {selectedOption?.configTitle ?? intl.get('digitalHuman.channelModal.configFallbackTitle')}
+                  {selectedOption?.configTitle ??
+                    intl.get('digitalHuman.channelModal.configFallbackTitle')}
                 </div>
                 <div className="mt-0.5 text-xs leading-[18px] text-[rgb(0_0_0_/_50%)]">
                   {intl.get('digitalHuman.channelModal.configSubtitle')}
@@ -147,7 +148,9 @@ const AddChannelModal = ({ open, onOk, onCancel }: AddChannelModalProps) => {
               <Form.Item
                 label={intl.get('digitalHuman.channelModal.labelApiKey')}
                 name="app_id"
-                rules={[{ required: true, message: intl.get('digitalHuman.channelModal.ruleAppId') }]}
+                rules={[
+                  { required: true, message: intl.get('digitalHuman.channelModal.ruleAppId') },
+                ]}
               >
                 <Input
                   placeholder={
@@ -162,9 +165,14 @@ const AddChannelModal = ({ open, onOk, onCancel }: AddChannelModalProps) => {
               <Form.Item
                 label={intl.get('digitalHuman.channelModal.labelApiSecret')}
                 name="app_secret"
-                rules={[{ required: true, message: intl.get('digitalHuman.channelModal.ruleAppSecret') }]}
+                rules={[
+                  { required: true, message: intl.get('digitalHuman.channelModal.ruleAppSecret') },
+                ]}
               >
-                <Input placeholder={intl.get('digitalHuman.channelModal.placeholderAppSecret')} autoComplete="off" />
+                <Input
+                  placeholder={intl.get('digitalHuman.channelModal.placeholderAppSecret')}
+                  autoComplete="off"
+                />
               </Form.Item>
             </Form>
             <div className="flex justify-between">

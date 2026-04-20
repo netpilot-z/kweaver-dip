@@ -21,7 +21,7 @@ import type {
   CreateSessionKeyResponse
 } from "../types/session-key";
 import type { OpenClawChatHistoryParams } from "../types/sessions";
-import { getEnv } from "../utils/env";
+import { getEnv, getOpenClawGatewayRuntimeConfig } from "../utils/env";
 import { buildHiddenAttachmentContextBlock } from "../utils/hidden-attachment-context";
 import { parseSession } from "../utils/session";
 
@@ -29,14 +29,16 @@ const env = getEnv();
 const openClawChatAgentClient = new DefaultOpenClawChatAgentClient({
   url: env.openClawGatewayUrl,
   token: env.openClawGatewayToken,
-  timeoutMs: env.openClawGatewayTimeoutMs
+  timeoutMs: env.openClawGatewayTimeoutMs,
+  configReader: getOpenClawGatewayRuntimeConfig
 });
 const chatSessionsLogic = new DefaultSessionsLogic(
   new OpenClawSessionsGatewayAdapter(
     OpenClawGatewayClient.getInstance({
       url: env.openClawGatewayUrl,
       token: env.openClawGatewayToken,
-      timeoutMs: env.openClawGatewayTimeoutMs
+      timeoutMs: env.openClawGatewayTimeoutMs,
+      configReader: getOpenClawGatewayRuntimeConfig
     })
   )
 );

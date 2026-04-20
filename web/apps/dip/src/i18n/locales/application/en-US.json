@@ -1,0 +1,95 @@
+{
+  "application": {
+    "loadFailed": "Failed to load",
+    "retry": "Retry",
+    "searchPlaceholder": "Search apps",
+    "appStore": {
+      "title": "App Store",
+      "subtitle": "Manage the enterprise app marketplace, install or uninstall apps",
+      "confirmUninstallTitle": "Uninstall app?",
+      "confirmUninstallContent": "Uninstalling will remove related configuration and data, and users will no longer be able to use this app. Continue?",
+      "uninstallSuccess": "Uninstalled successfully",
+      "emptyTitle": "No apps yet",
+      "emptySubDesc": "The app store is empty. Install your first enterprise app using the button below.",
+      "installApp": "Install app",
+      "uploadSuccessBefore": "Application \"",
+      "uploadSuccessAfter": "\" uploaded successfully. Complete configuration to enable the service.",
+      "goToConfig": "Configure"
+    },
+    "myApp": {
+      "title": "Explore enterprise AI apps",
+      "subtitle": "Find apps with professional capabilities to solve complex business problems",
+      "emptyTitle": "No apps available",
+      "emptySubDesc": "You do not have access to any apps. Your administrator may not have granted permissions yet, or apps may not be deployed.",
+      "pin": "Pin",
+      "unpin": "Unpin",
+      "useNow": "Open"
+    },
+    "appList": {
+      "tabAll": "All"
+    },
+    "menu": {
+      "config": "Configure",
+      "run": "Run",
+      "uninstall": "Uninstall"
+    },
+    "upload": {
+      "dipOnly": "Only .dip application packages are supported",
+      "maxSize": "Package size cannot exceed 1 GB",
+      "uploadFailedRetry": "Upload failed. Please try again",
+      "cannotCancelAfterDone": "Installation is complete and cannot be cancelled",
+      "confirmCancelTitle": "Cancel installation?",
+      "confirmCancelContent": "Upload is in progress. Cancelling will interrupt the upload. Continue?",
+      "validatingPackage": "Validating package...",
+      "dragHint": "Click or drag a file here to upload",
+      "dipHint": ".dip application packages are supported",
+      "validating": "Validating",
+      "waitingInstall": "Waiting to install",
+      "installFailed": "Installation failed",
+      "installApp": "Install app",
+      "installSuccessTitle": "App installed",
+      "installSuccessDesc": "Your app was installed successfully. You can view it in the app list.",
+      "modalTitle": "Install app package",
+      "unitB": "B",
+      "unitKB": "KB",
+      "unitMB": "MB",
+      "unitGB": "GB"
+    },
+    "config": {
+      "drawerTitle": "App configuration",
+      "menuBasic": "Basic info",
+      "menuOntology": "Business knowledge network",
+      "menuAgent": "Agent configuration",
+      "basicSectionTitle": "Basic info",
+      "fieldName": "Name:",
+      "fieldDescription": "Description:",
+      "fieldVersion": "Version:",
+      "agentSectionTitle": "Agent configuration",
+      "agentAlertTitle": "The following agents are included in this app. Use the link below to view or adjust detailed configuration (e.g. knowledge sources, model parameters).",
+      "agentEmpty": "No agent configuration",
+      "agentNameFallback": "Agent {id}",
+      "promptLabel": "Prompt",
+      "skillsLabel": "Skills",
+      "linkAgentAdp": "Open ADP for detailed configuration",
+      "ontologySectionTitle": "Business knowledge network",
+      "ontologyAlertTitle": "This app depends on the following business knowledge networks. Complete data view mapping in ADP so the app can access data.",
+      "ontologyEmpty": "No business knowledge network configuration",
+      "ontologyNameFallback": "Knowledge network {id}",
+      "linkOntologyAdp": "Configure data view mapping in ADP"
+    },
+    "container": {
+      "fetchAppFailed": "Failed to load app",
+      "fetchConfigFailed": "Failed to load app configuration"
+    },
+    "loader": {
+      "appNameLabel": "App name",
+      "errorLabel": "Error"
+    },
+    "appIcon": {
+      "builtInTooltip": "Built-in app"
+    },
+    "card": {
+      "updateLabel": "Updated: {time}"
+    }
+  }
+}

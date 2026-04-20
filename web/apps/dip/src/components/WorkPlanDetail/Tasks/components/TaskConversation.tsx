@@ -8,7 +8,12 @@ export type TaskConversationProps = {
 const TaskConversation = ({ digitalHumanId, sessionId }: TaskConversationProps) => {
   return (
     <div className="flex h-full min-h-0 w-full flex-1 flex-col overflow-hidden">
-      <DipChatKit showHeader={false} sessionId={sessionId} assignEmployeeValue={digitalHumanId} />
+      <DipChatKit
+        showHeader={false}
+        hideFirstUserMessage
+        sessionId={sessionId}
+        assignEmployeeValue={digitalHumanId}
+      />
     </div>
   )
 }

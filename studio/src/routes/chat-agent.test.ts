@@ -150,6 +150,24 @@ describe("readChatAgentRequestBody", () => {
 });
 
 describe("createChatAgentRouter", () => {
+  it("accepts a bare chat agent client dependency", () => {
+    const router = createChatAgentRouter({
+      createResponseStream: vi.fn()
+    }) as {
+      stack: Array<{
+        route?: {
+          path: string;
+        };
+      }>;
+    };
+
+    const layer = router.stack.find(
+      (entry) => entry.route?.path === "/api/dip-studio/v1/chat/agent"
+    );
+
+    expect(layer).toBeDefined();
+  });
+
   it("proxies the OpenClaw chat agent as SSE", async () => {
     const response = createResponseDouble();
     const next = vi.fn<NextFunction>();
@@ -170,7 +188,22 @@ describe("createChatAgentRouter", () => {
       })
     });
     const router = createChatAgentRouter({
-      createResponseStream
+      chatAgentClient: {
+        createResponseStream
+      },
+      sessionsLogic: {
+        getChatMessages: vi.fn().mockResolvedValue({
+          sessionKey: "agent:agent-1:user:user-1:direct:chat-1",
+          messages: []
+        }),
+        getSession: vi.fn(),
+        listSessions: vi.fn(),
+        deleteSession: vi.fn(),
+        getSessionSummary: vi.fn(),
+        getSessionArchives: vi.fn(),
+        getSessionArchiveSubpath: vi.fn(),
+        previewSessions: vi.fn()
+      }
     }) as {
       stack: Array<{
         route?: {
@@ -240,7 +273,8 @@ describe("createChatAgentRouter", () => {
             }
           }
         ],
-        idempotencyKey: "generated-idempotency-key"
+        idempotencyKey: "generated-idempotency-key",
+        sessionLabel: "hello_generate"
       },
       "agent-1",
       expect.any(AbortSignal)
@@ -253,7 +287,19 @@ describe("createChatAgentRouter", () => {
     const response = createResponseDouble();
     const next = vi.fn<NextFunction>();
     const router = createChatAgentRouter({
-      createResponseStream: vi.fn()
+      chatAgentClient: {
+        createResponseStream: vi.fn()
+      },
+      sessionsLogic: {
+        getChatMessages: vi.fn(),
+        getSession: vi.fn(),
+        listSessions: vi.fn(),
+        deleteSession: vi.fn(),
+        getSessionSummary: vi.fn(),
+        getSessionArchives: vi.fn(),
+        getSessionArchiveSubpath: vi.fn(),
+        previewSessions: vi.fn()
+      }
     }) as {
       stack: Array<{
         route?: {

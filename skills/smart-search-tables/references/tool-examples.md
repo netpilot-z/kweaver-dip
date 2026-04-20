@@ -28,4 +28,4 @@
 
 - **表/视图结论**：候选列表 **仅** 收录 Step 2 检索结果中 **同时具备** 非空 **UUID**（如 `view_uuid`）、非空 **`technical_name`** 与非空 **`business_name`** 的条目；任一缺失则 **整行省略**；**禁止**用职责库、推测或「暂无」补造视图表项。细则见 [SKILL.md](../SKILL.md)「最终交付：视图/表清单真实性」。
 - **职责结论**：相关部门在数据/指标上的职责要点；与表归属的对应关系（有则写，无则注明「未在职责库中直接关联」）。
-- **下一步**：若用户需 **取数**，引导至 [smart-ask-data/SKILL.md](../../smart-ask-data/SKILL.md)；若需 **换 KN**，与 [smart-data-analysis/SKILL.md](../../smart-data-analysis/SKILL.md) 的 `kn_id_find_table` 对齐。
+- **下一步**：若用户需 **取数**，引导至 [smart-ask-data/SKILL.md](../../smart-ask-data/SKILL.md)；若需 **换 KN**，与 [smart-data-analysis/SKILL.md](../../smart-data-analysis/SKILL.md) 的 `kn_id_search_tables` 对齐。
