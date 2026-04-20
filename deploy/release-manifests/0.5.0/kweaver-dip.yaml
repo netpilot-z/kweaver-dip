@@ -109,7 +109,7 @@ releases:
     version: 0.5.0
   dip-studio:
     chart: dip-studio
-    version: 0.5.0-main.e4ce6ccb
+    version: 0.5.0-main.725353af
     values:
       studio:
         envFileHostPath: /root/.env         # 环境变量配置主机路径，例如：/root/.env。文件不存在时会自动创建。
