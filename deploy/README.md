@@ -12,13 +12,7 @@ This `deploy` directory is organized around `kweaver-dip` as the default product
 
 ### OpenClaw requirements
 
-DIP Studio requires OpenClaw to be installed and running:
-
-1. Deploy [OpenClaw](https://openclaw.ai) first. The supported version is `v2026.3.11`. You can also refer to the preparation notes in [studio/README.md](../studio/README.md).
-2. Start OpenClaw Gateway.
-3. Copy `gateway.auth.token` from `openclaw.json`, then run `openclaw gateway status` and record the gateway bind address and port.
-4. Make sure the machine running `deploy.sh` can access the OpenClaw config file and workspace directory. If you want to preconfigure them, set `dipStudio.openClaw.configHostPath` and `dipStudio.openClaw.workspaceHostPath` in `deploy/conf/config.yaml` or in your custom config file.
-5. Start OpenClaw in LAN mode: `openclaw gateway --bind lan`, listening on `0.0.0.0:18789`.
+Please refer to the OpenClaw section on the homepage for configuration information.
 
 ### Host prerequisites
 
