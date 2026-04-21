@@ -8,23 +8,28 @@
 
 # KWeaver DIP
 
-KWeaver DIP 是 AI 原生的数字员工开发与管理平台，围绕业务知识网络构建可理解、可执行、可治理的数字员工应用体系。
+KWeaver DIP 是 AI 原生的数字员工开发与管理平台，围绕业务知识网络，构建可理解、可执行、可治理的数字员工应用体系。
 
-该平台基于 KWeaver Core 开源项目构建的企业级数字员工平台，该平台可以基于业务知识网络下决策智能体构建智能体进行使用，也可以基于 Openclaw 构建数字员工进行使用。
+- 该平台基于 [KWeaver Core](https://github.com/kweaver-ai/kweaver-core) 和 [OpenClaw](https://github.com/openclaw/openclaw) 构建的数字员工的能力。
 
-## 快速链接
+- 🌐 [KWeaver DIP 的在线体验](https://dip-poc.aishu.cn/studio/agent/development/my-agent-list)：欢迎在线试用 KWeaver DIP（用户名：`kweaver`，密码：`111111`），该环境内置了一些数字员工，可以快速体验。
 
-- 🌐 [在线体验](https://dip-poc.aishu.cn/studio/agent/development/my-agent-list) — 在线试用 KWeaver（用户名：`kweaver`，密码：`111111`）
+## 安装与配置使用 KWeaver DIP
 
-## 快速开始
+***说明***
 
-### OpenClaw
+1. KWeaver DIP 提供快速安装命令，可安装 KWeaver Core 与 KWeaver DIP 的相关服务。KWeaver DIP 完整的安装流程和资源配置信息，请参考 [deploy/README.zh.md](deploy/README.zh.md)。
 
-DIP Studio 运行依赖 OpenClaw。您可以选择在主机上自行部署 OpenClaw，也可以使用 KWeaver DIP 自带的 OpenClaw。
+### 安装 OpenClaw
 
-#### 自行部署 OpenClaw
+KWeaver DIP 需配合 OpenClaw 使用。OpenClaw 支持两种安装方式：
 
-1. KWeaver DIP 支持 `v2026.3.11` 版本的 OpenClaw 。您可以从官网 https://openclaw.ai 或 GitHub：https://github.com/openclaw/openclaw 进行安装。
+- 方式一：基于 [OpenClaw](https://github.com/openclaw/openclaw) 项目，自行选择 OpenClaw 版本下载安装。
+- 方式二：基于 KWeaver DIP 的安装命令，快速安装内置 OpenClaw 版本。
+
+#### 方式一：自行下载安装 OpenClaw
+
+1. KWeaver DIP 支持 OpenClaw `v2026.3.11` 版本，推荐使用当前已测试验证的 `v2026.3.11` 至 `v2026.3.24` 版本。由于 OpenClaw 版本迭代较快，其他版本可能存在兼容性问题。您可以从官网 https://openclaw.ai 或 GitHub：https://github.com/openclaw/openclaw 进行安装。
 2. 安装完成后，使用 `openclaw gateway onboard` 命令完成初始化。
 3. 修改 `openclaw.json` 的 `gateway.bind` 字段值为 "lan"，同时请记住  `gateway.auth.token` 的值，后续需要填入 KWeaver DIP 的 OpenClaw 连接配置中。
 4. 执行 `openclaw gateway restart` 重启 OpenClaw 网关。
@@ -34,11 +39,12 @@ DIP Studio 运行依赖 OpenClaw。您可以选择在主机上自行部署 OpenC
  - `dip-studio.values.studio.openClawHostPath`: .openclaw/ 主目录主机路径
  - `dip-studio.values.studio.useExternalOpenClaw`: 是否使用自行部署的 OpenClaw
 
-#### 使用 KWeaver DIP OpenClaw
+#### 方式二：基于 KWeaver DIP 的安装命令，快速安装内置 OpenClaw 版本
 
-请在完成 KWeaver DIP 安装部署后[初始化 KWeaver DIP OpenClaw](#kweaver-dip-onboard)。
+1. 先执行下面的 KWeaver DIP 安装部署命令。
+2. 待KWeaver DIP 安装成功后，再进行 [初始化 OpenClaw](#kweaver-dip-onboard)。
 
-### 主机前置条件
+### 安装 KWeaver DIP 
 
 安装命令需要以 `root` 用户执行，或通过 `sudo` 执行。
 
@@ -61,26 +67,24 @@ dnf install containerd.io
 git clone https://github.com/kweaver-ai/kweaver-dip.git
 cd kweaver-dip/deploy
 
-# 2. （可选）自定义访问端口
-# 默认情况下，ingress-nginx 使用 80/443 端口。如需使用其他端口（例如 8080/8443）：
-export INGRESS_NGINX_HTTP_PORT=8080
-export INGRESS_NGINX_HTTPS_PORT=8443
+# 2. 安装 KWeaver DIP
+a、确保稳定，推荐安装最新的发布版本：
+sudo ./deploy.sh kweaver-dip install --version=0.5.0
 
-# 3. 安装 KWeaver DIP
-bash ./deploy.sh kweaver-dip install --version 0.5.0
+5、体验最新的功能，也可以安装主线版本：
+sudo ./deploy.sh kweaver-dip install
+
+# 3. 安装 Kweaver-SDK
+# 如果您采用方式二安装 Openclaw 则跳过此步
+npm install -g @kweaver-ai/kweaver-sdk
 
 # 4. 安装 OpenClaw DIP 插件
+# 如果您采用方式二安装 Openclaw 则跳过此步
 openclaw plugins install ./openclaw-extensions/dip
 ```
 
-3. 部署完成后，可访问：
-
-- `https://<节点IP>/dip-hub`
-
-默认账号：`admin`
-初始密码：`eisoo.com`
-
-### 初始化 KWeaver DIP OpenClaw<a id="kweaver-dip-onboard"></a>
+### 方式二：初始化 KWeaver DIP OpenClaw
+<a id="kweaver-dip-onboard"></a>
 
 如果您选择使用 KWeaver DIP 自带的 OpenClaw，请在完成部署后按以下流程配置 OpenClaw：
 
@@ -88,7 +92,7 @@ openclaw plugins install ./openclaw-extensions/dip
   - 在主机执行 `kubectl exec -it <POD ID> -nkweaver -- /bin/bash` 进入容器。
   - 在容器内执行 `openclaw onboard` 初始化 OpenClaw。
 
-### 配置 OpenClaw
+### KWeaver DIP 配置 OpenClaw
 
 请先使用 admin 账号登录 KWeaver DIP Studio，根据界面指引完成 OpenClaw 配置。
 
@@ -99,7 +103,7 @@ openclaw plugins install ./openclaw-extensions/dip
 
 #### 授权
 
-（如果您选择使用 KWeaver DIP 自带 OpenClaw 则可以**跳过**授权）
+（如果您采用方式二安装 Openclaw 则可以**跳过**授权）
 
 1. 执行 `openclaw devices list`，找到如下的待授权设备：
 
@@ -124,8 +128,15 @@ Approved cc8d2143cf8fcd04161ade9e5161006c410a0bee65f835e2629792aa584bb119 (3ef17
 
 ---
 
-完整安装要求、配置项说明、参数说明和离线部署方式请参考 [deploy/README.zh.md](deploy/README.zh.md)。
+#### 初始化配置并使用 KWeaver DIP
+部署完成后，即可登入 KWeaver DIP：
 
+- `https://<节点IP>/dip-hub`
+
+默认账号：`admin`
+初始密码：`eisoo.com`
+
+初始化配置：使用 `admin` 对系统进行相关初始化配置，然后其他的账号才能正常使用系统的功能，具体参考 [管理员入门](docs/Onlin_help/zh/Quick%20Start/Admin%20Quick%20Start/index.md)
 
 ## 开源社区阅读路径
 
