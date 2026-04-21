@@ -32,7 +32,7 @@ ingress:
   pathType: Prefix
   annotations:
     nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "*" 
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, PATCH, DELETE, OPTIONS"
     nginx.ingress.kubernetes.io/cors-allow-headers: "Authorization, Content-Type, Accept, Origin, X-Requested-With, X-Openclaw-Session-Key"
     nginx.ingress.kubernetes.io/cors-expose-headers: "Content-Disposition, Content-Type"
