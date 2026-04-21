@@ -30,7 +30,9 @@ import {
   normalizeInitializeGuideRequest,
   parseOpenClawAddress,
   parseDotEnv,
+  openClawRootEnvEntriesNeedUpdate,
   readOpenClawDetectedConfigFromEnv,
+  refreshOpenClawRuntimeEnv,
   resolveInjectedPath,
   resolveOpenClawLocalPathsFromEnv,
   stripWrappingQuotes,
@@ -326,6 +328,15 @@ describe("DefaultGuideLogic", () => {
       reconfigureConnection: vi.fn(),
       connect: vi.fn().mockResolvedValue(undefined)
     };
+    const openClawConfigRefresher = {
+      getConfig: vi.fn().mockResolvedValue({
+        raw: "{}",
+        hash: "hash-1"
+      }),
+      patchConfig: vi.fn().mockResolvedValue({
+        ok: true
+      })
+    };
     const prevKweaverBaseUrl = process.env.KWEAVER_BASE_URL;
     const prevKweaverToken = process.env.KWEAVER_TOKEN;
     const logic = new DefaultGuideLogic({
@@ -333,7 +344,8 @@ describe("DefaultGuideLogic", () => {
       commandRunner: {
         execFile
       },
-      gatewayConnector
+      gatewayConnector,
+      openClawConfigRefresher
     });
 
     await expect(
@@ -374,6 +386,82 @@ describe("DefaultGuideLogic", () => {
         "token-1"
       );
       expect(gatewayConnector.connect).toHaveBeenCalledOnce();
+      expect(openClawConfigRefresher.getConfig).toHaveBeenCalledOnce();
+      expect(openClawConfigRefresher.patchConfig).toHaveBeenCalledWith({
+        raw: "{}",
+        baseHash: "hash-1"
+      });
+    } finally {
+      if (prevKweaverBaseUrl === undefined) {
+        delete process.env.KWEAVER_BASE_URL;
+      } else {
+        process.env.KWEAVER_BASE_URL = prevKweaverBaseUrl;
+      }
+      if (prevKweaverToken === undefined) {
+        delete process.env.KWEAVER_TOKEN;
+      } else {
+        process.env.KWEAVER_TOKEN = prevKweaverToken;
+      }
+      fakeHomeForOsMock = process.env.HOME ?? "/tmp";
+      await rm(studioRootDir, { recursive: true, force: true });
+    }
+  });
+
+  it("skips OpenClaw refresh when root env values are unchanged", async () => {
+    const studioRootDir = await mkdtemp(join(tmpdir(), "dip-studio-guide-init-same-"));
+    fakeHomeForOsMock = studioRootDir;
+    await mkdir(join(fakeHomeForOsMock, ".openclaw"), { recursive: true });
+    await writeFile(
+      join(fakeHomeForOsMock, ".openclaw", ".env"),
+      [
+        "KWEAVER_BASE_URL=https://kweaver.example.com",
+        "KWEAVER_TOKEN=kw-token",
+        "KWEAVER_BUSINESS_DOMAIN=bd_public",
+        "KWEAVER_TLS_INSECURE=1",
+        ""
+      ].join("\n"),
+      "utf8"
+    );
+    const execFile = vi.fn().mockResolvedValue({
+      stdout: "ok",
+      stderr: ""
+    });
+    const gatewayConnector = {
+      reconfigureConnection: vi.fn(),
+      connect: vi.fn().mockResolvedValue(undefined)
+    };
+    const openClawConfigRefresher = {
+      getConfig: vi.fn().mockResolvedValue({
+        raw: "{}",
+        hash: "hash-1"
+      }),
+      patchConfig: vi.fn().mockResolvedValue({
+        ok: true
+      })
+    };
+    const prevKweaverBaseUrl = process.env.KWEAVER_BASE_URL;
+    const prevKweaverToken = process.env.KWEAVER_TOKEN;
+    const logic = new DefaultGuideLogic({
+      studioRootDir,
+      commandRunner: {
+        execFile
+      },
+      gatewayConnector,
+      openClawConfigRefresher
+    });
+
+    try {
+      await expect(
+        logic.initialize({
+          openclaw_address: "ws://127.0.0.1:19001",
+          openclaw_token: "token-1",
+          kweaver_base_url: "https://kweaver.example.com",
+          kweaver_token: "kw-token"
+        })
+      ).resolves.toBeUndefined();
+
+      expect(openClawConfigRefresher.getConfig).not.toHaveBeenCalled();
+      expect(openClawConfigRefresher.patchConfig).not.toHaveBeenCalled();
     } finally {
       if (prevKweaverBaseUrl === undefined) {
         delete process.env.KWEAVER_BASE_URL;
@@ -392,6 +480,25 @@ describe("DefaultGuideLogic", () => {
 });
 
 describe("OpenClaw root env helpers", () => {
+  it("refreshes OpenClaw runtime env without writing env values to config", async () => {
+    const refresher = {
+      getConfig: vi.fn().mockResolvedValue({
+        raw: "{}",
+        hash: "hash-1"
+      }),
+      patchConfig: vi.fn().mockResolvedValue({
+        ok: true
+      })
+    };
+
+    await refreshOpenClawRuntimeEnv(refresher);
+
+    expect(refresher.patchConfig).toHaveBeenCalledWith({
+      raw: "{}",
+      baseHash: "hash-1"
+    });
+  });
+
   it("resolves local OpenClaw paths from the fixed OpenClaw home", () => {
     expect(
       resolveOpenClawLocalPathsFromEnv(
@@ -428,5 +535,30 @@ describe("OpenClaw root env helpers", () => {
     expect(await readFile(envFilePath, "utf8")).toBe(
       ["KWEAVER_BASE_URL=", "KWEAVER_TOKEN=", ""].join("\n")
     );
+  });
+
+  it("detects whether managed OpenClaw root env entries changed", async () => {
+    const rootDir = await mkdtemp(join(tmpdir(), "dip-openclaw-root-env-check-"));
+    const envFilePath = join(rootDir, ".env");
+    const entries = [
+      ["KWEAVER_BASE_URL", "https://kweaver.example.com"],
+      ["KWEAVER_TOKEN", "kw-token"]
+    ] as const;
+
+    await expect(openClawRootEnvEntriesNeedUpdate(envFilePath, entries)).resolves.toBe(true);
+
+    await writeFile(
+      envFilePath,
+      ["KWEAVER_BASE_URL=https://kweaver.example.com", "KWEAVER_TOKEN=kw-token", ""].join("\n"),
+      "utf8"
+    );
+
+    await expect(openClawRootEnvEntriesNeedUpdate(envFilePath, entries)).resolves.toBe(false);
+    await expect(
+      openClawRootEnvEntriesNeedUpdate(envFilePath, [
+        ["KWEAVER_BASE_URL", "https://new.example.com"],
+        ["KWEAVER_TOKEN", "kw-token"]
+      ])
+    ).resolves.toBe(true);
   });
 });

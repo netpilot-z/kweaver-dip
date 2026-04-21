@@ -6,9 +6,12 @@ import { promisify } from "node:util";
 import { execFile } from "node:child_process";
 
 import { HttpError } from "../errors/http-error";
+import { OpenClawAgentsGatewayAdapter } from "../adapters/openclaw-agents-adapter";
+import { OpenClawGatewayClient } from "../infra/openclaw-gateway-client";
 import { connectOpenClawGateway } from "./openclaw-gateway-bootstrap";
 import {
   asMessage,
+  getOpenClawGatewayRuntimeConfig,
   loadEnvFile,
   readOptionalString,
   resolveGatewayHost,
@@ -122,6 +125,26 @@ export interface GuideCommandRunner {
 }
 
 /**
+ * Minimal OpenClaw configuration RPC contract used by guide refresh.
+ */
+export interface GuideOpenClawConfigRefresher {
+  /**
+   * Reads the current OpenClaw configuration and optimistic-lock hash.
+   *
+   * @returns The serialized OpenClaw config and hash.
+   */
+  getConfig(): Promise<{ raw: string; hash: string }>;
+
+  /**
+   * Applies a partial OpenClaw configuration patch.
+   *
+   * @param params Serialized partial config and base hash.
+   * @returns The patch result.
+   */
+  patchConfig(params: { raw: string; baseHash: string }): Promise<{ ok: boolean }>;
+}
+
+/**
  * Options used to construct the guide logic service.
  */
 export interface GuideLogicOptions {
@@ -142,6 +165,11 @@ export interface GuideLogicOptions {
     reconfigureConnection(url: string, token?: string): void;
     connect(): Promise<void>;
   };
+
+  /**
+   * Optional OpenClaw config refresher used by tests and initialization flows.
+   */
+  openClawConfigRefresher?: GuideOpenClawConfigRefresher;
 }
 
 /**
@@ -210,6 +238,7 @@ export class DefaultGuideLogic implements GuideLogic {
 
   private readonly commandRunner: GuideCommandRunner;
   private readonly gatewayConnector?: GuideLogicOptions["gatewayConnector"];
+  private readonly openClawConfigRefresher?: GuideOpenClawConfigRefresher;
 
   /**
    * Creates one guide logic instance.
@@ -220,6 +249,7 @@ export class DefaultGuideLogic implements GuideLogic {
     this.studioRootDir = resolve(options.studioRootDir ?? process.cwd());
     this.commandRunner = options.commandRunner ?? new DefaultGuideCommandRunner();
     this.gatewayConnector = options.gatewayConnector;
+    this.openClawConfigRefresher = options.openClawConfigRefresher;
   }
 
   /**
@@ -258,12 +288,20 @@ export class DefaultGuideLogic implements GuideLogic {
     const localPaths = resolveOpenClawLocalPathsFromEnv(process.env, this.studioRootDir);
     const normalized = normalizeInitializeGuideRequest(request, localPaths);
     const envFilePath = join(this.studioRootDir, ".env");
+    const openClawRootEnvPath = join(normalized.stateDir, ".env");
+    const openClawRootEnvEntries = buildOpenClawRootEnvEntries(normalized);
+    const shouldRefreshOpenClawEnv = await openClawRootEnvEntriesNeedUpdate(
+      openClawRootEnvPath,
+      openClawRootEnvEntries
+    );
+
     await writeFile(envFilePath, buildGuideEnvFileContent(normalized), "utf8");
     loadEnvFile({
       path: envFilePath,
       forceReload: true,
       override: true
     });
+    await mergeOpenClawRootEnv(openClawRootEnvPath, openClawRootEnvEntries);
     await this.commandRunner.execFile("npm", ["run", "init:agents"], {
       cwd: this.studioRootDir
     });
@@ -272,11 +310,71 @@ export class DefaultGuideLogic implements GuideLogic {
       token: normalized.openclaw_token,
       connector: this.gatewayConnector
     });
-    await mergeOpenClawRootEnv(
-      join(normalized.stateDir, ".env"),
-      buildOpenClawRootEnvEntries(normalized)
-    );
+    if (shouldRefreshOpenClawEnv) {
+      await this.refreshOpenClawRuntimeEnv(normalized);
+    }
   }
+
+  /**
+   * Triggers Gateway config reload so OpenClaw re-reads root environment values.
+   *
+   * @param request Normalized initialization payload.
+   */
+  private async refreshOpenClawRuntimeEnv(
+    request: NormalizedInitializeGuideRequest
+  ): Promise<void> {
+    const refresher =
+      this.openClawConfigRefresher ??
+      new OpenClawAgentsGatewayAdapter(
+        OpenClawGatewayClient.getInstance({
+          url: request.openclaw_address,
+          token: request.openclaw_token,
+          configReader: getOpenClawGatewayRuntimeConfig
+        })
+      );
+
+    await refreshOpenClawRuntimeEnv(refresher);
+  }
+}
+
+/**
+ * Triggers OpenClaw Gateway reload without persisting env values into openclaw.json.
+ *
+ * `config.patch` wakes Gateway's reload/restart path. An empty patch keeps
+ * `~/.openclaw/.env` as the single persistent KWeaver env source while making
+ * the updated file visible to future sessions without restarting the Studio pod.
+ *
+ * @param refresher OpenClaw configuration RPC client.
+ */
+export async function refreshOpenClawRuntimeEnv(
+  refresher: GuideOpenClawConfigRefresher
+): Promise<void> {
+  const { hash } = await refresher.getConfig();
+
+  await refresher.patchConfig({
+    raw: "{}",
+    baseHash: hash
+  });
+}
+
+/**
+ * Checks whether a target dotenv file would change for specific env entries.
+ *
+ * @param envFilePath Absolute target dotenv file path.
+ * @param entries Managed key/value pairs to compare.
+ * @returns `true` when at least one managed value differs or the file is absent.
+ */
+export async function openClawRootEnvEntriesNeedUpdate(
+  envFilePath: string,
+  entries: ReadonlyArray<readonly [string, string]>
+): Promise<boolean> {
+  if (!(await pathExists(envFilePath))) {
+    return true;
+  }
+
+  const currentValues = parseDotEnv(await readFile(envFilePath, "utf8"));
+
+  return entries.some(([key, value]) => currentValues[key] !== value);
 }
 
 /**
