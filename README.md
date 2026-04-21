@@ -69,10 +69,10 @@ cd kweaver-dip/deploy
 
 # 2. Install KWeaver DIP
 # a) For stability, we recommend installing the latest released version:
-sudo ./deploy.sh kweaver-dip install --version=0.5.0
+bash ./deploy.sh kweaver-dip install --version=0.5.0
 
 # b) To try the latest features, you can also install the main branch:
-sudo ./deploy.sh kweaver-dip install
+bash ./deploy.sh kweaver-dip install
 
 # 3. Install Kweaver-SDK
 # Skip this step if you install OpenClaw via Option 2
