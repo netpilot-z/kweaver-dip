@@ -10,25 +10,21 @@
 
 KWeaver DIP is an AI-native platform for developing and managing digital employees. It builds an application stack for digital employees that is understandable, executable, and governable, centered on business knowledge networks.
 
-- The platform builds digital employee capabilities based on [KWeaver Core](https://github.com/kweaver-ai/kweaver-core) and [OpenClaw](https://github.com/openclaw/openclaw).
-- 🌐 [Live Demo](https://dip-poc.aishu.cn/studio/agent/development/my-agent-list) — Try KWeaver DIP online (username: `kweaver`, password: `111111`). This environment includes pre-built digital employees for a quick start.
+The platform is an enterprise digital employee platform built on the **KWeaver Core** open-source project. You can build and use agents through decision agents on a business knowledge network, or build and use digital worker on top of **Openclaw**.
 
-## Install, Configure, and Use KWeaver DIP
+## Quick Links
 
-***Notes***
+- 🌐 [Live Demo](https://dip-poc.aishu.cn/studio/agent/development/my-agent-list) — Try KWeaver online (username: `kweaver`, password: `111111`)
 
-1. KWeaver DIP provides fast installation commands to deploy the services required by KWeaver Core and KWeaver DIP. For the full installation workflow and resource configuration details, see [deploy/README.zh.md](deploy/README.zh.md).
+## Quick Start
 
-### Install OpenClaw
+### OpenClaw
 
-KWeaver DIP must be used with OpenClaw. OpenClaw supports two installation approaches:
+DIP Studio depends on OpenClaw. You can either deploy OpenClaw on your own host or use the OpenClaw instance bundled with KWeaver DIP.
 
-- Option 1: Install OpenClaw yourself based on the [OpenClaw](https://github.com/openclaw/openclaw) project, and choose a compatible version.
-- Option 2: Use KWeaver DIP’s installation command to quickly install the bundled OpenClaw version.
+#### Deploy OpenClaw yourself
 
-#### Option 1: Install OpenClaw yourself
-
-1. KWeaver DIP supports OpenClaw `v2026.3.11`. We recommend using the tested versions from `v2026.3.11` to `v2026.3.24`. OpenClaw iterates quickly and other versions may have compatibility issues. You can install it from the official site at `https://openclaw.ai` or GitHub at `https://github.com/openclaw/openclaw`.
+1. KWeaver DIP supports OpenClaw `v2026.3.11`. You can install it from the official site at https://openclaw.ai or from GitHub at https://github.com/openclaw/openclaw.
 2. After installation, run `openclaw gateway onboard` to initialize OpenClaw.
 3. Update `gateway.bind` in `openclaw.json` to `"lan"`, and keep the value of `gateway.auth.token` for the later OpenClaw connection setup in KWeaver DIP.
 4. Run `openclaw gateway restart` to restart the OpenClaw gateway.
@@ -39,12 +35,11 @@ KWeaver DIP must be used with OpenClaw. OpenClaw supports two installation appro
  - `dip-studio.values.studio.openClawHostPath`: host path of the `.openclaw/` root directory
  - `dip-studio.values.studio.useExternalOpenClaw`: whether to use a self-deployed OpenClaw instance
 
-#### Option 2: Use the OpenClaw bundled with KWeaver DIP
+#### Use the OpenClaw bundled with KWeaver DIP
 
-1. Run the KWeaver DIP installation and deployment command below first.
-2. After KWeaver DIP is installed successfully, follow [Initialize OpenClaw](#kweaver-dip-onboard).
+After installing and deploying KWeaver DIP, follow [Initialize KWeaver DIP OpenClaw](#kweaver-dip-onboard).
 
-### Install KWeaver DIP
+### Host prerequisites
 
 Run install commands as `root` or through `sudo`.
 
@@ -55,7 +50,7 @@ systemctl stop firewalld && systemctl disable firewalld
 # 2. Disable swap
 swapoff -a && sed -i '/ swap / s/^/#/' /etc/fstab
 
-# 3. Set SELinux to permissive (the script can handle it, but we recommend setting it in advance)
+# 3. Set SELinux to permissive if needed
 setenforce 0
 
 # 4. Install containerd.io
@@ -67,32 +62,34 @@ dnf install containerd.io
 git clone https://github.com/kweaver-ai/kweaver-dip.git
 cd kweaver-dip/deploy
 
-# 2. Install KWeaver DIP
-# a) For stability, we recommend installing the latest released version:
-sudo ./deploy.sh kweaver-dip install --version=0.5.0
+# 2. (Optional) Customize access ports
+# By default, ingress-nginx uses ports 80/443. To use custom ports (e.g., 8080/8443):
+export INGRESS_NGINX_HTTP_PORT=8080
+export INGRESS_NGINX_HTTPS_PORT=8443
 
-# b) To try the latest features, you can also install the main branch:
-sudo ./deploy.sh kweaver-dip install
-
-# 3. Install Kweaver-SDK
-# Skip this step if you use Option 2 to install OpenClaw
-npm install -g @kweaver-ai/kweaver-sdk
+# 3. Install KWeaver DIP
+bash ./deploy.sh kweaver-dip install --version 0.5.0
 
 # 4. Install OpenClaw DIP extensions
-# Skip this step if you use Option 2 to install OpenClaw
 openclaw plugins install ./openclaw-extensions/dip
 ```
 
-### Initialize OpenClaw for the bundled installation (Option 2)
-<a id="kweaver-dip-onboard"></a>
+After deployment, you can access:
 
-If you choose to use the OpenClaw bundled with KWeaver DIP, configure it after deployment:
+- `https://<node-ip>/dip-hub`
+
+Default username: `admin`
+Initial password: `eisoo.com`
+
+### Initialize KWeaver DIP OpenClaw
+<a id="kweaver-dip-onboard"></a>
+If you choose to use the OpenClaw bundled with KWeaver DIP, complete the following steps after deployment:
 
 - Run `kubectl get pods -nkweaver | grep dip-studio` on the host and copy the POD ID.
 - Run `kubectl exec -it <POD ID> -nkweaver -- /bin/bash` on the host to enter the container.
 - Run `openclaw onboard` inside the container to initialize OpenClaw.
 
-### Configure OpenClaw in KWeaver DIP
+### Configure OpenClaw
 
 Sign in to KWeaver DIP Studio with the `admin` account first, then follow the UI instructions to finish the OpenClaw configuration.
 
@@ -104,6 +101,8 @@ Sign in to KWeaver DIP Studio with the `admin` account first, then follow the UI
 #### Authorization
 
 If you use the OpenClaw bundled with KWeaver DIP, you can skip authorization.
+
+After deployment, authorize OpenClaw to connect with DIP Studio:
 
 1. Run `openclaw devices list` and find the pending device shown below:
 
@@ -127,18 +126,7 @@ Approved cc8d2143cf8fcd04161ade9e5161006c410a0bee65f835e2629792aa584bb119 (3ef17
 
 the authorization has succeeded.
 
----
-
-#### Use KWeaver DIP and complete initialization
-
-Sign in to KWeaver DIP:
-
-- `https://<node-ip>/dip-hub`
-
-Default username: `admin`  
-Initial password: `eisoo.com`
-
-Initialization: Use the `admin` account to complete system initialization; other accounts can use the system features normally only after this. See [Admin Quick Start](docs/Onlin_help/zh/Quick%20Start/Admin%20Quick%20Start/index.md).
+For full installation requirements, configuration details, parameter descriptions, and offline deployment options, see [deploy/README.md](deploy/README.md).
 
 ## Community Reading Path
 
@@ -155,6 +143,6 @@ Scan to join the KWeaver community group
 
 ## Support & Contact
 
-- **Contributing**: [Contributing Guide](rules/CONTRIBUTING.zh.md)
+- **Contributing**: [Contributing Guide](rules/CONTRIBUTING.md)
 - **Issues**: [GitHub Issues](https://github.com/kweaver-ai/kweaver/issues)
 - **License**: [Apache License 2.0](LICENSE)
