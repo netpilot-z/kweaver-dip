@@ -816,7 +816,7 @@ DIP 数字员工 Web 界面
 | creature | string | 否 | 数字员工岗位/角色 |
 | icon_id | string | 否 | 图标 ID |
 | soul | string | 否 | `SOUL.md` 内容 |
-| skills | string[] | 否 | 创建时要绑定的技能名称列表；重复值会按首次出现顺序去重。响应中 `skills` 为实际绑定的技能 id 列表 |
+| skills | string[] | 否 | 创建时要追加绑定的技能名称列表；后端会始终先绑定内置技能 `archive-protocol`、`schedule-plan`、`kweaver-core`，再追加该列表；重复值会按首次出现顺序去重。响应中 `skills` 为实际绑定的技能 id 列表 |
 
 响应：`201 application/json`
 

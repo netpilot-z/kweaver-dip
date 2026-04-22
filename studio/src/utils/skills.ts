@@ -37,7 +37,8 @@ export function isDefaultDigitalHumanSkillSlug(slug: string): boolean {
 }
 
 /**
- * Deduplicates optional request skill ids while preserving first occurrence order.
+ * Prepends default digital-human skills, then deduplicates optional request skill ids while
+ * preserving first occurrence order.
  *
  * @param requestSkills Optional skill names from the create request.
  * @returns The normalized skill list to persist on the agent.
@@ -47,7 +48,7 @@ export function normalizeCreateDigitalHumanSkills(
 ): string[] {
   const seen = new Set<string>();
   const out: string[] = [];
-  for (const s of requestSkills ?? []) {
+  for (const s of [...DEFAULT_DIGITAL_HUMAN_SKILLS, ...(requestSkills ?? [])]) {
     if (!seen.has(s)) {
       seen.add(s);
       out.push(s);

@@ -151,7 +151,9 @@ components:
           type: array
           title: 技能目录名列表
           description: |
-            原样作为创建时要绑定的技能列表写入 agent；重复值会按首次出现顺序去重。
+            创建时要绑定的技能列表。后端会始终先绑定 DIP 数字员工内置技能
+            `archive-protocol`、`schedule-plan`、`kweaver-core`，再追加请求中的技能；
+            重复值会按首次出现顺序去重。
           items:
             type: string
         bkn:

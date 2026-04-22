@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  DEFAULT_DIGITAL_HUMAN_SKILLS,
   deriveSkillIdFromUploadedFilename,
   isDefaultDigitalHumanSkillSlug,
   isValidSkillSlug,
@@ -49,12 +50,22 @@ describe("utils/skills digital-human defaults", () => {
     expect(isDefaultDigitalHumanSkillSlug("custom")).toBe(false);
   });
 
-  it("normalizeCreateDigitalHumanSkills dedupes request values only", () => {
-    expect(normalizeCreateDigitalHumanSkills()).toEqual([]);
-    expect(normalizeCreateDigitalHumanSkills(["x"])).toEqual(["x"]);
+  it("normalizeCreateDigitalHumanSkills includes built-in defaults first", () => {
+    expect(normalizeCreateDigitalHumanSkills()).toEqual(DEFAULT_DIGITAL_HUMAN_SKILLS);
+    expect(normalizeCreateDigitalHumanSkills(["x"])).toEqual([
+      ...DEFAULT_DIGITAL_HUMAN_SKILLS,
+      "x",
+    ]);
     expect(normalizeCreateDigitalHumanSkills(["x", "x", "y"])).toEqual([
+      ...DEFAULT_DIGITAL_HUMAN_SKILLS,
       "x",
       "y"
     ]);
+  });
+
+  it("normalizeCreateDigitalHumanSkills dedupes defaults repeated in request", () => {
+    expect(
+      normalizeCreateDigitalHumanSkills(["archive-protocol", "x", "schedule-plan"])
+    ).toEqual([...DEFAULT_DIGITAL_HUMAN_SKILLS, "x"]);
   });
 });

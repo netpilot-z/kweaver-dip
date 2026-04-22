@@ -242,8 +242,9 @@ export interface CreateDigitalHumanRequest {
   soul?: string;
 
   /**
-   * Skill names to bind to the agent at create time.
-   * Duplicates are ignored while preserving first occurrence order.
+   * Extra skill names to bind to the agent at create time.
+   * Built-in digital-human skills are prepended by the service, then duplicates are
+   * ignored while preserving first occurrence order.
    */
   skills?: string[];
 
