@@ -29,6 +29,7 @@ docs/                               项目相关的文档
 
 - 架构核对：编写代码前，先读取 `ARCHITECTURE.md` 确认项目结构。
 - 接口规范：编写 HTTP 接口层代码前，必须先检查 `docs/openapi` 下的 OpenAPI Schema 定义，更新 `src/types` 中的接口定义，再编写实现。
+- Git 工作流：涉及生成、校验或更新 commit message、PR title、PR description、PR 模板或创建 PR 时，必须先读取并遵循 `skills/git-workflow/SKILL.md`。
 - 设计锁定（硬限制）：`docs/design` 目录下的文档是系统设计的来源，不允许修改该目录下的任何内容。
 
 ## 四、LLM 行为准则（Merged Guidelines）
