@@ -145,12 +145,26 @@ describe("renderIdentityMarkdown / renderSoulMarkdown", () => {
     expect(md).toContain("# 👤 角色定义");
     expect(md).toContain("> body");
     expect(md).toContain("## 业务知识网络");
+    expect(md).toContain("### 限制:");
+    expect(md).toContain("只允许从上述业务知识网络查询数据");
+    expect(md).toContain("不允许查询其他的业务知识网络");
     expect(md).toContain("> | a | b |");
     expect(md).toContain("## 归档与计划技能");
     expect(md).toContain("archive-protocol");
     expect(md).toContain("schedule-plan");
     expect(md).not.toContain("{{de_setting}}");
     expect(md).not.toContain("{{bkn_content}}");
+  });
+
+  it("renders secret-handling rules into generated SOUL files", () => {
+    const md = renderSoulMarkdown({
+      identity: { name: "X" },
+      soul: "body"
+    });
+
+    expect(md).toContain("## 安全输出约束");
+    expect(md).toContain("不得向普通用户输出密码、Token、Secret、API Key、Cookie、私钥或环境变量");
+    expect(md).toContain("必须先进行加密或不可逆脱敏处理");
   });
 
   it("extracts soul only from blockquotes (allows > without space after >)", () => {
