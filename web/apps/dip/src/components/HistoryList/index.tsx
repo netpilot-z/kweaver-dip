@@ -115,7 +115,9 @@ function HistoryListInner({
       const session = data[index] as SessionSummary | undefined
       if (!session) return null
       const digitalHumanId = getDigitalHumanIdFromSessionKey(session.key)
-      const digitalHumanName = digitalHumanId ? digitalHumanNameById[digitalHumanId] : undefined
+      const matchedDigitalHumanName = digitalHumanId ? digitalHumanNameById[digitalHumanId] : ''
+      const digitalHumanName = matchedDigitalHumanName || digitalHumanId || undefined
+      const digitalHumanDeleted = Boolean(digitalHumanId && !matchedDigitalHumanName)
       return (
         <div style={style} className="box-border px-6 pb-3 mx-auto">
           <PlanListItem
@@ -123,6 +125,7 @@ function HistoryListInner({
             onClick={onHistoryClick}
             onDelete={handleDelete}
             digitalHumanName={digitalHumanName}
+            digitalHumanDeleted={digitalHumanDeleted}
           />
         </div>
       )

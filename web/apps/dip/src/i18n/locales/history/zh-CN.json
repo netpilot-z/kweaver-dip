@@ -13,6 +13,7 @@
     },
     "list": {
       "fromDigitalHuman": "来自数字员工：{name}",
+      "deletedTag": "已删除",
       "updateTime": "更新时间",
       "deleteSessionAria": "删除历史会话",
       "today": "今天 {time}",

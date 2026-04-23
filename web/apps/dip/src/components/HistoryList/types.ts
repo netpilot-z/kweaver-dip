@@ -30,4 +30,5 @@ export interface PlanListItemProps {
   onClick?: (session: SessionSummary) => void
   onDelete?: (session: SessionSummary) => void
   digitalHumanName?: string
+  digitalHumanDeleted?: boolean
 }

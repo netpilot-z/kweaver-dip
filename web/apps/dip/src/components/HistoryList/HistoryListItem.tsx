@@ -1,4 +1,5 @@
 import { ClockCircleOutlined } from '@ant-design/icons'
+import { Tag } from 'antd'
 import { memo, type ReactNode } from 'react'
 import intl from 'react-intl-universal'
 import IconFont from '@/components/IconFont'
@@ -22,9 +23,16 @@ function HistoryMetaColumn({ value }: { icon: ReactNode; label: string; value: s
   )
 }
 
-function HistoryListItemInner({ session, onClick, onDelete, digitalHumanName }: PlanListItemProps) {
+function HistoryListItemInner({
+  session,
+  onClick,
+  onDelete,
+  digitalHumanName,
+  digitalHumanDeleted = false,
+}: PlanListItemProps) {
   const title = getSessionTitle(session)
   const updatedAtText = formatPlanRelativeDayTime(session.updatedAt)
+  const deletedLabel = intl.get('history.list.deletedTag').d('已删除') as string
   return (
     <button
       type="button"
@@ -39,10 +47,21 @@ function HistoryListItemInner({ session, onClick, onDelete, digitalHumanName }: 
             {title}
           </span>
         </div>
-        <span className="text-[--dip-text-color-45] text-xs">
-          {intl.get('history.list.fromDigitalHuman', {
-            name: digitalHumanName ?? intl.get('history.common.dash'),
-          })}
+        <span className="flex min-w-0 items-center gap-1 text-[--dip-text-color-45] text-xs">
+          <span className="truncate">
+            {intl.get('history.list.fromDigitalHuman', {
+              name: digitalHumanName ?? intl.get('history.common.dash'),
+            })}
+          </span>
+          {digitalHumanDeleted && (
+            <Tag
+              bordered={false}
+              color="default"
+              className="m-0 shrink-0 rounded bg-[#F2F4F7] px-1.5 text-xs leading-[18px] text-[--dip-text-color-45]"
+            >
+              {deletedLabel}
+            </Tag>
+          )}
         </span>
       </div>
 
