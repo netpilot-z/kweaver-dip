@@ -17,6 +17,7 @@ import type { VirtualConversationListProps, VirtualConversationListRef } from '.
 interface VirtualConversationListContext {
   loading: boolean
   emptyStateText: string
+  compactBottomSpacer?: boolean
   onUserScrollUp?: () => void
   setScrollerElement: (element: HTMLDivElement | null) => void
 }
@@ -97,8 +98,15 @@ const VirtuosoHeader = () => {
   return <div className={styles.topSpacer} />
 }
 
-const VirtuosoFooter = () => {
-  return <div className={styles.bottomSpacer} />
+const VirtuosoFooter = ({ context }: { context: VirtualConversationListContext }) => {
+  return (
+    <div
+      className={clsx(
+        styles.bottomSpacer,
+        context.compactBottomSpacer && styles.bottomSpacerCompact,
+      )}
+    />
+  )
 }
 
 const normalizeBehavior = (behavior: ScrollBehavior): 'auto' | 'smooth' => {
@@ -115,6 +123,7 @@ const VirtualConversationList = forwardRef<
       messageTurns,
       loading,
       emptyStateText,
+      compactBottomSpacer,
       autoScrollEnabled,
       onUserScrollUp,
       onReachBottomChange,
@@ -157,10 +166,11 @@ const VirtualConversationList = forwardRef<
       return {
         loading,
         emptyStateText,
+        compactBottomSpacer,
         onUserScrollUp,
         setScrollerElement,
       }
-    }, [emptyStateText, loading, onUserScrollUp, setScrollerElement])
+    }, [compactBottomSpacer, emptyStateText, loading, onUserScrollUp, setScrollerElement])
 
     const components = useMemo(() => {
       return {

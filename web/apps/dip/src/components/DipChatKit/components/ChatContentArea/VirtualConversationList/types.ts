@@ -5,6 +5,7 @@ export interface VirtualConversationListProps {
   messageTurns: DipChatKitMessageTurn[]
   loading: boolean
   emptyStateText: string
+  compactBottomSpacer?: boolean
   autoScrollEnabled: boolean
   onUserScrollUp?: () => void
   onReachBottomChange?: (isAtBottom: boolean) => void

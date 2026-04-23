@@ -60,6 +60,7 @@ const ChatContentArea: React.FC<ChatContentAreaProps> = ({
   employeeOptions,
   defaultEmployeeValue,
   inputPlaceholder,
+  inputDisabled = false,
   hideFirstUserMessage = false,
   onSessionKeyReady,
 }) => {
@@ -106,6 +107,8 @@ const ChatContentArea: React.FC<ChatContentAreaProps> = ({
     if (sessionId === undefined) return ''
     return sessionId.trim()
   }, [sessionId])
+  const resolvedInputPlaceholder =
+    inputPlaceholder || (intl.get('dipChatKit.inputPlaceholder').d('发送消息...') as string)
 
   const clearScheduledScroll = useCallback(() => {
     if (scheduledScrollTimerIdsRef.current.length === 0) return
@@ -588,6 +591,7 @@ const ChatContentArea: React.FC<ChatContentAreaProps> = ({
         messageTurns={messageTurns}
         loading={sessionMessagesLoading}
         emptyStateText={intl.get('dipChatKit.emptyState').d('请输入问题开始对话。') as string}
+        compactBottomSpacer={inputDisabled}
         autoScrollEnabled={scroll.autoScrollEnabled}
         onUserScrollUp={handleUserScrollUp}
         onReachBottomChange={handleReachBottomChange}
@@ -599,7 +603,7 @@ const ChatContentArea: React.FC<ChatContentAreaProps> = ({
       />
 
       <div className={styles.inputArea}>
-        {scroll.showBackToBottom && (
+        {!inputDisabled && scroll.showBackToBottom && (
           <div className={styles.backToBottomWrap}>
             <div className={styles.backToBottomBtn}>
               <Tooltip title={intl.get('dipChatKit.backToBottom').d('返回底部')}>
@@ -622,24 +626,24 @@ const ChatContentArea: React.FC<ChatContentAreaProps> = ({
         )}
 
         <div className={styles.inputContent}>
-          <div className={styles.inputInner}>
-            <AiPromptInput
-              value={inputValue}
-              onChange={setInputValue}
-              onSubmit={(payload) => {
-                void handleSubmit(payload)
-              }}
-              onStop={handleStopGenerating}
-              assignEmployeeValue={assignEmployeeValue}
-              employeeOptions={employeeOptions}
-              defaultEmployeeValue={defaultEmployeeValue}
-              loading={streamLoading}
-              placeholder={
-                inputPlaceholder ||
-                (intl.get('dipChatKit.inputPlaceholder').d('发送消息...') as string)
-              }
-            />
-          </div>
+          {!inputDisabled && (
+            <div className={styles.inputInner}>
+              <AiPromptInput
+                value={inputValue}
+                onChange={setInputValue}
+                onSubmit={(payload) => {
+                  void handleSubmit(payload)
+                }}
+                onStop={handleStopGenerating}
+                assignEmployeeValue={assignEmployeeValue}
+                employeeOptions={employeeOptions}
+                defaultEmployeeValue={defaultEmployeeValue}
+                loading={streamLoading}
+                disabled={inputDisabled}
+                placeholder={resolvedInputPlaceholder}
+              />
+            </div>
+          )}
           <div className={styles.inputDisclaimer}>
             {intl.get('dipChatKit.inputDisclaimer').d('数字员工可能会犯错，请核查重要业务信息')}
           </div>

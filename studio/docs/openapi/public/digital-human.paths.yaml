@@ -187,7 +187,7 @@ paths:
           $ref: '../common.schemas.yaml#/errors/InternalServerError'
     delete:
       operationId: deleteDigitalHuman
-      summary: 删除数字员工及其计划任务
+      summary: 删除数字员工及其计划任务，默认保留历史会话
       parameters:
         - name: id
           in: path
@@ -197,13 +197,13 @@ paths:
         - name: deleteFiles
           in: query
           required: false
-          description: 是否删除工作区文件（默认 true）；传 false 保留仅删除 agent 配置。删除数字员工时会一并删除其所有计划任务。
+          description: 是否删除工作区文件（默认 false，用于保留历史会话）；传 true 时同时删除工作区文件。删除数字员工时会一并删除其所有计划任务。
           schema:
             type: string
             enum: ["true", "false"]
       responses:
         "204":
-          description: 删除成功，无响应体。关联的计划任务会被一并删除。
+          description: 删除成功，无响应体。关联的计划任务会被一并删除；未显式传 deleteFiles=true 时会保留工作区文件和历史会话。
         "400":
           $ref: '../common.schemas.yaml#/errors/InvalidParameter'
         "401":

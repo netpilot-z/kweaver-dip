@@ -711,7 +711,8 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
     expect(removeCronJob).toHaveBeenCalledWith({ id: "plan-3" });
   });
 
-  it("deleteDigitalHuman scans all cron pages before removing matching plans", async () => {
+  it("deleteDigitalHuman defaults to keeping workspace files and scans all cron pages", async () => {
+    const deleteAgent = vi.fn().mockResolvedValue({ ok: true });
     const listCronJobs = vi
       .fn()
       .mockResolvedValueOnce({
@@ -759,7 +760,7 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
       openClawAgentsAdapter: {
         listAgents: vi.fn(),
         createAgent: vi.fn(),
-        deleteAgent: vi.fn().mockResolvedValue({ ok: true }),
+        deleteAgent,
         getAgentFile: vi.fn(),
         setAgentFile: vi.fn(),
         listAgentFiles: vi.fn(),
@@ -777,6 +778,10 @@ describe("DefaultDigitalHumanLogic lifecycle (filesystem + adapter)", () => {
 
     expect(listCronJobs).toHaveBeenNthCalledWith(1, expect.objectContaining({ offset: 0 }));
     expect(listCronJobs).toHaveBeenNthCalledWith(2, expect.objectContaining({ offset: 200 }));
+    expect(deleteAgent).toHaveBeenCalledWith({
+      agentId: "agent-1",
+      deleteFiles: false
+    });
     expect(removeCronJob).toHaveBeenCalledTimes(2);
   });
 

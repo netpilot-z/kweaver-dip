@@ -29,6 +29,24 @@ type DigitalHumanDisplayInfo = {
   avatarSrc: string
 }
 
+type DigitalHumanInfoCacheItem = {
+  info: DigitalHumanDisplayInfo
+  notFound: boolean
+}
+
+const isDigitalHumanNotFoundError = (error: unknown): boolean => {
+  if (error === 404) return true
+  if (!error || typeof error !== 'object') return false
+
+  const payload = error as Record<string, unknown>
+  return (
+    payload.status === 404 ||
+    payload.statusCode === 404 ||
+    payload.code === 'DipStudio.NotFound' ||
+    payload.code === 'NotFound'
+  )
+}
+
 const zhTWX: XProviderProps['locale'] = {
   ...zhCN,
   locale: 'zh-tw',
@@ -110,7 +128,8 @@ const DipChatKitInner: React.FC<Omit<DipChatKitProps, 'initialSubmitPayload' | '
     name: '',
     avatarSrc: '',
   })
-  const digitalHumanInfoCacheRef = useRef<Record<string, DigitalHumanDisplayInfo>>({})
+  const [digitalHumanNotFound, setDigitalHumanNotFound] = useState(false)
+  const digitalHumanInfoCacheRef = useRef<Record<string, DigitalHumanInfoCacheItem>>({})
 
   const conversationTitle = useMemo(() => {
     return getConversationTitle(messageTurns)
@@ -147,16 +166,19 @@ const DipChatKitInner: React.FC<Omit<DipChatKitProps, 'initialSubmitPayload' | '
   useEffect(() => {
     if (!digitalHumanAgentId) {
       setDigitalHumanInfo({ name: '', avatarSrc: '' })
+      setDigitalHumanNotFound(false)
       return
     }
 
     const cached = digitalHumanInfoCacheRef.current[digitalHumanAgentId]
     if (cached !== undefined) {
-      setDigitalHumanInfo(cached)
+      setDigitalHumanInfo(cached.info)
+      setDigitalHumanNotFound(cached.notFound)
       return
     }
 
     let disposed = false
+    setDigitalHumanNotFound(false)
 
     getDigitalHumanDetail(digitalHumanAgentId)
       .then((detail) => {
@@ -164,17 +186,28 @@ const DipChatKitInner: React.FC<Omit<DipChatKitProps, 'initialSubmitPayload' | '
         const nextName = detail.name?.trim() || digitalHumanAgentId
         const nextAvatarSrc = resolveDigitalHumanIconSrc(detail.icon_id)
         const nextInfo: DigitalHumanDisplayInfo = { name: nextName, avatarSrc: nextAvatarSrc }
-        digitalHumanInfoCacheRef.current[digitalHumanAgentId] = nextInfo
+        digitalHumanInfoCacheRef.current[digitalHumanAgentId] = {
+          info: nextInfo,
+          notFound: false,
+        }
         setDigitalHumanInfo(nextInfo)
+        setDigitalHumanNotFound(false)
       })
-      .catch(() => {
+      .catch((error) => {
         if (disposed) return
         const fallback: DigitalHumanDisplayInfo = {
           name: digitalHumanAgentId,
           avatarSrc: '',
         }
-        digitalHumanInfoCacheRef.current[digitalHumanAgentId] = fallback
+        const notFound = isDigitalHumanNotFoundError(error)
+        digitalHumanInfoCacheRef.current[digitalHumanAgentId] = {
+          info: fallback,
+          notFound,
+        }
         setDigitalHumanInfo(fallback)
+        setDigitalHumanNotFound(notFound)
+        if (notFound) return
+
         message.error(intl.get('dipChatKit.loadDigitalHumanDetailFailed').d('加载数字员工信息失败'))
       })
 
@@ -198,6 +231,7 @@ const DipChatKitInner: React.FC<Omit<DipChatKitProps, 'initialSubmitPayload' | '
           title={conversationTitle}
           digitalHumanName={digitalHumanInfo.name}
           digitalHumanAvatarSrc={digitalHumanInfo.avatarSrc || undefined}
+          digitalHumanDeleted={digitalHumanNotFound}
         />
       )}
       <div className={styles.body}>
@@ -224,6 +258,7 @@ const DipChatKitInner: React.FC<Omit<DipChatKitProps, 'initialSubmitPayload' | '
                 employeeOptions={employeeOptions}
                 defaultEmployeeValue={defaultEmployeeValue}
                 inputPlaceholder={inputPlaceholder}
+                inputDisabled={digitalHumanNotFound}
                 hideFirstUserMessage={hideFirstUserMessage}
                 onSessionKeyReady={onSessionKeyReady}
               />

@@ -6,6 +6,7 @@ export interface ChatContentAreaProps {
   employeeOptions?: AiPromptMentionOption[]
   defaultEmployeeValue?: string
   inputPlaceholder?: string
+  inputDisabled?: boolean
   hideFirstUserMessage?: boolean
   onSessionKeyReady?: (sessionKey: string) => void
 }

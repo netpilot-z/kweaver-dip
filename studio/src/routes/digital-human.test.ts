@@ -433,6 +433,28 @@ describe("createDigitalHumanRouter", () => {
     expect(deleteDigitalHuman).toHaveBeenCalledWith("i", false);
   });
 
+  it("DELETE passes deleteFiles=true from query", async () => {
+    const deleteDigitalHuman = vi.fn().mockResolvedValue(undefined);
+    const { createDigitalHumanRouter } = await importRouterWithLogicMock({
+      deleteDigitalHuman
+    });
+    const router = createDigitalHumanRouter() as Router;
+    const handler = findHandler(router, "delete", detailPath);
+    const response = createResponseDouble();
+    const next = vi.fn<NextFunction>();
+
+    await handler?.(
+      {
+        params: { id: "i" },
+        query: { deleteFiles: "true" }
+      } as unknown as Request,
+      response,
+      next
+    );
+
+    expect(deleteDigitalHuman).toHaveBeenCalledWith("i", true);
+  });
+
   it("forwards HttpError instances without wrapping them", async () => {
     const { HttpError } = await import("../errors/http-error");
     const error = new HttpError(503, "Gateway unavailable");

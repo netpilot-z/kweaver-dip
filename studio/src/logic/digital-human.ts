@@ -64,7 +64,7 @@ export interface DigitalHumanLogic {
    * Deletes an existing digital human.
    *
    * @param id The digital human identifier.
-   * @param deleteFiles Whether to remove workspace files. Defaults to `true`.
+   * @param deleteFiles Whether to remove workspace files. Defaults to `false` to keep session history.
    */
   deleteDigitalHuman(id: string, deleteFiles?: boolean): Promise<void>;
 
@@ -250,7 +250,7 @@ export class DefaultDigitalHumanLogic implements DigitalHumanLogic {
    * Deletes an existing digital human by delegating to the OpenClaw agent adapter.
    *
    * @param id The digital human identifier.
-   * @param deleteFiles Whether to remove workspace files. Defaults to `true`.
+   * @param deleteFiles Whether to remove workspace files. Defaults to `false` to keep session history.
    */
   public async deleteDigitalHuman(
     id: string,
@@ -261,7 +261,7 @@ export class DefaultDigitalHumanLogic implements DigitalHumanLogic {
     try {
       await this.openClawAgentsAdapter.deleteAgent({
         agentId: id,
-        deleteFiles
+        deleteFiles: deleteFiles ?? false
       });
     } catch (error: unknown) {
       throw toNotFoundIfAgentMissing(error, id);
