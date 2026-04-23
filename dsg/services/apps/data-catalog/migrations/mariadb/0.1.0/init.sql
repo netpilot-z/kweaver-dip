@@ -481,7 +481,7 @@ INSERT INTO `tree_node` ( `id`, `tree_id`, `parent_id`, `name`, `sort_weight`, `
 
 CREATE TABLE IF NOT EXISTS `category` (
     `id` bigint(20) NOT NULL COMMENT '唯一id，雪花算法',
-    `category_id` char(36) NOT NULL DEFAULT UUID() COMMENT '类目ID',
+    `category_id` char(36) NOT NULL COMMENT '类目ID',
     `name` varchar(32) NOT NULL COMMENT '类目名称',
     `using` tinyint(4) NOT NULL COMMENT '类目是否停用启用，bool：0：不是；1：是',
     `type` varchar(36) NOT NULL COMMENT '类目的类型：系统、自定义',
@@ -503,9 +503,9 @@ CREATE TABLE IF NOT EXISTS `category` (
 
 CREATE TABLE IF NOT EXISTS `category_node` (
     `id` bigint(20) NOT NULL COMMENT '唯一id，雪花算法',
-    `category_node_id` char(36) NOT NULL DEFAULT UUID() COMMENT '类目树节点ID',
-    `category_id` char(36) NOT NULL DEFAULT UUID() COMMENT '所属类目ID',
-    `parent_id` char(36) NOT NULL DEFAULT UUID() COMMENT '父类别节点id，为0表示没有父id',
+    `category_node_id` char(36) NOT NULL COMMENT '类目树节点ID',
+    `category_id` char(36) NOT NULL COMMENT '所属类目ID',
+    `parent_id` char(36) NOT NULL COMMENT '父类别节点id，为0表示没有父id',
     `name` varchar(128) NOT NULL COMMENT '类目节点名称',
     `owner` varchar(128) NOT NULL COMMENT '类目节点所有者的名称',
     `owner_uid` varchar(36) DEFAULT NULL COMMENT '类目节点所有者的ID',
@@ -1453,9 +1453,9 @@ CREATE TABLE  IF NOT EXISTS `t_target_plan` (
 
 CREATE TABLE IF NOT EXISTS `category_node_ext` (
     `id` bigint(20) NOT NULL COMMENT '唯一id，雪花算法',
-    `category_node_id` char(36) NOT NULL DEFAULT UUID() COMMENT '类目树节点ID',
-    `category_id` char(36) NOT NULL DEFAULT UUID() COMMENT '所属类目ID',
-    `parent_id` char(36) NOT NULL DEFAULT UUID() COMMENT '父类别节点id，为0表示没有父id',
+    `category_node_id` char(36) NOT NULL COMMENT '类目树节点ID',
+    `category_id` char(36) NOT NULL COMMENT '所属类目ID',
+    `parent_id` char(36) NOT NULL COMMENT '父类别节点id，为0表示没有父id',
     `name` varchar(128) NOT NULL COMMENT '类目节点名称',
     `owner` varchar(128) NOT NULL DEFAULT '' COMMENT '类目节点所有者的名称',
     `owner_uid` varchar(36) DEFAULT NULL COMMENT '类目节点所有者的ID',
