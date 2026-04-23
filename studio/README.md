@@ -882,7 +882,7 @@ DIP 数字员工 Web 界面
 
 响应：`200 text/event-stream`
 
-返回 OpenResponse 风格 SSE 事件流。服务端通过 OpenClaw WebSocket `chat.send` 建立 Agent 消息流，自动生成随机 UUID 作为 `params.idempotencyKey`，并将 `chat` 文本帧、`agent/assistant` 文本帧以及 `agent/tool` 工具调用帧转换为 `response.created`、`response.output_item.added`、`response.output_text.delta`、`response.output_item.done`、`response.completed`、`response.failed` 等事件；其中 `agent/assistant.data.delta` 优先透传，缺失时回退为 `data.text`。
+返回 OpenResponse 风格 SSE 事件流。服务端通过 OpenClaw WebSocket `chat.send` 建立 Agent 消息流，自动生成随机 UUID 作为 `params.idempotencyKey`，并将 `chat` 文本帧、`agent/assistant` 文本帧以及 `agent/tool` 工具调用帧转换为 `response.created`、`response.output_item.added`、`response.output_text.delta`、`response.output_item.done`、`response.completed`、`response.failed` 等事件；其中 `agent/assistant.data.delta` 优先透传，缺失时回退为 `data.text`。服务会保持工具事件结构不变，但会在返回前对工具结果、工具错误、助手文本和失败消息中的密码、Token、Secret、API Key、Cookie、私钥、环境变量等敏感值进行脱敏；变量名或字段名会保留，敏感值替换为 `***`。
 
 当请求携带 `attachments` 时，服务会把文件路径列表追加到下游提示词中（隐藏上下文），用于兼容下游未直接消费 `attachments` 字段的场景。
 

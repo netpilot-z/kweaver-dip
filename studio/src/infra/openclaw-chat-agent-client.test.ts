@@ -816,7 +816,7 @@ describe("DefaultOpenClawChatAgentClient", () => {
             content: [
               {
                 type: "text",
-                text: "部分结果"
+                text: "KWEAVER_TOKEN=kw-secret"
               }
             ]
           }
@@ -838,10 +838,11 @@ describe("DefaultOpenClawChatAgentClient", () => {
           name: "web_search",
           toolCallId: "tool-1",
           result: {
+            token: "result-token",
             content: [
               {
                 type: "text",
-                text: "搜索结果内容"
+                text: "OPENCLAW_GATEWAY_TOKEN=gw-secret"
               }
             ]
           }
@@ -910,6 +911,13 @@ describe("DefaultOpenClawChatAgentClient", () => {
     expect(body).toContain("\"tool-1\"");
     expect(body).toContain("\"partial\":true");
     expect(body).toContain("\"partialResult\"");
+    expect(body).toContain("\"result\"");
+    expect(body).toContain("KWEAVER_TOKEN=***");
+    expect(body).toContain("OPENCLAW_GATEWAY_TOKEN=***");
+    expect(body).toContain("\"token\":\"***\"");
+    expect(body).not.toContain("kw-secret");
+    expect(body).not.toContain("gw-secret");
+    expect(body).not.toContain("result-token");
     expect(body).toContain("event: response.output_text.delta");
     expect(body).toContain("event: response.completed");
     expect(body).toContain("\"status\":\"completed\"");
@@ -1051,6 +1059,95 @@ describe("DefaultOpenClawChatAgentClient", () => {
     expect(body).toContain("event: response.completed");
     expect(body).toContain("\"text\":\"Hello\"");
     expect(body).not.toContain("ignored final");
+  });
+
+  it("redacts sensitive values split across assistant text deltas", async () => {
+    const socket = new FakeWebSocket();
+    const client = new DefaultOpenClawChatAgentClient(
+      {
+        url: "ws://127.0.0.1:18789",
+        token: "secret-token",
+        timeoutMs: 1_000,
+        deviceIdentity: loadDeviceIdentityFromAssets(),
+        now: () => 1_710_000_000_500
+      },
+      () => socket
+    );
+
+    const pending = client.createResponseStream(
+      {
+        sessionKey: "agent:agent-1:user:user-1:direct:chat-1",
+        message: "hello",
+        idempotencyKey: "run-1"
+      },
+      "agent-1"
+    );
+
+    completeHandshake(socket);
+    const result = await pending;
+    const reader = result.body.getReader();
+
+    socket.emit("message", JSON.stringify({
+      type: "event",
+      event: "agent",
+      payload: {
+        runId: "run-1",
+        sessionKey: "agent:agent-1:user:user-1:direct:chat-1",
+        seq: 1,
+        stream: "assistant",
+        ts: 1710000000100,
+        data: {
+          text: "KWEAVER_TOKEN=",
+          delta: "KWEAVER_TOKEN="
+        }
+      }
+    }));
+
+    socket.emit("message", JSON.stringify({
+      type: "event",
+      event: "agent",
+      payload: {
+        runId: "run-1",
+        sessionKey: "agent:agent-1:user:user-1:direct:chat-1",
+        seq: 2,
+        stream: "assistant",
+        ts: 1710000000200,
+        data: {
+          text: "KWEAVER_TOKEN=stream-secret",
+          delta: "stream-secret"
+        }
+      }
+    }));
+
+    socket.emit("message", JSON.stringify({
+      type: "event",
+      event: "chat",
+      payload: {
+        runId: "run-1",
+        sessionKey: "agent:agent-1:user:user-1:direct:chat-1",
+        seq: 3,
+        state: "final",
+        message: {
+          role: "assistant",
+          content: [{ type: "text", text: "ignored final" }]
+        }
+      }
+    }));
+
+    let body = "";
+
+    while (true) {
+      const { done, value } = await reader.read();
+
+      if (done) {
+        break;
+      }
+
+      body += new TextDecoder().decode(value);
+    }
+
+    expect(body).toContain("KWEAVER_TOKEN=***");
+    expect(body).not.toContain("stream-secret");
   });
 
   it("fails before streaming when chat.send acknowledgement is invalid", async () => {
@@ -1543,13 +1640,13 @@ describe("DefaultOpenClawChatAgentClient", () => {
           name: "web_search",
           toolCallId: "tool-1",
           error: {
-            message: "tool failed"
+            message: "tool failed with PASSWORD=plain-secret"
           }
         }
       }
     }));
 
-    socket.emit("error", new Error("socket failed"));
+    socket.emit("error", new Error("socket failed with API_KEY=api-secret"));
 
     let body = "";
 
@@ -1563,9 +1660,12 @@ describe("DefaultOpenClawChatAgentClient", () => {
 
     expect(body).toContain("\"type\":\"function_call\"");
     expect(body).toContain("\"status\":\"completed\"");
-    expect(body).toContain("\"tool failed\"");
+    expect(body).toContain("\"error\"");
+    expect(body).toContain("PASSWORD=***");
+    expect(body).toContain("API_KEY=***");
+    expect(body).not.toContain("plain-secret");
+    expect(body).not.toContain("api-secret");
     expect(body).toContain("event: response.failed");
-    expect(body).toContain("socket failed");
   });
 
   it("aborts before resolution with downstream abort status", async () => {

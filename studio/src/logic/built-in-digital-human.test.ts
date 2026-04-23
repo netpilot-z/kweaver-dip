@@ -1,4 +1,4 @@
-import { mkdtemp, mkdir, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -44,6 +44,24 @@ describe("DefaultBuiltInDigitalHumanLogic", () => {
         created: false
       }
     ]);
+  });
+
+  it("keeps checked-in built-in SOUL files aligned with the secret redaction rules", async () => {
+    const soulPaths = [
+      join(process.cwd(), "built-in", "bkn-creator", "SOUL.md"),
+      join(process.cwd(), "built-in", "skill-agent", "SOUL.md")
+    ];
+
+    for (const soulPath of soulPaths) {
+      const soul = await readFile(soulPath, "utf8");
+
+      expect(soul).toContain("## 安全输出约束");
+      expect(soul).toContain("对用户仅展示密文、哈希摘要或 `***` 形式的占位符");
+      expect(soul).toContain("`KEY=value`、`KEY: value`");
+      expect(soul).toContain("`TOKEN`、`SECRET`、`PASSWORD`、`API_KEY`、`COOKIE`、`PRIVATE_KEY`");
+      expect(soul).toContain("`OPENCLAW_*`、`KWEAVER_*`");
+      expect(soul).toContain("当前 `process.env` 中已知敏感值");
+    }
   });
 
   it("creates selected built-in digital humans by installing skills first", async () => {

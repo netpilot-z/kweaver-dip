@@ -203,6 +203,58 @@ describe("DefaultSessionsLogic", () => {
     });
   });
 
+  it("redacts sensitive values from chat message history", async () => {
+    const logic = new DefaultSessionsLogic({
+      listSessions: vi.fn(),
+      getChatMessages: vi.fn().mockResolvedValue({
+        sessionKey: "key1",
+        sessionId: "runtime-1",
+        messages: [
+          {
+            role: "assistant",
+            content: "tool output OPENCLAW_GATEWAY_TOKEN=gw-secret"
+          },
+          {
+            role: "tool",
+            content: [
+              {
+                type: "text",
+                text: "KWEAVER_TOKEN=kw-secret"
+              }
+            ]
+          }
+        ]
+      }),
+      getSession: vi.fn(),
+      deleteSession: vi.fn(),
+      previewSessions: vi.fn()
+    });
+
+    await expect(
+      logic.getChatMessages({
+        sessionKey: "key1"
+      })
+    ).resolves.toEqual({
+      sessionKey: "key1",
+      sessionId: "runtime-1",
+      messages: [
+        {
+          role: "assistant",
+          content: "tool output OPENCLAW_GATEWAY_TOKEN=***"
+        },
+        {
+          role: "tool",
+          content: [
+            {
+              type: "text",
+              text: "KWEAVER_TOKEN=***"
+            }
+          ]
+        }
+      ]
+    });
+  });
+
   it("looks up one session summary by key through listSessions", async () => {
     const listSessions = vi.fn().mockResolvedValue({
       sessions: [

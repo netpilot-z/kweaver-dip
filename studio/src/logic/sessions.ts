@@ -6,6 +6,7 @@ import type {
 } from "../infra/openclaw-archives-http-client";
 import { parseSession } from "../utils/session";
 import { stripHiddenAttachmentContextBlock } from "../utils/hidden-attachment-context";
+import { redactSensitiveText } from "../utils/redaction";
 import type {
   ChatAgentAttachment,
   ChatAgentInputFileContentPart,
@@ -498,7 +499,7 @@ export function buildSanitizedMessageContentFromString(
   content: string,
   attachments: ChatAgentAttachment[]
 ): unknown {
-  const text = stripHiddenAttachmentContextBlock(content);
+  const text = redactSensitiveText(stripHiddenAttachmentContextBlock(content));
 
   if (attachments.length === 0) {
     return text;
@@ -596,7 +597,7 @@ export function sanitizeMessageContentPart(
 
   return {
     ...record,
-    text: stripHiddenAttachmentContextBlock(record.text)
+    text: redactSensitiveText(stripHiddenAttachmentContextBlock(record.text))
   };
 }
 

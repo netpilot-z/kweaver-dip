@@ -164,7 +164,11 @@ describe("renderIdentityMarkdown / renderSoulMarkdown", () => {
 
     expect(md).toContain("## 安全输出约束");
     expect(md).toContain("不得向普通用户输出密码、Token、Secret、API Key、Cookie、私钥或环境变量");
-    expect(md).toContain("必须先进行加密或不可逆脱敏处理");
+    expect(md).toContain("对用户仅展示密文、哈希摘要或 `***` 形式的占位符");
+    expect(md).toContain("`KEY=value`、`KEY: value`");
+    expect(md).toContain("`TOKEN`、`SECRET`、`PASSWORD`、`API_KEY`、`COOKIE`、`PRIVATE_KEY`");
+    expect(md).toContain("`OPENCLAW_*`、`KWEAVER_*`");
+    expect(md).toContain("当前 `process.env` 中已知敏感值");
   });
 
   it("extracts soul only from blockquotes (allows > without space after >)", () => {

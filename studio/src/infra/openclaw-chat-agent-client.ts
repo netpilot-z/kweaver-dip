@@ -20,6 +20,7 @@ import {
 } from "./openclaw-gateway-client";
 import { ChatAgentAttachment } from "../types/chat-agent";
 import type { OpenClawGatewayRuntimeConfig } from "../utils/env";
+import { redactSensitiveText, redactSensitiveValue } from "../utils/redaction";
 
 const DEFAULT_TIMEOUT_MS = 5_000;
 const SSE_HEADERS = new Headers({
@@ -417,6 +418,7 @@ export class DefaultOpenClawChatAgentClient implements OpenClawChatAgentClient {
       let terminal = false;
       let streamResolved = false;
       let messageStarted = false;
+      let rawFinalText = "";
       let finalText = "";
       let finalTimestampMs = this.now();
       let textEventSource: "chat" | "assistant" | undefined;
@@ -488,6 +490,7 @@ export class DefaultOpenClawChatAgentClient implements OpenClawChatAgentClient {
           return;
         }
 
+        const redactedMessage = redactSensitiveText(message);
         const response = createResponseResource({
           runId: ackPayload.runId,
           agentId,
@@ -500,7 +503,7 @@ export class DefaultOpenClawChatAgentClient implements OpenClawChatAgentClient {
           ),
           error: {
             code: "openclaw_error",
-            message
+            message: redactedMessage
           }
         });
 
@@ -731,7 +734,16 @@ export class DefaultOpenClawChatAgentClient implements OpenClawChatAgentClient {
                 return;
               }
 
-              finalText += deltaText;
+              rawFinalText += deltaText;
+
+              const nextText = redactSensitiveText(rawFinalText);
+              const redactedDeltaText = readIncrementalText(finalText, nextText);
+
+              finalText = nextText;
+
+              if (redactedDeltaText.length === 0) {
+                return;
+              }
 
               const { itemId, outputIndex } = ensureMessageStarted();
 
@@ -740,7 +752,7 @@ export class DefaultOpenClawChatAgentClient implements OpenClawChatAgentClient {
                 item_id: itemId,
                 output_index: outputIndex,
                 content_index: 0,
-                delta: deltaText
+                delta: redactedDeltaText
               });
               return;
             }
@@ -757,7 +769,8 @@ export class DefaultOpenClawChatAgentClient implements OpenClawChatAgentClient {
             const terminalText = readAssistantText(payload.message);
 
             if (textEventSource !== "assistant" && terminalText.length > 0) {
-              finalText = terminalText;
+              rawFinalText = terminalText;
+              finalText = redactSensitiveText(rawFinalText);
             }
 
             const { itemId, outputIndex } = ensureMessageStarted();
@@ -820,8 +833,10 @@ export class DefaultOpenClawChatAgentClient implements OpenClawChatAgentClient {
             textEventSource = "assistant";
             finalTimestampMs = payload.ts;
 
-            const nextText = payload.data.text;
-            const deltaText = payload.data.delta ?? nextText;
+            rawFinalText = payload.data.text;
+
+            const nextText = redactSensitiveText(rawFinalText);
+            const deltaText = readIncrementalText(finalText, nextText);
 
             if (deltaText.length > 0) {
               finalText = nextText;
@@ -875,7 +890,7 @@ export class DefaultOpenClawChatAgentClient implements OpenClawChatAgentClient {
                 "in_progress",
                 {
                   partial: true,
-                  partialResult: payload.data.partialResult
+                  partialResult: redactSensitiveValue(payload.data.partialResult)
                 }
               );
 
@@ -896,8 +911,8 @@ export class DefaultOpenClawChatAgentClient implements OpenClawChatAgentClient {
               toolName,
               "completed",
               payload.data.phase === "result"
-                ? { result: payload.data.result }
-                : { error: payload.data.error }
+                ? { result: redactSensitiveValue(payload.data.result) }
+                : { error: redactSensitiveValue(payload.data.error) }
             );
 
             outputItems[outputIndex] = completedItem;
@@ -1487,6 +1502,24 @@ export function mergeOutputItems(
 
   nextItems[existingIndex] = messageItem;
   return nextItems;
+}
+
+/**
+ * Computes the new suffix to stream after a redacted text snapshot changes.
+ *
+ * @param previousText Previously emitted redacted text.
+ * @param nextText Next redacted full text snapshot.
+ * @returns The suffix that has not yet been emitted.
+ */
+export function readIncrementalText(
+  previousText: string,
+  nextText: string
+): string {
+  if (!nextText.startsWith(previousText)) {
+    return nextText;
+  }
+
+  return nextText.slice(previousText.length);
 }
 
 /**
