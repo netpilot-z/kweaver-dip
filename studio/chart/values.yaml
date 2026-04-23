@@ -14,7 +14,7 @@ replicaCount: 1
 image:
   registry: swr.cn-east-3.myhuaweicloud.com/kweaver-ai
   repository: dip/dip-studio
-  tag: "0.5.0"
+  tag: "0.5.0-main"
   pullPolicy: IfNotPresent
 
 service:
@@ -46,7 +46,7 @@ ingress:
 studio:
   nodeEnv: production
   envFileHostPath: /root/.env
-  openClawHostPath: /root/.openclaw/
+  OpenClawHostPath: /root/.openclaw/
   KWeaverHydraAdminURL: http://hydra-admin:4445
   useExternalOpenClaw: false
 

@@ -20,7 +20,7 @@ spec:
       volumes:
         - name: openclaw-host-path
           hostPath:
-            path: {{ .Values.studio.openClawHostPath }}
+            path: {{ .Values.studio.OpenClawHostPath }}
             type: DirectoryOrCreate
         - name: env-file-host-path
           hostPath:
