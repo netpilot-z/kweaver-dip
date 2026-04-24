@@ -8,11 +8,9 @@
 
 # KWeaver DIP
 
-KWeaver DIP 是 AI 原生的数字员工开发与管理平台，围绕业务知识网络，构建可理解、可执行、可治理的数字员工应用体系。
+KWeaver DIP 定位为企业级数字员工平台，基于 [KWeaver Core](https://github.com/kweaver-ai/kweaver-core) 开发；以业务知识网络为底座，提供 AI 原生的数字员工开发与管理能力，使企业智能可理解、可执行、可治理。
 
 - 该平台基于 [KWeaver Core](https://github.com/kweaver-ai/kweaver-core) 和 [OpenClaw](https://github.com/openclaw/openclaw) 构建的数字员工的能力。
-
-- 🌐 [KWeaver DIP 的在线体验](https://dip-poc.aishu.cn/studio/agent/development/my-agent-list)：欢迎在线试用 KWeaver DIP（用户名：`kweaver`，密码：`111111`），该环境内置了一些数字员工，可以快速体验。
 
 ## 安装与配置使用 KWeaver DIP
 
