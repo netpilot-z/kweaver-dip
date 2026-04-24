@@ -168,6 +168,27 @@ function ensureArchiveToolAllowed(cfg) {
   };
 }
 
+/**
+ * Ensures OpenClaw agent defaults include the expected main-session concurrency.
+ *
+ * @param cfg Parsed `openclaw.json` object.
+ */
+function ensureAgentDefaults(cfg) {
+  const agents = cfg.agents && typeof cfg.agents === "object" ? cfg.agents : {};
+  const defaults = agents.defaults && typeof agents.defaults === "object" ? agents.defaults : {};
+
+  cfg.agents = {
+    ...agents,
+    defaults: {
+      ...defaults,
+      maxConcurrent:
+        typeof defaults.maxConcurrent === "number" && Number.isFinite(defaults.maxConcurrent)
+          ? defaults.maxConcurrent
+          : 8
+    }
+  };
+}
+
 async function initOpenClawConfig(builtInAgents) {
   console.log("🛠️ 开始校准 openclaw.json 中的 Agent 配置...");
   const configPath = path.join(STATE_DIR, "openclaw.json");
@@ -186,6 +207,7 @@ async function initOpenClawConfig(builtInAgents) {
 
   cfg.agents = cfg.agents || {};
   cfg.agents.list = cfg.agents.list || [];
+  ensureAgentDefaults(cfg);
   cfg.cron = {
     ...(cfg.cron || {}),
     sessionRetention: false
