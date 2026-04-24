@@ -10,6 +10,7 @@
 │   └── workflows/        # CI/CD 流水线
 ├── deploy/               # 部署脚本及配置
 ├── docs/                 # 项目文档
+├── design/               # 特性设计及交互设计
 ├── release-notes/        # 版本发布说明
 ├── web/                  # 前端代码
 ├── studio/               # 数字员工平台模块
