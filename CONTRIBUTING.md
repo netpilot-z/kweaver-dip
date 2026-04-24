@@ -48,6 +48,7 @@ Verify --通过--> Merge
 ```
 
 - 需求分支以 `feat/<id>-<name>` 来命名，`id` 为 GitHub ISSUE 号，`name` 为简单的英文标题，例如需求 “数字员工的权限管控 #122” 的分支名为：`feat/122-access-control` 
+- 增量提交功能变更时，在一次 Commit 中一起包含前端 + 后端代码，确保一次 Commit 包含完整的内容更新
 - 需求分支的 Bug ，在需求合并到主线前后提交到不同的分支：
   * 需求合并主线之前，直接在需求分支上处理即可
   * 需求合并主线之后，在 fix/ 分支处理
@@ -69,8 +70,11 @@ Commit --> Fix
 Commit --> CI --> Verify --> Merge
 ```
 
-- 每个模块创建一个 fix/ 分支，用于持续 Bug 修复和验证，例如：DIP Studio 专用 fix 分支为：`fix/dip-studio`
+- 每个模块创建一个 fix/ 分支，用于持续修复和验证 Bug。该分支同时适用前端和后端，命名建议是统一使用 `fix/<module>-bugs`，其中 <module> 与模块的目录名称保持一致（ web 不需要单独的 fix/ 分支）。例如，DIP Studio 前端和后端专用 fix 分支为：：`fix/studio-bugs`
 - fix/ 分支可以持续提交 Bug 修复，并在需要测试验证构建一个镜像，这样可以在批量处理 Bug 的同时又避免影响 main
+- 修复 Bug 时，在一次 Commit 中一起包含前端 + 后端代码，确保一次 Commit 包含完整的修复
+- 流转 ISSUE 到测试时，写明需要更换的镜像完整路径，如：`swr.cn-east-3.myhuaweicloud.com/kweaver-ai/dip/dip-frontend:0.5.0-fix-studio-bugs.dc6c369`，特别留意需要同时更新前端 + 后端镜像的情况
+— 没有 Chart 变更时，直接 edit deployment 替换镜像
 
 ### 发布阶段
 
