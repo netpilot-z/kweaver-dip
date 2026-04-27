@@ -1,0 +1,98 @@
+.root {
+  width: 100%;
+  min-width: 0;
+  overflow-y: hidden;
+}
+
+.inlineRoot {
+  overflow-x: hidden;
+}
+
+.modalRoot {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  min-width: 100%;
+
+  :global(.dip-spin-nested-loading) {
+    width: 100%;
+  }
+
+  :global(.dip-spin-container) {
+    width: 100%;
+  }
+
+  :global(.dip-table) {
+    width: 100%;
+    min-width: 100%;
+    background: transparent;
+  }
+
+  :global(.dip-table-wrapper) {
+    width: 100%;
+  }
+
+  :global(.dip-table-container) {
+    width: 100%;
+  }
+
+  :global(.dip-table-content) {
+    width: 100%;
+  }
+
+  :global(.dip-table table) {
+    width: 100% !important;
+    min-width: 100% !important;
+    table-layout: fixed;
+  }
+
+  :global(.dip-table-content table) {
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+
+  :global(.dip-table-thead > tr > th) {
+    font-weight: 600;
+  }
+
+  :global(.dip-table-thead > tr > th),
+  :global(.dip-table-tbody > tr > td) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  :global {
+    .dip-table-thead {
+      display: inline-block;
+      width: 100%;
+
+      & > tr {
+        display: inline-block;
+        width: 100%;
+
+        & .dip-table-cell {
+          display: inline-block;
+          width: 50%;
+        }
+      }
+    }
+
+    .dip-table-tbody {
+      display: inline-block;
+      width: 100%;
+
+      & .dip-table-row {
+        display: inline-block;
+        width: 100%;
+
+        & .dip-table-cell {
+          display: inline-block;
+          width: 50%;
+        }
+      }
+    }
+  }
+}

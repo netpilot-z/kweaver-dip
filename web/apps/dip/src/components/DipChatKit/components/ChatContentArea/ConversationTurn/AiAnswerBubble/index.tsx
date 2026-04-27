@@ -1,4 +1,4 @@
-import { CheckOutlined, CopyOutlined, DownOutlined, UpOutlined } from '@ant-design/icons'
+﻿import { CheckOutlined, CopyOutlined, DownOutlined, UpOutlined } from '@ant-design/icons'
 import { Bubble, CodeHighlighter, Mermaid, Think, ThoughtChain } from '@ant-design/x'
 import type { ComponentProps as MarkdownComponentProps } from '@ant-design/x-markdown'
 import { Button, Collapse, Tag, Tooltip } from 'antd'
@@ -9,6 +9,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import intl from 'react-intl-universal'
 import IconFont from '@/components/IconFont'
 import type { DipChatKitAnswerEvent, DipChatKitAnswerTimelineItem } from '../../../../types'
+import ChartRenderer from '../../../ChartRenderer'
+import { parseDipChatKitChartPayload } from '../../../ChartRenderer/utils'
 import MarkdownRenderer from '../../../MarkdownRenderer'
 import MessageActions from '../MessageActions'
 import type { MessageAction } from '../MessageActions/types'
@@ -471,6 +473,14 @@ const AiAnswerBubble: React.FC<AiAnswerBubbleProps> = ({
         )
       }
 
+      const chartPayload = parseDipChatKitChartPayload(codeText, {
+        allowLenient: !turn.answerStreaming,
+        requireRenderable: true,
+      })
+      if (chartPayload) {
+        return <ChartRenderer chart={chartPayload} />
+      }
+
       const artifactPreviewPayload = buildArchiveGridPreviewPayload(turn.sessionKey, codeText)
       if (artifactPreviewPayload?.artifact) {
         return (
@@ -550,7 +560,7 @@ const AiAnswerBubble: React.FC<AiAnswerBubbleProps> = ({
       a: LinkRenderer,
       div: DivRenderer,
     }
-  }, [onOpenPreview, turn.sessionKey])
+  }, [onOpenPreview, turn.answerStreaming, turn.sessionKey])
 
   const toolCardMarkdownComponents = useMemo(() => {
     const ToolCardLinkRenderer: React.FC<MarkdownComponentProps> = ({
@@ -679,6 +689,7 @@ const AiAnswerBubble: React.FC<AiAnswerBubbleProps> = ({
                   variant="tool"
                   components={toolCardMarkdownComponents}
                   content={toolCard.text}
+                  allowLenientChartParse={!turn.answerStreaming}
                 />
               ) : (
                 <pre className={styles.chatToolCardPreviewText}>{toolCard.previewText}</pre>
@@ -693,6 +704,7 @@ const AiAnswerBubble: React.FC<AiAnswerBubbleProps> = ({
                   variant="tool"
                   components={toolCardMarkdownComponents}
                   content={toolCard.text}
+                  allowLenientChartParse={!turn.answerStreaming}
                 />
               ) : (
                 <span className={styles.chatToolCardInlineText}>{toolCard.inlineText}</span>
@@ -845,6 +857,7 @@ const AiAnswerBubble: React.FC<AiAnswerBubbleProps> = ({
               variant="thinking"
               components={markdownComponents}
               content={thinkingText}
+              allowLenientChartParse={!turn.answerStreaming}
             />
           </Think>
         )}
@@ -854,6 +867,7 @@ const AiAnswerBubble: React.FC<AiAnswerBubbleProps> = ({
             variant="answer"
             components={markdownComponents}
             content={answerText}
+            allowLenientChartParse={!turn.answerStreaming}
           />
         )}
       </div>

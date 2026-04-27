@@ -1,9 +1,11 @@
-import { CodeHighlighter, Mermaid } from '@ant-design/x'
+﻿import { CodeHighlighter, Mermaid } from '@ant-design/x'
 import XMarkdown, { type ComponentProps as MarkdownComponentProps } from '@ant-design/x-markdown'
 import '@ant-design/x-markdown/dist/x-markdown.css'
 import clsx from 'clsx'
 import type React from 'react'
 import { useMemo } from 'react'
+import ChartRenderer from '../ChartRenderer'
+import { parseDipChatKitChartPayload } from '../ChartRenderer/utils'
 import styles from './index.module.less'
 import type { MarkdownRendererProps } from './types'
 
@@ -23,6 +25,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
   className,
   variant = 'answer',
   components,
+  allowLenientChartParse = true,
 }) => {
   const markdownComponents = useMemo(() => {
     const CodeRenderer: React.FC<MarkdownComponentProps> = ({
@@ -42,6 +45,14 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
         return <Mermaid>{codeText}</Mermaid>
       }
 
+      const chartPayload = parseDipChatKitChartPayload(codeText, {
+        allowLenient: allowLenientChartParse,
+        requireRenderable: true,
+      })
+      if (chartPayload) {
+        return <ChartRenderer chart={chartPayload} />
+      }
+
       return <CodeHighlighter lang={language}>{codeText}</CodeHighlighter>
     }
 
@@ -49,7 +60,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
       code: CodeRenderer,
       ...(components || {}),
     }
-  }, [components])
+  }, [allowLenientChartParse, components])
 
   return (
     <div className={clsx('MarkdownRenderer', styles.root, styles[variant], className)}>

@@ -10,4 +10,5 @@ export interface MarkdownRendererProps {
   className?: string
   variant?: MarkdownRendererVariant
   components?: MarkdownRendererComponents
+  allowLenientChartParse?: boolean
 }
