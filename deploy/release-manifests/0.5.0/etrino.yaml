@@ -11,7 +11,7 @@ releases:
     version: 3.1.0-release
   vega-calculate:
     chart: vega-calculate
-    version: 3.3.4-release
+    version: 3.3.5-release
   vega-metadata:
     chart: vega-metadata
-    version: 3.3.1-release
+    version: 3.3.2-release
