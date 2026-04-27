@@ -12,6 +12,7 @@ import {
     getSearchAgentInfo,
     getAgentVersionV0,
 } from '@/core/apis/afSailorService'
+import { formatError, getMenuResourceActions } from '@/core'
 import { Loader } from '@/ui'
 import styles from './styles.module.less'
 import __ from './locale'
@@ -220,8 +221,30 @@ const SmartDataQuery: React.FC = () => {
     >([])
     const { microAppProps } = useMicroAppProps()
     const [profile, setProfile] = useState<string>('')
+    const [menuActions, setMenuActions] = useState<string[]>([]) // 菜单资源动作权限
+    const hasOnlinePerm = useMemo(
+        () => menuActions?.includes('online'),
+        [menuActions],
+    )
 
     const navigate = useNavigate()
+
+    useEffect(() => {
+        // 获取菜单资源动作权限
+        const getMenuResourceActionsFn = async () => {
+            try {
+                const res = await getMenuResourceActions({
+                    resource_id: 'smartDataQuery',
+                    resource_type: 'smart_data_query',
+                })
+                setMenuActions(res?.actions || [])
+            } catch (error) {
+                formatError(error)
+            }
+        }
+
+        getMenuResourceActionsFn()
+    }, [])
 
     useEffect(() => {
         const fetchDefaultAgent = async () => {
@@ -503,19 +526,22 @@ const SmartDataQuery: React.FC = () => {
                                     ))}
                                 </div>
                             )}
-                            {!selectedSceneAgent && sceneAgents.length > 0 && (
-                                <SceneTagsRow
-                                    visibleSceneAgents={visibleSceneAgents}
-                                    overflowSceneAgents={overflowSceneAgents}
-                                    selectedSceneAgentKey={
-                                        selectedSceneAgentKey
-                                    }
-                                    onSceneTagClick={handleSceneTagClick}
-                                    onViewMore={handleViewMoreScene}
-                                    moreOpen={moreOpen}
-                                    setMoreOpen={setMoreOpen}
-                                />
-                            )}
+                            {!selectedSceneAgent &&
+                                (sceneAgents.length > 0 || hasOnlinePerm) && (
+                                    <SceneTagsRow
+                                        visibleSceneAgents={visibleSceneAgents}
+                                        overflowSceneAgents={
+                                            overflowSceneAgents
+                                        }
+                                        selectedSceneAgentKey={
+                                            selectedSceneAgentKey
+                                        }
+                                        onSceneTagClick={handleSceneTagClick}
+                                        onViewMore={handleViewMoreScene}
+                                        moreOpen={moreOpen}
+                                        setMoreOpen={setMoreOpen}
+                                    />
+                                )}
                         </>
                     )}
                 </div>
