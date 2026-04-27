@@ -80,12 +80,22 @@ const createHttpRequest = curry((method: string, url: string, options: OptionsTy
     ],
     transformResponse: [
       (data: any) => {
-        if (data) {
-          try {
-            return JSON.parse(data)
-          } catch {
-            return data
-          }
+        if (data === undefined || data === null) {
+          return data
+        }
+
+        if (responseType && responseType !== 'json') {
+          return data
+        }
+
+        if (typeof data !== 'string') {
+          return data
+        }
+
+        try {
+          return JSON.parse(data)
+        } catch {
+          return data
         }
       },
     ],
