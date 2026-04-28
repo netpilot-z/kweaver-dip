@@ -492,6 +492,8 @@
     "entireArray": "Entire Array",
     "specificIndexElement": "Element at Specific Index",
     "arrayIndex": "Array Index",
+    "selectChildFieldOptional": "Select Child Field (Optional)",
+    "selectChildFieldPlaceholder": "Please select a child field",
     "getElementAtIndex": "Will get the {index} element in the array",
     "searchFieldPlaceholder": "Search field/path (use [*] for arrays: self_config.skills.tools[*].tool_id)",
     "pathDescription": "Path Description",

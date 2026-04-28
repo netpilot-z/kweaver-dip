@@ -1,5 +1,5 @@
 import { FC, useEffect, useMemo, useState, memo, useRef, useCallback } from 'react';
-import { Modal, Tree, TreeDataNode, Radio, InputNumber, Tooltip, Button, message, Input } from 'antd';
+import { Modal, Tree, TreeDataNode, Radio, InputNumber, Tooltip, Button, message, Input, Select } from 'antd';
 import { DownOutlined, QuestionCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import intl from 'react-intl-universal';
 import classNames from 'classnames';
@@ -79,17 +79,40 @@ function generateDotSeparatedPrefixes(str: string | undefined): string[] {
 }
 
 // 解析数组索引
-const parseArrayIndex = (value: string): number => {
-  const match = value.match(endingBracketNumberRegex);
-  if (!match) return 0;
-
-  const index = parseInt(match[0].replace(/\[|\]/g, ''), 10);
-  return isNaN(index) ? 0 : index;
-};
-
 // 移除末尾的括号内容（移除[<index>]，移除[*]）
 const removeTrailingBrackets = (value: string) => {
   return value.replace(endingBracketNumberRegex, '').replace(/\[\*+\]$/, '');
+};
+
+// 解析数组节点的索引和可选子字段：path[index].child
+const parseIndexedArrayPath = (value?: string) => {
+  if (!value) return null;
+
+  const match = value.match(/^(.*)\[(\d+)\](?:\.(.+))?$/);
+  if (!match) return null;
+
+  const index = parseInt(match[2], 10);
+
+  return {
+    arrayPath: match[1],
+    arrayIndex: isNaN(index) ? 0 : index,
+    subfieldPath: match[3] || undefined,
+  };
+};
+
+const getNormalizedSearchTreeKey = (value: string) => {
+  const indexedArrayPathInfo = parseIndexedArrayPath(value);
+  if (indexedArrayPathInfo) {
+    return indexedArrayPathInfo.arrayPath;
+  }
+
+  return removeTrailingBrackets(value);
+};
+
+const getValidatedSubfieldPath = (node: any, subfieldPath?: string) => {
+  if (!subfieldPath || !node?.children?.length) return undefined;
+
+  return node.children.some((child: any) => child?.details?.name === subfieldPath) ? subfieldPath : undefined;
 };
 
 const SelfConfigVarSelector: FC<SelfConfigVarSelectorProps> = ({ defaultValue, onCancel, onConfirm }) => {
@@ -119,10 +142,34 @@ const SelfConfigVarSelector: FC<SelfConfigVarSelectorProps> = ({ defaultValue, o
     []
   );
 
+  const arraySubfieldOptions = useMemo(() => {
+    if (selectedNode?.details?.type !== TypeEnum.Array || !selectedNode.children?.length) return [];
+
+    return selectedNode.children.map((node: any) => {
+      const typeLabel = typeLabels[node.details.type as TypeEnum] || node.details.type;
+
+      return {
+        label: `${node.details.name} (${typeLabel})`,
+        value: node.details.name,
+      };
+    });
+  }, [selectedNode, typeLabels]);
+
+  const showArraySubfieldSelect = useMemo(
+    () =>
+      selectedNode?.details?.type === TypeEnum.Array &&
+      selectedNode?.details?.arraySelectOption === ArraySelectOptionEnum.Index &&
+      !!selectedNode?.children?.length,
+    [selectedNode]
+  );
+
   const treeData = useMemo(() => {
     searchHoverKeys.current = [];
 
     if (!selfConfigSchema) return [];
+
+    const normalizedSearchTreeKey = getNormalizedSearchTreeKey(searchValue);
+    const indexedArrayPathInfo = parseIndexedArrayPath(searchValue);
 
     // 类型标签组件
     const TypeTag: FC<{ type: string }> = ({ type }) => (
@@ -145,9 +192,9 @@ const SelfConfigVarSelector: FC<SelfConfigVarSelectorProps> = ({ defaultValue, o
 
       // 处理带点的搜索值（key匹配）：使用key前置匹配
       if (searchValue.includes('.')) {
-        const filteredSearch = searchValue.replace(endingBracketNumberRegex, '');
-        const isMatch = key.startsWith(filteredSearch) && countDots(filteredSearch) === countDots(key);
-        const matchStr = isMatch ? last(filteredSearch.split('.')) || '' : '';
+        const isMatch =
+          key.startsWith(normalizedSearchTreeKey) && countDots(normalizedSearchTreeKey) === countDots(key);
+        const matchStr = isMatch ? last(normalizedSearchTreeKey.split('.')) || '' : '';
 
         return { isMatch, matchStr };
       }
@@ -233,7 +280,7 @@ const SelfConfigVarSelector: FC<SelfConfigVarSelectorProps> = ({ defaultValue, o
     // 当精准匹配时，自动选中此节点
     if (
       searchHoverKeys.current.length === 1 &&
-      searchHoverKeys.current[0] === searchValue.replace(endingBracketNumberRegex, '')
+      searchHoverKeys.current[0] === normalizedSearchTreeKey
     ) {
       const node = findNodeByKey(data, searchHoverKeys.current[0]);
 
@@ -241,9 +288,10 @@ const SelfConfigVarSelector: FC<SelfConfigVarSelectorProps> = ({ defaultValue, o
         const updatedDetails = { ...node.details };
 
         // 处理数组类型的索引信息
-        if (node.details.type === TypeEnum.Array && endingBracketNumberRegex.test(searchValue)) {
+        if (node.details.type === TypeEnum.Array && indexedArrayPathInfo) {
           updatedDetails.arraySelectOption = ArraySelectOptionEnum.Index;
-          updatedDetails.arrayIndex = parseArrayIndex(searchValue);
+          updatedDetails.arrayIndex = indexedArrayPathInfo.arrayIndex;
+          updatedDetails.selectedSubfieldPath = getValidatedSubfieldPath(node, indexedArrayPathInfo.subfieldPath);
         }
 
         // 处理数组类型的默认选择选项
@@ -259,15 +307,23 @@ const SelfConfigVarSelector: FC<SelfConfigVarSelectorProps> = ({ defaultValue, o
     }
 
     return data;
-  }, [searchValue, selfConfigSchema]);
+  }, [searchValue, selfConfigSchema, typeLabels]);
 
   const path = useMemo(() => {
     if (!selectedNode) return '';
 
-    return selectedNode.details.type === TypeEnum.Array &&
-      selectedNode.details.arraySelectOption === ArraySelectOptionEnum.Index
-      ? `${selectedNode.key}[${selectedNode.details.arrayIndex || 0}]`
-      : selectedNode.key;
+    if (selectedNode.details.type === TypeEnum.Array) {
+      if (selectedNode.details.arraySelectOption === ArraySelectOptionEnum.Index) {
+        const basePath = `${selectedNode.key}[${selectedNode.details.arrayIndex || 0}]`;
+        return selectedNode.details.selectedSubfieldPath
+          ? `${basePath}.${selectedNode.details.selectedSubfieldPath}`
+          : basePath;
+      }
+
+      return selectedNode.key;
+    }
+
+    return selectedNode.key;
   }, [selectedNode]);
 
   // 获取self_config字段结构
@@ -292,16 +348,24 @@ const SelfConfigVarSelector: FC<SelfConfigVarSelectorProps> = ({ defaultValue, o
     if (selectedNode || !treeData.length) return;
 
     let node;
-    const cleanedDefaultValue = defaultValue?.replace(endingBracketNumberRegex, '');
+    const indexedArrayPathInfo = parseIndexedArrayPath(defaultValue);
+    const cleanedDefaultValue = indexedArrayPathInfo?.arrayPath || defaultValue?.replace(endingBracketNumberRegex, '');
 
     // 根据defaultValue查找节点
     if (defaultValue && cleanedDefaultValue) {
       node = findNodeByKey(treeData, cleanedDefaultValue);
 
-      // 处理数组类型的索引信息
-      if (node && node.details.type === TypeEnum.Array && endingBracketNumberRegex.test(defaultValue)) {
-        node.details.arraySelectOption = ArraySelectOptionEnum.Index;
-        node.details.arrayIndex = parseArrayIndex(defaultValue);
+      // 处理数组类型的索引和子字段信息
+      if (node && node.details.type === TypeEnum.Array && indexedArrayPathInfo) {
+        node = {
+          ...node,
+          details: {
+            ...node.details,
+            arraySelectOption: ArraySelectOptionEnum.Index,
+            arrayIndex: indexedArrayPathInfo.arrayIndex,
+            selectedSubfieldPath: getValidatedSubfieldPath(node, indexedArrayPathInfo.subfieldPath),
+          },
+        };
       }
     }
 
@@ -314,7 +378,7 @@ const SelfConfigVarSelector: FC<SelfConfigVarSelectorProps> = ({ defaultValue, o
     if (node.details.type === TypeEnum.Array && !node.details.arraySelectOption) {
       setSelectedNode({
         ...node,
-        details: { ...node.details, arraySelectOption: ArraySelectOptionEnum.All },
+        details: { ...node.details, arraySelectOption: ArraySelectOptionEnum.All, selectedSubfieldPath: undefined },
       });
     } else {
       setSelectedNode(node);
@@ -332,7 +396,7 @@ const SelfConfigVarSelector: FC<SelfConfigVarSelectorProps> = ({ defaultValue, o
   useEffect(() => {
     if (!searchValue) return;
 
-    const filterSearchValue = removeTrailingBrackets(searchValue);
+    const filterSearchValue = getNormalizedSearchTreeKey(searchValue);
     const hasDot = searchValue.includes('.');
     const searchValueDotCount = hasDot ? countDots(filterSearchValue) : 0;
 
@@ -384,7 +448,7 @@ const SelfConfigVarSelector: FC<SelfConfigVarSelectorProps> = ({ defaultValue, o
     if (node.details.type === TypeEnum.Array) {
       setSelectedNode({
         ...node,
-        details: { ...node.details, arraySelectOption: ArraySelectOptionEnum.All },
+        details: { ...node.details, arraySelectOption: ArraySelectOptionEnum.All, selectedSubfieldPath: undefined },
       });
     } else {
       setSelectedNode(node);
@@ -394,7 +458,12 @@ const SelfConfigVarSelector: FC<SelfConfigVarSelectorProps> = ({ defaultValue, o
   const handleArrayOptionChange = useCallback((value: ArraySelectOptionEnum) => {
     setSelectedNode((prev: any) => ({
       ...prev,
-      details: { ...prev.details, arraySelectOption: value, arrayIndex: 0 },
+      details: {
+        ...prev.details,
+        arraySelectOption: value,
+        arrayIndex: 0,
+        selectedSubfieldPath: value === ArraySelectOptionEnum.Index ? prev.details.selectedSubfieldPath : undefined,
+      },
     }));
   }, []);
 
@@ -402,6 +471,13 @@ const SelfConfigVarSelector: FC<SelfConfigVarSelectorProps> = ({ defaultValue, o
     setSelectedNode((prev: any) => ({
       ...prev,
       details: { ...prev.details, arrayIndex: value || 0 },
+    }));
+  }, []);
+
+  const handleArraySubfieldChange = useCallback((value: string | undefined) => {
+    setSelectedNode((prev: any) => ({
+      ...prev,
+      details: { ...prev.details, selectedSubfieldPath: value },
     }));
   }, []);
 
@@ -513,6 +589,23 @@ const SelfConfigVarSelector: FC<SelfConfigVarSelectorProps> = ({ defaultValue, o
                       ]}
                     />
                   </div>
+                  {showArraySubfieldSelect && (
+                    <div className="dip-font-12 dip-text-color-65 dip-mb-16 dip-pl-24">
+                      <div className="dip-user-select-none">{intl.get('dataAgent.selectChildFieldOptional')}</div>
+                      <Select
+                        allowClear
+                        className="dip-w-full dip-mt-8 dip-font-12"
+                        size="small"
+                        style={{ width: 200 }}
+                        value={selectedNode.details.selectedSubfieldPath}
+                        placeholder={intl.get('dataAgent.selectChildFieldPlaceholder')}
+                        options={arraySubfieldOptions}
+                        optionFilterProp="label"
+                        getPopupContainer={trigger => trigger.parentElement!}
+                        onChange={handleArraySubfieldChange}
+                      />
+                    </div>
+                  )}
                 </>
               )}
 

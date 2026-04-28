@@ -492,6 +492,8 @@
     "entireArray": "整个数组",
     "specificIndexElement": "特定索引的元素",
     "arrayIndex": "数组索引",
+    "selectChildFieldOptional": "选择子字段（可选）",
+    "selectChildFieldPlaceholder": "请选择子字段",
     "getElementAtIndex": "将获取数组中第{index}个元素",
     "searchFieldPlaceholder": "搜索字段名或路径 (数组字段需用[*]: self_config.skills.tools[*].tool_id)",
     "pathDescription": "路径说明",

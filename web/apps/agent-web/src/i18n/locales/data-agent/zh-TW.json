@@ -492,6 +492,8 @@
     "entireArray": "整個陣列",
     "specificIndexElement": "特定索引的元素",
     "arrayIndex": "陣列索引",
+    "selectChildFieldOptional": "選擇子欄位（可選）",
+    "selectChildFieldPlaceholder": "請選擇子欄位",
     "getElementAtIndex": "將取得陣列中第{index}個元素",
     "searchFieldPlaceholder": "搜尋欄位名稱或路徑 (陣列欄位需用[*]: self_config.skills.tools[*].tool_id)",
     "pathDescription": "路徑說明",
