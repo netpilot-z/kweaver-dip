@@ -1,0 +1,138 @@
+import { useMemo, useEffect, useState } from 'react';
+import intl from 'react-intl-universal';
+import { Tag } from 'antd';
+import dayjs from 'dayjs';
+import classNames from './classNames';
+import styles from './index.module.less';
+import locales from './locales';
+import { FieldList, Item } from './type';
+import { defaultTypeOption } from './utils';
+
+const cs = classNames.bind(styles);
+
+// 右侧值为数组的操作符
+const aryOperation = ['in', 'not_in', 'contain', 'not_contain'];
+/**
+ * 有效的值来源
+ * @returns 常量  const ，value内容即需要比较的值
+ * @returns 字段  field，value内容为字段名称，意思是比较两个字段的内容
+ * @returns 用户 user，value内容为当前用户的某个属性字段，意思是取当前用户的某个属性字段的值作为比较的值
+ */
+const valueFroms = ['const'];
+
+interface DataFilterItemProps {
+  fieldList: FieldList[];
+  value: Item;
+  onChange: (Item: any) => void;
+  transformType?: (type: string) => string;
+  required: boolean;
+  typeOption?: { [key: string]: string[] };
+  disabled?: boolean;
+}
+
+const DataFilterItemDetail = ({ fieldList, value, onChange, transformType, typeOption = defaultTypeOption }: DataFilterItemProps): JSX.Element => {
+  const [i18nLoaded, setI18nLoaded] = useState(false);
+
+  useEffect(() => {
+    // 加载国际化文件，完成后更新状态触发重新渲染
+    intl.load(locales);
+    setI18nLoaded(true);
+  }, []);
+
+  const fieldListFilter = (val: any): FieldList => {
+    return fieldList?.filter((i) => (i.display_name && i.display_name === val) || i.name === val)[0];
+  };
+  const [fieldType, setFieldType] = useState(fieldListFilter(value.field)?.type);
+
+  const formatType = useMemo(() => {
+    return transformType ? transformType(fieldType || 'number') : fieldType;
+  }, [fieldType]);
+
+  useEffect(() => {
+    const type = fieldListFilter(value?.field)?.type;
+
+    if (!type) {
+      return;
+    }
+
+    const formatType = transformType && type ? transformType(type) : type;
+
+    onChange({
+      operation: typeOption[formatType].includes(value?.operation) ? value.operation : typeOption[formatType][0],
+      field: value?.field,
+      value: type === fieldType || !fieldType ? value?.value : undefined,
+    });
+
+    setFieldType(type);
+  }, [JSON.stringify(fieldList)]);
+
+  const renderItem = (formatType: any, val: any): JSX.Element => {
+    const { operation } = val;
+
+    if (
+      operation === 'exist' ||
+      operation === 'not_exist' ||
+      operation === 'not_empty' ||
+      operation === 'empty' ||
+      operation === 'null' ||
+      operation === 'not_null'
+    ) {
+      return <></>;
+    }
+    let curVal = val.value;
+
+    if (aryOperation.includes(operation)) {
+      curVal = curVal?.map((value: any) => (
+        <Tag className={styles.ellipsis} title={value} key={value}>
+          {value}
+        </Tag>
+      ));
+    }
+
+    if (formatType === 'number' && (operation === 'range' || operation === 'out_range')) {
+      return (
+        <div className={styles['range-wrapper']}>
+          <div className={cs('range-wrapper-item', 'detail-col')}>{value?.value[0]}</div>
+          <span className={styles['split-space']}>-</span>
+          <div className={cs('range-wrapper-item', 'detail-col')}>{value?.value[1]}</div>
+        </div>
+      );
+    }
+
+    if (formatType === 'date' && (operation === 'match' || operation === 'match_phrase')) {
+      curVal = curVal ? dayjs(curVal).format('YYYY-MM-DD HH:mm:ss') : '';
+    } else if (formatType === 'date') {
+      curVal =
+        value.value?.length === 2 ? `${dayjs(value.value[0]).format('YYYY-MM-DD HH:mm:ss')} ~ ${dayjs(value.value[1]).format('YYYY-MM-DD HH:mm:ss')}` : '';
+    } else if (operation === 'multi_match') {
+      const fields = value.fields?.join(', ') || '';
+      const matchValue = value.value || '';
+      const matchType = value.match_type || 'best_fields';
+      curVal = `${fields} : ${matchValue} (${intl.get(`DataFilter.${matchType}`)})`;
+    } else if (operation === 'knn') {
+      const knnValue = value.value || '';
+      const limitValue = value.limit_value || 3000;
+      curVal = `${knnValue} (Top K: ${limitValue})`;
+    }
+
+    return <div className={cs('detail-col')}>{curVal}</div>;
+  };
+
+  return (
+    <div className={cs('filter-item')}>
+      <div className={cs('field-col', 'detail-col')} title={value?.field}>
+        {value?.field}
+      </div>
+      <div className={cs('operation-col', 'detail-col')}>{value?.operation ? intl.get(`DataFilter.${value?.operation}`) : ''}</div>
+      {value?.operation !== 'exist' &&
+        value?.operation !== 'not_exist' &&
+        value.operation !== 'not_empty' &&
+        value.operation !== 'empty' &&
+        value.operation !== 'null' &&
+        value.operation !== 'not_null' && <div className={cs('operation-col', 'detail-col')}>{intl.get(`DataFilter.${valueFroms[0]}`)}</div>}
+      <div className={cs('value-col')}>{renderItem(formatType, value)}</div>
+    </div>
+  );
+};
+
+export default DataFilterItemDetail;

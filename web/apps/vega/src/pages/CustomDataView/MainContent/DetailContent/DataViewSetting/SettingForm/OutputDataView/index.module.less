@@ -1,0 +1,69 @@
+.mainBox {
+  height: 100%;
+
+  .contentBox {
+    box-sizing: border-box;
+
+    .headerBox {
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      height: 50px;
+      padding: 0 24px;
+
+      .titleBox {
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+.fieldName {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &:hover {
+    color: #126ee3;
+  }
+}
+
+.featureTypeContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+
+  .featureType {
+    display: inline-block;
+    padding: 4px 8px;
+    margin-right: 8px;
+    font-size: 12px;
+    border-radius: 4px;
+
+    &.keyword {
+      color: #531dab;
+      background: #f9f0ff;
+    }
+
+    &.fulltext {
+      color: #08979c;
+      background: #e6fffb;
+    }
+
+    &.vector {
+      color: #7cb305;
+      background: #fcffe6;
+    }
+  }
+}
+
+.helpIcon {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.45);
+  cursor: pointer;
+}

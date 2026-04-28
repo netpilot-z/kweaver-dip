@@ -1,0 +1,153 @@
+.overview-box {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 24px;
+  overflow-y: auto;
+  background: #f5f8ff;
+
+  .overview-box-header {
+    padding: 20px 20px 0;
+    margin-bottom: 16px;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+
+    .id-text {
+      margin-bottom: 10px;
+      font-size: 12px;
+      line-height: 1em;
+      color: rgba(0, 0, 0, 0.45);
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+      margin-left: 40px;
+
+      :global(.ant-tag) {
+        height: 22px;
+        margin: 0;
+        line-height: 22px;
+      }
+    }
+
+    .header-title {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+
+      .header-title-left {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        width: 100%;
+
+        .name-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 32px;
+          height: 32px;
+          margin: 0;
+          border-radius: 4px;
+        }
+
+        .name-text {
+          font-size: 18px;
+          font-weight: 400;
+          line-height: 1em;
+        }
+      }
+
+      .header-title-right {
+        display: flex;
+        gap: 10px;
+      }
+    }
+
+    .header-comment {
+      width: 100%;
+      margin-top: 16px;
+      // padding: 20px 0;
+      line-height: 1em;
+      border-bottom: 1px solid #e5e5e5;
+      opacity: 0.45;
+    }
+
+    .header-footer {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      padding: 12px 0;
+      font-size: 13px;
+      line-height: 1;
+    }
+  }
+
+  .overview-card {
+    // prevent shrinking if flex column
+    flex-shrink: 0;
+    padding: 20px 20px 0;
+    margin-bottom: 16px;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+
+    .card-title {
+      margin-bottom: 16px;
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+      color: #000;
+    }
+
+    .info-item {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+      line-height: 32px;
+
+      .label {
+        flex-shrink: 0;
+        width: 100px;
+        color: rgba(0, 0, 0, 0.65);
+      }
+
+      .content {
+        flex: 1;
+        overflow: hidden;
+      }
+    }
+
+    .tag {
+      max-width: 112px;
+      height: 22px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tool {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      padding: 10px 0;
+      border-top: solid 1px rgba(5, 5, 5, 0.06);
+      border-bottom: solid 1px rgba(5, 5, 5, 0.06);
+
+      .text-wrapper {
+        flex: 1;
+        overflow: hidden;
+      }
+    }
+  }
+
+  .loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+}

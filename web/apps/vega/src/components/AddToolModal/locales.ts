@@ -1,0 +1,40 @@
+const locales = {
+  'zh-cn': {
+    'AddToolModal.title': '选择',
+    'AddToolModal.tool': '工具',
+    'AddToolModal.mcp': 'MCP',
+    'AddToolModal.searchToolPlaceholder': '搜索工具箱/工具名称',
+    'AddToolModal.searchMcpPlaceholder': '搜索MCP名称',
+    'AddToolModal.toolBox': '工具箱',
+    'AddToolModal.searchToolBox': '搜索工具箱',
+    'AddToolModal.readToolBox': '阅读工具箱',
+    'AddToolModal.searchAnyInfo': '搜索任何信息和网络URL',
+    'AddToolModal.readOrSearchWebPage': '阅读或搜索网页',
+  },
+  'en-us': {
+    'AddToolModal.title': 'Select',
+    'AddToolModal.tool': 'Tool',
+    'AddToolModal.mcp': 'MCP',
+    'AddToolModal.searchToolPlaceholder': 'Search tool box/tool name',
+    'AddToolModal.searchMcpPlaceholder': 'Search MCP name',
+    'AddToolModal.toolBox': 'Tool Box',
+    'AddToolModal.searchToolBox': 'Search Tool Box',
+    'AddToolModal.readToolBox': 'Read Tool Box',
+    'AddToolModal.searchAnyInfo': 'Search any information and network URL',
+    'AddToolModal.readOrSearchWebPage': 'Read or search web page',
+  },
+  'zh-tw': {
+    'AddToolModal.title': '選擇',
+    'AddToolModal.tool': '工具',
+    'AddToolModal.mcp': 'MCP',
+    'AddToolModal.searchToolPlaceholder': '搜索工具箱/工具名稱',
+    'AddToolModal.searchMcpPlaceholder': '搜索MCP名稱',
+    'AddToolModal.toolBox': '工具箱',
+    'AddToolModal.searchToolBox': '搜索工具箱',
+    'AddToolModal.readToolBox': '閱讀工具箱',
+    'AddToolModal.searchAnyInfo': '搜索任何信息和網絡URL',
+    'AddToolModal.readOrSearchWebPage': '閱讀或搜索網頁',
+  },
+};
+
+export default locales;

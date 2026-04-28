@@ -1,0 +1,18 @@
+{
+  "ConceptGroup": {
+    "conceptGroup": "Concept Group",
+    "iconColor": "Icon Color",
+    "existGroupName": "Same name concept group exists, please select the processing method:",
+    "addObjectTypes": "Add Object Types",
+    "selected": "Selected {count} items",
+    "addObjectTypesSuccess": "Object types added successfully",
+    "pleaseSelectObjectTypesToRemove": "Please select object types to remove",
+    "groupDetail": "Group Detail",
+    "skipSameConflict": "Skip same conflict for all subsequent operations",
+    "confirmDeleteSingle": "Are you sure you want to delete \"${name}\"?",
+    "confirmDeleteMultiple": "Are you sure you want to delete \"${names}\" this ${count} items?",
+    "addConceptGroupTip": "Button to add concept group",
+    "relatedResource": "Related Resources",
+    "importConflictTip": "Select <b>Overwrite</b> to replace existing items, select <b>Ignore</b> to skip duplicates."
+  }
+}

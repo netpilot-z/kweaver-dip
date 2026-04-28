@@ -1,0 +1,223 @@
+.modalWrapper {
+  :global(.ant-modal-content) {
+    padding: 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.15);
+  }
+
+  :global(.ant-modal-header) {
+    padding: 16px 16px 0;
+    border-bottom: none;
+  }
+
+  :global(.ant-modal-title) {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px;
+    color: rgba(0, 0, 0, 0.85);
+  }
+
+  :global(.ant-modal-body) {
+    padding: 24px;
+  }
+
+  :global(.ant-modal-footer) {
+    padding: 0 24px 24px;
+    border-top: none;
+  }
+
+  .modalFooter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .footerLeft {
+      display: flex;
+      align-items: center;
+      color: rgba(0, 0, 0, 0.45);
+    }
+
+    .footerLeftIcon {
+      margin-right: 8px;
+      font-size: 20px;
+    }
+
+    .footerRight {
+      .okButton {
+        margin-right: 8px;
+      }
+    }
+  }
+
+  .ModalBox {
+    width: 100%;
+  }
+
+  .modalContent {
+    width: 100%;
+  }
+}
+
+.content {
+  margin-bottom: 24px;
+}
+
+.section {
+  margin-bottom: 32px;
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+  color: #000;
+}
+
+.required {
+  margin-left: 4px;
+  font-size: 13px;
+  color: #e60012;
+}
+
+.radioGroup {
+  display: flex;
+  gap: 24px;
+}
+
+.radioItem {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.tabs {
+  margin-bottom: 16px;
+
+  :global(.ant-tabs-tab) {
+    padding: 6px 16px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  :global(.ant-tabs-tab-active) {
+    color: rgba(0, 0, 0, 0.85);
+  }
+
+  :global(.ant-tabs-ink-bar) {
+    background-color: #1677ff;
+  }
+}
+
+.frequencyConfig {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.inputNumber {
+  width: 100px;
+  height: 32px;
+
+  :global(.ant-input-number-input) {
+    text-align: center;
+  }
+}
+
+.frequencyText {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+  color: #000;
+}
+
+.unitSelect {
+  width: 80px;
+  height: 32px;
+}
+
+.hint {
+  width: 100%;
+  margin-top: 12px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 20px;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.strategyHint {
+  margin-bottom: 16px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 12px;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.checkboxGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.checkboxItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.checkboxItem :global(.ant-checkbox-wrapper) {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.checkboxDesc {
+  margin-left: 24px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 12px;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.switch {
+  margin-left: 16px;
+}
+
+.footerLeft {
+  display: flex;
+}
+
+.footerRight {
+  display: flex;
+  gap: 12px;
+}
+
+.prevButton {
+  width: 80px;
+  height: 32px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 18px;
+  color: rgba(0, 0, 0, 0.85);
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  opacity: 0.85;
+}
+
+.okButton {
+  width: 80px;
+  height: 32px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 18px;
+  color: #fff;
+  background-color: #126ee3;
+  border: 1px solid #126ee3;
+  border-radius: 4px;
+}

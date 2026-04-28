@@ -1,0 +1,18 @@
+{
+  "ConceptGroup": {
+    "conceptGroup": "概念分组",
+    "iconColor": "图标颜色",
+    "existGroupName": "已存在同名分组，请选择处理方式：",
+    "addObjectTypes": "添加对象类",
+    "selected": "已选择 {count} 个",
+    "addObjectTypesSuccess": "对象类添加成功",
+    "pleaseSelectObjectTypesToRemove": "请选择要移除的对象类",
+    "groupDetail": "分组详情",
+    "skipSameConflict": "为之后所有的相同冲突执行此操作",
+    "confirmDeleteSingle": "您确定要删除“${name}”吗？",
+    "confirmDeleteMultiple": "您确定要删除“${names}”这${count}个吗？",
+    "addConceptGroupTip": "按鈕添加概念分組",
+    "relatedResource": "關聯資源",
+    "importConflictTip": "選擇<b>覆蓋</b>將替換已有項，選擇<b>忽略</b>將跳過重複項。"
+  }
+}

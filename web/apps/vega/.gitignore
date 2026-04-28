@@ -1,0 +1,22 @@
+# dependencies
+**/node_modules/**
+
+# logs
+*.log
+
+# IDE
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# configuration files
+pnpm-lock.yaml
+*.lock
+
+/dist
+
+.qoder
