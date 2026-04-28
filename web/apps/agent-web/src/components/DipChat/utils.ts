@@ -645,15 +645,7 @@ export const getChatItemContent = (message: any): DipChatItemContentType => {
                 // markdownText = '```json\n' + JSON.stringify(tmpResult, null, 2) + '\n```';
                 markdownText = JSON.stringify(answer, null, 2);
               }
-              let title = defaultTitle;
-              const inputArgs = toolArgs.find((arg: any) => arg?.name === 'query' || arg?.name === 'input');
-              if (inputArgs && typeof inputArgs.value !== 'object' && inputArgs.value?.toString().trim()) {
-                title = inputArgs.value;
-              }
-              const titleRes = _.get(finalResult, ['title'], '');
-              if (titleRes) {
-                title = titleRes;
-              }
+              const title = skillName || defaultTitle;
               res.push({
                 title,
                 type: 'common_tool',
