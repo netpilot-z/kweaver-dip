@@ -44,7 +44,19 @@ const ObjectSelector = ({ onChange, disabled, value, objectOptions, knId }: any)
 
   useEffect(() => {
     if (objectOptions) {
-      setOptions(objectOptions);
+      // 判断是否为原始数据格式（有 id 无 value）
+      const isRawFormat = objectOptions.length > 0 && objectOptions[0]?.id && !objectOptions[0]?.value;
+      if (isRawFormat) {
+        setOptions(
+          objectOptions.map((item) => ({
+            label: renderObjectTypeLabel(item),
+            value: item.id,
+            detail: item,
+          }))
+        );
+      } else {
+        setOptions(objectOptions);
+      }
     }
   }, [objectOptions]);
 

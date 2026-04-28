@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import intl from 'react-intl-universal';
 import { useHistory, useParams, useLocation } from 'react-router-dom';
-import { Form, Input, Select, Button, Card, Spin, Space } from 'antd';
+import { Form, Input, InputNumber, Select, Button, Card, Spin, Space } from 'antd';
 import { LeftOutlined } from '@ant-design/icons';
 import ObjectIcon from '@/components/ObjectIcon';
 import MultistageFilter from '@/components/DataFilterNew';
@@ -83,6 +83,8 @@ const MetricCreate = () => {
   // 选中对象类的属性列表
   const [objectProperties, setObjectProperties] = useState<ObjectType.DataProperty[]>([]);
   const [loadingProperties, setLoadingProperties] = useState(false);
+  // 选中对象类的作用域引用，用于过滤条件组件
+  const [scopeRef, setScopeRef] = useState<string>('');
   // 选中聚合属性的类型，用于过滤聚合函数
   const [selectedPropertyType, setSelectedPropertyType] = useState<string | null>(null);
   // 过滤条件
@@ -108,6 +110,11 @@ const MetricCreate = () => {
     return Object.entries(AGGR_LABELS).filter(([key]) => availableKeys.includes(key));
   };
 
+  // 聚合属性只展示数值类型（所有单位类型都要求数值属性）
+  const NUMERIC_TYPES = ['int', 'float', 'double', 'long', 'number', 'decimal'];
+
+  const filteredAggregationProperties = objectProperties.filter((prop) => NUMERIC_TYPES.some((t) => prop.type?.toLowerCase().includes(t.toLowerCase())));
+
   // 日期/时间类型的属性（用于时间维度）
   const timeProperties = objectProperties.filter((prop) => {
     const timeTypes = ['date', 'datetime', 'timestamp', 'time', 'DATE', 'DATETIME', 'TIMESTAMP', 'TIME'];
@@ -119,6 +126,12 @@ const MetricCreate = () => {
     const prop = objectProperties.find((p) => p.name === propertyName);
     setSelectedPropertyType(prop?.type || null);
     form.setFieldsValue({ aggregation_aggr: undefined });
+  };
+
+  // 监听单位类型变化，清空已选的聚合属性
+  const handleUnitTypeChange = () => {
+    form.setFieldsValue({ aggregation_property: undefined, aggregation_aggr: undefined });
+    setSelectedPropertyType(null);
   };
 
   const goBack = () => {
@@ -198,6 +211,10 @@ const MetricCreate = () => {
       if (res.calculation_formula?.condition) {
         setConditionValue(res.calculation_formula.condition);
       }
+      // 记录当前 scopeRef
+      if (res.scope_ref) {
+        setScopeRef(res.scope_ref);
+      }
       // 加载选中对象类的属性列表，并设置初始属性类型
       if (res.scope_ref) {
         loadObjectProperties(res.scope_ref, res.calculation_formula?.aggregation?.property);
@@ -230,10 +247,12 @@ const MetricCreate = () => {
     // 构建 Having 条件
     const havingField = values.having_field as '__value' | undefined;
     const havingOperation = values.having_operation as '==' | '!=' | '>' | '>=' | '<' | '<=' | 'in' | 'not_in' | 'range' | 'out_range' | undefined;
-    const havingValue = values.having_value;
-    const having = havingField && havingOperation
-      ? { field: havingField, operation: havingOperation, value: havingValue } as MetricType.MetricHaving
-      : undefined;
+    const rawHavingValue = values.having_value;
+    const havingValue = rawHavingValue !== undefined && rawHavingValue !== null && rawHavingValue !== '' ? Number(rawHavingValue) : undefined;
+    const having =
+      havingField && havingOperation && havingValue !== undefined
+        ? ({ field: havingField, operation: havingOperation, value: havingValue } as MetricType.MetricHaving)
+        : undefined;
 
     // 构建分析维度
     const analysisDimNames = (values.analysis_dimensions as string[])?.filter(Boolean) || [];
@@ -243,30 +262,32 @@ const MetricCreate = () => {
 
     const postData: MetricType.CreateMetricRequest = {
       name: values.name as string,
-      comment: values.comment as string,
+      ...(values.comment ? { comment: values.comment as string } : {}),
       metric_type: values.metric_type as MetricType.MetricTypeEnum,
       scope_type: values.scope_type as MetricType.ScopeTypeEnum,
       scope_ref: values.scope_ref as string,
-      unit_type: values.unit_type as string,
-      unit: values.unit as string,
+      ...(values.unit_type ? { unit_type: values.unit_type as string } : {}),
+      ...(values.unit ? { unit: values.unit as string } : {}),
       tags: values.tags ? (values.tags as string).split(',').map((t) => t.trim()).filter(Boolean) : undefined,
       calculation_formula: {
         aggregation: {
           property: values.aggregation_property as string,
           aggr: values.aggregation_aggr as MetricType.AggrEnum,
         },
-        condition: conditionValue, // 过滤条件
-        group_by: groupBy, // 分组维度
-        order_by: orderBy, // 排序配置
-        having, // Having 条件
+        ...(conditionValue?.field || conditionValue?.sub_conditions?.length ? { condition: conditionValue } : {}),
+        ...(groupBy ? { group_by: groupBy } : {}),
+        ...(orderBy ? { order_by: orderBy } : {}),
+        ...(having ? { having } : {}),
       },
-      time_dimension: values.time_dimension_property
+      ...(values.time_dimension_property
         ? {
-            property: values.time_dimension_property as string,
-            default_range_policy: values.time_dimension_policy as MetricType.DefaultRangePolicyEnum,
+            time_dimension: {
+              property: values.time_dimension_property as string,
+              default_range_policy: values.time_dimension_policy as MetricType.DefaultRangePolicyEnum,
+            },
           }
-        : undefined,
-      analysis_dimensions: analysisDimensions, // 分析维度
+        : {}),
+      ...(analysisDimensions ? { analysis_dimensions: analysisDimensions } : {}),
     };
 
     try {
@@ -287,7 +308,8 @@ const MetricCreate = () => {
 
   // 监听作用域引用变化，加载对应对象类的属性
   const handleScopeRefChange = (value: string) => {
-    // 清空所有依赖属性的配置
+    setScopeRef(value);
+    // 清空所有依赖属性的配置（包括单位类型，避免残留过滤）
     form.setFieldsValue({
       aggregation_property: undefined,
       aggregation_aggr: undefined,
@@ -300,6 +322,8 @@ const MetricCreate = () => {
       time_dimension_property: undefined,
       time_dimension_policy: undefined,
       analysis_dimensions: undefined,
+      unit_type: undefined,
+      unit: undefined,
     });
     setSelectedPropertyType(null);
     setConditionValue(undefined); // 清空过滤条件
@@ -390,7 +414,7 @@ const MetricCreate = () => {
             </Form.Item>
 
             <Form.Item name="unit_type" label={intl.get('Metric.unitType')}>
-              <Select placeholder={intl.get('Metric.unitTypePlaceholder')} allowClear showSearch optionFilterProp="label">
+              <Select placeholder={intl.get('Metric.unitTypePlaceholder')} allowClear showSearch optionFilterProp="label" onChange={handleUnitTypeChange}>
                 {UNIT_TYPE_OPTIONS.map((opt) => (
                   <Select.Option key={opt.value} value={opt.value}>
                     {opt.label}
@@ -419,7 +443,7 @@ const MetricCreate = () => {
 
             <Title className={styles['form-title']}>{intl.get('Metric.calculationFormula')}</Title>
 
-            {/* 聚合属性：对象类属性选择 */}
+            {/* 聚合属性：对象类属性选择（根据单位类型过滤） */}
             <Form.Item
               name="aggregation_property"
               label={intl.get('Metric.aggregationProperty')}
@@ -430,10 +454,10 @@ const MetricCreate = () => {
                 showSearch
                 optionFilterProp="children"
                 loading={loadingProperties}
-                disabled={!objectProperties.length}
+                disabled={!filteredAggregationProperties.length}
                 onChange={handleAggregationPropertyChange}
               >
-                {objectProperties.map((prop) => (
+                {filteredAggregationProperties.map((prop) => (
                   <Select.Option key={prop.name} value={prop.name}>
                     {prop.display_name || prop.name} ({prop.type || 'unknown'})
                   </Select.Option>
@@ -454,15 +478,22 @@ const MetricCreate = () => {
             {/* 过滤条件 */}
             <Form.Item label={intl.get('Metric.filterCondition')}>
               <MultistageFilter
+                key={scopeRef}
                 ref={filterRef}
-                objectOptions={objectTypeList.filter((item) => item.id === form.getFieldValue('scope_ref')).map((item) => ({
-                  ...item,
-                  data_properties: objectProperties,
-                }))}
+                objectOptions={
+                  scopeRef
+                    ? objectTypeList
+                        .filter((item) => item.id === scopeRef)
+                        .map((item) => ({
+                          ...item,
+                          data_properties: objectProperties,
+                        }))
+                    : []
+                }
                 value={conditionValue}
                 onChange={setConditionValue}
                 disabled={!objectProperties.length}
-                defaultValue={{ object_type_id: form.getFieldValue('scope_ref'), field: undefined, value: null, operation: undefined, value_from: 'const' }}
+                defaultValue={{ object_type_id: scopeRef, field: undefined, value: null, operation: undefined, value_from: 'const' }}
               />
             </Form.Item>
 
@@ -527,7 +558,7 @@ const MetricCreate = () => {
                   </Select>
                 </Form.Item>
                 <Form.Item name="having_value" noStyle>
-                  <Input placeholder={intl.get('Metric.havingValuePlaceholder')} style={{ width: 150 }} />
+                  <InputNumber placeholder={intl.get('Metric.havingValuePlaceholder')} style={{ width: 150 }} />
                 </Form.Item>
               </Space>
             </Form.Item>
