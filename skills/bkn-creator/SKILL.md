@@ -1,14 +1,15 @@
 ---
 name: bkn-creator
 description: >-
-  BKN 全生命周期编排入口。凡涉及创建 BKN、从 PRD/文档提取对象关系、
+  BKN 全生命周期编排入口。自包含 KWeaver CLI 操作层（内化 bkn-kweaver）。
+  凡涉及创建 BKN、从 PRD/文档提取对象关系、
   生成或更新 `.bkn`、做数据视图绑定、环境检查、测试集生成、校验与推送时，
   优先使用 bkn-creator 进行流程路由、阶段门禁、子 skill 编排与结果回执。
-  适用于 BKN 的 create/read/update/delete/extract 场景，技能包能力补齐/
-  skill 草案生成场景，以及使用反馈巡检与改进场景（定时任务触发、
-  Agent 对话质量异常、feedback_brief 传入、知识网络持续优化）。
-  不应用于仅查询平台能力、Agent 对话、Vega/Catalog 操作、纯 CLI 执行，
-  这些场景应交由 kweaver-core 等专用 skill 处理。
+  适用于 BKN 的 create/read/update/delete/extract/copy/validate 场景，
+  技能包能力补齐/skill 草案生成场景，
+  以及使用反馈巡检与改进场景（定时任务触发、Agent 对话质量异常、
+  feedback_brief 传入、知识网络持续优化）。
+  不应用于纯数据语义查询，该场景应交由 data-semantic 处理。
 ---
 
 # BKN 创建器
@@ -27,6 +28,7 @@ description: >-
 | `update` | 修改、编辑、更新、重绑定 | `internal/_pipelines/update.md` |
 | `delete` | 删除、清理、移除 | `internal/_pipelines/delete.md` |
 | `copy` | 复制、克隆、基于现有生成新版本 | `internal/_pipelines/copy.md` |
+| `validate` | 检查网络、评估质量、诊断问题、验证完整性 | `internal/_pipelines/validate.md` |
 | `skill_generate` | 补 skill、抽成独立 skill、补齐能力 | `internal/_pipelines/skill-gen.md` |
 | `feedback_review` | 巡检反馈、使用问题、定时任务触发、改进摘要、trace 分析结果 | `internal/_pipelines/feedback.md` |
 

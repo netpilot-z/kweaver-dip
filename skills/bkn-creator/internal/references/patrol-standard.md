@@ -2,6 +2,8 @@
 
 定义知识网络定期巡检的分析指标、异常判定、输出格式。
 
+**插件依赖**：巡检功能完全依赖 `bkn-test` 插件。当 `plugin_availability.test == unavailable`（开源版删除 `_plugins/` 目录）时，整个巡检模块不可用，定时任务不创建，pipeline 阶段八跳过巡检配置和巡检任务创建。
+
 ## 巡检目标
 
 知识网络已推送上线后，定期验证：
@@ -13,7 +15,7 @@
 
 ### 维度一：结构完整性（测试集回归）
 
-通过 `bkn-test` model_review 模式的测试用例定期回放：
+通过 `../_plugins/bkn-test/SKILL.md` model_review 模式的测试用例定期回放：
 
 | 指标 | 来源 | 合格阈值 | 异常判定 |
 |------|------|---------|---------|
@@ -44,7 +46,7 @@
 |------|---------|
 | 较上次新增测试失败项 | 任何新增失败 → 网络退化 |
 | L3 通过率连续下降 2 次 | 规则质量持续退化 |
-| 问答准确率下降 > 10% | 短期内回答质量显著变差 |
+| 问答准确率下降 > 10% | 期内回答质量显著变差 |
 | 用户纠正率上升 > 5% | 用户反馈持续变差 |
 
 ### 维度四：推理能力（需人工确认）
@@ -156,9 +158,9 @@ patrol_result:
 
 | 条件 | 动作 |
 |------|------|
-| `degradation_alert: false` | 生成 `patrol_result` 记录到 `{network_dir}/patrol_log/`，不触发修复 |
-| `degradation_alert: true` 且 issues ≤ 3 | 生成 `feedback_brief.yaml` 到 `{network_dir}/patrol_log/`，自动触发 feedback pipeline 修复 |
-| `degradation_alert: true` 且 issues > 3 | 生成 `PATROL_ALERT.md` 到 `{network_dir}/`，标记人工介入，不自动触发修复 |
+| `degradation_alert: false` | 生成 `patrol_result` 记录到 `{network_dir}/patrol/patrol_log/`，不触发修复 |
+| `degradation_alert: true` 且 issues ≤ 3 | 生成 `feedback_brief.yaml` 到 `{network_dir}/patrol/patrol_log/`，自动触发 feedback pipeline 修复 |
+| `degradation_alert: true` 且 issues > 3 | 生成 `PATROL_ALERT.md` 到 `{network_dir}/patrol/`，标记人工介入，不自动触发修复 |
 | 连续 2 次巡检 degradation | 标记"网络质量告警"，建议进入 bkn-doctor 诊断 |
 
 ## 数据源
@@ -170,4 +172,4 @@ patrol_result:
 | 对话日志 | Agent 对话 trace / 会话记录 API |
 | 检索得分 | `kweaver bkn search` 返回的检索分数 |
 | 网络结构 | `kweaver bkn get <kn_id> --stats` |
-| 历史巡检 | `{network_dir}/patrol_log/` 下的历史 `patrol_result` |
+| 历史巡检 | `{network_dir}/patrol/patrol_log/` 下的历史 `patrol_result` |

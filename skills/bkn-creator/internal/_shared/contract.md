@@ -8,7 +8,7 @@ skill 间交接使用统一信封：
 
 ```yaml
 trace_id: "链路恢复键，同一流程内不变"
-intent: create | copy | read | update | delete | extract | skill_generate
+intent: create | copy | read | update | delete | extract | validate | skill_generate
 from_skill: "产出方"
 to_skill: "接收方"
 payload:
@@ -36,7 +36,7 @@ error: null
 ## 通用约束（适用于所有 bkn-* skill）
 
 1. `.bkn` 文件的**创建**由 `bkn-draft` 和 `bkn-anchor` 负责，已有 `.bkn` 的**修改**由 `bkn-backfill` 独占负责。其余 skill 不直接读写 `.bkn` 文件
-2. 不直接执行 `kweaver` CLI；需要时委托 `kweaver-core`
+2. 不直接执行 `kweaver` CLI；需要时委托 `bkn-kweaver`（读取 `../bkn-kweaver/SKILL.md`）
 3. 不直接调用兄弟 skill；需要时回交 pipeline，由 pipeline 调度
 4. 不将推测标记为确定性结论
 5. 输入不足时一次只追问一个最高优先级字段
@@ -77,12 +77,46 @@ error: null
 |------|------|
 | pipeline | 流程编排定义（`_pipelines/*.md`），描述 skill 的调用顺序和分支 |
 | skill | 原子能力单元（`bkn-*/SKILL.md`），只做一件事 |
-| 外部 skill | `create-bkn`、`kweaver-core`、`data-semantic`，通过 skill name 调用 |
+| 内化参考 | `bkn-kweaver/references/` 含 kweaver CLI 完整参考；`bkn-bind/references/` 含语义服务 API 参考（data-semantic），供内部快速查阅 |
 | 确认步骤 | 需要用户明确确认才可继续的检查点 |
-| `ARCHIVE_ID` | `kweaver-core` → `session_status` → `sessionKey` 最后一段 |
+| `ARCHIVE_ID` | `bkn-archive` → `session_status` → `sessionKey` 最后一段 |
 | `TIMESTAMP` | `YYYY-MM-DD-HH-MM-SS` |
 | 归档根目录 | `archives/{ARCHIVE_ID}/` |
-| 网络目录 | `archives/{ARCHIVE_ID}/{TIMESTAMP}/{NETWORK_DIR_NAME}/` |
+| 网络目录 | `archives/{ARCHIVE_ID}/{TIMESTAMP}/{NETWORK_DIR_NAME}/`，即 bkn-archive 的 `{ORIGIN_NAME}` |
+| BKN 目录 | `{network_dir}/bkn/`，所有 `.bkn` 文件存放处，推送/验证目标 |
+
+## 目录布局约定
+
+所有流程产出的文件按职责分离，统一存放在 `{network_dir}/` 下：
+
+```
+{network_dir}/
+├── bkn/                          # BKN 核心文件（推送目标）
+│   ├── network.bkn
+│   ├── object_types/*.bkn
+│   ├── relation_types/*.bkn
+│   ├── action_types/*.bkn
+│   └── concept_groups/*.bkn
+├── skills/                       # 业务规则 Skill（本地 + 分发到平台）
+│   ├── {network_id}-rules.md
+│   └── _archived/
+├── tests/                        # 测试集
+│   └── testset.yaml
+├── reports/                      # 报告
+│   ├── REPORT.md
+│   └── REPORT.html
+├── patrol/                       # 巡检相关
+│   ├── PATROL_CONFIG.md
+│   ├── PATROL_PROMPT.md
+│   └── patrol_log/
+├── pipeline_state.yaml           # 流程状态
+├── push_retry_log.yaml           # 推送重试日志
+└── PUBLISH_MANUAL.md             # 手动发布指南
+```
+
+- `kweaver bkn validate` / `kweaver bkn push` / `kweaver bkn pull` 的目标目录统一为 `{network_dir}/bkn/`
+- 辅助产物（报告、测试、skill、巡检、日志）不进入 `bkn/` 目录
+- 所有引用 `.bkn` 文件的 skill/pipeline 必须使用 `{network_dir}/bkn/` 而非 `{network_dir}/`
 
 ## 归档规则
 
@@ -98,22 +132,27 @@ error: null
 每个 pipeline 执行过程中，在 `{network_dir}/pipeline_state.yaml` 记录进度：
 
 ```yaml
-pipeline: create | update | copy | feedback
+pipeline: create | update | copy | feedback | validate
 trace_id: ""
 started_at: ""
 current_stage: ""
 bind_mode: full | deferred
+plugin_mode: full | limited
+plugin_availability:
+  rules: available | unavailable
+  test: available | unavailable
 map_completed: true | false | skipped  # bkn-map 执行完成后设为 true；bind_mode == deferred 时为 skipped
 env_capability_matrix: {}
 skipped_steps: []  # 用户明确要求跳过的步骤记录
 completed_stages:
   - stage: ""
     status: success | skipped | failed
+    reason: ""  # skipped 时记录原因：plugin_unavailable | user_skipped | bind_mode_deferred
     timestamp: ""
     summary: ""
 ```
 
-每完成一个阶段更新此文件。恢复时读取此文件定位断点。`bind_mode` 和 `env_capability_matrix` 由 `bkn-env` 写入。`map_completed` 由 `bkn-map` 执行完成后写入（`bind_mode == deferred` 时由 pipeline 设为 `skipped`）。`bkn-backfill` 执行前必须读取此字段确认。后续阶段据此裁剪分支。
+每完成一个阶段更新此文件。恢复时读取此文件定位断点。`bind_mode` 和 `env_capability_matrix` 由 `bkn-env` 写入。`plugin_availability` 和 `plugin_mode` 由 `bkn-env` 在插件检测时写入。`map_completed` 由 `bkn-map` 执行完成后写入（`bind_mode == deferred` 时由 pipeline 设为 `skipped`）。`bkn-backfill` 执行前必须读取此字段确认。后续阶段据此裁剪分支（包括插件阶段跳过逻辑）。
 
 ## Skill 生命周期规范
 
@@ -152,6 +191,6 @@ completed_stages:
 |--------|---------|---------|
 | Cursor Agent | `.cursor/skills/{network_id}-rules/` | 加载目录下所有 `.md` 文件 |
 | Claude Agent | `.claude/skills/{network_id}-rules/` | 同上 |
-| OpenClaw Agent | `openclaw/skills/{network_id}-rules/` | 同上 |
+| OpenClaw Agent | `.openclaw/workspace/skills/{network_id}-rules/` | 同上 |
 | KWeaver Decision Agent | KN schema Description 字段 | 通过推送后的 API 获取 |
 | 其他用户 | KWeaver 市场搜索安装 | 通过平台注册机制 |

@@ -22,7 +22,7 @@ bkn-domain → bkn-extract → [bkn-doctor] → 确认 → bkn-report
 
 | # | 步骤 | 读取 | 说明 |
 |---|------|------|------|
-| 1 | 领域识别 | `../bkn-domain/SKILL.md` | 评分式领域匹配 |
+| 1 | 领域识别 | `../bkn-domain/SKILL.md` | 评分式领域匹配；**无论是否命中都需要用户确认** |
 | 2 | 对象关系提取 | `../bkn-extract/SKILL.md` | 四分组 + 关系 + 动作 |
 | 3 | 质量检查 | pipeline 判定 | pending >= 3 / 冲突 → bkn-doctor |
 | 4 | 建模收敛 | `../bkn-doctor/SKILL.md` | 仅质量不达标时 |

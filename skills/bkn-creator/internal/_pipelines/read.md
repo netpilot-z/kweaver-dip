@@ -9,12 +9,12 @@
 | bkn-report | `../bkn-report/SKILL.md` |
 | 公约 | `../_shared/contract.md` |
 
-外部 skill `kweaver-core` 通过 skill name 调用。
+外部 skill `bkn-kweaver` 通过相对路径读取（`../bkn-kweaver/SKILL.md`）。
 
 ## 流程
 
 ```
-kweaver-core(查询) → bkn-report
+bkn-kweaver(查询) → bkn-report
 ```
 
 ## 阶段
@@ -23,7 +23,7 @@ kweaver-core(查询) → bkn-report
 |---|------|------|
 | 1 | 识别查询目标 | 名称、ID、范围 |
 | 2 | 确认查询计划 | 模糊查 / 精确查 |
-| 3 | 执行查询 | 委托 kweaver-core |
+| 3 | 执行查询 | 委托 bkn-kweaver |
 | 4 | 报告 | `../bkn-report/SKILL.md` |
 
 ## 标准查询

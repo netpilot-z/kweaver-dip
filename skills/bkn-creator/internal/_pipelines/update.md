@@ -4,42 +4,94 @@
 
 ## Skill 路径索引
 
-| skill | 路径（相对本文件） |
-|-------|-------------------|
-| bkn-doctor | `../bkn-doctor/SKILL.md` |
-| bkn-draft | `../bkn-draft/SKILL.md` | 内部委托 archive-protocol 生成归档路径 |
-| bkn-rules | `../bkn-rules/SKILL.md` |
-| bkn-distribute | `../bkn-distribute/SKILL.md` |
-| bkn-anchor | `../bkn-anchor/SKILL.md` |
-| bkn-bind | `../bkn-bind/SKILL.md` |
-| bkn-map | `../bkn-map/SKILL.md` |
-| bkn-backfill | `../bkn-backfill/SKILL.md` |
-| bkn-test | `../bkn-test/SKILL.md` |
-| bkn-review | `../bkn-review/SKILL.md` |
-| bkn-report | `../bkn-report/SKILL.md` |
-| 公约 | `../_shared/contract.md` |
+| skill | 路径（相对本文件） | 类型 |
+|-------|-------------------|------|
+| bkn-doctor | `../bkn-doctor/SKILL.md` | 核心 |
+| bkn-draft | `../bkn-draft/SKILL.md` | 核心 | 内部委托 bkn-archive 生成归档路径 |
+| bkn-rules | `../_plugins/bkn-rules/SKILL.md` | **插件** |
+| bkn-distribute | `../_plugins/bkn-distribute/SKILL.md` | **插件** |
+| bkn-anchor | `../_plugins/bkn-anchor/SKILL.md` | **插件** |
+| bkn-bind | `../bkn-bind/SKILL.md` | 核心 |
+| bkn-relation-bind | `../bkn-relation-bind/SKILL.md` | 核心 | 关系类型判定 + 中间视图绑定 |
+| bkn-map | `../bkn-map/SKILL.md` | 核心 |
+| bkn-backfill | `../bkn-backfill/SKILL.md` | 核心 |
+| bkn-test | `../_plugins/bkn-test/SKILL.md` | **插件** |
+| bkn-review | `../bkn-review/SKILL.md` | 核心 |
+| bkn-report | `../bkn-report/SKILL.md` | 核心 |
+| bkn-kweaver | `../bkn-kweaver/SKILL.md` | 核心 | KWeaver CLI 操作（内化） |
+| bkn-archive | `../bkn-archive/SKILL.md` | 核心 | 全局归档协议（内化） |
+| 公约 | `../_shared/contract.md` | — |
+| 插件检测 | `../_shared/plugin-check.md` | — |
+
+> **插件类型**：路径指向 `_plugins/` 目录，开源版可能不存在。pipeline 调用前需检测 `plugin_availability`，不可用时执行降级分支。
 
 ## 流程
 
 ```
-kweaver-core(读取) → [bkn-doctor] → bkn-draft(patch) → [bkn-rules(incremental) → bkn-anchor → bkn-distribute]
-  → [bkn-bind → bkn-map → bkn-backfill]
-  → bkn-test → bkn-review → 门禁自检 → 预检修复循环 → 推送(kweaver-core) → 回读 → bkn-rules(incremental) → bkn-report
+bkn-kweaver(读取) → [bkn-doctor] → bkn-draft(patch) → [bkn-rules(incremental) → bkn-anchor → bkn-distribute]（插件，可跳过）
+  → [bkn-bind → bkn-relation-bind → bkn-map → bkn-backfill]
+  → [bkn-test → bkn-review]（test 插件，可跳过）→ 门禁自检 → 预检修复循环 → 推送(bkn-kweaver) → 回读 → [bkn-rules(incremental)]（插件，可跳过）→ bkn-report
 ```
+
+> `[]` 标记的为插件阶段，`plugin_availability` 检测不可用时自动跳过。
 
 ## 阶段
 
 | # | 步骤 | 读取 | 说明 |
 |---|------|------|------|
-| 1 | 读取当前网络 | kweaver-core | 定位 kn_id + 现有结构 |
+| 1 | 读取当前网络 | bkn-kweaver | 定位 kn_id + 现有结构 |
 | 2 | 变更分析 | pipeline 判定 | 小改直接 patch；结构性变更走完整流程 |
 | 3 | 建模调整 | `../bkn-doctor/SKILL.md` | 仅结构性变更时 |
 | 4 | 草案更新 | `../bkn-draft/SKILL.md` | patch 模式 |
-| 5 | 规则更新 | `../bkn-rules/SKILL.md`（incremental 模式）→ `../bkn-anchor/SKILL.md` → `../bkn-distribute/SKILL.md` | 仅结构性变更时；补充新对象/关系的业务规则，更新后分发到各平台 |
-| 6 | 视图重绑定 | `../bkn-bind/SKILL.md` → `../bkn-map/SKILL.md` → `../bkn-backfill/SKILL.md` | 仅涉及绑定变更时 |
-| 7 | BKN 模型审查+评审 | `../bkn-test/SKILL.md`（model_review 模式）→ `../bkn-review/SKILL.md` | 含循环 |
+| 5 | 规则更新 | 见下方插件降级说明 | 仅结构性变更时；补充新对象/关系的业务规则，更新后分发到各平台 |
+| 6 | 视图重绑定 | `../bkn-bind/SKILL.md` → `../bkn-relation-bind/SKILL.md` → `../bkn-map/SKILL.md` → `../bkn-backfill/SKILL.md` | 仅涉及绑定变更时；新增关系绑定阶段 |
+| 7 | BKN 模型审查+评审 | 见下方插件降级说明 | 含循环 |
 | 8 | 推送 | 见下方详细步骤 | 门禁自检 → 预检修复循环 → 推送 → 回读 → 规则更新 |
 | 9 | 报告 | `../bkn-report/SKILL.md` | — |
+
+---
+
+### 阶段 5：规则更新（插件阶段）
+
+**前置检测**：读取 `pipeline_state.yaml.plugin_availability.rules`
+
+| plugin_availability.rules | 执行路径 |
+|---------------------------|---------|
+| `available` | `../_plugins/bkn-rules/SKILL.md`（incremental 模式）→ `../_plugins/bkn-anchor/SKILL.md` → `../_plugins/bkn-distribute/SKILL.md` |
+| `unavailable` | 跳过本阶段，在 `pipeline_state.yaml.completed_stages` 记录 `stage5_rules: skipped(plugin_unavailable)` |
+
+> 仅结构性变更时执行；补充新对象/关系的业务规则，更新后分发到各平台。
+
+---
+
+### 阶段 6：视图重绑定（含关系绑定）
+
+**前置条件**：涉及绑定变更时执行。若 `bind_mode == deferred`，本阶段跳过。
+
+| 步骤 | 读取 | 说明 |
+|------|------|------|
+| 对象级绑定 | `../bkn-bind/SKILL.md` | 仅涉及新对象或视图变更时 |
+| 关系绑定 | `../bkn-relation-bind/SKILL.md` | 仅涉及新关系或关系类型变更时；判定关系类型 + 绑定中间视图 |
+| 属性级映射 | `../bkn-map/SKILL.md` | 仅涉及属性变更时 |
+| 回填 .bkn | `../bkn-backfill/SKILL.md` | 对象类 + 关系类回填 |
+
+**关系绑定触发条件**：
+- 新增关系类
+- 修改关系的起点/终点对象（需重新判定类型）
+- 原 pending 关系补绑中间视图
+
+---
+
+### 阶段 7：BKN 模型审查+评审（插件阶段）
+
+**前置检测**：读取 `pipeline_state.yaml.plugin_availability.test`
+
+| plugin_availability.test | 执行路径 |
+|--------------------------|---------|
+| `available` | `../_plugins/bkn-test/SKILL.md`（model_review 模式）→ `../bkn-review/SKILL.md`（含循环） |
+| `unavailable` | 跳过本阶段，在 `pipeline_state.yaml.completed_stages` 记录 `stage7_review: skipped(plugin_unavailable)`，直接进入推送门禁 |
+
+---
 
 ## 阶段八：推送
 
@@ -47,7 +99,7 @@ kweaver-core(读取) → [bkn-doctor] → bkn-draft(patch) → [bkn-rules(increm
 
 ### 8.1 门禁自检
 
-扫描 .bkn 目录，检查以下硬前置条件：
+扫描 `{network_dir}/bkn/` 目录，检查以下硬前置条件：
 
 | # | 门禁条件 | 说明 |
 |---|---------|------|
@@ -79,7 +131,7 @@ kweaver-core(读取) → [bkn-doctor] → bkn-draft(patch) → [bkn-rules(increm
 
 | 步骤 | 行为 |
 |------|------|
-| 检查同名网络 | 委托 kweaver-core |
+| 检查同名网络 | 委托 bkn-kweaver |
 | 同名冲突处理 | 若存在同名网络，展示选项：A. 自动加版本后缀 `_v{n}` / B. 用户手动命名 / C. 覆盖推送（需二次确认"确认覆盖"） |
 | 用户确认推送 | 确认步骤 |
 
@@ -87,7 +139,7 @@ kweaver-core(读取) → [bkn-doctor] → bkn-draft(patch) → [bkn-rules(increm
 
 | 步骤 | 行为 |
 |------|------|
-| 推送 | 委托 kweaver-core 执行 `bkn push` |
+| 推送 | 委托 bkn-kweaver 执行 `bkn push {network_dir}/bkn/` |
 | 推送成功 | 进入 8.5 |
 | 推送失败 | 解析平台返回的错误信息，按错误类型分类处理（见下方重试策略），修复后重试，**最多 3 次** |
 
@@ -97,7 +149,7 @@ kweaver-core(读取) → [bkn-doctor] → bkn-draft(patch) → [bkn-rules(increm
 |------------|---------|
 | 属性不存在/无效 | 回到 8.2 预检修复流程，修正后重新预检 → 8.3 → 8.4 |
 | 数据资源类型无效 | 检查 local 对象是否误生成了 Data Source，委托 bkn-backfill 修正后回到 8.2 重新预检 → 8.3 → 8.4 |
-| 网络结构冲突 | 分析冲突详情，判断是否需回退到阶段七调整 |
+| 网络结构冲突 | 分析冲突详情，判断是否需回退到阶段六（视图重绑定）或阶段三（建模调整） |
 | 网络/权限/服务端错误 | 不重试，直接报错，提示用户检查平台状态 |
 
 重试 3 次仍失败 → 输出完整错误日志和修复记录，**阻断推送**，提示用户介入或进入 `bkn-doctor` 诊断。
@@ -106,13 +158,20 @@ kweaver-core(读取) → [bkn-doctor] → bkn-draft(patch) → [bkn-rules(increm
 
 回读验证：`kweaver bkn get <kn_id> --stats` 确认对象/关系/动作数量与本地一致。
 
-### 8.6 规则最终更新
+### 8.6 规则最终更新（插件阶段）
 
-推送完成后，执行 `../bkn-rules/SKILL.md`（`incremental` 模式），基于最终推送确认的网络结构更新业务规则 Skill 文件。增量更新自动执行版本递增和旧版本归档（详见 `bkn-rules` 归档机制）。
+**前置检测**：读取 `pipeline_state.yaml.plugin_availability.rules`
+
+| plugin_availability.rules | 执行路径 |
+|---------------------------|---------|
+| `available` | 执行 `../_plugins/bkn-rules/SKILL.md`（`incremental` 模式），基于最终推送确认的网络结构更新业务规则 Skill 文件 |
+| `unavailable` | 跳过，在 `pipeline_state.yaml.completed_stages` 记录 `stage8_rules_update: skipped(plugin_unavailable)` |
+
+> 增量更新自动执行版本递增和旧版本归档（详见 `bkn-rules` 归档机制）。
 
 ## 视图绑定更新触发条件
 
-以下情况必须走 bkn-bind → bkn-map → bkn-backfill：
+以下情况必须走 bkn-bind → bkn-relation-bind → bkn-map → bkn-backfill：
 - 修改对象绑定视图
 - 修改或重算 mapped field
 - 属性调整导致需重做映射

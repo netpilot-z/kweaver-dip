@@ -11,11 +11,14 @@ description: 网络质量评审、评分与调整分发。闭环关键。
 
 分析测试结果，计算质量评分，判定通过或需要调整，分发调整任务到对应 skill。
 
+**插件降级说明**：当 `plugin_availability.rules == unavailable` 或 `plugin_availability.test == unavailable` 时，评分维度自动降级。
+
 ## 输入
 
-- 测试执行结果（`bkn-test` 输出）
+- 测试执行结果（`bkn-test` 输出；若 test 插件不可用则为空）
 - 当前网络状态（对象/关系/绑定/映射汇总）
-- 业务规则清单（如有）
+- 业务规则清单（如有；若 rules 插件不可用则为空）
+- `plugin_availability`：来自 `pipeline_state.yaml`
 
 ## 质量评分
 
@@ -38,7 +41,22 @@ description: 网络质量评审、评分与调整分发。闭环关键。
 | Skill 文件质量 | 读取 `bkn-rules` 的 `skill_self_check`，5 项自检全部 pass 为 100%，每项 fail 扣 20% | 40% |
 
 - `skill_self_check` 来自 `bkn-rules` 输出的 `skill_self_check` 字段
-- 若 `bkn-rules` 未输出 `skill_self_check`（旧版本），Skill 文件质量子项记为 0
+- 若 `bkn-rules` 未输出 `skill_self_check`（旧版本或插件不可用），Skill 文件质量子项记为 0
+
+### 插件降级评分逻辑
+
+当 `plugin_availability.rules == unavailable` 时：
+- **规则覆盖率维度**：Skill 文件质量子项权重降为 0，仅保留规则覆盖广度子项（权重 10%）
+- 若 rules 插件完全不可用导致无规则数据，规则覆盖率维度标记为 N/A，不参与评分
+- 剩余维度权重等比放大：结构 22.2%、关系 22.2%、绑定 22.2%、映射 22.2%、测试 11.1%
+
+当 `plugin_availability.test == unavailable` 时：
+- **测试通过率维度**：标记为 N/A，不参与评分
+- 剩余维度权重等比放大：结构 22.2%、关系 22.2%、绑定 22.2%、映射 22.2%、规则 11.1%
+
+**双重降级**（rules 和 test 都不可用）：
+- 规则覆盖率 + 测试通过率均标记为 N/A
+- 剩余维度权重等比放大：结构 25%、关系 25%、绑定 25%、映射 25%
 
 ### 存储位置过滤
 
@@ -79,8 +97,13 @@ description: 网络质量评审、评分与调整分发。闭环关键。
 |------|-----------|
 | 对象/关系问题 | `bkn-doctor` → `bkn-draft` |
 | 绑定问题 | `bkn-bind` → `bkn-map` → `bkn-backfill` |
-| 规则缺失 | `bkn-rules` |
+| 规则缺失 | `../_plugins/bkn-rules/SKILL.md`（仅当 `plugin_availability.rules == available` 时） |
 | 属性映射不足 | `bkn-map` |
+
+**插件不可用时的分发调整**：
+- 若 `plugin_availability.rules == unavailable` 且根因涉及"规则缺失"：
+  - 不分发到 bkn-rules，改为输出提示"规则插件不可用，请手动补充业务规则或安装插件"
+  - 在 `adjustment_plan` 中标记 `target_skill: none(plugin_unavailable)`
 
 每轮调整必须有 diff（改了什么）。最多自动循环 3 轮，超过则暂停让用户介入。
 
@@ -89,6 +112,7 @@ description: 网络质量评审、评分与调整分发。闭环关键。
 ```yaml
 quality_score: 0
 score_breakdown: {structure, relations, binding, mapping, rules, tests}
+plugin_degraded_dimensions: []  # 记录因插件不可用而降级的维度，如 ["rules", "tests"]
 verdict: pass | warn | fail
 adjustment_plan:
   - target_skill: ""
@@ -101,3 +125,4 @@ iteration: {current_round, max_rounds, score_history}
 
 - 评分必须基于实际测试数据，不编造
 - 不替代具体 skill 做修复，只做诊断和分发
+- 插件不可用时在输出中明确标注降级原因

@@ -6,14 +6,15 @@ description: BKN 执行前环境就绪检查与 bootstrap 判定。
 # 环境检查
 
 公约：`../_shared/contract.md`
+插件检测：`../_shared/plugin-check.md`
 
 ## 做什么
 
-在绑定/推送前，检查环境是否就绪。如果缺少必要资源，判定是否需要搭建。
+在绑定/推送前，检查环境是否就绪。如果缺少必要资源，判定是否需要搭建。同时检测可插拔插件可用性。
 
 ## 输入
 
-- `network_dir`：BKN 草案目录
+- `network_dir`：网络目录（`.bkn` 文件位于 `{network_dir}/bkn/`）
 - `network_context`：网络名称、领域
 - `goal`：validate / push / update / copy
 
@@ -21,7 +22,7 @@ description: BKN 执行前环境就绪检查与 bootstrap 判定。
 
 | 检查项 | 方法 | 失败结果 |
 |--------|------|---------|
-| 草案目录 | `network_dir` 存在 + `network.bkn` 齐备 | blocked |
+| 草案目录 | `{network_dir}/bkn/` 存在 + `network.bkn` 齐备 | blocked |
 | CLI | `kweaver --version` | blocked |
 | 平台连通性 | `kweaver config show` | blocked |
 | 业务域 | 配置是否匹配 | warning |
@@ -31,16 +32,27 @@ description: BKN 执行前环境就绪检查与 bootstrap 判定。
 | Agent 工厂 | `kweaver agent list --limit 1` | warning（记入 capability_matrix） |
 | 定时任务（巡检用） | OpenClaw 调度 API 可用性 | warning（记入 capability_matrix） |
 
-所有 CLI 操作委托 `kweaver-core`。
+所有 CLI 操作委托 `bkn-kweaver`（读取 `../bkn-kweaver/SKILL.md`）。
 
 ### 定时任务能力检测
 
-在检查清单末尾，检测 OpenClaw 定时任务能力（P1-5/P1-6 巡检自动创建）：
+在检查清单末尾，检测 OpenClaw 定时任务能力：
 
-1. 检测 OpenClaw 是否已安装且可访问（委托 `kweaver-core` 检查环境）
+**前提条件**：定时任务能力仅在 `plugin_availability.test == available`（有 `bkn-test` 插件）时才有意义。若 test 插件不可用，巡检功能整体不可用，定时任务不会创建。
+
+1. 检测 OpenClaw 是否已安装且可访问（委托 `bkn-kweaver` 检查环境）
 2. 检测 OpenClaw 调度 API 是否可用（`openclaw cron list` 或等价命令）
 3. 结果写入 `env_capability_matrix.patrol_cron`：`available` | `unavailable`
-4. 不可用时不阻塞流程，pipeline 阶段八降级为 Prompt 模板输出
+4. 不可用时不阻塞流程，但若同时 `plugin_availability.test == unavailable`，pipeline 阶段八整体跳过巡检
+
+### 插件可用性检测
+
+在检查清单末尾，按 `../_shared/plugin-check.md` 协议检测可插拔插件：
+
+1. 检测 `../_plugins/bkn-rules/SKILL.md` 文件存在且非空 → `plugin_availability.rules: available`
+2. 检测 `../_plugins/bkn-test/SKILL.md` 文件存在且非空 → `plugin_availability.test: available`
+3. 根据检测结果判定 `plugin_mode`（见 `plugin-check.md`）
+4. 结果写入 `pipeline_state.yaml`，pipeline 据此裁剪阶段分支
 
 ## 数据视图可用性检查
 
@@ -78,6 +90,10 @@ environment_status: ready | blocked | warning
 bootstrap_required: true | false
 bootstrap_level: soft | none
 bind_mode: full | deferred
+plugin_mode: full | limited
+plugin_availability:
+  rules: available | unavailable
+  test: available | unavailable
 check_summary: {cli, connectivity, domain, draft, resource_readiness}
 blocking_issues: [{issue, reason, suggested_fix}]
 bootstrap_plan: {steps, estimated_effort}
@@ -92,7 +108,7 @@ env_capability_matrix:
   patrol_cron: available | unavailable  # P1-5/P1-6 巡检自动创建
 ```
 
-`env_capability_matrix` 写入 `pipeline_state.yaml`，后续阶段据此裁剪分支（如 Skill 注册降级、Agent QA 降级）。
+`env_capability_matrix` 和 `plugin_availability` 写入 `pipeline_state.yaml`，后续阶段据此裁剪分支（如 Skill 注册降级、Agent QA 降级、插件阶段跳过）。
 
 ## 约束
 

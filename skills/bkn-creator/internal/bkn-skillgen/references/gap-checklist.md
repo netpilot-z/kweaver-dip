@@ -35,5 +35,5 @@
 
 ## 6. 外部边界
 
-以下能力不改写：create-bkn / kweaver-core / data-semantic
+以下能力不改写：bkn-kweaver / data-semantic
 围绕这些只能做：编排层、桥接层、包装层。

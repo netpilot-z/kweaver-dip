@@ -5,7 +5,7 @@ description: 为 BKN 对象匹配数据视图，输出绑定决议。
 
 # 视图绑定
 
-公约：`../_shared/contract.md` | 绑定规则：`references/binding-rules.md`
+公约：`../_shared/contract.md` | 绑定规则：`references/binding-rules.md` | 语义服务：`references/semantic-guide.md`
 
 ## 做什么
 
@@ -25,10 +25,10 @@ description: 为 BKN 对象匹配数据视图，输出绑定决议。
    - 在输出中记录被跳过的 local 对象列表
    - 仅对 `platform` 对象执行后续步骤
 2. 从对象描述提取数据源线索
-3. 委托 `kweaver-core` 查视图存在性 + 字段 schema（`kweaver dataview get`）
+3. 委托 `bkn-kweaver` 查视图存在性 + 字段 schema（`kweaver dataview get`）
 4. **字段 schema 输出**：将每个已绑定对象的视图字段 schema 写入 `view_schema_map`，供 `bkn-map` 做属性回灌和 `bkn-draft` 做属性命名预对齐
 5. 字段兼容性验证：逐属性比对，`not_found > 50%` 降级为 ambiguous
-6. 补充匹配：语义（`data-semantic`）+ GKN 复用
+6. 补充匹配：语义服务（`references/semantic-api.md`）+ GKN 复用
 7. 逐对象决议：bound / pending / rejected
 8. 数据源一致性校验：不同 datasource_id 标记风险
 
@@ -47,7 +47,16 @@ binding_summary:
   bound_objects: 0
   binding_rate: 0.0      # bound_objects / total_objects（不含 local 对象）
 view_schema_map:
-  {object_name: [{field_name, field_type, description}]}  # 已绑定对象的视图字段 schema，供 bkn-map 和 bkn-draft 复用
+  {object_name}: 
+    view_id: ""
+    view_name: ""
+    datasource_id: ""           # 数据源 ID（用于跨数据源判断）
+    fields: [{name, type, description}]
+    foreign_keys:               # 外键信息（用于关系类型判定）
+      - field: ""               # 本视图中的外键字段名
+        references_view_id: ""  # 引用的视图 ID（如有）
+        references_table: ""    # 引用的物理表名（如有）
+        references_field: ""    # 引用的字段名
 ```
 
 ## 视图匹配职责

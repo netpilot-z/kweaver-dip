@@ -14,10 +14,13 @@ description: 属性到字段映射 + 覆盖率计算 + 完备性放行。
 ## 输入
 
 - `binding_decision_list`：`bkn-bind` 的输出（仅处理 bound 对象）
+- `relation_binding_result`：`bkn-relation-bind` 的输出（仅处理 confirmed 关系）
 - `object_draft_list`：对象清单（含属性）
-- 已绑定视图的字段 schema
+- `view_schema_map`：已绑定视图的字段 schema + 外键信息
 
 ## 流程
+
+### 对象属性映射
 
 1. **属性回灌**：以原始文本 + 绑定视图字段为输入，重建属性候选
    - 分层标注：`core_business`（原始文本存在）/ `view_derived`（仅视图中有）/ `technical_excluded`（纯技术字段）
@@ -43,6 +46,30 @@ description: 属性到字段映射 + 覆盖率计算 + 完备性放行。
 
 详细规则见 `references/mapping-rules.md`
 
+### 关系类 View Property 映射（新增）
+
+仅处理 `relation_binding_result.data_view_relations` 中 `status: confirmed` 的关系：
+
+1. **Source Mapping 映射**：
+   - 输入：`source_mapping_rules`（起点属性 → 中间视图字段）
+   - 验证：起点属性存在于起点对象的 Data Properties
+   - 验证：中间视图字段存在于中间视图 schema
+   - 映射状态：mapped / blocked
+
+2. **Target Mapping 映射**：
+   - 输入：`target_mapping_rules`（中间视图字段 → 终点属性）
+   - 验证：中间视图字段存在于中间视图 schema
+   - 验证：终点属性存在于终点对象的 Data Properties
+   - 映射状态：mapped / blocked
+
+3. **关系映射质量评定**：
+   - 所有 Source/Target Mapping 都 mapped → `relation_mapping_quality: full`
+   - 有 blocked → `relation_mapping_quality: partial`
+
+**跳过条件**：
+- `relation_binding_result` 为空或不存在
+- 无 `confirmed` 的 data_view 类型关系
+
 ## 输出
 
 ```yaml
@@ -55,6 +82,29 @@ property_mapping_draft:
     coverage: 0.0
     rows: [{property_name, status, view_id, field_path, confidence, reason}]
 mapping_gate_summary: {coverage, blocked_count, mapping_quality, recommended_strategy}
+
+# 新增：关系类映射结果
+relation_mapping_draft:
+  - 关系ID: ""
+    关系名称: ""
+    关系类型: direct | data_view
+    intermediate_view_id: ""      # 仅 data_view 类型
+    source_mapping:
+      - source_property: ""
+        view_property: ""
+        status: mapped | blocked
+        reason: ""
+    target_mapping:
+      - view_property: ""
+        target_property: ""
+        status: mapped | blocked
+        reason: ""
+    relation_mapping_quality: full | partial | skipped
+relation_mapping_summary:
+  total_relations: 0
+  mapped_relations: 0
+  blocked_relations: 0
+  skipped_relations: 0            # pending 关系，跳过映射
 ```
 
 ## 约束

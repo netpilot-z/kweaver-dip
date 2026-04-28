@@ -45,11 +45,11 @@ generated_skill_artifacts:
 
 - 先判断是否真需要新 skill，现有覆盖 80%+ 优先建议优化
 - 每个新 skill 必须写清"何时用/不用" + 至少 1 负例
-- 不改写外部能力（create-bkn / kweaver-core / data-semantic）
+- 不改写外部能力（bkn-kweaver / data-semantic）
 
 ## 保留名称（禁止新建同名）
 
-`bkn-router`、`bkn-domain`、`bkn-extract`、`bkn-doctor`、`bkn-rules`、`bkn-draft`、`bkn-env`、`bkn-bind`、`bkn-map`、`bkn-backfill`、`bkn-test`、`bkn-review`、`bkn-anchor`、`bkn-report`、`bkn-skillgen`、`bkn-distribute`
+`bkn-router`、`bkn-domain`、`bkn-extract`、`bkn-doctor`、`bkn-rules`、`bkn-draft`、`bkn-env`、`bkn-bind`、`bkn-map`、`bkn-backfill`、`bkn-test`、`bkn-review`、`bkn-anchor`、`bkn-report`、`bkn-skillgen`、`bkn-distribute`、`bkn-kweaver`、`bkn-archive`
 
 ## 参考
 

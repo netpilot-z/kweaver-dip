@@ -9,12 +9,12 @@
 | bkn-report | `../bkn-report/SKILL.md` |
 | 公约 | `../_shared/contract.md` |
 
-外部 skill `kweaver-core` 通过 skill name 调用。
+外部 skill `bkn-kweaver` 通过相对路径读取（`../bkn-kweaver/SKILL.md`）。
 
 ## 流程
 
 ```
-kweaver-core(影响预检) → 确认 → kweaver-core(删除) → 验证 → bkn-report
+bkn-kweaver(影响预检) → 确认 → bkn-kweaver(删除) → 验证 → bkn-report
 ```
 
 ## 阶段
@@ -22,9 +22,9 @@ kweaver-core(影响预检) → 确认 → kweaver-core(删除) → 验证 → bk
 | # | 步骤 | 行为 |
 |---|------|------|
 | 1 | 定位删除目标 | kn_id / 对象类 / 关系类 |
-| 2 | 影响预检 | 委托 kweaver-core：级联影响、失效关系、孤悬对象 |
+| 2 | 影响预检 | 委托 bkn-kweaver：级联影响、失效关系、孤悬对象 |
 | 3 | 用户确认 | 必须明确"确认删除"，含糊不算 |
-| 4 | 执行删除 | 委托 kweaver-core |
+| 4 | 执行删除 | 委托 bkn-kweaver |
 | 5 | 验证 | 目标不存在 + 无残留引用 |
 | 6 | 报告 | `../bkn-report/SKILL.md` |
 

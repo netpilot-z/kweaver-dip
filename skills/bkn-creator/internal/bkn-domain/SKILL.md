@@ -23,14 +23,16 @@ description: 评分式领域识别。从业务文本判断所属领域。
 3. 归一化：`normalized = raw_score / domain_max × 100`
 4. 判定路径：
 
-| 条件 | 判定 | 动作 |
+| 条件 | 判定 | 建议动作 |
 |------|------|------|
-| `normalized_top >= 70` | 高置信直通 | 直接进领域提取 |
-| `normalized_top >= 20` 且分差 >= 8 | 高置信命中 | 领域提取 |
+| `normalized_top >= 70` | 高置信直通 | 领域提取（pipeline 可要求确认） |
+| `normalized_top >= 20` 且分差 >= 8 | 高置信命中 | 领域提取（pipeline 可要求确认） |
 | `normalized_top >= 12` 且分差 < 8 | 候选冲突 | 请用户确认 |
 | 其他 | 未识别 | 通用提取 |
 
 基础门槛：`raw_score_top >= 4`，低于此直接走通用。
+
+**确认决策权**：`next_action` 为建议，实际确认策略由调用方 pipeline 决定。pipeline 可选择"无论是否命中都需要用户确认"。
 
 ## 输出
 
