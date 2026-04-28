@@ -1361,7 +1361,7 @@ const ToolModal = ({ agentKey, onCancel, value, onConfirm, retrieverBlockOptions
                 children: renderMcpTree(),
               },
               {
-                label: intl.get('dataAgent.config.skill'),
+                label: 'Sub Agent',
                 key: 'agent',
                 children: renderAgentList(),
               },

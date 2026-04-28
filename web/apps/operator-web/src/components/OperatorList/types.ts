@@ -1,6 +1,7 @@
 export enum OperatorTypeEnum {
   MCP = 'mcp',
   Operator = 'operator',
+  Skill = 'skill',
   Tool = 'tool',
   ToolBox = 'tool_box',
 }

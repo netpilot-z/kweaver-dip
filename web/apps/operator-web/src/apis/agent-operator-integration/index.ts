@@ -28,6 +28,8 @@ const apis = {
   mcpMarketList: '/api/agent-operator-integration/v1/mcp/market',
   operatorMarketList: '/api/agent-operator-integration/v1/operator/market',
   toolBoxMarketList: '/api/agent-operator-integration/v1/tool-box/market',
+  skill: '/api/agent-operator-integration/v1/skills',
+  skillMarketList: '/api/agent-operator-integration/v1/skills/market',
   operatorDebug: '/api/agent-operator-integration/v1/operator/debug',
   mcpTools: '/api/agent-operator-integration/v1/mcp/proxy',
   toolBoxIntegrationBaseUrl: '/api/agent-operator-integration/v1',
@@ -162,6 +164,49 @@ export function getToolBoxList(params: any) {
 
 export function getToolBoxMarketList(params: any) {
   return get(`${apis.toolBoxMarketList}`, { params });
+}
+
+export function postSkill(data: FormData | { file_type: 'zip' | 'content'; file: string }) {
+  return post(`${apis.skill}`, { body: data });
+}
+
+export function getSkillList(params: any) {
+  return get(`${apis.skill}`, { params });
+}
+
+export function getSkillMarketList(params: any) {
+  return get(`${apis.skillMarketList}`, { params });
+}
+
+export function getSkillInfo(skill_id: string) {
+  return get(`${apis.skill}/${skill_id}`);
+}
+
+export function getSkillMarketInfo(skill_id: string) {
+  return get(`${apis.skillMarketList}/${skill_id}`);
+}
+
+export function putSkillStatus(skill_id: string, data: any) {
+  return put(`${apis.skill}/${skill_id}/status`, { body: data });
+}
+
+export function delSkill(skill_id: string) {
+  return del(`${apis.skill}/${skill_id}`);
+}
+
+export function getSkillContent(skill_id: string) {
+  return get(`${apis.skill}/${skill_id}/content`);
+}
+
+export function readSkillFile(skill_id: string, data: { rel_path: string }) {
+  return post(`${apis.skill}/${skill_id}/files/read`, { body: data });
+}
+
+export function downloadSkill(skill_id: string) {
+  return get(`${apis.skill}/${skill_id}/download`, {
+    responseType: 'blob',
+    returnFullResponse: true,
+  });
 }
 
 export function postTool(box_id: string, data: any) {

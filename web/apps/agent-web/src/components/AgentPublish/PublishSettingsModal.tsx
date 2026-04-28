@@ -469,7 +469,7 @@ const PublishSettingsModal: React.FC<PublishSettingsModalProps> = ({
                   disabled: !perms?.agent?.publish_to_be_api_agent,
                 },
                 {
-                  label: intl.get('dataAgent.config.skill'),
+                  label: 'Sub Agent',
                   value: AgentPublishToBeEnum.SkillAgent,
                   disabled: !perms?.agent?.publish_to_be_skill_agent,
                 },

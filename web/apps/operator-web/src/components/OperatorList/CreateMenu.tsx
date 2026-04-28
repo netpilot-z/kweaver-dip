@@ -7,12 +7,14 @@ import { useState } from 'react';
 import CreateOperatorModal from '../Operator/CreateOperatorModal';
 import OperatorFlowPanel from '../MyOperator/OperatorFlowPanel';
 import CreateMcpModal from '../MCP/CreateMcpModal';
+import CreateSkillModal from '../Skill/CreateSkillModal';
 import CreateToolboxModal from '../Tool/CreateToolBoxModal';
 import ImportFailed from '../Tool/ImportFailed';
 import { PublishedPermModal } from './PublishedPermModal';
 import { useMicroWidgetProps } from '@/hooks';
 import { postResourceOperation } from '@/apis/authorization';
 import { getOperatorTypeName } from './utils';
+import ImportIcon from '@/assets/images/import.svg';
 
 export default function CreateMenu({ fetchInfo, activeTab }: any) {
   const navigate = useNavigate();
@@ -21,6 +23,7 @@ export default function CreateMenu({ fetchInfo, activeTab }: any) {
   const [createToolOpen, setCreateToolOpen] = useState(false);
   const [createMcpOpen, setCreateMcpOpen] = useState(false);
   const [createOperatorOpen, setCreateOperatorOpen] = useState(false);
+  const [createSkillOpen, setCreateSkillOpen] = useState(false);
   const [isFlowOpen, setIsFlowOpen] = useState(false);
   const [dataSourceError, setDataSourceError] = useState([]);
 
@@ -58,7 +61,6 @@ export default function CreateMenu({ fetchInfo, activeTab }: any) {
     }
   };
 
-  // 新建工具箱成功
   const handleCreateSuccess = (boxInfo: {
     box_id: string;
     box_name: string;
@@ -75,7 +77,6 @@ export default function CreateMenu({ fetchInfo, activeTab }: any) {
     navigate(`/tool-detail?box_id=${boxInfo.box_id}&action=edit`);
   };
 
-  // 跳转到IDE新建算子页面
   const jumpToCreateOperatorPage = () => {
     navigate('/ide/operator/create', {
       state: {
@@ -83,6 +84,24 @@ export default function CreateMenu({ fetchInfo, activeTab }: any) {
       },
     });
   };
+
+  const handleCreateSkillSuccess = () => {
+    setCreateSkillOpen(false);
+    fetchInfo?.();
+  };
+
+  if (activeTab === OperatorTypeEnum.Skill) {
+    return (
+      <>
+        <Button type="primary" icon={<ImportIcon />} onClick={() => setCreateSkillOpen(true)}>
+          导入Skill
+        </Button>
+        {createSkillOpen && (
+          <CreateSkillModal onCancel={() => setCreateSkillOpen(false)} onOk={handleCreateSkillSuccess} />
+        )}
+      </>
+    );
+  }
 
   return (
     <>

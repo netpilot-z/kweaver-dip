@@ -3,6 +3,7 @@ import { OperatorTypeEnum } from './types';
 const OperatorTypeNames = {
   [OperatorTypeEnum.MCP]: 'MCP',
   [OperatorTypeEnum.Operator]: '算子',
+  [OperatorTypeEnum.Skill]: 'Skill',
   [OperatorTypeEnum.ToolBox]: '工具箱',
 } as const;
 

@@ -8,11 +8,13 @@ import ToolIcon from '@/assets/images/tool-icon.svg';
 import ToolBgPng from '@/assets/images/tool-bg.png';
 import OperatorBgPng from '@/assets/images/operator-bg.png';
 import MCPBgPng from '@/assets/images/mcp-bg.png';
+import SkillBgPng from '@/assets/images/skill-bg.png';
 import { MetadataTypeEnum } from '@/apis/agent-operator-integration/type';
 import { OperateTypeEnum, OperatorTypeEnum } from './types';
 import StatusTag from './StatusTag';
 import McpDetailButton from '../MCP/McpDetailButton';
 import OperatorDetailButton from '../Operator/OperatorDetailButton';
+import SkillDetailButton from '../Skill/SkillDetailButton';
 import ToolDetailButton from '../Tool/ToolDetailButton';
 import { metadataTypeMap } from './metadata-type';
 
@@ -50,6 +52,8 @@ export default function DetailHeader({
               ? { backgroundImage: `url(${OperatorBgPng})` }
               : type === OperatorTypeEnum.MCP
                 ? { backgroundImage: `url(${MCPBgPng})` }
+                : type === OperatorTypeEnum.Skill
+                  ? { backgroundImage: `url(${SkillBgPng})` }
                 : {}
         }
       >
@@ -108,7 +112,7 @@ export default function DetailHeader({
               {detailInfo?.description}
             </Typography.Paragraph>
             <div style={{ marginTop: '12px', fontSize: '12px', color: '#4F4F4F', display: 'flex' }}>
-              {type !== OperatorTypeEnum.Operator && (
+              {[OperatorTypeEnum.ToolBox, OperatorTypeEnum.MCP].includes(type) && (
                 <span style={{ marginRight: '20px', display: 'flex', alignItems: 'center' }}>
                   <ToolIcon />
                   <span style={{ marginLeft: '5px' }}>{detailInfo?.toolLength} 个工具</span>
@@ -146,6 +150,14 @@ export default function DetailHeader({
                   detailInfo={detailInfo}
                   fetchInfo={fetchInfo}
                   permissionCheckInfo={permissionCheckInfo}
+                />
+              )}
+              {type === OperatorTypeEnum.Skill && (
+                <SkillDetailButton
+                  detailInfo={detailInfo}
+                  fetchInfo={fetchInfo}
+                  permissionCheckInfo={permissionCheckInfo}
+                  goBack={handleBackToList}
                 />
               )}
             </Space>

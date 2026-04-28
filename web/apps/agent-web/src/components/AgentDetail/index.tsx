@@ -526,7 +526,7 @@ const AgentDetail: React.FC<{
                     value: AgentPublishToBeEnum.ApiAgent,
                   },
                   {
-                    label: intl.get('dataAgent.config.skill'),
+                    label: 'Sub Agent',
                     value: AgentPublishToBeEnum.SkillAgent,
                   },
                 ].map(({ label, value }) => (

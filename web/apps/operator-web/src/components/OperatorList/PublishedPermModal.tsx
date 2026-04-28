@@ -19,6 +19,10 @@ export const PublishedPermModal = (params: any, microWidgetProps: any) => {
     id = record?.operator_id;
     name = record?.name;
   }
+  if (activeTab === OperatorTypeEnum.Skill) {
+    id = record?.skill_id;
+    name = record?.name;
+  }
 
   success({
     title: '发布成功',

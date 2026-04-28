@@ -10,9 +10,11 @@ import BuiltInIcon from '@/assets/images/built-in.svg';
 import { OperateTypeEnum, OperatorTypeEnum } from './types';
 import OperatorIcon from '@/assets/images/operator.svg';
 import McpIcon from '@/assets/images/mcp.svg';
+import SkillIcon from '@/assets/images/skill.svg'
 import OperatorDropdown from '../Operator/OperatorDropdown';
 import ToolDropdown from '../Tool/ToolDropdown';
 import McpDropdown from '../MCP/McpDropdown';
+import SkillDropdown from '../Skill/SkillDropdown';
 import StatusTag from '../OperatorList/StatusTag';
 import { useNavigate } from 'react-router-dom';
 import styles from './OperatorCard.module.less';
@@ -35,7 +37,7 @@ const OperatorCard: React.FC<{
   loading: boolean;
 }> = ({ params, operatorList, fetchInfo, hasMore, fetchMoreData, loading }) => {
   const { token } = theme.useToken();
-  const { activeTab, isPluginMarket } = params;
+  const { activeTab, isPluginMarket, enableSkillDetail = false } = params;
   const navigate = useNavigate();
 
   // 使用 react-responsive 检测屏幕尺寸
@@ -63,7 +65,7 @@ const OperatorCard: React.FC<{
   }, [columns]);
 
   const handlePreview = (record: any) => {
-    const { operator_id, mcp_id, box_id } = record;
+    const { operator_id, mcp_id, box_id, skill_id } = record;
     const type = isPluginMarket ? OperateTypeEnum.View : OperateTypeEnum.Edit;
     if (activeTab === OperatorTypeEnum.ToolBox) {
       navigate(`/tool-detail?box_id=${box_id}&action=${type}`);
@@ -74,7 +76,15 @@ const OperatorCard: React.FC<{
     if (activeTab === OperatorTypeEnum.MCP) {
       navigate(`/mcp-detail?mcp_id=${mcp_id}&action=${type}`);
     }
+    if (activeTab === OperatorTypeEnum.Skill) {
+      if (!enableSkillDetail) {
+        return;
+      }
+      navigate(`/skill-detail?skill_id=${skill_id}&action=${type}`);
+    }
   };
+
+  const canClickCard = activeTab !== OperatorTypeEnum.Skill || enableSkillDetail;
 
   return (
     <div className="operator-list-content">
@@ -106,15 +116,27 @@ const OperatorCard: React.FC<{
           {/* 卡片网格 */}
           <Row gutter={[gutter, gutter]}>
             {(operatorList?.length ? operatorList : loading ? loadingList : [])?.map((item: any) => (
-              <Col key={item.id} {...getResponsiveProps()}>
-                <Card hoverable className="operator-list-content-card" loading={loading}>
+              <Col
+                key={item.id || item.skill_id || item.operator_id || item.mcp_id || item.box_id}
+                {...getResponsiveProps()}
+              >
+                <Card
+                  hoverable={canClickCard}
+                  className="operator-list-content-card"
+                  loading={loading}
+                  onClick={() => {
+                    if (canClickCard) {
+                      handlePreview(item);
+                    }
+                  }}
+                >
                   <div>
                     <div
                       style={{
                         display: 'flex',
                         width: '100%',
+                        cursor: canClickCard ? 'pointer' : 'default',
                       }}
-                      onClick={() => handlePreview(item)}
                     >
                       <div className="dip-position-r">
                         {activeTab === OperatorTypeEnum.ToolBox && (
@@ -125,6 +147,9 @@ const OperatorCard: React.FC<{
                         )}
                         {activeTab === OperatorTypeEnum.Operator && (
                           <OperatorIcon style={{ width: '38px', height: '38px', borderRadius: '8px' }} />
+                        )}
+                        {activeTab === OperatorTypeEnum.Skill && (
+                          <SkillIcon style={{ width: '38px', height: '38px', borderRadius: '8px' }} />
                         )}
                         {[OperatorTypeEnum.ToolBox, OperatorTypeEnum.Operator].includes(activeTab) && (
                           <CardTag>{metadataTypeMap[item.metadata_type]}</CardTag>
@@ -194,6 +219,9 @@ const OperatorCard: React.FC<{
                           )}
                           {activeTab === OperatorTypeEnum.Operator && (
                             <OperatorDropdown params={{ ...params, record: item }} fetchInfo={fetchInfo} />
+                          )}
+                          {activeTab === OperatorTypeEnum.Skill && (
+                            <SkillDropdown params={{ ...params, record: item }} fetchInfo={fetchInfo} />
                           )}
                         </div>
                       )}

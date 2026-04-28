@@ -13,6 +13,8 @@ import {
   getOperatorCategory,
   getOperatorList,
   getOperatorMarketList,
+  getSkillList,
+  getSkillMarketList,
   getToolBoxList,
   getToolBoxMarketList,
 } from '@/apis/agent-operator-integration';
@@ -27,6 +29,22 @@ import { OperatorStatusType, OperatorTypeEnum, PermConfigTypeEnum } from './type
 import { getOperatorTypeName } from './utils';
 import ImportMcpServiceModal from '@/components/MCP/ImportMcpServiceModal';
 import ImportToolboxAndOperatorModal from '@/components/OperatorList/ImportToolboxAndOperatorModal';
+
+const unwrapListResponse = (response: any) => {
+  if (response && typeof response === 'object' && response.data && !Array.isArray(response.data)) {
+    return response.data;
+  }
+
+  return response;
+};
+
+const normalizePagedData = (response: any) => {
+  const payload = unwrapListResponse(response) || {};
+  return {
+    data: payload?.data || [],
+    total: payload?.total ?? payload?.total_count ?? 0,
+  };
+};
 
 const OperatorList: React.FC<{ isPluginMarket?: boolean }> = ({ isPluginMarket = false }) => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -51,8 +69,14 @@ const OperatorList: React.FC<{ isPluginMarket?: boolean }> = ({ isPluginMarket =
 
   const tabItems: TabsProps['items'] = [
     { key: OperatorTypeEnum.MCP, label: 'MCP' },
+    { key: OperatorTypeEnum.Skill, label: 'Skill' },
     { key: OperatorTypeEnum.ToolBox, label: '工具' },
     { key: OperatorTypeEnum.Operator, label: '算子' },
+  ];
+
+  const displayTabItems = [
+    ...(tabItems?.filter(item => item?.key !== OperatorTypeEnum.Skill) || []),
+    ...(tabItems?.filter(item => item?.key === OperatorTypeEnum.Skill) || []),
   ];
 
   const statusOptions: SelectProps['options'] = useMemo(
@@ -63,7 +87,13 @@ const OperatorList: React.FC<{ isPluginMarket?: boolean }> = ({ isPluginMarket =
         { value: OperatorStatusType.Unpublish, label: '未发布' },
         { value: OperatorStatusType.Offline, label: '已下架' },
         { value: OperatorStatusType.Editing, label: '已发布编辑中' },
-      ].filter(option => !(activeTab === OperatorTypeEnum.ToolBox && option.value === OperatorStatusType.Editing)),
+      ].filter(
+        option =>
+          !(
+            [OperatorTypeEnum.ToolBox].includes(activeTab as OperatorTypeEnum) &&
+            option.value === OperatorStatusType.Editing
+          )
+      ),
     [activeTab]
   );
 
@@ -151,6 +181,11 @@ const OperatorList: React.FC<{ isPluginMarket?: boolean }> = ({ isPluginMarket =
       if (activeTab === OperatorTypeEnum.MCP) {
         operatorData = isPluginMarket ? await getMcpMarketList(params) : await getMCPList(params);
       }
+      if (activeTab === OperatorTypeEnum.Skill) {
+        operatorData = normalizePagedData(
+          isPluginMarket ? await getSkillMarketList(params) : await getSkillList(params)
+        );
+      }
 
       // 首屏加载替换数据，翻页加载合并数据
       if (page === 1) {
@@ -193,7 +228,12 @@ const OperatorList: React.FC<{ isPluginMarket?: boolean }> = ({ isPluginMarket =
     try {
       const data = await postResourceTypeOperation({
         method: 'GET',
-        resource_types: [OperatorTypeEnum.ToolBox, OperatorTypeEnum.MCP, OperatorTypeEnum.Operator],
+        resource_types: [
+          OperatorTypeEnum.ToolBox,
+          OperatorTypeEnum.MCP,
+          OperatorTypeEnum.Operator,
+          OperatorTypeEnum.Skill,
+        ],
       });
       setPermConfigInfo(transformArray(data));
     } catch (error: any) {
@@ -209,7 +249,7 @@ const OperatorList: React.FC<{ isPluginMarket?: boolean }> = ({ isPluginMarket =
     <div className="operator-list">
       <div className="operator-list-title">
         {/* 头部 */}
-        <Tabs className="operator-list-tabs" activeKey={activeTab} onChange={handleTabChange} items={tabItems} />
+        <Tabs className="operator-list-tabs" activeKey={activeTab} onChange={handleTabChange} items={displayTabItems} />
 
         {!isPluginMarket && (
           <div>
@@ -218,20 +258,22 @@ const OperatorList: React.FC<{ isPluginMarket?: boolean }> = ({ isPluginMarket =
               permConfigInfo?.[activeTab || OperatorTypeEnum.MCP]?.includes(PermConfigTypeEnum.Create) && (
                 <>
                   <CreateMenu fetchInfo={fetchInfo} activeTab={activeTab} />
-                  <Button
-                    style={{ marginLeft: '8px' }}
-                    icon={<ImportIcon />}
-                    onClick={() => {
-                      setImportModalOpen({
-                        mcp: (activeTab || OperatorTypeEnum.MCP) === OperatorTypeEnum.MCP,
-                        toolbox: activeTab === OperatorTypeEnum.ToolBox,
-                        operator: activeTab === OperatorTypeEnum.Operator,
-                      });
-                    }}
-                  >
-                    导入
-                    {getOperatorTypeName(activeTab)}
-                  </Button>
+                  {activeTab !== OperatorTypeEnum.Skill && (
+                    <Button
+                      style={{ marginLeft: '8px' }}
+                      icon={<ImportIcon />}
+                      onClick={() => {
+                        setImportModalOpen({
+                          mcp: (activeTab || OperatorTypeEnum.MCP) === OperatorTypeEnum.MCP,
+                          toolbox: activeTab === OperatorTypeEnum.ToolBox,
+                          operator: activeTab === OperatorTypeEnum.Operator,
+                        });
+                      }}
+                    >
+                      导入
+                      {getOperatorTypeName(activeTab)}
+                    </Button>
+                  )}
                 </>
               )
             }
@@ -282,7 +324,7 @@ const OperatorList: React.FC<{ isPluginMarket?: boolean }> = ({ isPluginMarket =
         <div style={{ height: !isPluginMarket ? 'calc(100vh - 195px)' : 'calc(100vh - 145px)' }}>
           <OperatorCard
             loading={loading}
-            params={{ activeTab, isPluginMarket }}
+            params={{ activeTab, isPluginMarket, enableSkillDetail: isPluginMarket }}
             fetchInfo={fetchInfo}
             hasMore={hasMore}
             operatorList={operatorList}

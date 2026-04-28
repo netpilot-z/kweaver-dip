@@ -23,6 +23,10 @@ const PermConfigMenu: React.FC<{ params: any; type?: string }> = ({ params, type
       id = record?.operator_id;
       name = record?.name;
     }
+    if (activeTab === OperatorTypeEnum.Skill) {
+      id = record?.skill_id;
+      name = record?.name;
+    }
     componentsPermConfig({ id: id, name, type: activeTab }, microWidgetProps);
   };
 

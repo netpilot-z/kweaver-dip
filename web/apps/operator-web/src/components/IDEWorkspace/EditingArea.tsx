@@ -1,5 +1,5 @@
 import { useState, useRef, forwardRef, useImperativeHandle, useEffect } from 'react';
-import { Radio, Button, message, Input, Modal, Segmented } from 'antd';
+import { Button, message, Input, Modal, Segmented } from 'antd';
 import classNames from 'classnames';
 import { type EventSourceMessage } from '@microsoft/fetch-event-source';
 import AIGenIcon from '@/assets/icons/ai-gen.svg';
@@ -234,7 +234,7 @@ const EditingArea = forwardRef(({ operatorType, value, onChange, depPanelVisible
         )}
       </div>
       <div className="dip-flex-1 dip-overflowY-auto">
-        {activeTab === TabEnum.Code && (
+        {activeTab === TabEnum.Code && typeof value.code !== 'undefined' && (
           <PythonEditor
             options={{
               readOnly: aiCodeGenerating, // 当ai生成代码进行中时，禁用编辑
