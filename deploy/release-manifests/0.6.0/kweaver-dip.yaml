@@ -28,13 +28,13 @@ releases:
     version: 0.5.1-main
   operator-web:
     chart: operator-web
-    version: 0.5.0-main.git-671eead
+    version: 0.6.0-main.git-7fc6f24
   mdl-manage-web:
     chart: mdl-manage-web
     version: 0.5.0-develop.git-c7b1b0
   agent-web:
     chart: agent-web
-    version: 0.5.1-main.git-a89f3eb
+    version: 0.6.0-main.git-36b7a29
   flow-web:
     chart: flow-web
     version: 0.5.1-main.git+671eead
