@@ -25,7 +25,7 @@ releases:
     version: 0.5.0-main.git-2a143e0.1796934
   vega-web:
     chart: vega-web
-    version: 0.6.0-main.20260428.2.f4716a9
+    version: 0.5.1-main
   operator-web:
     chart: operator-web
     version: 0.5.0-main.git-671eead
